@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, TyrLibActivity!</string>
+    <string name="app_name">TyrLib</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nein</string>
+</resources>
