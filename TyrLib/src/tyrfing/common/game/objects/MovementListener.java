@@ -1,6 +1,6 @@
 package tyrfing.common.game.objects;
 
-public abstract class MovementListener {
+public abstract class MovementListener implements IMovementListener {
 	
 	public MovementListener()
 	{

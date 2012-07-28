@@ -4,6 +4,7 @@ package tyrfing.common.ui;
 import java.util.List;
 import java.util.Vector;
 
+import tyrfing.common.game.objects.IMovementListener;
 import tyrfing.common.game.objects.IUpdateable;
 import tyrfing.common.game.objects.Movement;
 import tyrfing.common.game.objects.MovementListener;
@@ -307,12 +308,12 @@ public abstract class Window implements IUpdateable, TouchListener {
 		return movement.isFinished();
 	}
 	
-	public void addMovementListener(MovementListener movementListener)
+	public void addMovementListener(IMovementListener movementListener)
 	{
 		movement.addMovementListener(movementListener);
 	}
 	
-	public MovementListener getMovementListener(int id)
+	public IMovementListener getMovementListener(int id)
 	{
 		return movement.getMovementListener(id);
 	}

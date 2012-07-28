@@ -17,7 +17,7 @@ public class Movement implements IUpdateable {
 	
 	private float remainingTime = 0;
 	
-	private List<MovementListener> movementListeners;
+	private List<IMovementListener> movementListeners;
 	
 	public Movement(Node node, float speed)
 	{
@@ -25,7 +25,7 @@ public class Movement implements IUpdateable {
 		this.speed = speed;
 		path = new LinkedList<Vector2>();
 		lastPoint = node.getAbsolutePos();
-		movementListeners = new ArrayList<MovementListener>();
+		movementListeners = new ArrayList<IMovementListener>();
 	}
 	
 	public float getSpeed()
@@ -65,7 +65,7 @@ public class Movement implements IUpdateable {
 					
 					if (path.isEmpty())
 					{
-						for (MovementListener movementListener : movementListeners)
+						for (IMovementListener movementListener : movementListeners)
 						{
 							if (movementListener.isListening())
 							{
@@ -134,12 +134,12 @@ public class Movement implements IUpdateable {
 		return remainingTime;
 	}
 	
-	public void addMovementListener(MovementListener movementListener)
+	public void addMovementListener(IMovementListener movementListener)
 	{
 		movementListeners.add(movementListener);
 	}
 	
-	public MovementListener getMovementListener(int id)
+	public IMovementListener getMovementListener(int id)
 	{
 		return movementListeners.get(id);
 	}
