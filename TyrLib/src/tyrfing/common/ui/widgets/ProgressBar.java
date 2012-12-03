@@ -3,6 +3,7 @@ package tyrfing.common.ui.widgets;
 import android.graphics.Color;
 import tyrfing.common.render.SceneManager;
 import tyrfing.common.renderables.Rectangle;
+import tyrfing.common.renderables.Renderable;
 import tyrfing.common.ui.Window;
 
 public class ProgressBar extends Window {
@@ -14,8 +15,17 @@ public class ProgressBar extends Window {
 	
 	private float progress;
 	
+	public enum BarType {
+		VERTICAL,
+		HORIZONTAL
+	};
+	
+	private BarType type;
+	
 	public ProgressBar(String name, float x, float y, float w, float h, float progress) {
 		super(name, x, y, w, h);
+		
+		this.type = BarType.HORIZONTAL;
 		
 		progressBar = SceneManager.createRectangle(w, h, BAR_COLOR, node);
 		Rectangle bg = SceneManager.createRectangle(w, h, BG_COLOR, node);
@@ -27,13 +37,21 @@ public class ProgressBar extends Window {
 	
 	}
 	
+	public void setBarType(BarType type) {
+		this.type = type;
+	}
+	
 	public float getProgress() {
 		return progress;
 	}
 	
 	public void setProgress(float progress) {
 		this.progress = progress;
-		progressBar.setWidth(this.getWidth()*progress);
+		if (type == BarType.HORIZONTAL) {
+			progressBar.setWidth(this.getWidth()*progress);
+		} else {
+			progressBar.setHeight(this.getHeight()*progress);
+		}
 	}
 
 }

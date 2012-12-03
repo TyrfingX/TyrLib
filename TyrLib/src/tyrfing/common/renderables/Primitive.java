@@ -1,5 +1,6 @@
 package tyrfing.common.renderables;
 
+import tyrfing.common.math.Vector2;
 import tyrfing.common.struct.Node;
 import android.graphics.Paint;
 
@@ -37,6 +38,10 @@ public abstract class Primitive extends Renderable {
 	public float getY()
 	{
 		return parent.getY();
+	}
+	
+	public Vector2 getPos() {
+		return parent.getAbsolutePos();
 	}
 	
 	

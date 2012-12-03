@@ -14,6 +14,8 @@ public class TargetMetrics {
 	public static float xScale;
 	public static float yScale;
 	public static int fontSize;
+	public static int fontSizeHeadline;
+	public static int fontSizeBigHeadline;
 	
 	
 	public static void init(Activity activity)
@@ -34,18 +36,26 @@ public class TargetMetrics {
 		if (width >= 400)
 		{
 			fontSize = 15;
+			fontSizeHeadline = 30;
+			fontSizeBigHeadline = 45;
 		}
 		else
 		{
 			fontSize = 11;
+			fontSizeHeadline = 22;
+			fontSizeBigHeadline = 33;
 		}
 		
 		if (xdpi <= 160) 
 		{
 			fontSize -= 3;
+			fontSizeHeadline -= 3;
+			fontSizeBigHeadline -= 3;
 		} else if (xdpi > 240)
 		{
 			fontSize += 4;
+			fontSizeHeadline += 4;
+			fontSizeBigHeadline += 4;
 		}
 		
 		xdpi = 160;

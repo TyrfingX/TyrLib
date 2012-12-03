@@ -5,7 +5,7 @@ import tyrfing.common.game.objects.IUpdateable;
 public abstract class GameThread extends Thread implements IUpdateable {
 	
 	protected boolean run = false;
-	protected float DELAY;
+	protected float DELAY = 10;
 	protected final static float TO_DELAY = 10000000;
 	
 	public GameThread()
@@ -16,22 +16,30 @@ public abstract class GameThread extends Thread implements IUpdateable {
 	{
 		run = true;
 		
-		
-		try {
-			long time = System.nanoTime();
-			while(run)
-			{
-				
-				while((DELAY = System.nanoTime() - time) < TO_DELAY) Thread.yield();
-				time = System.nanoTime();
-				
-				onUpdate(DELAY / 1000000000.f);
-				
+		while (run) {
+			try { 
+				this.loop();
+			} catch (InterruptedException e) {
 			}
-		} catch(Exception e) {
-			e.printStackTrace();
 		}
-		
+	}
+	
+	
+	public void loop() throws InterruptedException  {
+		long time = System.nanoTime();
+		while(run)
+		{
+			
+			while((DELAY = System.nanoTime() - time) < TO_DELAY) {
+				Thread.yield();
+			}
+			time = System.nanoTime();
+			
+			onUpdate(DELAY / 1000000000.f);
+			
+			Thread.sleep((long)(TO_DELAY/10000000));
+			
+		}
 	}
 	
 	public void end()

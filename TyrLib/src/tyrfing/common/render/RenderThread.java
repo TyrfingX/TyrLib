@@ -44,9 +44,15 @@ public class RenderThread extends GameThread {
 	
 	public void addRenderable(Renderable renderable)
 	{
-		synchronized(toRender)
-		{
-			toRender.add(renderable);
+		
+		if (renderable != null) {
+			synchronized(toRender)
+			{
+				toRender.add(renderable);
+			}
+		}
+		else {
+			throw new NullPointerException();
 		}
 	}
 	
@@ -93,23 +99,26 @@ public class RenderThread extends GameThread {
 		
 		Canvas target = surface.lockCanvas(null);
 		
-		if (bg == null)
-			target.drawColor(Color.BLACK);
-		else
-			target.drawBitmap(bg, 0, 0, null);
-	
-		
-		synchronized(toRender)
-		{
-			Collections.sort(toRender, comparator);
-			for (Renderable renderable : toRender)
-			{
-				if (renderable.getVisible())
-					renderable.onRender(target, time);
+		if (target != null) {
+			
+			if (bg == null) {
+				target.drawColor(Color.BLACK);
+			} else {
+				target.drawBitmap(bg, 0, 0, null);
 			}
+			
+			synchronized(toRender)
+			{
+				Collections.sort(toRender, comparator);
+				for (Renderable renderable : toRender)
+				{
+					if (renderable.getVisible())
+						renderable.onRender(target, time);
+				}
+			}
+			surface.unlockCanvasAndPost(target);		
 		}
 
-		surface.unlockCanvasAndPost(target);		
 	}
 	
 	public void updateListeners(float time)
@@ -118,10 +127,12 @@ public class RenderThread extends GameThread {
 		while(listenerItr.hasNext())
 		{
 			IFrameListener frameListener = listenerItr.next();
-			if (!frameListener.isFinished())
-				frameListener.onUpdate(time);
-			else
-				listenerItr.remove();
+			if (frameListener != null) {
+				if (!frameListener.isFinished())
+					frameListener.onUpdate(time);
+				else
+					listenerItr.remove();
+			}
 		}		
 	}
 

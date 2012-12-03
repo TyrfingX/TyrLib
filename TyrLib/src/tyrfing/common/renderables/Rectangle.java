@@ -1,6 +1,7 @@
 package tyrfing.common.renderables;
 
 import android.graphics.Canvas;
+import tyrfing.common.math.Vector2;
 import tyrfing.common.render.TargetMetrics;
 import tyrfing.common.struct.Node;
 
@@ -54,8 +55,17 @@ public class Rectangle extends Primitive {
 		return this.height;
 	}
 	
+	public Vector2 getSize() {
+		return new Vector2(width, height);
+	}
+	
+	public Vector2 getCenter() {
+		return this.getPos().add(this.getSize().multiply(0.5f));
+	}
+	
 	@Override
 	public void onRender(Canvas target, float times) {
+		super.onRender(target, times);
 		float x = parent.getX() * TargetMetrics.xScale;
 		float y = parent.getY() * TargetMetrics.yScale;
 		target.drawRect(x, y, x + scaledWidth, y + scaledHeight, paint);

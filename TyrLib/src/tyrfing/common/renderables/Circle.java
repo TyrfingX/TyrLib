@@ -42,6 +42,7 @@ public class Circle extends Primitive {
 	public void onRender(Canvas target, float time) {
 		if (parent != null)
 		{
+			super.onRender(target, time);
 			float x = parent.getX() * TargetMetrics.xScale;
 			float y = parent.getY() * TargetMetrics.yScale;
 			target.drawCircle(x, y, r * TargetMetrics.yScale, paint);

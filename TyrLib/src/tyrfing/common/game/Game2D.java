@@ -30,7 +30,9 @@ public abstract class Game2D extends BaseGame {
 		}
 		else
 		{
-			SceneManager.RENDER_THREAD.start();
+			if (!SceneManager.RENDER_THREAD.isAlive()) {
+				SceneManager.RENDER_THREAD.start();
+			}
 		}
 	}
 

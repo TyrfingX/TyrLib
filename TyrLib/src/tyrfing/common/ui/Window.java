@@ -7,8 +7,6 @@ import java.util.Vector;
 import tyrfing.common.game.objects.IMovementListener;
 import tyrfing.common.game.objects.IUpdateable;
 import tyrfing.common.game.objects.Movement;
-import tyrfing.common.game.objects.MovementListener;
-import tyrfing.common.input.InputManager;
 import tyrfing.common.input.TouchListener;
 import tyrfing.common.math.Vector2;
 import tyrfing.common.render.SceneManager;
@@ -26,8 +24,10 @@ public abstract class Window implements IUpdateable, TouchListener {
 	protected List<Renderable> components;
 	protected List<Window> childWindows;
 	protected List<ClickListener> clickListener;
+	protected List<TouchEnterListener> touchEnterListener;
 	protected Movement movement;
 	protected Window parent;
+	protected boolean touched;
 	
 	private String name;
 	
@@ -40,6 +40,7 @@ public abstract class Window implements IUpdateable, TouchListener {
 		components = new Vector<Renderable>();
 		childWindows = new Vector<Window>();
 		clickListener = new Vector<ClickListener>();
+		touchEnterListener = new Vector<TouchEnterListener>();
 		this.name = name;
 		this.enabled = true;
 		this.visible = true;
@@ -210,11 +211,22 @@ public abstract class Window implements IUpdateable, TouchListener {
 	
 	@Override
 	public boolean onTouchDown(Vector2 point) {
-		return this.isPointInWindow(point);
+		boolean inWindow = this.isPointInWindow(point);
+		if (enabled && inWindow) {
+			touched = true;
+			this.onTouchEnters(new Event(this));
+		}
+		return inWindow;
 	}
 
 	@Override
 	public boolean onTouchUp(Vector2 point) {
+		
+		if (touched) {
+			this.onTouchLeaves(new Event(this));
+		}
+		
+		touched = false;
 		
 		if (this.enabled)
 		{
@@ -222,7 +234,7 @@ public abstract class Window implements IUpdateable, TouchListener {
 			{
 				this.evokeClick(new Event(this));
 				return true;
-			}
+			} 
 		
 		}
 		
@@ -232,7 +244,17 @@ public abstract class Window implements IUpdateable, TouchListener {
 
 	@Override
 	public boolean onTouchMove(Vector2 point) {
-		return this.isPointInWindow(point);
+		boolean inWindow = this.isPointInWindow(point);
+		if (enabled) {
+			if (inWindow && !touched) {
+				touched = true;
+				this.onTouchEnters(new Event(this));
+			} else if (!inWindow && touched) {
+				touched = false;
+				this.onTouchLeaves(new Event(this));
+			}
+		}
+		return inWindow;
 	}
 	
 	@Override
@@ -245,9 +267,17 @@ public abstract class Window implements IUpdateable, TouchListener {
 		this.clickListener.add(listener);
 	}
 	
+	public void addTouchEnterListener(TouchEnterListener listener) {
+		this.touchEnterListener.add(listener);
+	}
+	
 	public void removeClickListener(ClickListener listener)
 	{
 		this.clickListener.remove(listener);
+	}
+	
+	public void removeTouchEnterListener(TouchEnterListener listener) {
+		this.touchEnterListener.remove(listener);
 	}
 	
 	protected void evokeClick(Event event)
@@ -255,6 +285,20 @@ public abstract class Window implements IUpdateable, TouchListener {
 		for (ClickListener listener : clickListener)
 		{
 			listener.onClick(event);
+		}
+	}
+	
+	protected void onTouchEnters(Event event) {
+		for (TouchEnterListener listener : touchEnterListener)
+		{
+			listener.onEnter(event);
+		}
+	}
+
+	protected void onTouchLeaves(Event event) {
+		for (TouchEnterListener listener : touchEnterListener)
+		{
+			listener.onLeave(event);
 		}
 	}
 	

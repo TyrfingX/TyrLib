@@ -4,6 +4,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import tyrfing.common.game.objects.Updater;
+import tyrfing.common.input.BackListener;
+import tyrfing.common.input.InputManager;
 import tyrfing.common.render.SceneManager;
 import tyrfing.common.ui.widgets.Button;
 import tyrfing.common.ui.widgets.ConfirmMessageBox;
@@ -62,7 +64,12 @@ public class WindowManager {
 	
 	public static Button createButton(String name, float x, float y, float w, float h, String caption)
 	{
-		Button button = new Button(name,x,y,w,h, caption);
+		return createButton(name, x, y, w, h, caption, "ButtonNormal", "ButtonClick", "ButtonDisabled");
+	}
+	
+	public static Button createButton(String name, float x, float y, float w, float h, String caption, String normalName, String clickName, String disabledName)
+	{
+		Button button = new Button(name,x,y,w,h, caption,normalName,clickName,disabledName);
 		button.setPriority(MAIN_LAYER);
 		addWindow(name, button);
 		return button;
@@ -102,15 +109,26 @@ public class WindowManager {
 	
 	public static void makePopup(Window window, String name)
 	{
-		Window overlay = WindowManager.createOverlay(name, Color.BLACK, 150);
+		final Window overlay = WindowManager.createOverlay(name, Color.BLACK, 150);
+		
+		final BackListener backListener = new BackListener() {
+			@Override
+			public boolean onPressBack() {
+				overlay.destroy();
+				InputManager.removeBackListener(this);
+				return true;
+			}
+		};
+		
 		
 		window.addClickListener(new ClickListener() {
 			public void onClick(Event event) {
-				Window parent = event.getEvoker();
-				while (parent.getParent() != null) parent = parent.getParent();
-				parent.destroy();
+				overlay.destroy();
+				InputManager.removeBackListener(backListener);
 			}
 		});
+		
+		InputManager.addBackListener(backListener);
 
 		overlay.addChild(window);
 		overlay.blendIn(1);

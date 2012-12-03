@@ -144,4 +144,12 @@ public class Movement implements IUpdateable {
 		return movementListeners.get(id);
 	}
 	
+	public Queue<Vector2> getPath() {
+		return path;
+	}
+	
+	public void setPath(Queue<Vector2> path) {
+		this.path = path;
+	}
+	
 }

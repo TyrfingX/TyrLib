@@ -14,6 +14,7 @@ public class Overlay extends Window {
 		super(name, 0, 0, TargetMetrics.width, TargetMetrics.height);
 		rect = SceneManager.createRectangle(TargetMetrics.width, TargetMetrics.height, color, node);
 		rect.getPaint().setAlpha(alpha);
+		rect.setBlendStop(alpha);
 		components.add(rect);
 		InputManager.addTouchListener(this);
 	}

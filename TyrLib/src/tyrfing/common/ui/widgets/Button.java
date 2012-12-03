@@ -22,11 +22,11 @@ public class Button extends Window {
 	public static int DISABLED_TEXT_COLOR = Color.GRAY;
 	public static float TEXT_OFFSET = 0;
 	
-	public Button(String name, float x, float y, float w, float h, String text) {
+	public Button(String name, float x, float y, float w, float h, String text, String normalName, String clickName, String disabledName) {
 		super(name, x, y, w, h);
-		normal = Ressources.getScaledBitmap("ButtonNormal", new Vector2(w,h));
-		click = Ressources.getScaledBitmap("ButtonClick", new Vector2(w,h));
-		disabled = Ressources.getScaledBitmap("ButtonDisabled", new Vector2(w,h));
+		this.normal = Ressources.getScaledBitmap(normalName, new Vector2(w,h));
+		this.click = Ressources.getScaledBitmap(clickName, new Vector2(w,h));
+		this.disabled = Ressources.getScaledBitmap(disabledName, new Vector2(w,h));
 		
 		caption = WindowManager.createLabel(name + "/Caption", 0, TEXT_OFFSET, w, h, text, Color.TRANSPARENT);
 		caption.setCaptionColor(NORMAL_TEXT_COLOR);

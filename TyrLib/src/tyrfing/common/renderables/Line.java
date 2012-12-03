@@ -35,6 +35,7 @@ public class Line extends Primitive {
 	
 	@Override
 	public void onRender(Canvas target, float time) {
+		super.onRender(target, time);
 		float x = parent.getX() * TargetMetrics.xScale;
 		float y = parent.getY() * TargetMetrics.yScale;
 		target.drawLine(x, y, x + toX * TargetMetrics.xScale, y + toY * TargetMetrics.yScale, paint);

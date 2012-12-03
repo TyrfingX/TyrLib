@@ -161,4 +161,8 @@ public class Node extends Attachable {
 		child.setParent(this);
 	}
 	
+	public Attachable getAttachable(int index) {
+		return attachables.get(index);
+	}
+	
 }

@@ -51,13 +51,17 @@ public class Label extends Window{
 			}
 		}
 		
-		textNode.setX((float)(width*0.40 - length*TargetMetrics.width*0.005f));
+		textNode.setX((float)(width*0.40 - length*TargetMetrics.fontSize*0.15));
 		this.caption.setText(caption);
 	}
 	
 	public void setCaptionColor(int color)
 	{
 		caption.setColor(color);
+	}
+	
+	public void setCaptionSize(int size) {
+		caption.setSize(size);
 	}
 	
 	public String getCaption()

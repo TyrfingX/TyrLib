@@ -21,7 +21,9 @@ public class Updater implements IFrameListener {
 
 	public void addItem(IUpdateable item)
 	{
-		queue.add(item);
+		if (item != null) {
+			queue.add(item);
+		}
 	}
 
 	public void removeItem(IUpdateable item)
@@ -53,9 +55,13 @@ public class Updater implements IFrameListener {
 		while (itr.hasNext() && !pause)
 		{
 			IUpdateable item = itr.next();
-			item.onUpdate(time);
-			if (item.isFinished())
+			if (item != null) {
+				item.onUpdate(time);
+				if (item.isFinished())
+					itr.remove();
+			} else {
 				itr.remove();
+			}
 		}
 	}
 

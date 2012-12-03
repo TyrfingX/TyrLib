@@ -16,11 +16,15 @@ public abstract class Renderable extends Attachable implements Prioritizable  {
 	private Vector2 fade;
 	private float speed;
 	private int alpha;
+	private int oldAlpha;
+	
+	
 	
 	public Renderable()
 	{
 		this.visible = true;
 		this.paint = new Paint();
+		oldAlpha = 255;
 	}
 	
 	public void onRender(Canvas target, float passedTime)
@@ -31,7 +35,7 @@ public abstract class Renderable extends Attachable implements Prioritizable  {
 			trans.x += fade.x * passedTime;
 			trans.y += fade.y * passedTime;
 			alpha -= speed * passedTime;
-			if ((alpha <= 0 && speed >= 0) || (alpha >= 255 && speed <= 0))
+			if ((alpha <= 0 && speed >= 0) || (alpha >= oldAlpha && speed <= 0))
 			{
 				fade = null;
 				if (speed >= 0)
@@ -41,7 +45,7 @@ public abstract class Renderable extends Attachable implements Prioritizable  {
 				}
 				else
 				{
-					alpha = 255;
+					alpha = oldAlpha;
 				}
 			}
 			paint.setAlpha(alpha);
@@ -49,6 +53,14 @@ public abstract class Renderable extends Attachable implements Prioritizable  {
 			this.parent.translate(trans);
 			
 		}
+	}
+	
+	public void setBlendStop(int blendStop) {
+		oldAlpha = blendStop;
+	}
+	
+	public void setFade(Vector2 fade) {
+		this.fade = fade;
 	}
 	
 	public void fadeOut(Vector2 fade, float time)
