@@ -12,7 +12,7 @@ public class Movement implements IUpdateable {
 
 	private Node node;
 	private Queue<Vector2> path;
-	private float speed;
+	private Speed speed;
 	private Vector2 lastPoint;
 	
 	private float remainingTime = 0;
@@ -20,6 +20,11 @@ public class Movement implements IUpdateable {
 	private List<IMovementListener> movementListeners;
 	
 	public Movement(Node node, float speed)
+	{
+		this(node, new Speed(speed));
+	}
+	
+	public Movement(Node node, Speed speed)
 	{
 		this.node = node;
 		this.speed = speed;
@@ -30,12 +35,12 @@ public class Movement implements IUpdateable {
 	
 	public float getSpeed()
 	{
-		return speed;
+		return speed.getSpeed();
 	}
 	
 	public void setSpeed(float speed)
 	{
-		this.speed = speed;
+		this.speed.setSpeed(speed);
 	}
 	
 	@Override
@@ -47,7 +52,7 @@ public class Movement implements IUpdateable {
 			{
 				Vector2 move = node.getAbsolutePos().vectorTo(dest);
 				float distance = move.normalize();
-				if (distance <= speed * time)
+				if (distance <= speed.getSpeed() * time)
 				{
 					lastPoint = dest;
 					path.poll();
@@ -61,7 +66,7 @@ public class Movement implements IUpdateable {
 					}
 					
 					node.setPos(relDest);
-					remainingTime = distance / speed;
+					remainingTime = distance / speed.getSpeed();
 					
 					if (path.isEmpty())
 					{
@@ -76,7 +81,7 @@ public class Movement implements IUpdateable {
 				}
 				else
 				{
-					node.translate(move.multiply(speed*time));
+					node.translate(move.multiply(speed.getSpeed()*time));
 					remainingTime = 0;
 				}
 				
