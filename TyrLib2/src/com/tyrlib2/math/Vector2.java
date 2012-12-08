@@ -1,18 +1,18 @@
-package com.tyrfing.tyrlib2.math;
+package com.tyrlib2.math;
 
 import android.util.FloatMath;
+
 /**
- * Basic vector object implementing 3D vector math.
+ * Basic vector object implementing 2D vector math.
  * @author Sascha
  *
  */
 
-public class Vector3 {
+public class Vector2 {
 	public float x;
 	public float y;
-	public float z;
 	
-	public Vector3(float x, float y, float z) { this.x = x; this.y = y; this.z = z; }
+	public Vector2(float x, float y) { this.x = x; this.y = y; }
 	
 	/**
 	 * Creates a vector pointing from this to the passed vector.
@@ -20,18 +20,18 @@ public class Vector3 {
 	 * @return	A vector pointing from this to the reference point.
 	 */
 	
-	public Vector3 vectorTo(Vector3 other)
+	public Vector2 vectorTo(Vector2 other)
 	{
-		return new Vector3(other.x - this.x, other.y - this.y, other.z - this.z);
+		return new Vector2(other.x - this.x, other.y - this.y);
 	}
-	
+
 	/**
 	 * @return The length of this vector.
 	 */
-
+	
 	public float length()
 	{
-		return FloatMath.sqrt(this.x * this.x + this.y * this.y + this.z *  this.z);
+		return FloatMath.sqrt(this.x * this.x + this.y * this.y);
 	}
 	
 	/**
@@ -46,7 +46,6 @@ public class Vector3 {
 		{
 			x /= length;
 			y /= length;
-			z /= length;
 		}
 		return length;
 	}
@@ -57,9 +56,18 @@ public class Vector3 {
 	 * @return	A new vector v with v = this * m.
 	 */
 	
-	public Vector3 multiply(float m)
+	public Vector2 multiply(float m)
 	{
-		return new Vector3(x*m, y*m, z*m);
+		return new Vector2(x*m, y*m);
+	}
+	
+	/**
+	 * @return The magnitude of the vector.
+	 */
+	
+	public float magnitude()
+	{
+		return this.y / this.x;
 	}
 	
 	/**
@@ -68,10 +76,9 @@ public class Vector3 {
 	 * @return		A new vector v with v = this + other.
 	 */
 	
-	
-	public Vector3 add(Vector3 other)
+	public Vector2 add(Vector2 other)
 	{
-		return new Vector3(other.x + this.x, other.y + this.y, other.z + this.z);
+		return new Vector2(other.x + this.x, other.y + this.y);
 	}
 	
 	/**
@@ -80,21 +87,19 @@ public class Vector3 {
 	 * @return		A new vector v with v = this - other.
 	 */
 	
-	public Vector3 sub(Vector3 other)
+	public Vector2 sub(Vector2 other)
 	{
-		return new Vector3(this.x - other.x, this.y - other.y, this.z - other.z);
+		return new Vector2(this.x - other.x, this.y - other.y);
 	}
-	
 	/**
 	 * Calculates the dot product between two vectors.
 	 * @param other	The other vector.
 	 * @return The value of the dot product between the two vectors.
 	 */
 	
-	
-	public float dot(Vector3 other)
+	public float dot(Vector2 other)
 	{
-		return other.x * this.x + other.y * this.y + other.z * this.z;
+		return other.x * this.x + other.y * this.y;
 	}
 	
 }

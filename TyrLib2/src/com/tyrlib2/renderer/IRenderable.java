@@ -1,4 +1,4 @@
-package com.tyrfing.tyrlib2.renderer;
+package com.tyrlib2.renderer;
 
 /**
  * Basic interface for all renderable objects.

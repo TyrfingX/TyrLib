@@ -1,4 +1,4 @@
-package com.tyrfing.tyrlib2.renderer;
+package com.tyrlib2.renderer;
 
 /** 
  * Takes care of loading vertex and fragment programs and compiling them

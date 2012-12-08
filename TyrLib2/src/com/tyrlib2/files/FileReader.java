@@ -1,4 +1,4 @@
-package com.tyrfing.tyrlib2.files;
+package com.tyrlib2.files;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

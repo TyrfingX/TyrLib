@@ -1,4 +1,4 @@
-package com.tyrfing.tyrlib2.main;
+package com.tyrlib2.main;
 
 import android.app.Activity;
 import android.opengl.GLSurfaceView;

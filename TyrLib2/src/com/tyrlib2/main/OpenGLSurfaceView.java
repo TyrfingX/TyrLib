@@ -1,6 +1,6 @@
-package com.tyrfing.tyrlib2.main;
+package com.tyrlib2.main;
 
-import com.tyrfing.tyrlib2.renderer.OpenGLRenderer;
+import com.tyrlib2.renderer.OpenGLRenderer;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
