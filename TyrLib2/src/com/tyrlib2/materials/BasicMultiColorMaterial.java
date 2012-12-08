@@ -14,7 +14,7 @@ import com.tyrlib2.renderer.ProgramManager;
  *
  */
 
-public class BasicMaterial extends Material {
+public class BasicMultiColorMaterial extends Material {
 
 	private int colorOffset = 3;
 	private int colorDataSize = 4;
@@ -22,7 +22,7 @@ public class BasicMaterial extends Material {
 	private Color color;
 
 	
-	public BasicMaterial(Color color) {
+	public BasicMultiColorMaterial(Color color) {
 		
 		this.color = color;
 		

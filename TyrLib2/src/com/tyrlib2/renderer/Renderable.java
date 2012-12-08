@@ -25,6 +25,9 @@ public abstract class Renderable {
 	/** Allocate storage for the final combined matrix. This will be passed into the shader program. */
 	private float[] mvpMatrix = new float[16];
 	
+    // Set color with red, green, blue and alpha (opacity) values
+    float color[] = { 0.63671875f, 0.76953125f, 0.22265625f, 1.0f };
+	
 	public Renderable(Mesh mesh, Material material) {
 		this();
 		this.mesh = mesh;
@@ -50,14 +53,31 @@ public abstract class Renderable {
 		Matrix.multiplyMM(mvpMatrix, 0, vpMatrix, 0, modelMatrix, 0);
 		
 		material.program.use();
-		
+
 		mesh.vertexBuffer.position(material.positionOffest);
 
-		GLES20.glVertexAttribPointer(material.positionHandle, material.positionDataSize, GLES20.GL_FLOAT, 
-									false, material.strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, mesh.vertexBuffer);
-	    GLES20.glUniformMatrix4fv(material.mvpMatrixHandle, 1, false, mvpMatrix, 0);
-		
+        // Enable a handle to the triangle vertices
+        GLES20.glEnableVertexAttribArray(material.positionHandle);
+
+        // Prepare the coordinate data
+        GLES20.glVertexAttribPointer(material.positionHandle, material.positionDataSize,
+                                     GLES20.GL_FLOAT, false,
+                                     material.positionDataSize * OpenGLRenderer.BYTES_PER_FLOAT, 
+                                     mesh.vertexBuffer);
+
+
 		material.render(mesh.vertexBuffer);
-		GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, mesh.vertexData.length / material.strideBytes);
+        
+        // Apply the projection and view transformation
+        Matrix.multiplyMM(mvpMatrix, 0, vpMatrix, 0, modelMatrix, 0);
+        GLES20.glUniformMatrix4fv(material.mvpMatrixHandle, 1, false, mvpMatrix, 0);
+
+        // Draw the triangle
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, mesh.vertexData.length / material.strideBytes);
+
+        // Disable vertex array
+        GLES20.glDisableVertexAttribArray(material.positionHandle);
+		
+
 	}
 }
