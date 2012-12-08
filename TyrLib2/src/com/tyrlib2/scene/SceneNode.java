@@ -15,6 +15,7 @@ public class SceneNode {
 	
 	private List<SceneObject> attachedObjects;
 	private List<SceneNode> children;
+	private SceneNode parent;
 	
 	/**
 	 * Creates a SceneNode with default position (0,0,0)
@@ -78,4 +79,21 @@ public class SceneNode {
 	public void attachChild(SceneNode node) {
 		
 	}
+	
+	public void detachChild(SceneNode node) {
+		
+	}
+	
+	public void attachTo(SceneNode node) {
+		
+	}
+	
+	public void detach() {
+		
+	}
+	
+	public SceneNode getParent() {
+		return parent;
+	}
+	
 }
