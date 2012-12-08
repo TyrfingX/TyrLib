@@ -6,6 +6,6 @@ package com.tyrlib2.renderer;
  *
  */
 
-public interface IRenderable {
+public abstract Renderable {
 
 }
