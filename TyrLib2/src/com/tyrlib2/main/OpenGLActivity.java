@@ -17,7 +17,7 @@ import android.view.WindowManager;
  *
  */
 
-public class OpenGLActivity extends Activity {
+public abstract class OpenGLActivity extends Activity {
 	private GLSurfaceView glView;
 	
     @Override
@@ -42,14 +42,34 @@ public class OpenGLActivity extends Activity {
         if (supportsEs2)
         {
         	setContentView(glView);
+        	this.go();
         }
         else
         {
             // TODO: OpenGL 1 renderer
             return;
         }
-     
-        
-        
     }
+    
+    @Override
+    protected void onResume()
+    {
+        // The activity must call the GL surface view's onResume() on activity onResume().
+        super.onResume();
+        glView.onResume();
+    }
+     
+    @Override
+    protected void onPause()
+    {
+        // The activity must call the GL surface view's onPause() on activity onPause().
+        super.onPause();
+        glView.onPause();
+    }
+    
+    /**
+     * Control goes over to the derivated class
+     */
+    
+    protected abstract void go();
 }

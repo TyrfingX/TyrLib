@@ -1,6 +1,7 @@
 package com.tyrlib2.main;
 
 import com.tyrlib2.renderer.OpenGLRenderer;
+import com.tyrlib2.scene.SceneManager;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
@@ -19,8 +20,13 @@ public class OpenGLSurfaceView extends GLSurfaceView {
         // Create an OpenGL ES 2.0 context
         setEGLContextClientVersion(2);
         
+        OpenGLRenderer renderer = new OpenGLRenderer();
+        
+        // Setup the SceneManager
+        SceneManager.getInstance().setRenderer(renderer);
+        
         // Set the Renderer for drawing on the GLSurfaceView
-        setRenderer(new OpenGLRenderer());
+        setRenderer(renderer);
         
         // Render the view only when there is a change in the drawing data
         //setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);

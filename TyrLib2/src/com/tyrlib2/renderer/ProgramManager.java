@@ -40,16 +40,24 @@ public class ProgramManager {
 	 * @param programName			Name of the new program
 	 * @param vertexShaderName		Name of the vertex shader
 	 * @param fragmentShaderName	Name of the fragment shader
+	 * @param bindAttributes		Binds the attributes of vertex and fragment shader
 	 * @return						A handle to the created program
 	 */
 	
-	public int createProgram(String programName, String vertexShaderName, String fragmentShaderName) {
+	public int createProgram(String programName, String vertexShaderName, String fragmentShaderName, String[] bindAttributes) {
         int vertexShader = ShaderManager.getInstance().getShader(vertexShaderName);
         int fragmentShader = ShaderManager.getInstance().getShader(fragmentShaderName);
 
         int program = GLES20.glCreateProgram();             // create empty OpenGL ES Program
         GLES20.glAttachShader(program, vertexShader);   	// add the vertex shader to program
         GLES20.glAttachShader(program, fragmentShader); 	// add the fragment shader to program
+        
+        if (bindAttributes != null) {
+        	for (int i = 0; i < bindAttributes.length; ++i) {
+        		GLES20.glBindAttribLocation(program, i, bindAttributes[i]);
+        	}
+        }
+        
         GLES20.glLinkProgram(program);                  	// creates OpenGL ES program executables
 		
         programs.put(programName, program);

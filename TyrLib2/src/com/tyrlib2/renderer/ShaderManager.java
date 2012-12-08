@@ -34,10 +34,10 @@ public class ShaderManager {
 	
 	/**
 	 * Loads a shader
-	 * @param name
-	 * @param type
-	 * @param shaderCode
-	 * @return
+	 * @param name			Name of the shader
+	 * @param type			Type of the shader (Fragment or Vertex Shader)
+	 * @param shaderCode	Code of the shader
+	 * @return				A handle to the shader
 	 */
 	
     public int loadShader(String name, int type, String shaderCode){
@@ -50,7 +50,19 @@ public class ShaderManager {
         GLES20.glShaderSource(shader, shaderCode);
         GLES20.glCompileShader(shader);
 
-        shaders.put(name, shader);
+        // Get the compilation status.
+        final int[] compileStatus = new int[1];
+        GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compileStatus, 0);
+     
+        // If the compilation failed, delete the shader.
+        if (compileStatus[0] == 0)
+        {
+            GLES20.glDeleteShader(shader);
+            shader = 0;
+            throw new RuntimeException("Error creating vertex shader: " + name + ".");
+        } else {
+        	shaders.put(name, shader);
+        }
         
         return shader;
     }

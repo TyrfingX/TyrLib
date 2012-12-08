@@ -3,6 +3,8 @@ package com.tyrlib2.files;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+
 import android.content.Context;
 
 /**
@@ -44,6 +46,31 @@ public class FileReader {
 	
 		return "";
 	
+	}
+	
+	public static String readRawFile(Context context, int id) {
+		
+		InputStreamReader isr;
+		try {
+			isr = new InputStreamReader(context.getResources().openRawResource(id));
+			int ch;
+			StringBuffer fileContent = new StringBuffer();
+			while( (ch = isr.read()) != -1)
+				  fileContent.append((char)ch);
+			
+			isr.close();
+			
+			return new String(fileContent);
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+		return "";
 	}
 	
 	/**
