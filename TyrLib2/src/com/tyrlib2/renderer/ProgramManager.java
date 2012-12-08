@@ -62,6 +62,18 @@ public class ProgramManager {
         program.link();               	// creates OpenGL ES program executables
 		
         
+        // Get the link status.
+        final int[] linkStatus = new int[1];
+        GLES20.glGetProgramiv(programHandle, GLES20.GL_LINK_STATUS, linkStatus, 0);
+     
+        // If the link failed, delete the program.
+        if (linkStatus[0] == 0)
+        {
+            GLES20.glDeleteProgram(programHandle);
+            programHandle = 0;
+            throw new RuntimeException("Error creating program: " + programName + ".");
+        }
+        
         programs.put(programName, program);
 		return program;
 	}

@@ -19,11 +19,14 @@ import android.view.WindowManager;
 
 public abstract class OpenGLActivity extends Activity {
 	private GLSurfaceView glView;
+	public static OpenGLActivity CONTEXT;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        CONTEXT = this;
+        
         //Remove title bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         

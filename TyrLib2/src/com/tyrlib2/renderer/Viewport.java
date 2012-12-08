@@ -12,7 +12,7 @@ import android.opengl.Matrix;
 public class Viewport {
 	
 	/** Matrix for projection **/
-	private float[] projectionMatrix = new float[16];
+	protected float[] projectionMatrix = new float[16];
 	private int width;
 	private int height;
 	private float ratio;
@@ -50,5 +50,9 @@ public class Viewport {
 		this.height = height;
 		ratio = (float) width / height;
 		Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
+	}
+	
+	public float[] getProjectionMatrix() {
+		return projectionMatrix;
 	}
 }

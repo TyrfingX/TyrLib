@@ -1,6 +1,7 @@
 package com.tyrlib2.scene;
 
 import com.tyrlib2.math.Vector3;
+import com.tyrlib2.renderer.Camera;
 import com.tyrlib2.renderer.OpenGLRenderer;
 
 /**

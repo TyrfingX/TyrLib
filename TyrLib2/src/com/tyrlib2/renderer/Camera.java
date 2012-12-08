@@ -1,8 +1,11 @@
-package com.tyrlib2.scene;
+package com.tyrlib2.renderer;
 
 import android.opengl.Matrix;
 
 import com.tyrlib2.math.Vector3;
+import com.tyrlib2.scene.SceneManager;
+import com.tyrlib2.scene.SceneNode;
+import com.tyrlib2.scene.SceneObject;
 
 /**
  * Transforms World space to eye space
@@ -12,7 +15,7 @@ import com.tyrlib2.math.Vector3;
 
 public class Camera extends SceneObject {
 	/** Store the view matrix for the transformation **/
-	private float[] viewMatrix = new float[16];
+	protected float[] viewMatrix = new float[16];
 	
 	/** This is where we are looking **/
 	private Vector3 lookAt;
@@ -43,6 +46,17 @@ public class Camera extends SceneObject {
 	
 	private void lookAt() {
 		Vector3 pos = parent.getAbsolutePos();
-		Matrix.setLookAtM(viewMatrix, 0, pos.x, pos.y, pos.y, lookAt.x, lookAt.y, lookAt.z, up.x, up.y, up.z);
+		Matrix.setLookAtM(viewMatrix, 0, pos.x, pos.y, pos.z, lookAt.x, lookAt.y, lookAt.z, up.x, up.y, up.z);
+	}
+	
+	/**
+	 * Use this camera
+	 */
+	public void use() {
+		SceneManager.getInstance().getRenderer().setCamera(this);
+	}
+	
+	public float[] getViewMatrix() {
+		return viewMatrix;
 	}
 }
