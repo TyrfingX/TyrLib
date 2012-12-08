@@ -14,6 +14,11 @@ public class ShaderManager {
 		
 	}
 	
+	/**
+	 * Get an instance of the ShaderManager. If it does not exist yet, it will be created.
+	 * @return An instance of the ShaderManager.
+	 */
+	
 	public static ShaderManager getInstance() {
 		if (instance == null) {
 			instance = new ShaderManager();
