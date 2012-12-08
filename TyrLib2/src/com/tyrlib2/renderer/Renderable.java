@@ -62,7 +62,7 @@ public abstract class Renderable {
         // Prepare the coordinate data
         GLES20.glVertexAttribPointer(material.positionHandle, material.positionDataSize,
                                      GLES20.GL_FLOAT, false,
-                                     material.positionDataSize * OpenGLRenderer.BYTES_PER_FLOAT, 
+                                     material.strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, 
                                      mesh.vertexBuffer);
 
 

@@ -19,12 +19,12 @@ public class BasicMultiColorMaterial extends Material {
 	private int colorOffset = 3;
 	private int colorDataSize = 4;
 	private int colorHandle;
-	private Color color;
+	private Color[] colors;
 
 	
-	public BasicMultiColorMaterial(Color color) {
+	public BasicMultiColorMaterial(Color[] colors) {
 		
-		this.color = color;
+		this.colors = colors;
 		
 		program = ProgramManager.getInstance().getProgram("BASIC");
 		init(7,0,3, "u_MVPMatrix", "a_Position");
@@ -40,18 +40,18 @@ public class BasicMultiColorMaterial extends Material {
 	    GLES20.glEnableVertexAttribArray(colorHandle);
 	}
 	
-	public Color getColor() {
-		return color;
+	public Color[] getColors() {
+		return colors;
 	}
 	
 	public void addVertexData(float[] vertexData) {
 		int vertexCount = vertexData.length / strideBytes;
 		for (int i = 0; i < vertexCount; i++) {
 			int pos = i * strideBytes;
-			vertexData[pos + colorOffset + 0] = color.r;
-			vertexData[pos + colorOffset + 1] = color.g;
-			vertexData[pos + colorOffset + 2] = color.b;
-			vertexData[pos + colorOffset + 3] = color.a;
+			vertexData[pos + colorOffset + 0] = colors[i % 3].r;
+			vertexData[pos + colorOffset + 1] = colors[i % 3].g;
+			vertexData[pos + colorOffset + 2] = colors[i % 3].b;
+			vertexData[pos + colorOffset + 3] = colors[i % 3].a;
 		}
 	}
 }
