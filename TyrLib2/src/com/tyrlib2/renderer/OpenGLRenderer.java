@@ -17,7 +17,10 @@ import android.opengl.GLSurfaceView;
 
 public class OpenGLRenderer implements GLSurfaceView.Renderer {
     
+	public static final float BYTES_PER_FLOAT = 4;
+	
 	private List<IFrameListener> frameListeners;
+	private Viewport viewport;
 	
 	public OpenGLRenderer() {
 		frameListeners = new ArrayList<IFrameListener>();
@@ -26,6 +29,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	public void onSurfaceCreated(GL10 unused, EGLConfig config) {
         // Set the background frame color
         GLES20.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+        viewport = new Viewport();
         
         for (IFrameListener listener : frameListeners) {
         	listener.onSurfaceCreated();
@@ -38,7 +42,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height) {
-        GLES20.glViewport(0, 0, width, height);
+       viewport.setFullscreen(width, height);
     }
     
     /**

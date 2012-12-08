@@ -1,5 +1,6 @@
 package com.tyrlib2.scene;
 
+import com.tyrlib2.math.Vector3;
 import com.tyrlib2.renderer.OpenGLRenderer;
 
 /**
@@ -37,6 +38,11 @@ public class SceneManager {
 	
 	public OpenGLRenderer getRenderer() {
 		return renderer;
+	}
+	
+	public Camera createCamera(Vector3 pos, Vector3 lookAt, Vector3 up) {
+		Camera camera = new Camera(pos, lookAt, up);
+		return camera;
 	}
 	
 	

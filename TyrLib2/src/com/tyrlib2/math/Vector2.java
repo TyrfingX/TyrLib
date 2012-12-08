@@ -13,6 +13,7 @@ public class Vector2 {
 	public float y;
 	
 	public Vector2(float x, float y) { this.x = x; this.y = y; }
+	public Vector2(Vector2 other) { this.x = other.x; this.y = other.y; }
 	
 	/**
 	 * Creates a vector pointing from this to the passed vector.

@@ -16,6 +16,7 @@ public class SceneNode {
 	private List<SceneObject> attachedObjects;
 	private List<SceneNode> children;
 	private SceneNode parent;
+	private Vector3 pos;
 	
 	/**
 	 * Creates a SceneNode with default position (0,0,0)
@@ -23,6 +24,7 @@ public class SceneNode {
 	public SceneNode() {
 		attachedObjects = new ArrayList<SceneObject>();
 		children = new ArrayList<SceneNode>();
+		pos = new Vector3(0,0,0);
 	}
 	
 	/**
@@ -33,6 +35,7 @@ public class SceneNode {
 	public SceneNode(Vector3 pos) {
 		attachedObjects = new ArrayList<SceneObject>();
 		children = new ArrayList<SceneNode>();
+		this.pos = new Vector3(pos);
 	}
 	
 	/**
@@ -41,7 +44,7 @@ public class SceneNode {
 	 */
 	
 	public Vector3 getAbsolutePos() {
-		return null;
+		return pos;
 	}
 	
 	/**
@@ -50,7 +53,7 @@ public class SceneNode {
 	 */
 	
 	public Vector3 getRelativePos() {
-		return null;
+		return pos;
 	}
 	
 	/**

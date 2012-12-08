@@ -17,10 +17,10 @@ public class ProgramManager {
 	private static ProgramManager instance;
 
 	/** Compiled programs **/
-	private Map<String, Integer> programs;
+	private Map<String, Program> programs;
 	
 	public ProgramManager() {
-		programs = new HashMap<String, Integer>();
+		programs = new HashMap<String, Program>();
 	}
 	
 	/**
@@ -41,25 +41,27 @@ public class ProgramManager {
 	 * @param vertexShaderName		Name of the vertex shader
 	 * @param fragmentShaderName	Name of the fragment shader
 	 * @param bindAttributes		Binds the attributes of vertex and fragment shader
-	 * @return						A handle to the created program
+	 * @return						An object representing the program
 	 */
 	
-	public int createProgram(String programName, String vertexShaderName, String fragmentShaderName, String[] bindAttributes) {
+	public Program createProgram(String programName, String vertexShaderName, String fragmentShaderName, String[] bindAttributes) {
         int vertexShader = ShaderManager.getInstance().getShader(vertexShaderName);
         int fragmentShader = ShaderManager.getInstance().getShader(fragmentShaderName);
 
-        int program = GLES20.glCreateProgram();             // create empty OpenGL ES Program
-        GLES20.glAttachShader(program, vertexShader);   	// add the vertex shader to program
-        GLES20.glAttachShader(program, fragmentShader); 	// add the fragment shader to program
+        int programHandle = GLES20.glCreateProgram();             // create empty OpenGL ES Program
+        Program program = new Program(programHandle);
+        GLES20.glAttachShader(programHandle, vertexShader);   	// add the vertex shader to program
+        GLES20.glAttachShader(programHandle, fragmentShader); 	// add the fragment shader to program
         
         if (bindAttributes != null) {
         	for (int i = 0; i < bindAttributes.length; ++i) {
-        		GLES20.glBindAttribLocation(program, i, bindAttributes[i]);
+        		GLES20.glBindAttribLocation(programHandle, i, bindAttributes[i]);
         	}
         }
         
-        GLES20.glLinkProgram(program);                  	// creates OpenGL ES program executables
+        program.link();               	// creates OpenGL ES program executables
 		
+        
         programs.put(programName, program);
 		return program;
 	}
@@ -70,7 +72,7 @@ public class ProgramManager {
 	 * @return				A handle to the compiled program
 	 */
 	
-	public int getProgram(String programName) {
+	public Program getProgram(String programName) {
 		return programs.get(programName);
 	}
 }

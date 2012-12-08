@@ -12,7 +12,7 @@ import com.tyrlib2.math.Vector3;
 public abstract class SceneObject {
 	
 	/** Parent node of this SceneObject **/
-	private SceneNode parent;
+	protected SceneNode parent;
 	
 	/**
 	 * Attaches this object to a SceneNode
