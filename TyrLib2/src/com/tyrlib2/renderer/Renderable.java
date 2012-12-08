@@ -6,6 +6,8 @@ package com.tyrlib2.renderer;
  *
  */
 
-public abstract Renderable {
-
+public abstract class Renderable {
+	
+	/** The Mesh of this renderable **/
+	private Mesh mesh;
 }

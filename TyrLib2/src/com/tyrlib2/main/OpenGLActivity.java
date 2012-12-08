@@ -1,6 +1,9 @@
 package com.tyrlib2.main;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.Context;
+import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.Window;
@@ -30,6 +33,23 @@ public class OpenGLActivity extends Activity {
         // Create a GLSurfaceView instance and set it
         // as the ContentView for this Activity.
         glView = new OpenGLSurfaceView(this);
-        setContentView(glView);
+        
+        // Check if the system supports OpenGL ES 2.0.
+        final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
+        final boolean supportsEs2 = configurationInfo.reqGlEsVersion >= 0x20000;
+     
+        if (supportsEs2)
+        {
+        	setContentView(glView);
+        }
+        else
+        {
+            // TODO: OpenGL 1 renderer
+            return;
+        }
+     
+        
+        
     }
 }
