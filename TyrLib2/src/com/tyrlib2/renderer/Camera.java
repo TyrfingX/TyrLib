@@ -23,12 +23,8 @@ public class Camera extends SceneObject {
 	/** Dont know yet what this is **/
 	private Vector3 up;
 	
-	public Camera(Vector3 pos, Vector3 lookAt, Vector3 up) {
-		parent = new SceneNode(pos);
-		parent.attachSceneObject(this);
-		this.lookAt = lookAt;
+	public Camera(Vector3 up) {
 		this.up = up;
-		lookAt();
 	}
 	
 	/**

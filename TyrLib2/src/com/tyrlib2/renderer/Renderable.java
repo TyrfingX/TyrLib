@@ -11,7 +11,7 @@ import android.opengl.Matrix;
  *
  */
 
-public abstract class Renderable {
+public abstract class Renderable implements IRenderable {
 	
 	/** The Mesh of this renderable **/
 	protected Mesh mesh;
@@ -49,7 +49,7 @@ public abstract class Renderable {
 	/**
 	 * Render this object
 	 */
-	protected void render(float[] vpMatrix) {
+	public void render(float[] vpMatrix) {
 		Matrix.multiplyMM(mvpMatrix, 0, vpMatrix, 0, modelMatrix, 0);
 		
 		material.program.use();

@@ -30,6 +30,9 @@ public class Material {
 	/** Handle to the final display matrix **/
 	protected int mvpMatrixHandle;
 	
+	/** Name of this material **/
+	protected String name;
+	
 	public Material() {
 
 	}

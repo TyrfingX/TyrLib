@@ -12,6 +12,8 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
 import com.tyrlib2.files.FileReader;
+import com.tyrlib2.scene.SceneManager;
+import com.tyrlib2.scene.SceneNode;
 
 /**
  * This class initiates the actual rendering.
@@ -25,6 +27,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	
 	private List<IFrameListener> frameListeners;
 	private List<Renderable> renderables;
+	private SceneNode rootSceneNode;
 	private Viewport viewport;
 	private Camera camera;
 	private Context context;
@@ -33,7 +36,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	
 	public OpenGLRenderer(Context context) {
 		frameListeners = new ArrayList<IFrameListener>();
-		renderables = new ArrayList<Renderable>();
+		rootSceneNode = new SceneNode();
 		this.context = context;
 	}
 	
@@ -47,7 +50,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 		ProgramManager.getInstance().createProgram("BASIC", "BASIC_VS", "BASIC_FS", new String[]{"a_Position", "a_Color"});
 		
         // Set the background frame color
-        GLES20.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         viewport = new Viewport();
         
         for (IFrameListener listener : frameListeners) {
@@ -64,6 +67,8 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	    for (int i = 0; i < renderables.size(); ++i) {
 	    	renderables.get(i).render(vpMatrix);
 	    }
+	    
+	    renderables.clear();
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height) {
@@ -100,12 +105,8 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     	return camera;
     }
     
-    public void addRenderable(Renderable renderable) {
-    	renderables.add(renderable);
-    }
-    
-    public void removeRenderable(Renderable renderable) {
-    	renderables.remove(renderable);
+    public SceneNode getRootSceneNode() {
+    	return rootSceneNode;
     }
 
 }

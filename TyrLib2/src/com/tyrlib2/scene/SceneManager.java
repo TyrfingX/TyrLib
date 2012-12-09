@@ -41,9 +41,23 @@ public class SceneManager {
 		return renderer;
 	}
 	
-	public Camera createCamera(Vector3 pos, Vector3 lookAt, Vector3 up) {
-		Camera camera = new Camera(pos, lookAt, up);
+	/**
+	 * Creates a new camera object
+	 * @param lookAt	The look direction of the camera
+	 * @param up		???
+	 * @param node		The parent node
+	 * @return			A new camera
+	 */
+	
+	public Camera createCamera(Vector3 lookAt, Vector3 up, SceneNode node) {
+		Camera camera = new Camera(up);
+		node.attachSceneObject(camera);
+		camera.lookAt(lookAt);
 		return camera;
+	}
+	
+	public SceneNode getRootSceneNode() {
+		return renderer.getRootSceneNode();
 	}
 	
 	
