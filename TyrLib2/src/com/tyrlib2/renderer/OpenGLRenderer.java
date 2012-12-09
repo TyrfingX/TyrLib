@@ -38,6 +38,10 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	private float[] identityMatrix = new float[16];
 	private Vector3 origin = new Vector3();
 	
+	private float timeLastFrame;
+	
+	private static long BILLION = 1000000000;
+	
 	public OpenGLRenderer(Context context) {
 		frameListeners = new ArrayList<IFrameListener>();
 		renderables = new ArrayList<IRenderable>();
@@ -82,6 +86,14 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	    for (int i = 0; i < renderables.size(); ++i) {
 	    	renderables.get(i).render(vpMatrix);
 	    }
+	    
+	    float time = (float) System.nanoTime() / BILLION - timeLastFrame;
+	    
+        for (IFrameListener listener : frameListeners) {
+        	listener.onFrameRendered(time);
+        }
+        
+        timeLastFrame = (float) System.nanoTime() / BILLION;
 
     }
 

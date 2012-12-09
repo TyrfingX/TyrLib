@@ -40,6 +40,15 @@ public class Camera extends SceneObject {
 	}
 	
 	/**
+	 * Get the direction which the camera is facing
+	 * @return	The direction which the camera is facing
+	 */
+	
+	public Vector3 getLookDirection() {
+		return lookDirection;
+	}
+	
+	/**
 	 * Use this camera
 	 */
 	public void use() {
