@@ -28,6 +28,10 @@ public class SceneManager {
 		return instance;
 	}
 	
+	public void destroy() {
+		instance = null;
+	}
+	
 	public void setRenderer(OpenGLRenderer renderer) {
 		this.renderer = renderer;
 	}

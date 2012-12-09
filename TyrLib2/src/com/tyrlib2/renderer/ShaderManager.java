@@ -32,6 +32,10 @@ public class ShaderManager {
 		return instance;
 	}
 	
+	public void destroy() {
+		instance = null;
+	}
+	
 	/**
 	 * Loads a shader
 	 * @param name			Name of the shader

@@ -1,10 +1,14 @@
 package com.tyrlib2.main;
 
-import com.tyrlib2.renderer.OpenGLRenderer;
-import com.tyrlib2.scene.SceneManager;
-
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.view.MotionEvent;
+
+import com.tyrli2.input.InputManager;
+import com.tyrlib2.renderer.OpenGLRenderer;
+import com.tyrlib2.renderer.ProgramManager;
+import com.tyrlib2.renderer.ShaderManager;
+import com.tyrlib2.scene.SceneManager;
 
 /**
  * View for the game. Properly sets the renderer up and sets the rendering options.
@@ -14,6 +18,9 @@ import android.opengl.GLSurfaceView;
  */
 
 public class OpenGLSurfaceView extends GLSurfaceView {
+	
+	private OpenGLSurfaceView instance = this;
+	
 	public OpenGLSurfaceView(Context context){
         super(context);
 
@@ -30,6 +37,37 @@ public class OpenGLSurfaceView extends GLSurfaceView {
         
         // Render the view only when there is a change in the drawing data
         //setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+    }
+	
+	@Override
+	public void onDetachedFromWindow() {
+		queueEvent( new Runnable() {
 
+			@Override
+			public void run() {
+		        InputManager.getInstance().destroy();
+		        ProgramManager.getInstance().destroy();
+		        ShaderManager.getInstance().destroy();
+		        SceneManager.getInstance().destroy();
+		        OpenGLActivity.RUNNING = false;
+			}
+
+		});
+		
+		super.onDetachedFromWindow();
+
+    }
+	
+    @Override
+    public boolean onTouchEvent(final MotionEvent event)
+    {    	
+    	queueEvent(new Runnable() {
+			@Override
+			public void run() {
+				InputManager.getInstance().onTouch(instance, event);
+			}
+	    });
+	    	
+    	return true;
     }
 }

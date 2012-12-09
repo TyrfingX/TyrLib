@@ -226,4 +226,16 @@ public class SceneNode {
 	public float[] getModelMatrix() {
 		return modelMatrix;
 	}
+	
+	
+	/**
+	 * Translate this node by a vector3
+	 * @param translation	The vector3 by which this node will be translated
+	 */
+	
+	public void translate(Vector3 translation) {
+		setRelativePos(pos.add(translation));
+	}
+	
+	
 }

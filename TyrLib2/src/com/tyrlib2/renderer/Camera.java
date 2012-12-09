@@ -22,6 +22,9 @@ public class Camera extends SceneObject {
 	/** Dont know yet what this is **/
 	private Vector3 up;
 	
+	/** Direction in which the camera looks **/
+	private Vector3 lookDirection;
+	
 	public Camera(Vector3 up) {
 		this.up = up;
 	}
@@ -32,16 +35,8 @@ public class Camera extends SceneObject {
 	 */
 	public void lookAt(Vector3 lookAt) {
 		this.lookAt = lookAt;
-		lookAt();
-	}
-	
-	/** 
-	 * Update the view matrix
-	 */
-	
-	private void lookAt() {
 		Vector3 pos = parent.getAbsolutePos();
-		Matrix.setLookAtM(viewMatrix, 0, pos.x, pos.y, pos.z, lookAt.x, lookAt.y, lookAt.z, up.x, up.y, up.z);
+		lookDirection = pos.vectorTo(lookAt);
 	}
 	
 	/**
@@ -51,7 +46,24 @@ public class Camera extends SceneObject {
 		SceneManager.getInstance().getRenderer().setCamera(this);
 	}
 	
+	/**
+	 * Get the view matrix
+	 * @return	The view matrix of the camera
+	 */
+	
 	public float[] getViewMatrix() {
 		return viewMatrix;
+	}
+	
+	/**
+	 * Update the view matrix if the parent node changed
+	 */
+	
+	public void update() {
+		Vector3 pos = parent.getAbsolutePos();
+		Matrix.setLookAtM(viewMatrix, 0, pos.x, pos.y, pos.z, lookAt.x, lookAt.y, lookAt.z, up.x, up.y, up.z);
+		
+		Matrix.setLookAtM(viewMatrix, 0, 0, 0, 0, -lookDirection.x, lookDirection.y, -lookDirection.z, up.x, up.y, up.z);
+		Matrix.multiplyMM(viewMatrix, 0, viewMatrix, 0, parent.getModelMatrix(), 0);
 	}
 }

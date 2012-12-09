@@ -35,6 +35,10 @@ public class ProgramManager {
 		return instance;
 	}
 	
+	public void destroy() {
+		instance = null;
+	}
+	
 	/**
 	 * Creates a new OpenGL program using a vertex and a fragment shader
 	 * @param programName			Name of the new program

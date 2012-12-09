@@ -13,6 +13,7 @@ import android.opengl.Matrix;
 
 import com.tyrlib2.files.FileReader;
 import com.tyrlib2.math.Vector3;
+import com.tyrlib2.scene.SceneManager;
 import com.tyrlib2.scene.SceneNode;
 
 /**
@@ -46,6 +47,9 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	
 	public void onSurfaceCreated(GL10 unused, EGLConfig config) {
 		
+        // Setup the SceneManager
+        SceneManager.getInstance().setRenderer(this);
+		
 		Matrix.setIdentityM(identityMatrix, 0);
 		
 		// Create a default program to use
@@ -62,15 +66,18 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         for (IFrameListener listener : frameListeners) {
         	listener.onSurfaceCreated();
         }
-    }
-    
+
+	}
+	
     public void onDrawFrame(GL10 unused) {
         // Redraw background color
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-        
-	    Matrix.multiplyMM(vpMatrix, 0, viewport.projectionMatrix, 0, camera.viewMatrix, 0);
 	    
 	    rootSceneNode.update(origin);
+	    
+	    camera.update();
+	    
+	    Matrix.multiplyMM(vpMatrix, 0, viewport.projectionMatrix, 0, camera.viewMatrix, 0);
 	    
 	    for (int i = 0; i < renderables.size(); ++i) {
 	    	renderables.get(i).render(vpMatrix);

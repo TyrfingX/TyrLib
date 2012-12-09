@@ -20,11 +20,22 @@ import android.view.WindowManager;
 public abstract class OpenGLActivity extends Activity {
 	private GLSurfaceView glView;
 	public static OpenGLActivity CONTEXT;
+	public static boolean RUNNING = false;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (RUNNING) {
+        	try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+
+    	RUNNING = true;
         CONTEXT = this;
         
         //Remove title bar
@@ -52,6 +63,7 @@ public abstract class OpenGLActivity extends Activity {
             // TODO: OpenGL 1 renderer
             return;
         }
+
     }
     
     @Override
@@ -59,6 +71,10 @@ public abstract class OpenGLActivity extends Activity {
     {
         // The activity must call the GL surface view's onResume() on activity onResume().
         super.onResume();
+        while(glView == null) {
+        	Thread.yield();
+        }
+        
         glView.onResume();
     }
      

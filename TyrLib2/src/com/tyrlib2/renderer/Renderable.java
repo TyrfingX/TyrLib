@@ -1,11 +1,10 @@
 package com.tyrlib2.renderer;
 
-import com.tyrlib2.scene.SceneNode;
-import com.tyrlib2.scene.SceneObject;
-
 import android.opengl.GLES20;
 import android.opengl.Matrix;
-import android.os.SystemClock;
+
+import com.tyrlib2.scene.SceneNode;
+import com.tyrlib2.scene.SceneObject;
 
 
 
@@ -75,8 +74,6 @@ public abstract class Renderable extends SceneObject implements IRenderable {
 
 	        // Apply the projection and view transformation
 			Matrix.multiplyMM(mvpMatrix, 0, vpMatrix, 0, modelMatrix, 0);
-			
-			
 			
 	        // Combine the rotation matrix with the projection and camera view
 	        GLES20.glUniformMatrix4fv(material.mvpMatrixHandle, 1, false, mvpMatrix, 0);

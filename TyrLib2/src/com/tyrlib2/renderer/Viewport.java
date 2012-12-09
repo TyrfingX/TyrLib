@@ -49,7 +49,7 @@ public class Viewport {
 		this.width = width;
 		this.height = height;
 		ratio = (float) width / height;
-		Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
+		Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1, 1, 3, 20);
 	}
 	
 	public float[] getProjectionMatrix() {
