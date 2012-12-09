@@ -20,7 +20,8 @@ public abstract class SceneObject {
 	 */
 	
 	public void attachTo(SceneNode node)  {
-		
+		node.attachedObjects.add(this);
+		parent = node;
 	}
 	
 	/**

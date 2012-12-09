@@ -44,14 +44,20 @@ public class BasicMultiColorMaterial extends Material {
 		return colors;
 	}
 	
+	/**
+	 * Adds the colors to the vertex data.
+	 * Repeats the colors if there are more vertices than colors
+	 */
+	
 	public void addVertexData(float[] vertexData) {
 		int vertexCount = vertexData.length / strideBytes;
 		for (int i = 0; i < vertexCount; i++) {
 			int pos = i * strideBytes;
-			vertexData[pos + colorOffset + 0] = colors[i % 3].r;
-			vertexData[pos + colorOffset + 1] = colors[i % 3].g;
-			vertexData[pos + colorOffset + 2] = colors[i % 3].b;
-			vertexData[pos + colorOffset + 3] = colors[i % 3].a;
+			int color = i % colors.length;
+			vertexData[pos + colorOffset + 0] = colors[color].r;
+			vertexData[pos + colorOffset + 1] = colors[color].g;
+			vertexData[pos + colorOffset + 2] = colors[color].b;
+			vertexData[pos + colorOffset + 3] = colors[color].a;
 		}
 	}
 }

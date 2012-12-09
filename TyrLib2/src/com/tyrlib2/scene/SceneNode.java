@@ -3,6 +3,8 @@ package com.tyrlib2.scene;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.opengl.Matrix;
+
 import com.tyrlib2.math.Vector3;
 
 /**
@@ -14,7 +16,7 @@ import com.tyrlib2.math.Vector3;
 public class SceneNode {
 	
 	/** The SceneObjects attached to this node **/
-	private List<SceneObject> attachedObjects;
+	protected List<SceneObject> attachedObjects;
 	
 	/** The children of this node **/
 	private List<SceneNode> children;
@@ -24,7 +26,15 @@ public class SceneNode {
 	
 	/** The relative position of this node **/
 	private Vector3 pos;
-	private boolean update;
+	
+	/** Absolute Position of this node in the world **/
+	private Vector3 absolutePos;
+	
+	/** Transforms model space to world space **/
+	protected float[] modelMatrix = new float[16];
+	
+	/** Was this node updated after the last update call? **/
+	protected boolean update;
 	
 	/**
 	 * Creates a SceneNode with default position (0,0,0)
@@ -32,7 +42,9 @@ public class SceneNode {
 	public SceneNode() {
 		attachedObjects = new ArrayList<SceneObject>();
 		children = new ArrayList<SceneNode>();
-		pos = new Vector3(0,0,0);
+		setRelativePos(new Vector3(0,0,0));
+		
+		Matrix.setIdentityM(modelMatrix, 0);
 	}
 	
 	/**
@@ -43,7 +55,7 @@ public class SceneNode {
 	public SceneNode(Vector3 pos) {
 		attachedObjects = new ArrayList<SceneObject>();
 		children = new ArrayList<SceneNode>();
-		this.pos = new Vector3(pos);
+		setRelativePos(pos);
 	}
 	
 	/**
@@ -54,7 +66,7 @@ public class SceneNode {
 	
 	public Vector3 getAbsolutePos() {
 		
-		Vector3 absolutePos = pos;
+		absolutePos = pos;
 		
 		if (parent != null) {
 			absolutePos = absolutePos.add(parent.getAbsolutePos());
@@ -63,6 +75,15 @@ public class SceneNode {
 		return absolutePos;
 	}
 	
+	/**
+	 * Gives last calculated absolute world position of this node.
+	 * May be invalid.
+	 * @return
+	 */
+	
+	public Vector3 getCachedAbsolutePos() {
+		return absolutePos;
+	}
 	
 	/**
 	 * Sets the relative pos, so that the resulting
@@ -101,7 +122,7 @@ public class SceneNode {
 	 */
 	
 	public void attachSceneObject(SceneObject object) {
-		attachedObjects.add(object);
+		object.attachTo(this);
 	}
 	
 	/**
@@ -111,6 +132,15 @@ public class SceneNode {
 	
 	public void detachSceneObject(SceneObject object) {
 		attachedObjects.remove(object);
+	}
+	
+	/**
+	 * Get the total number of attached objects
+	 * @return	The total number of attached objects
+	 */
+	
+	public int getCountAttachedObjects() {
+		return children.size();
 	}
 	
 	/**
@@ -131,6 +161,15 @@ public class SceneNode {
 	public void detachChild(SceneNode node) {
 		children.remove(node);
 		node.parent = null;
+	}
+	
+	/**
+	 * Gets the total number of child nodes
+	 * @return	The total number of child nodes
+	 */
+	
+	public int getCountChildren() {
+		return children.size();
 	}
 	
 	/**
@@ -162,8 +201,29 @@ public class SceneNode {
 		return child;
 	}
 	
-	public void render() {
+	/**
+	 * Updates the model matrix
+	 */
+	
+	public void update(Vector3 parentPos) {
+		if (update) {
+			Matrix.setIdentityM(modelMatrix, 0);
+			absolutePos = parentPos.add(pos);
+			Matrix.translateM(modelMatrix, 0, absolutePos.x, absolutePos.y, absolutePos.z);
+			update = false;
+		}
 		
+		for (int i = 0; i < children.size(); ++i) {	
+			children.get(i).update(absolutePos);
+		}
 	}
 	
+	
+	/**
+	 * Get the model matrix for all children
+	 * @return The model matrix
+	 */
+	public float[] getModelMatrix() {
+		return modelMatrix;
+	}
 }

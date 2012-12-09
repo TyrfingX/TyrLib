@@ -14,6 +14,7 @@ public class Vector3 {
 	
 	public Vector3(float x, float y, float z) { this.x = x; this.y = y; this.z = z; }
 	public Vector3(Vector3 other) { this.x = other.x; this.y = other.y; this.z = other.z; }
+	public Vector3() { this(0,0,0); }
 	
 	/**
 	 * Creates a vector pointing from this to the passed vector.

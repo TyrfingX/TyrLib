@@ -12,7 +12,7 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
 import com.tyrlib2.files.FileReader;
-import com.tyrlib2.scene.SceneManager;
+import com.tyrlib2.math.Vector3;
 import com.tyrlib2.scene.SceneNode;
 
 /**
@@ -26,7 +26,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	public static final int BYTES_PER_FLOAT = 4;
 	
 	private List<IFrameListener> frameListeners;
-	private List<Renderable> renderables;
+	private List<IRenderable> renderables;
 	private SceneNode rootSceneNode;
 	private Viewport viewport;
 	private Camera camera;
@@ -34,13 +34,19 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	
 	private float[] vpMatrix = new float[16];
 	
+	private float[] identityMatrix = new float[16];
+	private Vector3 origin = new Vector3();
+	
 	public OpenGLRenderer(Context context) {
 		frameListeners = new ArrayList<IFrameListener>();
+		renderables = new ArrayList<IRenderable>();
 		rootSceneNode = new SceneNode();
 		this.context = context;
 	}
 	
 	public void onSurfaceCreated(GL10 unused, EGLConfig config) {
+		
+		Matrix.setIdentityM(identityMatrix, 0);
 		
 		// Create a default program to use
 		String basicVertexShader = FileReader.readRawFile(context, com.tyrlib2.R.raw.basic_color_vs);
@@ -64,11 +70,12 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         
 	    Matrix.multiplyMM(vpMatrix, 0, viewport.projectionMatrix, 0, camera.viewMatrix, 0);
 	    
+	    rootSceneNode.update(origin);
+	    
 	    for (int i = 0; i < renderables.size(); ++i) {
 	    	renderables.get(i).render(vpMatrix);
 	    }
-	    
-	    renderables.clear();
+
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height) {
@@ -109,4 +116,12 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     	return rootSceneNode;
     }
 
+    public void addRenderable(Renderable renderable) {
+    	renderables.add(renderable);
+    }
+    
+    public void removeRenderable(Renderable renderable) {
+    	renderables.remove(renderable);
+    }
+    
 }

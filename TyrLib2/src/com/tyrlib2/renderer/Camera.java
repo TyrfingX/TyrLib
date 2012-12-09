@@ -4,7 +4,6 @@ import android.opengl.Matrix;
 
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.scene.SceneManager;
-import com.tyrlib2.scene.SceneNode;
 import com.tyrlib2.scene.SceneObject;
 
 /**
