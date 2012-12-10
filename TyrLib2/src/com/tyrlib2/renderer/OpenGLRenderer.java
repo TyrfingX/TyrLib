@@ -75,6 +75,8 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         for (IFrameListener listener : frameListeners) {
         	listener.onSurfaceCreated();
         }
+        
+        timeLastFrame = 0;
 
 	}
 	

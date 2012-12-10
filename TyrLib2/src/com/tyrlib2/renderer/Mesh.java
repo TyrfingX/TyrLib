@@ -44,4 +44,12 @@ public class Mesh {
         drawListBuffer.position(0);
 
 	}
+	
+	public float[] getVertexData() {
+		return vertexData;
+	}
+	
+	public short[] getDrawOrder() {
+		return drawOrder;
+	}
 }

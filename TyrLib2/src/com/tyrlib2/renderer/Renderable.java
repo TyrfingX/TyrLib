@@ -52,6 +52,10 @@ public class Renderable extends SceneObject implements IRenderable {
 		this.mesh = mesh;
 	}
 	
+	public Mesh getMesh() {
+		return mesh;
+	}
+	
 	public void setMaterial(Material material) {
 		this.material = material;
 	}

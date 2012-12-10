@@ -1,5 +1,6 @@
 package com.tyrlib2.math;
 
+
 /**
  * Represents a rotation in 3D space
  * @author Sascha
@@ -13,10 +14,13 @@ public class Quaternion {
 	public float rotZ;
 	
 	public Quaternion(float angle, float rotX, float rotY, float rotZ) {
-		this.rotX = rotX;
-		this.rotY = rotY;
-		this.rotZ = rotZ;
+		Vector3 tmp = new Vector3(rotX, rotY, rotZ);
+		tmp.normalize();
+		this.rotX = tmp.x;
+		this.rotY = tmp.y;
+		this.rotZ = tmp.z;
 		this.angle = angle;
+		this.clamp();
 	}
 	
 	public Quaternion(Quaternion quaternion) {
@@ -24,6 +28,7 @@ public class Quaternion {
 		this.rotY = quaternion.rotY;
 		this.rotZ = quaternion.rotZ;
 		this.angle = quaternion.angle;
+		this.clamp();
 	}
 	
 	public Quaternion() {
@@ -58,5 +63,14 @@ public class Quaternion {
 	
 	public Quaternion conjugate() {
 		return new Quaternion(angle, -rotX, -rotY, -rotZ);
+	}
+	
+	/**
+	 * Clamps the angle to [-2pi, 2pi]
+	 */
+	
+	public void clamp() {
+		int factor = (int) (angle / 360);
+		angle -= factor * 360;
 	}
 }

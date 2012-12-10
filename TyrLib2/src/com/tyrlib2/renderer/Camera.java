@@ -2,6 +2,7 @@ package com.tyrlib2.renderer;
 
 import android.opengl.Matrix;
 
+import com.tyrlib2.math.Quaternion;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.scene.SceneManager;
 import com.tyrlib2.scene.SceneObject;
@@ -64,7 +65,13 @@ public class Camera extends SceneObject {
 	 */
 	
 	public void update() {
-		Matrix.setLookAtM(viewMatrix, 0, 0, 0, 10.5f, 0, 0, 0, up.x, up.y, up.z);
-		//Matrix.multiplyMM(viewMatrix, 0, viewMatrix, 0, parent.getModelMatrix(), 0);
+		
+
+		Vector3 pos = parent.getAbsolutePos();
+		Matrix.setLookAtM(viewMatrix, 0, 0, 0, 0, lookDirection.x, lookDirection.y, lookDirection.z, up.x, up.y, up.z);
+		Quaternion rotation = parent.getAbsoluteRot();
+		Matrix.rotateM(viewMatrix, 0, rotation.angle, rotation.rotX, rotation.rotY, rotation.rotZ);
+		Matrix.translateM(viewMatrix, 0, -pos.x, -pos.y, -pos.z);
+
 	}
 }
