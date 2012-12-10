@@ -4,6 +4,8 @@ import java.nio.FloatBuffer;
 
 import android.opengl.GLES20;
 
+import com.tyrlib2.math.Vector3;
+
 /**
  * Defines how a mesh is rendered
  * @author Sascha
@@ -63,6 +65,19 @@ public class Material {
 		return positionOffest;
 	}
 	
-	public void addVertexData(float[] vertexData) {}
+	public float[] createVertexData(Vector3[] points) {
+		float[] vertexData = new float[getByteStride() * points.length];
+		
+		// Populate the vertex data
+		for (int i = 0; i < points.length; ++i) {
+			int pos = strideBytes * i + getPositionOffset();
+			vertexData[pos + 0] = points[i].x;
+			vertexData[pos + 1] = points[i].y;
+			vertexData[pos + 2] = points[i].z;
+		}
+		
+		return vertexData;
+		
+	}
 	
 }

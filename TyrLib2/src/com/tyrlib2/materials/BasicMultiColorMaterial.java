@@ -4,6 +4,7 @@ import java.nio.FloatBuffer;
 
 import android.opengl.GLES20;
 
+import com.tyrlib2.math.Vector3;
 import com.tyrlib2.renderer.Material;
 import com.tyrlib2.renderer.OpenGLRenderer;
 import com.tyrlib2.renderer.ProgramManager;
@@ -49,8 +50,10 @@ public class BasicMultiColorMaterial extends Material {
 	 * Repeats the colors if there are more vertices than colors
 	 */
 	
-	public void addVertexData(float[] vertexData) {
-		int vertexCount = vertexData.length / strideBytes;
+	public float[] createVertexData(Vector3[] points) {
+		float[] vertexData = super.createVertexData(points);
+		
+		int vertexCount = points.length;;
 		for (int i = 0; i < vertexCount; i++) {
 			int pos = i * strideBytes;
 			int color = i % colors.length;
@@ -59,5 +62,7 @@ public class BasicMultiColorMaterial extends Material {
 			vertexData[pos + colorOffset + 2] = colors[color].b;
 			vertexData[pos + colorOffset + 3] = colors[color].a;
 		}
+		
+		return vertexData;
 	}
 }

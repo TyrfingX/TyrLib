@@ -99,4 +99,19 @@ public class Vector3 {
 		return other.x * this.x + other.y * this.y + other.z * this.z;
 	}
 	
+	/**
+	 * Calculates the cross product between this vector
+	 * and another
+	 * @param other	The other vector	
+	 * @return		A new vector3 perpendicular to this and the 
+	 * 				passed vector
+	 */
+	
+	public Vector3 cross(Vector3 other) {
+		Vector3 normal = new Vector3(y * other.z - z * other.y, 
+									 -(x * other.z - z * other.x),
+									 x * other.y - y * other.x);
+		return normal;
+	}
+	
 }

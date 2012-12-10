@@ -53,10 +53,10 @@ public class SceneManager {
 	 * @return			A new camera
 	 */
 	
-	public Camera createCamera(Vector3 lookAt, Vector3 up, SceneNode node) {
+	public Camera createCamera(Vector3 lookDirection, Vector3 up, SceneNode node) {
 		Camera camera = new Camera(up);
 		node.attachSceneObject(camera);
-		camera.lookAt(lookAt);
+		camera.setLookDirection(lookDirection);
 		return camera;
 	}
 	

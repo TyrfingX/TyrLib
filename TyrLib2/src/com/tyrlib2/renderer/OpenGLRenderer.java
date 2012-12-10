@@ -12,6 +12,7 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
 import com.tyrlib2.files.FileReader;
+import com.tyrlib2.math.Quaternion;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.scene.SceneManager;
 import com.tyrlib2.scene.SceneNode;
@@ -37,6 +38,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	
 	private float[] identityMatrix = new float[16];
 	private Vector3 origin = new Vector3();
+	private Quaternion rotFree = new Quaternion();
 	
 	private float timeLastFrame;
 	
@@ -67,6 +69,9 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         viewport = new Viewport();
         
+     // Enable depth testing
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+        
         for (IFrameListener listener : frameListeners) {
         	listener.onSurfaceCreated();
         }
@@ -75,9 +80,9 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	
     public void onDrawFrame(GL10 unused) {
         // Redraw background color
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+    	GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
 	    
-	    rootSceneNode.update(origin);
+	    rootSceneNode.update(origin, rotFree);
 	    
 	    camera.update();
 	    

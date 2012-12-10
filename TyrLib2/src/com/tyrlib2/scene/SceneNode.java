@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.opengl.Matrix;
 
+import com.tyrlib2.math.Quaternion;
 import com.tyrlib2.math.Vector3;
 
 /**
@@ -30,6 +31,12 @@ public class SceneNode {
 	/** Absolute Position of this node in the world **/
 	private Vector3 absolutePos;
 	
+	/** Rotation of this node relative to its parent **/
+	private Quaternion rot;
+	
+	/** Absolute rotation in the world **/
+	private Quaternion absoluteRot;
+	
 	/** Transforms model space to world space **/
 	protected float[] modelMatrix = new float[16];
 	
@@ -42,8 +49,8 @@ public class SceneNode {
 	public SceneNode() {
 		attachedObjects = new ArrayList<SceneObject>();
 		children = new ArrayList<SceneNode>();
-		setRelativePos(new Vector3(0,0,0));
-		
+		setRelativePos(new Vector3());
+		setRelativeRot(new Quaternion(0,0,0,1));
 		Matrix.setIdentityM(modelMatrix, 0);
 	}
 	
@@ -56,6 +63,7 @@ public class SceneNode {
 		attachedObjects = new ArrayList<SceneObject>();
 		children = new ArrayList<SceneNode>();
 		setRelativePos(pos);
+		setRelativeRot(new Quaternion(0,0,0,1));
 	}
 	
 	/**
@@ -114,6 +122,61 @@ public class SceneNode {
 	public void setRelativePos(Vector3 pos) {
 		this.pos = new Vector3(pos);
 		update = true;
+	}
+	
+	/**
+	 * Gets the absolute rotation of this node in world space
+	 * @return	The absolute rotation of this node in world space
+	 */
+	
+	public Quaternion getAbsoluteRot() {
+		absoluteRot = rot;
+		
+		if (parent != null) {
+			rot = rot.add(parent.getAbsoluteRot());
+		}
+		
+		return absoluteRot;
+	}
+	
+	
+	/**
+	 * Get the cashed absolute rotation of this node in world space
+	 * May be invalid.
+	 * @return	The cashed absolute rotation of this node in world space
+	 */
+	
+	public Quaternion getCachedAbsoluteRot() {
+		return absoluteRot;
+	}
+	
+	
+	/**
+	 * Sets the relative rotation of this node so that it will have
+	 * the passed absolute rotation of world space
+	 * @param quaternion	The rotation in world space
+	 */
+	public void setAbsoluteRot(Quaternion rotation) {
+		
+	}
+	
+	/**
+	 * Set the relative rotation of this node
+	 * @param rotation	The rotation relative to its parent this node will have
+	 */
+	
+	public void setRelativeRot(Quaternion rotation) {
+		this.rot = rotation;
+		update = true;
+	}
+	
+	/**
+	 * Gets the rotation of this node relative to its parent
+	 * @return	The rotation of this node relative to its parent
+	 */
+	
+	public Quaternion getRelativeRot() {
+		return rot;
 	}
 	
 	/**
@@ -205,16 +268,18 @@ public class SceneNode {
 	 * Updates the model matrix
 	 */
 	
-	public void update(Vector3 parentPos) {
+	public void update(Vector3 parentPos, Quaternion parentRot) {
 		if (update) {
 			Matrix.setIdentityM(modelMatrix, 0);
 			absolutePos = parentPos.add(pos);
+			absoluteRot = parentRot.add(rot);
+			Matrix.rotateM(modelMatrix, 0, absoluteRot.angle, absoluteRot.rotX, absoluteRot.rotY, absoluteRot.rotZ);
 			Matrix.translateM(modelMatrix, 0, absolutePos.x, absolutePos.y, absolutePos.z);
 			update = false;
 		}
 		
 		for (int i = 0; i < children.size(); ++i) {	
-			children.get(i).update(absolutePos);
+			children.get(i).update(absolutePos, absoluteRot);
 		}
 	}
 	
@@ -235,6 +300,15 @@ public class SceneNode {
 	
 	public void translate(Vector3 translation) {
 		setRelativePos(pos.add(translation));
+	}
+	
+	/**
+	 * Rotates this node by the passed rotation
+	 * @param rotation	The rotation which will be applied to this node
+	 */
+	
+	public void rotate(Quaternion rotation) {
+		setRelativeRot(this.rot.add(rotation));
 	}
 	
 	
