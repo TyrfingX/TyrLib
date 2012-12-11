@@ -268,18 +268,40 @@ public class SceneNode {
 	 * Updates the model matrix
 	 */
 	
-	public void update(Vector3 parentPos, Quaternion parentRot) {
-		if (update) {
-			Matrix.setIdentityM(modelMatrix, 0);
-			absolutePos = parentPos.add(pos);
-			absoluteRot = parentRot.add(rot);
-			Matrix.rotateM(modelMatrix, 0, absoluteRot.angle, absoluteRot.rotX, absoluteRot.rotY, absoluteRot.rotZ);
-			Matrix.translateM(modelMatrix, 0, absolutePos.x, absolutePos.y, absolutePos.z);
-			update = false;
+	public void update(Vector3 parentPos, Quaternion parentRot, float[] parentTransform) {
+		if (update) {			
+			// there was an update, all children of this tree must be updated
+			updateAll(parentPos, parentRot, parentTransform);
+		} else {
+			// There was no update, hopefully the children also had no update
+			for (int i = 0; i < children.size(); ++i) {	
+				children.get(i).update(absolutePos, absoluteRot, modelMatrix);
+			}
 		}
 		
+
+	}
+	
+	/**
+	 * Updates the model matrix. There was an update in a parent node, therefore all children need to
+	 * be informed and update their matrices accordingly.
+	 */
+	
+	private void updateAll(Vector3 parentPos, Quaternion parentRot, float[] parentTransform) {
+		
+		Matrix.setIdentityM(modelMatrix, 0);
+		absolutePos = parentPos.add(pos);
+		absoluteRot = parentRot.add(rot);
+		
+		Matrix.translateM(modelMatrix, 0, pos.x, pos.y, pos.z);
+		Matrix.rotateM(modelMatrix, 0, rot.angle, rot.rotX, rot.rotY, rot.rotZ);
+		
+		Matrix.multiplyMM(modelMatrix, 0, parentTransform, 0, modelMatrix, 0);
+		update = false;
+		
+		
 		for (int i = 0; i < children.size(); ++i) {	
-			children.get(i).update(absolutePos, absoluteRot);
+			children.get(i).updateAll(absolutePos, absoluteRot, modelMatrix);
 		}
 	}
 	

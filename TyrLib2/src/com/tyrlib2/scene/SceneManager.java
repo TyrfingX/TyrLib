@@ -1,5 +1,10 @@
 package com.tyrlib2.scene;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.tyrlib2.lighting.Light;
+import com.tyrlib2.lighting.PointLight;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.renderer.Camera;
 import com.tyrlib2.renderer.OpenGLRenderer;
@@ -16,8 +21,10 @@ public class SceneManager {
 	private static SceneManager instance;
 	private OpenGLRenderer renderer;
 	
+	private List<Light> lights;
+	
 	public SceneManager() {
-		
+		lights = new ArrayList<Light>();
 	}
 	
 	public static SceneManager getInstance() {
@@ -58,6 +65,44 @@ public class SceneManager {
 		node.attachSceneObject(camera);
 		camera.setLookDirection(lookDirection);
 		return camera;
+	}
+	
+	public Light createLight(Light.Type type) {
+		
+		Light light = null;
+		
+		switch(type) {
+		case POINT_LIGHT:
+			light = new PointLight();
+			break;
+		default:
+			break;
+		}
+		
+		if (light != null) {
+			lights.add(light);
+		}
+		
+		return light;
+	}
+	
+	/**
+	 * Get the number of created lights
+	 * @return	The number of created lights
+	 */
+	
+	public int getLightCount() {
+		return lights.size();
+	}
+	
+	/**
+	 * Get a light object
+	 * @param index	Index of the light
+	 * @return	The light object
+	 */
+	
+	public Light getLight(int index) {
+		return lights.get(index);
 	}
 	
 	public SceneNode getRootSceneNode() {

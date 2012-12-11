@@ -12,9 +12,10 @@ import com.tyrlib2.renderer.Renderable;
 
 public class Box extends Renderable {
 	
-	public static final short[] DRAW_ORDER = { 0, 2, 1, 2, 3, 1, 6, 2, 4, 4, 2, 0, 4, 5, 1, 4, 1, 0, 7, 5, 3, 5, 1, 3, 6, 5, 4, 6, 7, 5, 6, 3, 2, 6, 7, 3};
+	public static final short[] DRAW_ORDER = { 6, 7, 3, 6, 3, 2, 5, 7, 6, 4, 5, 6, 5, 1, 3, 7, 5, 3, 0, 1, 4, 1, 5, 4, 4, 2, 0, 6, 2, 4, 2, 3, 1, 0, 2, 1};
 	
 	public Box(Material material, Vector3 min, Vector3 max) {
+		
 		Vector3 points[] = {	
 				new Vector3(min),
 				new Vector3(max.x, min.y, min.z),

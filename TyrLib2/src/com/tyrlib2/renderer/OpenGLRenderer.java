@@ -12,6 +12,7 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
 import com.tyrlib2.files.FileReader;
+import com.tyrlib2.lighting.Light;
 import com.tyrlib2.math.Quaternion;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.scene.SceneManager;
@@ -65,12 +66,22 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 		ShaderManager.getInstance().loadShader("BASIC_FS", GLES20.GL_FRAGMENT_SHADER, basicFragmentShader);
 		ProgramManager.getInstance().createProgram("BASIC", "BASIC_VS", "BASIC_FS", new String[]{"a_Position", "a_Color"});
 		
+		// Create a material for point lights
+		String lightVertexShader = FileReader.readRawFile(context, com.tyrlib2.R.raw.point_light_vs);
+		String lightFragmentShader = FileReader.readRawFile(context, com.tyrlib2.R.raw.point_light_fs);
+		ShaderManager.getInstance().loadShader("POINT_LIGHT_VS", GLES20.GL_VERTEX_SHADER, lightVertexShader);
+		ShaderManager.getInstance().loadShader("POINT_LIGHT_FS", GLES20.GL_FRAGMENT_SHADER, lightFragmentShader);
+		ProgramManager.getInstance().createProgram("POINT_LIGHT", "POINT_LIGHT_VS", "POINT_LIGHT_FS", new String[]{"a_Position" });
+		
         // Set the background frame color
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         viewport = new Viewport();
         
      // Enable depth testing
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+        
+		// Use culling to remove back faces.
+		GLES20.glEnable(GLES20.GL_CULL_FACE);
         
         for (IFrameListener listener : frameListeners) {
         	listener.onSurfaceCreated();
@@ -84,9 +95,17 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         // Redraw background color
     	GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
 	    
-	    rootSceneNode.update(origin, rotFree);
+	    rootSceneNode.update(origin, rotFree, identityMatrix);
 	    
+	    // Update the view matrix of the camera
 	    camera.update();
+	    
+	    // Update the eye space matrices of all lights
+	    SceneManager sceneManager = SceneManager.getInstance();
+	    for (int i = 0; i < sceneManager.getLightCount(); ++i) {
+	    	Light light = sceneManager.getLight(i);
+	    	light.updateEyeSpaceVector(camera.viewMatrix);
+	    }
 	    
 	    Matrix.multiplyMM(vpMatrix, 0, viewport.projectionMatrix, 0, camera.viewMatrix, 0);
 	    
@@ -96,9 +115,13 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	    
 	    float time = (float) System.nanoTime() / BILLION - timeLastFrame;
 	    
-        for (IFrameListener listener : frameListeners) {
-        	listener.onFrameRendered(time);
-        }
+	    if (timeLastFrame != 0) {
+	    
+	        for (IFrameListener listener : frameListeners) {
+	        	listener.onFrameRendered(time);
+	        }
+        
+	    }
         
         timeLastFrame = (float) System.nanoTime() / BILLION;
 
@@ -142,11 +165,11 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     	return rootSceneNode;
     }
 
-    public void addRenderable(Renderable renderable) {
+    public void addRenderable(IRenderable renderable) {
     	renderables.add(renderable);
     }
     
-    public void removeRenderable(Renderable renderable) {
+    public void removeRenderable(IRenderable renderable) {
     	renderables.remove(renderable);
     }
     

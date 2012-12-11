@@ -44,7 +44,7 @@ public class Renderable extends SceneObject implements IRenderable {
 	
 	public void init(Material material, Vector3[] points, short[] drawOrder) {
 		this.material = material;
-		float[] vertexData = material.createVertexData(points);
+		float[] vertexData = material.createVertexData(points, drawOrder);
 		mesh = new Mesh(vertexData, drawOrder);
 	}
 	
@@ -85,7 +85,7 @@ public class Renderable extends SceneObject implements IRenderable {
 	                                     material.strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, 
 	                                     mesh.vertexBuffer);
 	
-			material.render(mesh.vertexBuffer);
+			material.render(mesh.vertexBuffer, modelMatrix);
 
 	        // Apply the projection and view transformation
 			Matrix.multiplyMM(mvpMatrix, 0, vpMatrix, 0, modelMatrix, 0);

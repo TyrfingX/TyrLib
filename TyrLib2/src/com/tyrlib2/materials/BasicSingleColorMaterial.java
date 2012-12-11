@@ -29,7 +29,7 @@ public class BasicSingleColorMaterial extends Material {
 		colorArray = new float[]{ color.r, color.g, color.b, color.a };
 	}
 	
-	public void render(FloatBuffer vertexBuffer) {
+	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
         // Set color for drawing
         GLES20.glUniform4fv(colorHandle, 1, colorArray, 0);
 	}

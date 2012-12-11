@@ -13,7 +13,7 @@ import com.tyrlib2.renderer.Renderable;
 
 public class Quad extends Renderable {
 	
-	public static final short[] DRAW_ORDER_QUAD = { 0, 2, 1, 2, 3, 1};
+	public static final short[] DRAW_ORDER_QUAD = { 0, 1, 2, 1, 3, 2};
 	
 	public Quad(Material material, Vector2 min, Vector2 max) {
 		

@@ -49,7 +49,11 @@ public abstract class SceneObject {
 	 */
 	
 	public Vector3 getAbsolutePos() {
-		return parent.getAbsolutePos();
+		if (parent != null) {
+			return parent.getAbsolutePos();
+		} 
+		
+		return null;
 	}
 	
 	/**
@@ -58,7 +62,24 @@ public abstract class SceneObject {
 	 */
 	
 	public Vector3 getRelativePos() {
-		return parent.getRelativePos();
+		if (parent != null) {
+			return parent.getRelativePos();
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Get the model matrix of this scene object
+	 * @return	The model matrix of this scene matrix
+	 */
+	
+	public float[] getModelMatrix() {
+		if (parent != null) {
+			return parent.getModelMatrix();
+		} 
+		
+		return null;
 	}
 	
 }

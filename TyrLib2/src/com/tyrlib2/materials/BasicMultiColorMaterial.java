@@ -32,7 +32,7 @@ public class BasicMultiColorMaterial extends Material {
 		colorHandle = GLES20.glGetAttribLocation(program.handle, "a_Color");
 	}
 	
-	public void render(FloatBuffer vertexBuffer) {
+	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
 	    // Pass in the color information
 	    vertexBuffer.position(colorOffset);
 	    GLES20.glVertexAttribPointer(colorHandle, colorDataSize, GLES20.GL_FLOAT, false,
@@ -50,8 +50,8 @@ public class BasicMultiColorMaterial extends Material {
 	 * Repeats the colors if there are more vertices than colors
 	 */
 	
-	public float[] createVertexData(Vector3[] points) {
-		float[] vertexData = super.createVertexData(points);
+	public float[] createVertexData(Vector3[] points, short[] drawOrder) {
+		float[] vertexData = super.createVertexData(points, drawOrder);
 		
 		int vertexCount = points.length;;
 		for (int i = 0; i < vertexCount; i++) {

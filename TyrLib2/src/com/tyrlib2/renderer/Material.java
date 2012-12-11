@@ -39,7 +39,7 @@ public class Material {
 
 	}
 	
-	public void render(FloatBuffer vertexBuffer) {}
+	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {}
 	
 	/**
 	 * Sets up how this material will work with the vertex data, what will occur where, etc
@@ -65,19 +65,31 @@ public class Material {
 		return positionOffest;
 	}
 	
-	public float[] createVertexData(Vector3[] points) {
+	public float[] createVertexData(Vector3[] points, short[] drawOrder) {
 		float[] vertexData = new float[getByteStride() * points.length];
 		
 		// Populate the vertex data
 		for (int i = 0; i < points.length; ++i) {
 			int pos = strideBytes * i + getPositionOffset();
-			vertexData[pos + 0] = points[i].x;
-			vertexData[pos + 1] = points[i].y;
-			vertexData[pos + 2] = points[i].z;
+			vertexData[pos + positionOffest + 0] = points[i].x;
+			vertexData[pos + positionOffest + 1] = points[i].y;
+			vertexData[pos + positionOffest + 2] = points[i].z;
 		}
 		
 		return vertexData;
 		
+	}
+	
+	public int getPositionHandle() {
+		return positionHandle;
+	}
+	
+	public int getMVPMatrixHandle() {
+		return mvpMatrixHandle;
+	}
+	
+	public Program getProgram() {
+		return program;
 	}
 	
 }
