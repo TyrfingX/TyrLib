@@ -3,7 +3,10 @@ package com.tyrlib2.renderer;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.content.Context;
 import android.opengl.GLES20;
+
+import com.tyrlib2.files.FileReader;
 
 /**
  * This class takes care of linking and compiling programs and cashing the result
@@ -79,6 +82,28 @@ public class ProgramManager {
         }
         
         programs.put(programName, program);
+		return program;
+	}
+	
+	/**
+	 * Creates a new program. The passed ressources will be loaded an receive the name
+	 * PROGRAMNAME_VS and PROGRAMNAME_FS respectively.
+	 * @param programName			The name of the program. Vertexshader and fragmentshader 
+	 * 								will receive the suffix _vs and _fs respectively.
+	 * @param context				The context from where the ressources can be loaded
+	 * @param vertexShaderResId		The id of the ressource containing the vertex shader
+	 * @param fragmenShaderResId	The id of the ressource contaiing the fragment shader
+	 * @return						The compiled program
+	 */
+	
+	public Program createProgram(String programName, Context context, int vertexShaderResId, int fragmentShaderResId, String[] bindAttributes) {
+		String vertexShader = FileReader.readRawFile(context, vertexShaderResId);
+		String fragmentShader = FileReader.readRawFile(context, fragmentShaderResId);
+		ShaderManager.getInstance().loadShader(programName + "_VS", GLES20.GL_VERTEX_SHADER, vertexShader);
+		ShaderManager.getInstance().loadShader(programName + "_FS", GLES20.GL_FRAGMENT_SHADER, fragmentShader);
+		Program program = ProgramManager.getInstance()
+										.createProgram(programName, programName + "_VS", 
+													   programName + "_FS", bindAttributes);
 		return program;
 	}
 	

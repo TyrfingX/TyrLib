@@ -6,6 +6,7 @@ import android.opengl.GLES20;
 import android.opengl.Matrix;
 
 import com.tyrlib2.lighting.Light;
+import com.tyrlib2.lighting.LightingType;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.renderer.Material;
 import com.tyrlib2.renderer.OpenGLRenderer;
@@ -29,11 +30,23 @@ public class BasicMultiColorLightedMaterial extends Material {
 	private float[] mvMatrix = new float[16];
 
 	
-	public BasicMultiColorLightedMaterial(Color[] colors) {
+	public static final String PER_VERTEX_PROGRAM_NAME = "BASIC_LIGHTED";
+	public static final String PER_PIXEL_PROGRAM_NAME = "BASIC_PER_PIXEL_LIGHTED";
+	
+	public BasicMultiColorLightedMaterial(Color[] colors, LightingType type) {
 		
 		this.colors = colors;
 		
-		program = ProgramManager.getInstance().getProgram("BASIC_LIGHTED");
+		switch (type) {
+		case PER_PIXEL:
+			program = ProgramManager.getInstance().getProgram(PER_PIXEL_PROGRAM_NAME);
+			break;
+		case PER_VERTEX:
+			program = ProgramManager.getInstance().getProgram(PER_VERTEX_PROGRAM_NAME);
+			break;
+		}
+		
+		
 		init(10,0,3, "u_MVPMatrix", "a_Position");
 		colorHandle = GLES20.glGetAttribLocation(program.handle, "a_Color");
 		normalHandle = GLES20.glGetAttribLocation(program.handle, "a_Normal");
