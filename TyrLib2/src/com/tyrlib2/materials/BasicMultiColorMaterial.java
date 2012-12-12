@@ -8,6 +8,7 @@ import com.tyrlib2.math.Vector3;
 import com.tyrlib2.renderer.Material;
 import com.tyrlib2.renderer.OpenGLRenderer;
 import com.tyrlib2.renderer.ProgramManager;
+import com.tyrlib2.util.Color;
 
 /**
  * A material for simple per vertex colouring

@@ -25,7 +25,10 @@ public class Box extends Renderable {
 				new Vector3(max.x, min.y, max.z),
 				new Vector3(min.x, max.y, max.z),
 				new Vector3(max),
+
 		};
 		init(material, points, DRAW_ORDER);
 	}
+	
+	
 }

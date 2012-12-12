@@ -11,32 +11,44 @@ import com.tyrlib2.math.Vector3;
 import com.tyrlib2.renderer.Material;
 import com.tyrlib2.renderer.OpenGLRenderer;
 import com.tyrlib2.renderer.ProgramManager;
+import com.tyrlib2.renderer.TextureManager;
 import com.tyrlib2.scene.SceneManager;
 import com.tyrlib2.util.Color;
 
-public class BasicMultiColorLightedMaterial extends Material {
+public class TexturedMaterial extends Material {
+	
+	
+	/** Per vertex color of this object **/
 	private int colorOffset = 6;
 	private int colorDataSize = 4;
 	private int colorHandle;
 	private Color[] colors;
 	
+	/** Per vertex normals of this object **/
 	private int normalOffset = 3;
 	private int normalDataSize = 3;
 	private int normalHandle;
 	
+	/** Texture information of this object **/
+	private int uvOffset = 10;
+	private int uvDataSize = 2;
+	private int textureUniformHandle;
+	private int textureCoordinateHandle;
+	private String textureName;
+	private int textureHandle;
+	
+	/** Lighting information **/
 	private int lightPosHandle;
 	private int mvMatrixHandle;
+	private int ambientHandle;
 	
 	/** Contains the model*view matrix **/
 	private float[] mvMatrix = new float[16];
+	
+	public static final String PER_VERTEX_PROGRAM_NAME = "TEXTURED_PVL";
+	public static final String PER_PIXEL_PROGRAM_NAME = "TEXTURED_PPL";
 
-	
-	public static final String PER_VERTEX_PROGRAM_NAME = "BASIC_LIGHTED";
-	public static final String PER_PIXEL_PROGRAM_NAME = "BASIC_PER_PIXEL_LIGHTED";
-	
-	public BasicMultiColorLightedMaterial(Color[] colors, LightingType type) {
-		
-		this.colors = colors;
+	public TexturedMaterial(String textureName, LightingType type, Color[] colors) {
 		
 		switch (type) {
 		case PER_PIXEL:
@@ -47,22 +59,30 @@ public class BasicMultiColorLightedMaterial extends Material {
 			break;
 		}
 		
+		this.textureName = textureName;
+		this.colors = colors; 
+		textureHandle = TextureManager.getInstance().getTextureHandle(textureName);
 		
-		init(10,0,3, "u_MVPMatrix", "a_Position");
-		colorHandle = GLES20.glGetAttribLocation(program.handle, "a_Color");
+		init(12,0,3, "u_MVPMatrix", "a_Position");
+		
 		normalHandle = GLES20.glGetAttribLocation(program.handle, "a_Normal");
 		lightPosHandle = GLES20.glGetUniformLocation(program.handle, "u_LightPos");
 		mvMatrixHandle = GLES20.glGetUniformLocation(program.handle, "u_MVMatrix"); 
+		ambientHandle = GLES20.glGetUniformLocation(program.handle, "u_Ambient");
+	    textureUniformHandle = GLES20.glGetUniformLocation(program.handle, "u_Texture");
+	    textureCoordinateHandle = GLES20.glGetAttribLocation(program.handle, "a_TexCoordinate");
+	    colorHandle = GLES20.glGetAttribLocation(program.handle, "a_Color");
 	}
 	
 	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
+	    
 	    // Pass in the color information
 	    vertexBuffer.position(colorOffset);
 	    GLES20.glVertexAttribPointer(colorHandle, colorDataSize, GLES20.GL_FLOAT, false,
 	    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
 	 
 	    GLES20.glEnableVertexAttribArray(colorHandle);
-	    
+		
 	    // Pass in the normal information
 	    vertexBuffer.position(normalOffset);
 	    GLES20.glVertexAttribPointer(normalHandle, normalDataSize, GLES20.GL_FLOAT, false,
@@ -76,7 +96,11 @@ public class BasicMultiColorLightedMaterial extends Material {
 	    
         // Pass in the modelview matrix.
         GLES20.glUniformMatrix4fv(mvMatrixHandle, 1, false, mvMatrix, 0);
-	    
+        
+        //Pass in the global scene illumination
+        Color ambient = SceneManager.getInstance().getAmbientLight();
+	    GLES20.glUniform4f(ambientHandle, ambient.r, ambient.g, ambient.b, ambient.a);
+        
 	    if (sceneManager.getLightCount() != 0) {
 	    	
 	    	Light light = sceneManager.getLight(0);
@@ -85,12 +109,31 @@ public class BasicMultiColorLightedMaterial extends Material {
 	    	// Pass in the light position in eye space.        
 	    	GLES20.glUniform3f(lightPosHandle, lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
 	    }
+	 
+	    
+        // Pass in the texture coordinate information
+        vertexBuffer.position(uvOffset);
+        GLES20.glVertexAttribPointer(textureCoordinateHandle, uvDataSize, GLES20.GL_FLOAT, false, 
+        		strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
+        
+        GLES20.glEnableVertexAttribArray(textureCoordinateHandle);
+	    
+	    // Set the active texture unit to texture unit 0.
+	    GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+	 
+	    // Bind the texture to this unit.
+	    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle);
+	 
+	    // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
+	    GLES20.glUniform1i(textureUniformHandle, 0);
 
 	}
-	
+
+
 	public Color[] getColors() {
 		return colors;
 	}
+	
 	
 	/**
 	 * Adds the colors to the vertex data.
@@ -120,6 +163,17 @@ public class BasicMultiColorLightedMaterial extends Material {
 		}
 		
 		
+		// Assign some arbitary uvCoordinates for the textures
+		// The default uvCoords assigned by this work for shapes
+		// like planes, meshs, etc
+		float[] uvCoords = {
+			0.0f, 0.0f, 				
+			0.0f, 1.0f,
+			1.0f, 0.0f,
+			1.0f, 1.0f,
+		};
+		
+		int uvCoord = 0;
 		
 		for (int i = 0; i < vertexCount; i++) {
 			
@@ -134,8 +188,26 @@ public class BasicMultiColorLightedMaterial extends Material {
 			vertexData[pos + normalOffset + 1] = normals[i].y;
 			vertexData[pos + normalOffset + 2] = normals[i].z;
 			
+			vertexData[pos + uvOffset + 0] = uvCoords[uvCoord];
+			vertexData[pos + uvOffset + 1] = uvCoords[uvCoord+1];
+			
+			uvCoord += 2;
+			
+			if (uvCoord >= uvCoords.length) {
+				uvCoord = 0;
+				// Increase the coordinate numbers in order to prevent
+				// weird clamping effects to occur in most cases
+				for (int j = 0; j < uvCoords.length; ++j) {
+					uvCoords[j] = uvCoords[j] + 1;
+				}
+			}
+			
 		}
 		
 		return vertexData;
+	}
+	
+	public String getTextureName() {
+		return textureName;
 	}
 }

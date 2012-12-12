@@ -8,6 +8,7 @@ import com.tyrlib2.lighting.PointLight;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.renderer.Camera;
 import com.tyrlib2.renderer.OpenGLRenderer;
+import com.tyrlib2.util.Color;
 
 /**
  * This singleton class manages the creation and destruction of Scene objects.
@@ -23,8 +24,15 @@ public class SceneManager {
 	
 	private List<Light> lights;
 	
+	/** Global ambient illumination **/
+	private Color ambientLight;
+	
 	public SceneManager() {
 		lights = new ArrayList<Light>();
+		
+		// Per default completely slightly light the scene so that
+		// no further setup needs to be done to actually see something
+		ambientLight = new Color(0.5f,0.5f,0.5f,0);
 	}
 	
 	public static SceneManager getInstance() {
@@ -36,6 +44,8 @@ public class SceneManager {
 	}
 	
 	public void destroy() {
+		renderer.destroy();
+		renderer = null;
 		instance = null;
 	}
 	
@@ -107,6 +117,24 @@ public class SceneManager {
 	
 	public SceneNode getRootSceneNode() {
 		return renderer.getRootSceneNode();
+	}
+	
+	/**
+	 * Change the color of the ambient light
+	 * @param color	The new color of the global ambient light
+	 */
+	
+	public void setAmbientLight(Color color) {
+		this.ambientLight = color;
+	}
+	
+	
+	/**
+	 * Get the global ambient illumination
+	 * @return	The global ambient illumination
+	 */
+	public Color getAmbientLight() {
+		return ambientLight;
 	}
 	
 	

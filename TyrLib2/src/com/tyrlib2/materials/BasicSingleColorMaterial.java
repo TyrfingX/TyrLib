@@ -6,6 +6,7 @@ import android.opengl.GLES20;
 
 import com.tyrlib2.renderer.Material;
 import com.tyrlib2.renderer.ProgramManager;
+import com.tyrlib2.util.Color;
 
 /**
  * A material for simple per vertex colouring

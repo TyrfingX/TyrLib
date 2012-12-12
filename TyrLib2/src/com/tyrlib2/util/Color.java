@@ -1,4 +1,4 @@
-package com.tyrlib2.materials;
+package com.tyrlib2.util;
 
 public class Color {
 	public float r,g,b,a;

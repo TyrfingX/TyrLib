@@ -45,11 +45,14 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	
 	private static long BILLION = 1000000000;
 	
+	protected boolean rendering = false;
+	
 	public OpenGLRenderer(Context context) {
 		frameListeners = new ArrayList<IFrameListener>();
 		renderables = new ArrayList<IRenderable>();
 		rootSceneNode = new SceneNode();
 		this.context = context;
+		rendering = false;
 	}
 	
 	public void onSurfaceCreated(GL10 unused, EGLConfig config) {
@@ -77,7 +80,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         viewport = new Viewport();
         
-     // Enable depth testing
+        // Enable depth testing
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
         
 		// Use culling to remove back faces.
@@ -88,43 +91,54 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         }
         
         timeLastFrame = 0;
+        
+        rendering = true;
 
 	}
 	
+	public void destroy() {
+		rendering = false;
+	}
+	
     public void onDrawFrame(GL10 unused) {
-        // Redraw background color
-    	GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
-	    
-	    rootSceneNode.update(origin, rotFree, identityMatrix);
-	    
-	    // Update the view matrix of the camera
-	    camera.update();
-	    
-	    // Update the eye space matrices of all lights
-	    SceneManager sceneManager = SceneManager.getInstance();
-	    for (int i = 0; i < sceneManager.getLightCount(); ++i) {
-	    	Light light = sceneManager.getLight(i);
-	    	light.updateEyeSpaceVector(camera.viewMatrix);
-	    }
-	    
-	    Matrix.multiplyMM(vpMatrix, 0, viewport.projectionMatrix, 0, camera.viewMatrix, 0);
-	    
-	    for (int i = 0; i < renderables.size(); ++i) {
-	    	renderables.get(i).render(vpMatrix);
-	    }
-	    
-	    float time = (float) System.nanoTime() / BILLION - timeLastFrame;
-	    
-	    if (timeLastFrame != 0) {
-	    
-	        for (IFrameListener listener : frameListeners) {
-	        	listener.onFrameRendered(time);
-	        }
+    	
+    	if (rendering) {
+    	
+	        // Redraw background color
+	    	GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
+		    
+		    rootSceneNode.update(origin, rotFree, identityMatrix);
+		    
+		    // Update the view matrix of the camera
+		    camera.update();
+		    
+		    // Update the eye space matrices of all lights
+		    SceneManager sceneManager = SceneManager.getInstance();
+		    for (int i = 0; i < sceneManager.getLightCount(); ++i) {
+		    	Light light = sceneManager.getLight(i);
+		    	light.updateEyeSpaceVector(camera.viewMatrix);
+		    }
+		    
+		    Matrix.multiplyMM(vpMatrix, 0, viewport.projectionMatrix, 0, camera.viewMatrix, 0);
+		    
+		    for (int i = 0; i < renderables.size(); ++i) {
+		    	renderables.get(i).render(vpMatrix);
+		    }
+		    
+		    float time = (float) System.nanoTime() / BILLION - timeLastFrame;
+		    
+		    if (timeLastFrame != 0) {
+		    
+		        for (IFrameListener listener : frameListeners) {
+		        	listener.onFrameRendered(time);
+		        }
+	        
+		    }
+	        
+	        timeLastFrame = (float) System.nanoTime() / BILLION;
+	        
+    	}
         
-	    }
-        
-        timeLastFrame = (float) System.nanoTime() / BILLION;
-
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height) {
