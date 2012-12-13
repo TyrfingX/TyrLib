@@ -5,17 +5,15 @@ import java.nio.FloatBuffer;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
-import com.tyrlib2.lighting.Light;
 import com.tyrlib2.lighting.LightingType;
 import com.tyrlib2.math.Vector3;
-import com.tyrlib2.renderer.Material;
 import com.tyrlib2.renderer.OpenGLRenderer;
 import com.tyrlib2.renderer.ProgramManager;
 import com.tyrlib2.renderer.TextureManager;
 import com.tyrlib2.scene.SceneManager;
 import com.tyrlib2.util.Color;
 
-public class TexturedMaterial extends Material {
+public class TexturedMaterial extends LightedMaterial {
 	
 	
 	/** Per vertex color of this object **/
@@ -37,11 +35,6 @@ public class TexturedMaterial extends Material {
 	private String textureName;
 	private int textureHandle;
 	
-	/** Lighting information **/
-	private int lightPosHandle;
-	private int mvMatrixHandle;
-	private int ambientHandle;
-	
 	/** Contains the model*view matrix **/
 	private float[] mvMatrix = new float[16];
 	
@@ -49,6 +42,8 @@ public class TexturedMaterial extends Material {
 	public static final String PER_PIXEL_PROGRAM_NAME = "TEXTURED_PPL";
 
 	public TexturedMaterial(String textureName, LightingType type, Color[] colors) {
+		
+		lighted = true;
 		
 		switch (type) {
 		case PER_PIXEL:
@@ -67,6 +62,7 @@ public class TexturedMaterial extends Material {
 		
 		normalHandle = GLES20.glGetAttribLocation(program.handle, "a_Normal");
 		lightPosHandle = GLES20.glGetUniformLocation(program.handle, "u_LightPos");
+		lightTypeHandle = GLES20.glGetUniformLocation(program.handle, "u_LightType");
 		mvMatrixHandle = GLES20.glGetUniformLocation(program.handle, "u_MVMatrix"); 
 		ambientHandle = GLES20.glGetUniformLocation(program.handle, "u_Ambient");
 	    textureUniformHandle = GLES20.glGetUniformLocation(program.handle, "u_Texture");
@@ -100,15 +96,6 @@ public class TexturedMaterial extends Material {
         //Pass in the global scene illumination
         Color ambient = SceneManager.getInstance().getAmbientLight();
 	    GLES20.glUniform4f(ambientHandle, ambient.r, ambient.g, ambient.b, ambient.a);
-        
-	    if (sceneManager.getLightCount() != 0) {
-	    	
-	    	Light light = sceneManager.getLight(0);
-	    	float[] lightPosInEyeSpace = light.getEyeSpaceVector();
-	    	
-	    	// Pass in the light position in eye space.        
-	    	GLES20.glUniform3f(lightPosHandle, lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
-	    }
 	 
 	    
         // Pass in the texture coordinate information
@@ -128,7 +115,6 @@ public class TexturedMaterial extends Material {
 	    GLES20.glUniform1i(textureUniformHandle, 0);
 
 	}
-
 
 	public Color[] getColors() {
 		return colors;

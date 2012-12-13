@@ -16,6 +16,15 @@ import com.tyrlib2.scene.SceneNode;
 
 public class PointLight extends Light implements IRenderable {
 	
+	/** Holds the light position in model space **/
+	protected final float[] modelSpaceVector =  { 0,0,0,1 };
+	
+	/** Holds the transformed position of the light in world space (model) **/
+	protected final float[] worldSpaceVector = new float[4];
+	
+	/** Holds the transformed position of the light in eye space (model*view) **/
+	protected final float[] eyeSpaceVector = new float[4];
+	
 	private Material material;
 	private float[] mvpMatrix = new float[16];
 	private float[] modelMatrix;
@@ -52,6 +61,17 @@ public class PointLight extends Light implements IRenderable {
 	public void attachTo(SceneNode node)  {
 		super.attachTo(node);
 		modelMatrix = node.getModelMatrix();
+	}
+	
+	public void update(float[] viewMatrix) {
+		if (parent != null) {
+			Matrix.multiplyMV(worldSpaceVector, 0, parent.getModelMatrix(), 0, modelSpaceVector, 0);
+			Matrix.multiplyMV(eyeSpaceVector, 0, viewMatrix, 0, worldSpaceVector, 0);
+		}
+	}
+	
+	public float[] getLightVector() {
+		return eyeSpaceVector;
 	}
 	
 }

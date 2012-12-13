@@ -81,11 +81,15 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         viewport = new Viewport();
         
         // Enable depth testing
-        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
         
 		// Use culling to remove back faces.
 		GLES20.glEnable(GLES20.GL_CULL_FACE);
         
+		// Enable blending
+		GLES20.glEnable(GLES20.GL_BLEND);
+		GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE);
+		
         for (IFrameListener listener : frameListeners) {
         	listener.onSurfaceCreated();
         }
@@ -116,7 +120,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 		    SceneManager sceneManager = SceneManager.getInstance();
 		    for (int i = 0; i < sceneManager.getLightCount(); ++i) {
 		    	Light light = sceneManager.getLight(i);
-		    	light.updateEyeSpaceVector(camera.viewMatrix);
+		    	light.update(camera.viewMatrix);
 		    }
 		    
 		    Matrix.multiplyMM(vpMatrix, 0, viewport.projectionMatrix, 0, camera.viewMatrix, 0);

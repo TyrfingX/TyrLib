@@ -3,7 +3,10 @@ package com.tyrlib2.renderer;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
+import com.tyrlib2.lighting.Light;
+import com.tyrlib2.materials.LightedMaterial;
 import com.tyrlib2.math.Vector3;
+import com.tyrlib2.scene.SceneManager;
 import com.tyrlib2.scene.SceneNode;
 import com.tyrlib2.scene.SceneObject;
 
@@ -75,7 +78,14 @@ public class Renderable extends SceneObject implements IRenderable {
 			material.program.use();
 	
 			mesh.vertexBuffer.position(material.positionOffest);
-	
+
+	        // Apply the projection and view transformation
+			Matrix.multiplyMM(mvpMatrix, 0, vpMatrix, 0, modelMatrix, 0);
+			
+	        // Combine the rotation matrix with the projection and camera view
+	        GLES20.glUniformMatrix4fv(material.mvpMatrixHandle, 1, false, mvpMatrix, 0);
+
+			
 	        // Enable a handle to the triangle vertices
 	        GLES20.glEnableVertexAttribArray(material.positionHandle);
 	
@@ -85,17 +95,22 @@ public class Renderable extends SceneObject implements IRenderable {
 	                                     material.strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, 
 	                                     mesh.vertexBuffer);
 	
+	        
 			material.render(mesh.vertexBuffer, modelMatrix);
-
-	        // Apply the projection and view transformation
-			Matrix.multiplyMM(mvpMatrix, 0, vpMatrix, 0, modelMatrix, 0);
-			
-	        // Combine the rotation matrix with the projection and camera view
-	        GLES20.glUniformMatrix4fv(material.mvpMatrixHandle, 1, false, mvpMatrix, 0);
+	        
+	        if (material.lighted) {
+	        	LightedMaterial lightedMaterial = (LightedMaterial) material;
+	        	for(int i = 0; i < SceneManager.getInstance().getLightCount(); ++i) {
+	        		Light light = SceneManager.getInstance().getLight(i);
+	        		lightedMaterial.renderLight(light);
+	        		GLES20.glDrawElements(GLES20.GL_TRIANGLES, mesh.drawOrder.length, GLES20.GL_UNSIGNED_SHORT, mesh.drawListBuffer);	
+	        	}
+	        } else {
+	        	// Draw the triangle
+		        GLES20.glDrawElements(GLES20.GL_TRIANGLES, mesh.drawOrder.length, GLES20.GL_UNSIGNED_SHORT, mesh.drawListBuffer);	
+	        }
 	
-	        // Draw the triangle
-	        //GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, mesh.vertexData.length / material.strideBytes);
-	        GLES20.glDrawElements(GLES20.GL_TRIANGLES, mesh.drawOrder.length, GLES20.GL_UNSIGNED_SHORT, mesh.drawListBuffer);
+	        
 	        // Disable vertex array
 	        GLES20.glDisableVertexAttribArray(material.positionHandle);
 		}

@@ -35,6 +35,9 @@ public class Material {
 	/** Name of this material **/
 	protected String name;
 	
+	/** This material is affected by lights **/
+	protected boolean lighted = false;
+	
 	public Material() {
 
 	}

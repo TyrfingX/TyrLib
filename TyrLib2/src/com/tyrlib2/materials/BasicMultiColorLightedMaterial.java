@@ -5,16 +5,14 @@ import java.nio.FloatBuffer;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
-import com.tyrlib2.lighting.Light;
 import com.tyrlib2.lighting.LightingType;
 import com.tyrlib2.math.Vector3;
-import com.tyrlib2.renderer.Material;
 import com.tyrlib2.renderer.OpenGLRenderer;
 import com.tyrlib2.renderer.ProgramManager;
 import com.tyrlib2.scene.SceneManager;
 import com.tyrlib2.util.Color;
 
-public class BasicMultiColorLightedMaterial extends Material {
+public class BasicMultiColorLightedMaterial extends LightedMaterial {
 	private int colorOffset = 6;
 	private int colorDataSize = 4;
 	private int colorHandle;
@@ -23,9 +21,6 @@ public class BasicMultiColorLightedMaterial extends Material {
 	private int normalOffset = 3;
 	private int normalDataSize = 3;
 	private int normalHandle;
-	
-	private int lightPosHandle;
-	private int mvMatrixHandle;
 	
 	/** Contains the model*view matrix **/
 	private float[] mvMatrix = new float[16];
@@ -76,15 +71,6 @@ public class BasicMultiColorLightedMaterial extends Material {
 	    
         // Pass in the modelview matrix.
         GLES20.glUniformMatrix4fv(mvMatrixHandle, 1, false, mvMatrix, 0);
-	    
-	    if (sceneManager.getLightCount() != 0) {
-	    	
-	    	Light light = sceneManager.getLight(0);
-	    	float[] lightPosInEyeSpace = light.getEyeSpaceVector();
-	    	
-	    	// Pass in the light position in eye space.        
-	    	GLES20.glUniform3f(lightPosHandle, lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
-	    }
 
 	}
 	
@@ -138,4 +124,5 @@ public class BasicMultiColorLightedMaterial extends Material {
 		
 		return vertexData;
 	}
+
 }

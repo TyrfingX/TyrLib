@@ -3,6 +3,7 @@ package com.tyrlib2.scene;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.tyrlib2.lighting.DirectionalLight;
 import com.tyrlib2.lighting.Light;
 import com.tyrlib2.lighting.PointLight;
 import com.tyrlib2.math.Vector3;
@@ -84,6 +85,9 @@ public class SceneManager {
 		switch(type) {
 		case POINT_LIGHT:
 			light = new PointLight();
+			break;
+		case DIRECTIONAL_LIGHT:
+			light = new DirectionalLight();
 			break;
 		default:
 			break;
