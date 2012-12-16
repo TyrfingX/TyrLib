@@ -37,6 +37,12 @@ public class SceneNode {
 	/** Absolute rotation in the world **/
 	private Quaternion absoluteRot;
 	
+	/** relative scaling of this node to the parent node **/
+	private Vector3 scale = new Vector3(1,1,1);
+	
+	/** absolute scaling of this node in the world **/
+	private Vector3 absoluteScale = new Vector3(1,1,1);
+	
 	/** Transforms model space to world space **/
 	protected float[] modelMatrix = new float[16];
 	
@@ -179,6 +185,65 @@ public class SceneNode {
 		return rot;
 	}
 	
+	
+	/**
+	 * Gets the absolute scaling of this SceneNode
+	 * Currently iterates through all parent nodes, therefore expensive.
+	 * @return Absolute scaling of this SceneNode
+	 */
+	
+	public Vector3 getAbsoluteScale() {
+		
+		absoluteScale = scale;
+		
+		if (parent != null) {
+			absoluteScale = absoluteScale.add(parent.getAbsoluteScale());
+		}
+		
+		return absoluteScale;
+	}
+	
+	/**
+	 * Gives last calculated absolute world scaling of this node.
+	 * May be invalid.
+	 * @return
+	 */
+	
+	public Vector3 getCachedAbsoluteScale() {
+		return absoluteScale;
+	}
+	
+	/**
+	 * Sets the relative scaling, so that the resulting
+	 * absolute scaling will match with the desired position
+	 * @param scale	The absolute world scaling
+	 */
+	
+	public void setAbsoluteScale(Vector3 scale) {
+		Vector3 parentScale = parent.getAbsoluteScale();
+		Vector3 newScale = pos.sub(parentScale);
+		this.setRelativeScale(newScale);
+	}
+	
+	/**
+	 * Gets the scaling of this SceneNode relative to its parent
+	 * @return The scaling of this SceneNode relative to its parent
+	 */
+	
+	public Vector3 getRelativeScale() {
+		return scale;
+	}
+	
+	/**
+	 * Set the relative scaling
+	 * @param scale	The new scale relative to the parent
+	 */
+	
+	public void setRelativeScale(Vector3 scale) {
+		this.scale = new Vector3(scale);
+		update = true;
+	}
+	
 	/**
 	 * Attaches a passed SceneObject to this SceneNode
 	 * @param object The SceneObject to be attached
@@ -268,14 +333,14 @@ public class SceneNode {
 	 * Updates the model matrix
 	 */
 	
-	public void update(Vector3 parentPos, Quaternion parentRot, float[] parentTransform) {
+	public void update(Vector3 parentPos, Quaternion parentRot, Vector3 parentScale, float[] parentTransform) {
 		if (update) {			
 			// there was an update, all children of this tree must be updated
-			updateAll(parentPos, parentRot, parentTransform);
+			updateAll(parentPos, parentRot, absoluteScale, parentTransform);
 		} else {
 			// There was no update, hopefully the children also had no update
 			for (int i = 0; i < children.size(); ++i) {	
-				children.get(i).update(absolutePos, absoluteRot, modelMatrix);
+				children.get(i).update(absolutePos, absoluteRot, absoluteScale, modelMatrix);
 			}
 		}
 		
@@ -283,25 +348,37 @@ public class SceneNode {
 	}
 	
 	/**
+	 * Root update
+	 */
+	
+	public void update() {
+		for (int i = 0; i < children.size(); ++i) {	
+			children.get(i).update(pos, rot, absoluteScale, modelMatrix);
+		}
+	}
+	
+	/**
 	 * Updates the model matrix. There was an update in a parent node, therefore all children need to
 	 * be informed and update their matrices accordingly.
 	 */
 	
-	private void updateAll(Vector3 parentPos, Quaternion parentRot, float[] parentTransform) {
+	private void updateAll(Vector3 parentPos, Quaternion parentRot, Vector3 parentScale, float[] parentTransform) {
 		
 		Matrix.setIdentityM(modelMatrix, 0);
 		absolutePos = parentPos.add(pos);
 		absoluteRot = parentRot.add(rot);
+		absoluteScale = parentScale.add(scale);
 		
 		Matrix.translateM(modelMatrix, 0, pos.x, pos.y, pos.z);
 		Matrix.rotateM(modelMatrix, 0, rot.angle, rot.rotX, rot.rotY, rot.rotZ);
+		Matrix.scaleM(modelMatrix, 0, scale.x, scale.y, scale.z);
 		
 		Matrix.multiplyMM(modelMatrix, 0, parentTransform, 0, modelMatrix, 0);
 		update = false;
 		
 		
 		for (int i = 0; i < children.size(); ++i) {	
-			children.get(i).updateAll(absolutePos, absoluteRot, modelMatrix);
+			children.get(i).updateAll(absolutePos, absoluteRot, absoluteScale, modelMatrix);
 		}
 	}
 	
@@ -331,6 +408,15 @@ public class SceneNode {
 	
 	public void rotate(Quaternion rotation) {
 		setRelativeRot(this.rot.add(rotation));
+	}
+	
+	/**
+	 * Scales this node by the passed scaling
+	 * @param scale	The scaling which will be applied to this node
+	 */
+	
+	public void scale(Vector3 scale) {
+		setRelativeScale(this.scale.add(scale));
 	}
 	
 	

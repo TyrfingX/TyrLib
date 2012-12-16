@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">TyrLib2 Demo</string>
+    <color name="black">#000000</color>
+    <string name="example_one">Example 1: Creating a scene</string>
+    <string name="example_one_subtitle">Create a small scene with moving objects.</string>
+</resources>
