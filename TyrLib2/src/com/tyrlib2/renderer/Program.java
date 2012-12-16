@@ -11,6 +11,10 @@ import android.opengl.GLES20;
 public class Program {
 	public int handle;
 	
+	protected String vertexShader;
+	protected String fragmentShader;
+	protected String[] bindAttributes;
+	
 	public Program(int handle) {
 		this.handle = handle;
 	}

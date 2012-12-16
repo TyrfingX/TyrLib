@@ -51,7 +51,7 @@ public class ProgramManager {
 	 * @return						An object representing the program
 	 */
 	
-	public Program createProgram(String programName, String vertexShaderName, String fragmentShaderName, String[] bindAttributes) {
+	protected Program createProgram(String programName, String vertexShaderName, String fragmentShaderName, String[] bindAttributes) {
         int vertexShader = ShaderManager.getInstance().getShader(vertexShaderName);
         int fragmentShader = ShaderManager.getInstance().getShader(fragmentShaderName);
 
@@ -104,6 +104,9 @@ public class ProgramManager {
 		Program program = ProgramManager.getInstance()
 										.createProgram(programName, programName + "_VS", 
 													   programName + "_FS", bindAttributes);
+        program.vertexShader = vertexShader;
+		program.fragmentShader = fragmentShader;
+		program.bindAttributes = bindAttributes;
 		return program;
 	}
 	
@@ -115,5 +118,46 @@ public class ProgramManager {
 	
 	public Program getProgram(String programName) {
 		return programs.get(programName);
+	}
+	
+	/**
+	 * Recreate all current programs
+	 */
+	
+	public void recreateAll() {
+		for (String programName : programs.keySet()) {
+			
+			Program program = programs.get(programName);
+			
+			int vertexShader = ShaderManager.getInstance().loadShader(programName + "_VS", GLES20.GL_VERTEX_SHADER, program.vertexShader);
+			int fragmentShader = ShaderManager.getInstance().loadShader(programName + "_FS", GLES20.GL_FRAGMENT_SHADER, program.fragmentShader);
+			
+	        int programHandle = GLES20.glCreateProgram();             // create empty OpenGL ES Program
+	        program.handle = programHandle;
+	        GLES20.glAttachShader(programHandle, vertexShader);   	// add the vertex shader to program
+	        GLES20.glAttachShader(programHandle, fragmentShader); 	// add the fragment shader to program
+	        
+	        if (program.bindAttributes != null) {
+	        	for (int i = 0; i < program.bindAttributes.length; ++i) {
+	        		GLES20.glBindAttribLocation(programHandle, i, program.bindAttributes[i]);
+	        	}
+	        }
+	        
+	        program.link();               	// creates OpenGL ES program executables
+			
+	        
+	        // Get the link status.
+	        final int[] linkStatus = new int[1];
+	        GLES20.glGetProgramiv(programHandle, GLES20.GL_LINK_STATUS, linkStatus, 0);
+	     
+	        // If the link failed, delete the program.
+	        if (linkStatus[0] == 0)
+	        {
+	            GLES20.glDeleteProgram(programHandle);
+	            programHandle = 0;
+	            throw new RuntimeException("Error creating program: " + programName + ".");
+	        }
+			
+		}
 	}
 }

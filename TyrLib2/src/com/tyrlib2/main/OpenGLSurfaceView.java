@@ -41,33 +41,29 @@ public class OpenGLSurfaceView extends GLSurfaceView {
 	
 	@Override
 	public void onDetachedFromWindow() {
-		queueEvent( new Runnable() {
 
-			@Override
-			public void run() {
-		        InputManager.getInstance().destroy();
-		        ProgramManager.getInstance().destroy();
-		        ShaderManager.getInstance().destroy();
-		        SceneManager.getInstance().destroy();
-		        OpenGLActivity.RUNNING = false;
-			}
+        InputManager.getInstance().destroy();
+        ProgramManager.getInstance().destroy();
+        ShaderManager.getInstance().destroy();
+        SceneManager.getInstance().destroy();
+        OpenGLActivity.RUNNING = false;
 
-		});
 		
 		super.onDetachedFromWindow();
 
     }
 	
     @Override
-    public boolean onTouchEvent(final MotionEvent event)
+    public boolean onTouchEvent(MotionEvent event)
     {    	
+    	final MotionEvent eventCopy = MotionEvent.obtain(event);
     	queueEvent(new Runnable() {
 			@Override
 			public void run() {
-				InputManager.getInstance().onTouch(instance, event);
+				InputManager.getInstance().onTouch(instance, eventCopy);
 			}
 	    });
-	    	
     	return true;
     }
+    
 }

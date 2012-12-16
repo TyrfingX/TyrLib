@@ -1,7 +1,7 @@
 package com.tyrlib2.renderer;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -11,10 +11,7 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
-import com.tyrlib2.files.FileReader;
 import com.tyrlib2.lighting.Light;
-import com.tyrlib2.math.Quaternion;
-import com.tyrlib2.math.Vector3;
 import com.tyrlib2.scene.SceneManager;
 import com.tyrlib2.scene.SceneNode;
 
@@ -35,21 +32,19 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	private Camera camera;
 	private Context context;
 	
+	/** View projection matrix of the camera **/
 	private float[] vpMatrix = new float[16];
-	
-	private float[] identityMatrix = new float[16];
-	private Vector3 origin = new Vector3();
-	private Quaternion rotFree = new Quaternion();
 	
 	private float timeLastFrame;
 	
 	private static long BILLION = 1000000000;
 	
 	protected boolean rendering = false;
+	private boolean init = false;
 	
 	public OpenGLRenderer(Context context) {
-		frameListeners = new ArrayList<IFrameListener>();
-		renderables = new ArrayList<IRenderable>();
+		frameListeners = new Vector<IFrameListener>();
+		renderables = new Vector<IRenderable>();
 		rootSceneNode = new SceneNode();
 		this.context = context;
 		rendering = false;
@@ -57,51 +52,64 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	
 	public void onSurfaceCreated(GL10 unused, EGLConfig config) {
 		
+        // Enable depth testing
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+        GLES20.glDepthFunc( GLES20.GL_LEQUAL );
+        GLES20.glDepthMask( true );
+        
+		// Use culling to remove back faces.
+		GLES20.glEnable(GLES20.GL_CULL_FACE);
+		
+		// Set the blend function
+		GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE);
+		
+		if (init) {
+			ProgramManager.getInstance().recreateAll();
+			TextureManager.getInstance().reloadAll(context);
+			return;
+		}
+		
         // Setup the SceneManager
         SceneManager.getInstance().setRenderer(this);
 		
-		Matrix.setIdentityM(identityMatrix, 0);
-		
 		// Create a default program to use
-		String basicVertexShader = FileReader.readRawFile(context, com.tyrlib2.R.raw.basic_color_vs);
-		String basicFragmentShader = FileReader.readRawFile(context, com.tyrlib2.R.raw.basic_color_fs);
-		ShaderManager.getInstance().loadShader("BASIC_VS", GLES20.GL_VERTEX_SHADER, basicVertexShader);
-		ShaderManager.getInstance().loadShader("BASIC_FS", GLES20.GL_FRAGMENT_SHADER, basicFragmentShader);
-		ProgramManager.getInstance().createProgram("BASIC", "BASIC_VS", "BASIC_FS", new String[]{"a_Position", "a_Color"});
+		ProgramManager.getInstance().createProgram(	"BASIC", 
+													context, 
+													com.tyrlib2.R.raw.basic_color_vs, 
+													com.tyrlib2.R.raw.basic_color_fs, 
+													new String[]{"a_Position", "a_Color"});
 		
 		// Create a material for point lights
-		String lightVertexShader = FileReader.readRawFile(context, com.tyrlib2.R.raw.point_light_vs);
-		String lightFragmentShader = FileReader.readRawFile(context, com.tyrlib2.R.raw.point_light_fs);
-		ShaderManager.getInstance().loadShader("POINT_LIGHT_VS", GLES20.GL_VERTEX_SHADER, lightVertexShader);
-		ShaderManager.getInstance().loadShader("POINT_LIGHT_FS", GLES20.GL_FRAGMENT_SHADER, lightFragmentShader);
-		ProgramManager.getInstance().createProgram("POINT_LIGHT", "POINT_LIGHT_VS", "POINT_LIGHT_FS", new String[]{"a_Position" });
+		ProgramManager.getInstance().createProgram(	"POINT_LIGHT", 
+													context, 
+													com.tyrlib2.R.raw.point_light_vs, 
+													com.tyrlib2.R.raw.point_light_fs, 
+													new String[]{"a_Position" });
+		
+		// Create a program for rendering shadow depth maps
+		ProgramManager.getInstance().createProgram(	"SHADOW_DEPTH", 
+													context, 
+													com.tyrlib2.R.raw.depth_vs, 
+													com.tyrlib2.R.raw.depth_fs, 
+													new String[]{"aPosition" });
 		
         // Set the background frame color
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         viewport = new Viewport();
-        
-        // Enable depth testing
-         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-        
-		// Use culling to remove back faces.
-		GLES20.glEnable(GLES20.GL_CULL_FACE);
-        
-		// Enable blending
-		GLES20.glEnable(GLES20.GL_BLEND);
-		GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE);
 		
-        for (IFrameListener listener : frameListeners) {
-        	listener.onSurfaceCreated();
+        for (int i = 0; i < frameListeners.size(); ++i) {
+        	frameListeners.get(i).onSurfaceCreated();
         }
         
         timeLastFrame = 0;
         
         rendering = true;
-
+        init = true;
 	}
 	
 	public void destroy() {
 		rendering = false;
+		renderables.clear();
 	}
 	
     public void onDrawFrame(GL10 unused) {
@@ -111,7 +119,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	        // Redraw background color
 	    	GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
 		    
-		    rootSceneNode.update(origin, rotFree, identityMatrix);
+		    rootSceneNode.update();
 		    
 		    // Update the view matrix of the camera
 		    camera.update();
@@ -122,27 +130,42 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 		    	Light light = sceneManager.getLight(i);
 		    	light.update(camera.viewMatrix);
 		    }
+
+		    GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			GLES20.glClear( GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
+		    
+			GLES20.glViewport(0, 0, viewport.getWidth(), viewport.getHeight());
 		    
 		    Matrix.multiplyMM(vpMatrix, 0, viewport.projectionMatrix, 0, camera.viewMatrix, 0);
-		    
-		    for (int i = 0; i < renderables.size(); ++i) {
-		    	renderables.get(i).render(vpMatrix);
-		    }
-		    
-		    float time = (float) System.nanoTime() / BILLION - timeLastFrame;
-		    
-		    if (timeLastFrame != 0) {
-		    
-		        for (IFrameListener listener : frameListeners) {
-		        	listener.onFrameRendered(time);
-		        }
-	        
-		    }
-	        
-	        timeLastFrame = (float) System.nanoTime() / BILLION;
-	        
+			
+		    drawScene();
+		    updateListeners();
+		   
     	}
         
+    }
+    
+    private void drawScene() {
+
+    	
+	    for (int i = 0; i < renderables.size(); ++i) {
+	    	renderables.get(i).render(vpMatrix);
+	    }
+    }
+    
+    
+    private void updateListeners() {
+	    float time = (float) System.nanoTime() / BILLION - timeLastFrame;
+	    
+	    if (timeLastFrame != 0) {
+	    
+	        for (IFrameListener listener : frameListeners) {
+	        	listener.onFrameRendered(time);
+	        }
+        
+	    }
+        
+        timeLastFrame = (float) System.nanoTime() / BILLION;
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height) {

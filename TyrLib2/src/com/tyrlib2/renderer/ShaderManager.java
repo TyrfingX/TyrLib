@@ -63,7 +63,11 @@ public class ShaderManager {
         {
             GLES20.glDeleteShader(shader);
             shader = 0;
-            throw new RuntimeException("Error creating vertex shader: " + name + ".");
+            if (type == GLES20.GL_VERTEX_SHADER) {
+            	throw new RuntimeException("Error creating vertex shader: " + name + ".");
+            } else {
+            	throw new RuntimeException("Error creating fragment shader: " + name + ".");
+            }
         } else {
         	shaders.put(name, shader);
         }
