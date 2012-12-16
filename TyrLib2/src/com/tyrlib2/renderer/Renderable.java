@@ -3,7 +3,6 @@ package com.tyrlib2.renderer;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
-import com.tyrlib2.lighting.Light;
 import com.tyrlib2.materials.LightedMaterial;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.scene.SceneManager;
@@ -99,12 +98,28 @@ public class Renderable extends SceneObject implements IRenderable {
 			material.render(mesh.vertexBuffer, modelMatrix);
 	        
 	        if (material.lighted) {
+	    		
+
 	        	LightedMaterial lightedMaterial = (LightedMaterial) material;
-	        	for(int i = 0; i < SceneManager.getInstance().getLightCount(); ++i) {
-	        		Light light = SceneManager.getInstance().getLight(i);
-	        		lightedMaterial.renderLight(light);
+	        	
+	        	// First draw using depth buffer and no blending
+	        	if (SceneManager.getInstance().getLightCount() > 0) {
+	        		lightedMaterial.renderLight(0);
 	        		GLES20.glDrawElements(GLES20.GL_TRIANGLES, mesh.drawOrder.length, GLES20.GL_UNSIGNED_SHORT, mesh.drawListBuffer);	
 	        	}
+	        	
+	        	// Enable blending
+	    		//GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+	    		GLES20.glEnable(GLES20.GL_BLEND);
+	    		
+	        	for(int i = 1; i < SceneManager.getInstance().getLightCount(); ++i) {
+	        		lightedMaterial.renderLight(i);
+	        		GLES20.glDrawElements(GLES20.GL_TRIANGLES, mesh.drawOrder.length, GLES20.GL_UNSIGNED_SHORT, mesh.drawListBuffer);	
+	        	}
+	        	
+	    		// Enable blending
+	    		GLES20.glDisable(GLES20.GL_BLEND);
+	    		//GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 	        } else {
 	        	// Draw the triangle
 		        GLES20.glDrawElements(GLES20.GL_TRIANGLES, mesh.drawOrder.length, GLES20.GL_UNSIGNED_SHORT, mesh.drawListBuffer);	

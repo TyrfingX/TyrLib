@@ -46,6 +46,7 @@ public class SceneManager {
 	
 	public void destroy() {
 		renderer.destroy();
+		lights.clear();
 		renderer = null;
 		instance = null;
 	}
@@ -85,6 +86,7 @@ public class SceneManager {
 		switch(type) {
 		case POINT_LIGHT:
 			light = new PointLight();
+			renderer.addRenderable((PointLight) light);
 			break;
 		case DIRECTIONAL_LIGHT:
 			light = new DirectionalLight();
