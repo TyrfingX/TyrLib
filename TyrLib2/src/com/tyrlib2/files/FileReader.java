@@ -53,10 +53,11 @@ public class FileReader {
 		InputStreamReader isr;
 		try {
 			isr = new InputStreamReader(context.getResources().openRawResource(id));
-			int ch;
+			char[] ch = new char[50];
 			StringBuffer fileContent = new StringBuffer();
-			while( (ch = isr.read()) != -1)
-				  fileContent.append((char)ch);
+			int length = 0;
+			while( (length = isr.read(ch)) != -1)
+				  fileContent.append(ch, 0, length);
 			
 			isr.close();
 			
