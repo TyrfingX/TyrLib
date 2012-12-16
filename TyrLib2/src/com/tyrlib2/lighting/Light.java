@@ -11,7 +11,7 @@ import com.tyrlib2.scene.SceneObject;
 public abstract class Light extends SceneObject {
 	
 	public enum Type {
-		SPOT_LIGHT, POINT_LIGHT, DIRECTIONAL_LIGHT
+		POINT_LIGHT, DIRECTIONAL_LIGHT
 	}
 
 	/** The type of this light **/

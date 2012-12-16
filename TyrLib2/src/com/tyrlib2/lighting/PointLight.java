@@ -66,7 +66,7 @@ public class PointLight extends Light implements IRenderable {
 	public void update(float[] viewMatrix) {
 		if (parent != null) {
 			Matrix.multiplyMV(worldSpaceVector, 0, parent.getModelMatrix(), 0, modelSpaceVector, 0);
-			Matrix.multiplyMV(eyeSpaceVector, 0, viewMatrix, 0, worldSpaceVector, 0);
+			Matrix.multiplyMV(eyeSpaceVector, 0, viewMatrix, 0, worldSpaceVector, 0);	
 		}
 	}
 	
