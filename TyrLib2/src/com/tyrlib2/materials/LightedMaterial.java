@@ -5,6 +5,8 @@ import android.opengl.GLES20;
 import com.tyrlib2.lighting.Light;
 import com.tyrlib2.lighting.Light.Type;
 import com.tyrlib2.renderer.Material;
+import com.tyrlib2.scene.SceneManager;
+import com.tyrlib2.util.Color;
 
 /**
  * Basic abstract class for material which work with light
@@ -24,8 +26,19 @@ public abstract class LightedMaterial extends Material{
 		lighted = true;
 	}
 	
-	public void renderLight(Light light) {
+	public void renderLight(int lightIndex) {
     	
+		Light light = SceneManager.getInstance().getLight(lightIndex);
+
+        Color ambient = new Color(0,0,0,0);
+		
+		if (lightIndex == 0) {
+	        //Pass in the global scene illumination only for the first light
+			ambient = SceneManager.getInstance().getAmbientLight();
+		}
+		
+		GLES20.glUniform4f(ambientHandle, ambient.r, ambient.g, ambient.b, ambient.a);
+		
     	if (light.getType() == Type.POINT_LIGHT) {
     	
     		// Set the light type to point light

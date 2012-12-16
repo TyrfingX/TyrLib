@@ -9,6 +9,7 @@ import com.tyrlib2.lighting.LightingType;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.renderer.OpenGLRenderer;
 import com.tyrlib2.renderer.ProgramManager;
+import com.tyrlib2.renderer.Texture;
 import com.tyrlib2.renderer.TextureManager;
 import com.tyrlib2.scene.SceneManager;
 import com.tyrlib2.util.Color;
@@ -33,7 +34,9 @@ public class TexturedMaterial extends LightedMaterial {
 	private int textureUniformHandle;
 	private int textureCoordinateHandle;
 	private String textureName;
-	private int textureHandle;
+	private Texture texture;
+	private int repeatX;
+	private int repeatY;
 	
 	/** Contains the model*view matrix **/
 	private float[] mvMatrix = new float[16];
@@ -41,10 +44,13 @@ public class TexturedMaterial extends LightedMaterial {
 	public static final String PER_VERTEX_PROGRAM_NAME = "TEXTURED_PVL";
 	public static final String PER_PIXEL_PROGRAM_NAME = "TEXTURED_PPL";
 
-	public TexturedMaterial(String textureName, LightingType type, Color[] colors) {
+	public TexturedMaterial() {
 		
-		lighted = true;
+	}
+	
+	public TexturedMaterial(String textureName, int repeatX, int repeatY, LightingType type, Color[] colors) {
 		
+
 		switch (type) {
 		case PER_PIXEL:
 			program = ProgramManager.getInstance().getProgram(PER_PIXEL_PROGRAM_NAME);
@@ -54,12 +60,27 @@ public class TexturedMaterial extends LightedMaterial {
 			break;
 		}
 		
+		texture = TextureManager.getInstance().getTexture(textureName);
+		setup(textureName, repeatX, repeatY, type, colors);
+
+
+	}
+	
+	protected void setup(String textureName, int repeatX, int repeatY, LightingType type, Color[] colors) {
+		lighted = true;
+		
 		this.textureName = textureName;
 		this.colors = colors; 
-		textureHandle = TextureManager.getInstance().getTextureHandle(textureName);
+		this.repeatX = repeatX;
+		this.repeatY = repeatY;
 		
 		init(12,0,3, "u_MVPMatrix", "a_Position");
-		
+
+	}
+	
+	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
+	    super.render(vertexBuffer, modelMatrix);
+	    
 		normalHandle = GLES20.glGetAttribLocation(program.handle, "a_Normal");
 		lightPosHandle = GLES20.glGetUniformLocation(program.handle, "u_LightPos");
 		lightTypeHandle = GLES20.glGetUniformLocation(program.handle, "u_LightType");
@@ -68,10 +89,8 @@ public class TexturedMaterial extends LightedMaterial {
 	    textureUniformHandle = GLES20.glGetUniformLocation(program.handle, "u_Texture");
 	    textureCoordinateHandle = GLES20.glGetAttribLocation(program.handle, "a_TexCoordinate");
 	    colorHandle = GLES20.glGetAttribLocation(program.handle, "a_Color");
-	}
-	
-	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
-	    
+		int textureHandle = texture.getHandle();
+		
 	    // Pass in the color information
 	    vertexBuffer.position(colorOffset);
 	    GLES20.glVertexAttribPointer(colorHandle, colorDataSize, GLES20.GL_FLOAT, false,
@@ -92,10 +111,6 @@ public class TexturedMaterial extends LightedMaterial {
 	    
         // Pass in the modelview matrix.
         GLES20.glUniformMatrix4fv(mvMatrixHandle, 1, false, mvMatrix, 0);
-        
-        //Pass in the global scene illumination
-        Color ambient = SceneManager.getInstance().getAmbientLight();
-	    GLES20.glUniform4f(ambientHandle, ambient.r, ambient.g, ambient.b, ambient.a);
 	 
 	    
         // Pass in the texture coordinate information
@@ -174,8 +189,8 @@ public class TexturedMaterial extends LightedMaterial {
 			vertexData[pos + normalOffset + 1] = normals[i].y;
 			vertexData[pos + normalOffset + 2] = normals[i].z;
 			
-			vertexData[pos + uvOffset + 0] = uvCoords[uvCoord];
-			vertexData[pos + uvOffset + 1] = uvCoords[uvCoord+1];
+			vertexData[pos + uvOffset + 0] = uvCoords[uvCoord] * repeatX;
+			vertexData[pos + uvOffset + 1] = uvCoords[uvCoord+1] * repeatY;
 			
 			uvCoord += 2;
 			

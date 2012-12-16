@@ -38,11 +38,18 @@ public class Material {
 	/** This material is affected by lights **/
 	protected boolean lighted = false;
 	
+	protected String mvpParamName;
+	
+	protected String positionParamName;
+	
 	public Material() {
 
 	}
 	
-	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {}
+	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
+		mvpMatrixHandle = GLES20.glGetUniformLocation(program.handle, mvpParamName);
+		positionHandle = GLES20.glGetAttribLocation(program.handle, positionParamName);
+	}
 	
 	/**
 	 * Sets up how this material will work with the vertex data, what will occur where, etc
@@ -55,9 +62,9 @@ public class Material {
 		this.strideBytes = strideBytes;
 		this.positionOffest = positionOffset;
 		this.positionDataSize = positionDataSize;
-		
-		mvpMatrixHandle = GLES20.glGetUniformLocation(program.handle, mvpParamName);
-		positionHandle = GLES20.glGetAttribLocation(program.handle, positionParamName);
+		this.mvpParamName = mvpParamName;
+		this.positionParamName = positionParamName;
+
 	}
 	
 	public int getByteStride() {
