@@ -160,4 +160,8 @@ public class ProgramManager {
 			
 		}
 	}
+	
+	public boolean isProgramLoaded(String program) {
+		return programs.containsKey(program);
+	}
 }

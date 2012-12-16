@@ -7,8 +7,12 @@ import java.util.Map;
 
 import android.app.Activity;
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.SparseArray;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SimpleAdapter;
 
 import com.tyrlib2.demo.example1.ExampleOneActivity;
@@ -41,6 +45,22 @@ public class MainActivity extends ListActivity {
 		}
 		
 		final SimpleAdapter dataAdapter = new SimpleAdapter(this, data, R.layout.toc_item, new String[] {ITEM_IMAGE, ITEM_TITLE, ITEM_SUBTITLE}, new int[] {R.id.Image, R.id.Title, R.id.SubTitle});
-		setListAdapter(dataAdapter);	
+		setListAdapter(dataAdapter);
+		
+		getListView().setOnItemClickListener(new OnItemClickListener() 
+		{
+			@Override
+			 public void onItemClick(AdapterView<?> parent, View view,
+				        int position, long id) 
+			{
+				final Class<? extends Activity> activityToLaunch = activityMapping.get(position);
+				
+				if (activityToLaunch != null)
+				{
+					final Intent launchIntent = new Intent(MainActivity.this, activityToLaunch);
+					startActivity(launchIntent);
+				}				
+			}
+		});
 	}
 }

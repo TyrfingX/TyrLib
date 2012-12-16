@@ -28,8 +28,12 @@ public abstract class LightedMaterial extends Material{
 	
 	public void renderLight(int lightIndex) {
     	
-		Light light = SceneManager.getInstance().getLight(lightIndex);
-
+		Light light = null;
+		
+		if (SceneManager.getInstance().getLightCount() > 0) {
+			light = SceneManager.getInstance().getLight(lightIndex);
+		}
+		
         Color ambient = new Color(0,0,0,0);
 		
 		if (lightIndex == 0) {
@@ -39,21 +43,28 @@ public abstract class LightedMaterial extends Material{
 		
 		GLES20.glUniform4f(ambientHandle, ambient.r, ambient.g, ambient.b, ambient.a);
 		
-    	if (light.getType() == Type.POINT_LIGHT) {
+		if (light != null) {
+		
+	    	if (light.getType() == Type.POINT_LIGHT) {
+	    	
+	    		// Set the light type to point light
+	    		GLES20.glUniform1f(lightTypeHandle, 1.0f);
+	    		
+	    	} else if (light.getType() == Type.DIRECTIONAL_LIGHT) {
+	    		
+	    		// Set the light type to directional light
+	    		GLES20.glUniform1f(lightTypeHandle, 0.5f);
+	    	}
+	    	float[] lightPosInEyeSpace = light.getLightVector();
+	    	
+			// Pass in the light position in eye space.        
+			GLES20.glUniform3f(lightPosHandle, lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
+		} else {
+    		// Set the light type to no extra light
+    		GLES20.glUniform1f(lightTypeHandle, 0.0f);			
+		}
     	
-    		// Set the light type to point light
-    		GLES20.glUniform1f(lightTypeHandle, 0.0f);
-    		
-    	} else if (light.getType() == Type.DIRECTIONAL_LIGHT) {
-    		
-    		// Set the light type to directional light
-    		GLES20.glUniform1f(lightTypeHandle, 1.0f);
-    	}
-    	
-		float[] lightPosInEyeSpace = light.getLightVector();
-    	
-		// Pass in the light position in eye space.        
-		GLES20.glUniform3f(lightPosHandle, lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
+		
 
 	}
 }

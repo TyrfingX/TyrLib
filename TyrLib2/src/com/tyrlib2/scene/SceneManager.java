@@ -7,7 +7,10 @@ import com.tyrlib2.lighting.DirectionalLight;
 import com.tyrlib2.lighting.Light;
 import com.tyrlib2.lighting.PointLight;
 import com.tyrlib2.math.Vector3;
+import com.tyrlib2.renderables.Box;
 import com.tyrlib2.renderer.Camera;
+import com.tyrlib2.renderer.IFrameListener;
+import com.tyrlib2.renderer.Material;
 import com.tyrlib2.renderer.OpenGLRenderer;
 import com.tyrlib2.util.Color;
 
@@ -143,5 +146,19 @@ public class SceneManager {
 		return ambientLight;
 	}
 	
+	
+	public void addFrameListener(IFrameListener frameListener) {
+		renderer.addFrameListener(frameListener);
+	}
+	
+	public void removeFrameListener(IFrameListener frameListener) {
+		renderer.removeFrameListener(frameListener);
+	}
+	
+	public Box createBox(Material material, Vector3 min, Vector3 max) {
+		Box box = new Box(material, min, max);
+		renderer.addRenderable(box);
+		return box;
+	}
 	
 }

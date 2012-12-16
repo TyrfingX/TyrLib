@@ -2,6 +2,7 @@ package com.tyrlib2.materials;
 
 import java.nio.FloatBuffer;
 
+import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
@@ -46,6 +47,28 @@ public class TexturedMaterial extends LightedMaterial {
 
 	public TexturedMaterial() {
 		
+	}
+	
+	public TexturedMaterial(Context context, String textureName, int repeatX, int repeatY, LightingType type, Color[] colors) {
+		if (!ProgramManager.getInstance().isProgramLoaded(PER_PIXEL_PROGRAM_NAME)) {
+			program = ProgramManager.getInstance()
+									.createProgram(	PER_PIXEL_PROGRAM_NAME, 
+													context, 
+													com.tyrlib2.R.raw.textured_ppl_vs, 
+													com.tyrlib2.R.raw.textured_ppl_fs, 
+													new String[]{"a_Position", "a_Normal", "a_Color", "a_TexCoordinate"});
+		} else {
+			program = ProgramManager.getInstance().getProgram(PER_PIXEL_PROGRAM_NAME);
+		}
+		
+		if (colors == null) {
+			colors = new Color[1];
+			colors[0] = new Color(1,1,1,1);
+		}
+		
+		texture = TextureManager.getInstance().getTexture(textureName);
+		setup(textureName, repeatX, repeatY, type, colors);
+
 	}
 	
 	public TexturedMaterial(String textureName, int repeatX, int repeatY, LightingType type, Color[] colors) {

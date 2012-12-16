@@ -103,10 +103,9 @@ public class Renderable extends SceneObject implements IRenderable {
 	        	LightedMaterial lightedMaterial = (LightedMaterial) material;
 	        	
 	        	// First draw using depth buffer and no blending
-	        	if (SceneManager.getInstance().getLightCount() > 0) {
-	        		lightedMaterial.renderLight(0);
-	        		GLES20.glDrawElements(GLES20.GL_TRIANGLES, mesh.drawOrder.length, GLES20.GL_UNSIGNED_SHORT, mesh.drawListBuffer);	
-	        	}
+        		lightedMaterial.renderLight(0);
+        		GLES20.glDrawElements(GLES20.GL_TRIANGLES, mesh.drawOrder.length, GLES20.GL_UNSIGNED_SHORT, mesh.drawListBuffer);	
+        	
 	        	
 	        	// Enable blending
 	    		//GLES20.glDisable(GLES20.GL_DEPTH_TEST);
