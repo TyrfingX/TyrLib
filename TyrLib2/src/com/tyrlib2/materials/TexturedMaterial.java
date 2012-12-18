@@ -234,4 +234,16 @@ public class TexturedMaterial extends LightedMaterial {
 	public String getTextureName() {
 		return textureName;
 	}
+	
+	public int getColorOffset() {
+		return colorOffset;
+	}
+	
+	public int getNormalOffset() {
+		return normalOffset;
+	}
+	
+	public int getUVOffset(){
+		return uvOffset;
+	}
 }
