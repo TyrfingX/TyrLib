@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import android.content.Context;
@@ -13,6 +15,8 @@ import com.tyrlib2.materials.TexturedMaterial;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.renderer.Mesh;
+import com.tyrlib2.renderer.Texture;
+import com.tyrlib2.renderer.TextureManager;
 
 /**
  * Creates Entities by reading .obj files
@@ -22,44 +26,36 @@ import com.tyrlib2.renderer.Mesh;
 
 public class ObjEntityFactory implements IEntityFactory {
 	
-	private static final String OBJECT = "o";
-	private static final String VERTEX = "v";
+	private static final String OBJECT = "mesh";
+	private static final String VERTEX = "vp";
 	private static final String UV_COORD = "vt";
 	private static final String NORMAL = "vn";
-	private static final String TRIANGLE = "f";
+	private static final String TRIANGLE = "fm";
+	private static final String MATERIAL = "material";
 	
-	/** Holds the data for a vertex **/
-	private class VertexData {
-		int posIndex;
-		int uvIndex;
-		int normalIndex;
-		public VertexData(int posIndex, int uvIndex, int normalIndex) {
-			this.posIndex = posIndex;
-			this.uvIndex = uvIndex;
-			this.normalIndex = normalIndex;
-		}
-	}
 	
 	/** Holds the data for one triangle **/
 	private class Triangle {
-		VertexData[] data = new VertexData[3];
+		short[] data = new short[3];
 	}
 	
 	/** Contains data for creating a SubEntity **/
 	private class SubEntityData {
 		public String name;
-		public List<Vector3> pos;
-		public List<Vector2> uv;
-		public List<Vector3> normals;
+		public String matName;
 		public List<Triangle> triangles;
+		private List<Vector3> pos;
+		private List<Vector2> uv;
+		private List<Vector3> normals;
 		public SubEntityData(String name) {
 			this.name = name;
+			triangles = new ArrayList<Triangle>();
 			pos = new ArrayList<Vector3>();
 			uv = new ArrayList<Vector2>();
 			normals = new ArrayList<Vector3>();
-			triangles = new ArrayList<Triangle>();
 		}
 	}
+	
 	
 	/** Contains a SubEntity prototyp which contains data shared
 	 * by all SubEntities of this type created with this factory
@@ -75,16 +71,21 @@ public class ObjEntityFactory implements IEntityFactory {
 	private SubEntityData currentDataBlock = null;
 	private StringTokenizer tokenizer;
 	private TexturedMaterial baseMaterial;
+	private Map<String, TexturedMaterial> materials;
+
 	
-	public ObjEntityFactory(Context context, int resId, TexturedMaterial baseMaterial) {
+	public ObjEntityFactory(Context context, String fileName, TexturedMaterial baseMaterial) {
 		
 		this.baseMaterial = baseMaterial;
+		
 		subEntityData = new ArrayList<SubEntityData>();
+		
+		materials = new HashMap<String, TexturedMaterial>();
 		
 		// Due to efficiency reasons this class does not employ the file reader but rather parses the file directly
 		try {
-			InputStream inputStream = context.getResources().openRawResource(resId);
-
+			InputStream inputStream = context.getResources().getAssets().open(fileName);
+			
 			// setup Bufferedreader
 			BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
 
@@ -92,21 +93,25 @@ public class ObjEntityFactory implements IEntityFactory {
 			String line = null;
 			while((line = in.readLine()) != null) {
 				tokenizer = new StringTokenizer(line);
-				String token = tokenizer.nextToken();
-				if (token.equals(OBJECT)) {
-					createNextSubEntity();
-				} else if (token.equals(VERTEX)) {
-					createVertex();
-				} else if (token.equals(UV_COORD)) {
-					createUVCoord();
-				} else if (token.equals(NORMAL)) {
-					createNormal();
-				} else if (token.equals(TRIANGLE)) {
-					createTriangle();
+				if (tokenizer.hasMoreTokens()) {
+					String token = tokenizer.nextToken();
+					if (token.equals(OBJECT)) {
+						createNextSubEntity();
+					} else if (token.equals(VERTEX)) {
+						createVertex();
+					} else if (token.equals(UV_COORD)) {
+						createUVCoord();
+					} else if (token.equals(NORMAL)) {
+						createNormal();
+					} else if (token.equals(TRIANGLE)) {
+						createTriangle();
+					} else if (token.equals(MATERIAL)) {
+						createMaterial();
+					}
 				}
 			}
 		} catch (Exception e) {
-			throw new RuntimeException("Failed to load entity with resId " + resId);
+			throw new RuntimeException("Failed to load entity " + fileName + ".");
 		}
 		
 		if (currentDataBlock != null) {
@@ -124,42 +129,42 @@ public class ObjEntityFactory implements IEntityFactory {
 			
 			// Next create the vertex data
 			int byteStride = baseMaterial.getByteStride();
-			float[] vertexData = new float[byteStride * data.triangles.size() * 3];
+			float[] vertexData = new float[byteStride * data.pos.size()];
 			short[] drawOrder = new short[data.triangles.size() * 3];
 			int bytePos = 0;
+			
+			for (int j = 0; j < data.pos.size(); ++j) {
+				Vector3 pos = data.pos.get(j);
+				vertexData[bytePos + baseMaterial.getPositionOffset() + 0] = pos.y;
+				vertexData[bytePos + baseMaterial.getPositionOffset() + 1] = pos.x;
+				vertexData[bytePos + baseMaterial.getPositionOffset() + 2] = pos.z;
+				
+				vertexData[bytePos + baseMaterial.getColorOffset() + 0] = 1;
+				vertexData[bytePos + baseMaterial.getColorOffset() + 1] = 1;
+				vertexData[bytePos + baseMaterial.getColorOffset() + 2] = 1;
+				vertexData[bytePos + baseMaterial.getColorOffset() + 3] = 1;
+				
+				Vector3 normal = data.normals.get(j);
+				vertexData[bytePos + baseMaterial.getNormalOffset() + 0] = normal.y;
+				vertexData[bytePos + baseMaterial.getNormalOffset() + 1] = normal.x;
+				vertexData[bytePos + baseMaterial.getNormalOffset() + 2] = normal.z;
+				
+				Vector2 uv = data.uv.get(j);
+				vertexData[bytePos + baseMaterial.getUVOffset() + 0] = uv.x;
+				vertexData[bytePos + baseMaterial.getUVOffset() + 1] = uv.y;
+				
+				bytePos += byteStride;
+			}
 			
 			for (short j = 0; j < data.triangles.size(); ++j) {
 				Triangle triangle = data.triangles.get(j);
 				for (short k = 0; k < triangle.data.length; ++k) {
-					VertexData vertex = triangle.data[k];
-					
-					Vector3 pos = data.pos.get(vertex.posIndex);
-					vertexData[bytePos + baseMaterial.getPositionOffset() + 0] = pos.x;
-					vertexData[bytePos + baseMaterial.getPositionOffset() + 1] = pos.y;
-					vertexData[bytePos + baseMaterial.getPositionOffset() + 2] = pos.z;
-					
-					vertexData[bytePos + baseMaterial.getColorOffset() + 0] = 1;
-					vertexData[bytePos + baseMaterial.getColorOffset() + 1] = 1;
-					vertexData[bytePos + baseMaterial.getColorOffset() + 2] = 1;
-					vertexData[bytePos + baseMaterial.getColorOffset() + 3] = 1;
-					
-					Vector3 normal = data.normals.get(vertex.normalIndex);
-					vertexData[bytePos + baseMaterial.getNormalOffset() + 0] = normal.x;
-					vertexData[bytePos + baseMaterial.getNormalOffset() + 1] = normal.y;
-					vertexData[bytePos + baseMaterial.getNormalOffset() + 2] = normal.z;
-					
-					Vector2 uv = data.uv.get(vertex.uvIndex);
-					vertexData[bytePos + baseMaterial.getUVOffset() + 0] = uv.x;
-					vertexData[bytePos + baseMaterial.getUVOffset() + 1] = uv.y;
-					
-					drawOrder[j*3 + k] = (short) (3 * j + k);
-					
-					bytePos += byteStride;
+					drawOrder[j*3 + k] = triangle.data[k];
 				}
 			}
 			
 			Mesh mesh = new Mesh(vertexData, drawOrder);
-			prototype.material = baseMaterial;
+			prototype.material = materials.get(data.matName);
 			prototype.mesh = mesh;
 		}
 		
@@ -220,6 +225,7 @@ public class ObjEntityFactory implements IEntityFactory {
 		float y = Float.valueOf(tokenizer.nextToken());
 		float z = Float.valueOf(tokenizer.nextToken());
 		Vector3 normal = new Vector3(x,y,z);
+		normal.normalize();
 		currentDataBlock.normals.add(normal);
 	}
 	
@@ -227,15 +233,21 @@ public class ObjEntityFactory implements IEntityFactory {
 	private void createTriangle() {
 		Triangle triangle = new Triangle();
 		for (int i = 0; i < 3; ++i) {
-			String token = tokenizer.nextToken();
-			StringTokenizer triangleTokenizer = new StringTokenizer(token, "/");
-			int pos = Integer.valueOf(triangleTokenizer.nextToken()) - 1;
-			int uv = Integer.valueOf(triangleTokenizer.nextToken()) - 1;
-			int normal = Integer.valueOf(triangleTokenizer.nextToken()) - 1;
-			VertexData vertex = new VertexData(pos, uv, normal);
+			short vertex = Short.valueOf(tokenizer.nextToken());
 			triangle.data[i] = vertex;
 		}
 		currentDataBlock.triangles.add(triangle);
+	}
+	
+	/** Create a new material **/
+	private void createMaterial() {
+		String matName = tokenizer.nextToken();
+		matName = matName.substring(1, matName.length()-1); // get rid of the ""
+		Texture texture = TextureManager.getInstance().getTexture(matName);
+		TexturedMaterial mat = (TexturedMaterial) baseMaterial.copy();
+		mat.setTexture(texture, matName);
+		materials.put(matName, mat);
+		currentDataBlock.matName = matName;
 	}
 
 }

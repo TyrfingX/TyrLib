@@ -8,6 +8,7 @@ import android.opengl.Matrix;
 
 import com.tyrlib2.lighting.LightingType;
 import com.tyrlib2.math.Vector3;
+import com.tyrlib2.renderer.Material;
 import com.tyrlib2.renderer.OpenGLRenderer;
 import com.tyrlib2.renderer.ProgramManager;
 import com.tyrlib2.renderer.Texture;
@@ -17,6 +18,7 @@ import com.tyrlib2.util.Color;
 
 public class TexturedMaterial extends LightedMaterial {
 	
+	private LightingType type;
 	
 	/** Per vertex color of this object **/
 	private int colorOffset = 6;
@@ -82,6 +84,8 @@ public class TexturedMaterial extends LightedMaterial {
 			program = ProgramManager.getInstance().getProgram(PER_VERTEX_PROGRAM_NAME);
 			break;
 		}
+		
+		this.type = type;
 		
 		texture = TextureManager.getInstance().getTexture(textureName);
 		setup(textureName, repeatX, repeatY, type, colors);
@@ -245,5 +249,15 @@ public class TexturedMaterial extends LightedMaterial {
 	
 	public int getUVOffset(){
 		return uvOffset;
+	}
+	
+	public Material copy() {
+		TexturedMaterial material = new TexturedMaterial(textureName, repeatX, repeatY, type, colors);
+		return material;
+	}
+	
+	public void setTexture(Texture texture, String textureName) {
+		this.texture = texture;
+		this.textureName = textureName;
 	}
 }

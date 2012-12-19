@@ -8,7 +8,8 @@ import com.tyrlib2.scene.SceneNode;
 import com.tyrlib2.scene.SceneObject;
 
 /**
- * 
+ * This class represents an Entity object. Entities are higher level objects which employ animation and consist
+ * of several subentities.
  * @author Sascha
  *
  */

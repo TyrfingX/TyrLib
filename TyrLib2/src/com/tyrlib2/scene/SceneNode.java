@@ -367,7 +367,7 @@ public class SceneNode {
 		Matrix.setIdentityM(modelMatrix, 0);
 		absolutePos = parentPos.add(pos);
 		absoluteRot = parentRot.add(rot);
-		absoluteScale = parentScale.add(scale);
+		absoluteScale = new Vector3(scale.x * parentScale.x, scale.y * parentScale.y, scale.z * parentScale.z);
 		
 		Matrix.translateM(modelMatrix, 0, pos.x, pos.y, pos.z);
 		Matrix.rotateM(modelMatrix, 0, rot.angle, rot.rotX, rot.rotY, rot.rotZ);
