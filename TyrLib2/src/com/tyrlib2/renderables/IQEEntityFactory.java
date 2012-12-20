@@ -19,12 +19,12 @@ import com.tyrlib2.renderer.Texture;
 import com.tyrlib2.renderer.TextureManager;
 
 /**
- * Creates Entities by reading .obj files
+ * Creates Entities by reading .iqe files
  * @author Sascha
  *
  */
 
-public class ObjEntityFactory implements IEntityFactory {
+public class IQEEntityFactory implements IEntityFactory {
 	
 	private static final String OBJECT = "mesh";
 	private static final String VERTEX = "vp";
@@ -74,7 +74,7 @@ public class ObjEntityFactory implements IEntityFactory {
 	private Map<String, TexturedMaterial> materials;
 
 	
-	public ObjEntityFactory(Context context, String fileName, TexturedMaterial baseMaterial) {
+	public IQEEntityFactory(Context context, String fileName, TexturedMaterial baseMaterial) {
 		
 		this.baseMaterial = baseMaterial;
 		
