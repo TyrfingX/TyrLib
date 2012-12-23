@@ -84,6 +84,7 @@ public class Renderable extends SceneObject implements IRenderable {
 	        // Combine the rotation matrix with the projection and camera view
 	        GLES20.glUniformMatrix4fv(material.mvpMatrixHandle, 1, false, mvpMatrix, 0);
 
+	        
 			
 	        // Enable a handle to the triangle vertices
 	        GLES20.glEnableVertexAttribArray(material.positionHandle);
@@ -93,9 +94,8 @@ public class Renderable extends SceneObject implements IRenderable {
 	                                     GLES20.GL_FLOAT, false,
 	                                     material.strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, 
 	                                     mesh.vertexBuffer);
-	
 	        
-			material.render(mesh.vertexBuffer, modelMatrix);
+	        material.render(mesh.vertexBuffer, modelMatrix);
 	        
 	        if (material.lighted) {
 	    		
@@ -104,7 +104,7 @@ public class Renderable extends SceneObject implements IRenderable {
 	        	
 	        	// First draw using depth buffer and no blending
         		lightedMaterial.renderLight(0);
-        		GLES20.glDrawElements(GLES20.GL_TRIANGLES, mesh.drawOrder.length, GLES20.GL_UNSIGNED_SHORT, mesh.drawListBuffer);	
+        		GLES20.glDrawElements(GLES20.GL_TRIANGLES, mesh.drawListSize, GLES20.GL_UNSIGNED_SHORT, mesh.drawListBuffer);	
         	
 	        	
 	        	// Enable blending
@@ -113,7 +113,7 @@ public class Renderable extends SceneObject implements IRenderable {
 	    		
 	        	for(int i = 1; i < SceneManager.getInstance().getLightCount(); ++i) {
 	        		lightedMaterial.renderLight(i);
-	        		GLES20.glDrawElements(GLES20.GL_TRIANGLES, mesh.drawOrder.length, GLES20.GL_UNSIGNED_SHORT, mesh.drawListBuffer);	
+	        		GLES20.glDrawElements(GLES20.GL_TRIANGLES, mesh.drawListSize, GLES20.GL_UNSIGNED_SHORT, mesh.drawListBuffer);	
 	        	}
 	        	
 	    		// Enable blending
@@ -121,7 +121,7 @@ public class Renderable extends SceneObject implements IRenderable {
 	    		//GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 	        } else {
 	        	// Draw the triangle
-		        GLES20.glDrawElements(GLES20.GL_TRIANGLES, mesh.drawOrder.length, GLES20.GL_UNSIGNED_SHORT, mesh.drawListBuffer);	
+		        GLES20.glDrawElements(GLES20.GL_TRIANGLES, mesh.drawListSize, GLES20.GL_UNSIGNED_SHORT, mesh.drawListBuffer);	
 	        }
 	
 	        

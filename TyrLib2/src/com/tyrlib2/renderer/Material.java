@@ -42,6 +42,18 @@ public class Material {
 	
 	protected String positionParamName;
 	
+	/** Whether or not this material takes animation into account **/
+	protected boolean animated = false;
+	
+	/** Handle to the bone data **/
+	protected String boneParam;
+	
+	/** Handle to the bones used for the vertex **/
+	protected String boneIndexParam;
+	
+	/** Handlet to the bone weights used for the vertex **/
+	protected String boneWeightParam;
+	
 	public Material() {
 
 	}
@@ -49,6 +61,7 @@ public class Material {
 	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
 		mvpMatrixHandle = GLES20.glGetUniformLocation(program.handle, mvpParamName);
 		positionHandle = GLES20.glGetAttribLocation(program.handle, positionParamName);
+		
 	}
 	
 	/**
@@ -100,6 +113,18 @@ public class Material {
 	
 	public Program getProgram() {
 		return program;
+	}
+	
+	public String getBoneParam() {
+		return boneParam;
+	}
+	
+	public String getBoneIndexParam() {
+		return boneIndexParam;
+	}
+	
+	public String getBoneWeightParam() {
+		return boneWeightParam;
 	}
 	
 }

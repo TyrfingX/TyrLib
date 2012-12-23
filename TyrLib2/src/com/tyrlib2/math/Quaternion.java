@@ -1,5 +1,7 @@
 package com.tyrlib2.math;
 
+import android.util.FloatMath;
+
 
 /**
  * Represents a rotation in 3D space
@@ -44,6 +46,11 @@ public class Quaternion {
 		return quaternion;
 	}
 	
+	public Quaternion sub(Quaternion other) {
+		Quaternion quaternion = new Quaternion(angle - other.angle, rotX - other.rotX, rotY - other.rotY, rotZ - other.rotZ);
+		return quaternion;
+	}
+	
 	public Quaternion multiply(Quaternion other) {
 		Vector3 axisThis = new Vector3(rotX, rotY, rotZ);
 		Vector3 axisOther = new Vector3(other.rotX, other.rotY, other.rotZ);
@@ -72,5 +79,13 @@ public class Quaternion {
 	public void clamp() {
 		int factor = (int) (angle / 360);
 		angle -= factor * 360;
+	}
+	
+	public void normalize() {
+		float magnitude = FloatMath.sqrt(angle * angle + rotX * rotX + rotY * rotY + rotZ * rotZ);
+		angle = angle / magnitude;
+		rotX = rotX /  magnitude;
+		rotY = rotY / magnitude;
+		rotZ = rotZ / magnitude;
 	}
 }

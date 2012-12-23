@@ -14,12 +14,20 @@ import java.nio.ShortBuffer;
 public class Mesh {
 	protected FloatBuffer vertexBuffer;
 	protected ShortBuffer drawListBuffer;
-	protected float[] vertexData;
-	protected short[] drawOrder;
+	protected FloatBuffer boneBuffer;
+	protected int vertexDataSize;
+	protected int drawListSize;
+	protected int boneDataSize;
+	
+	public static final int MAX_BONES_PER_VERTEX = 4;
+	public static final int BONE_BYTE_STRIDE = MAX_BONES_PER_VERTEX * 2;
+	public static final int MAX_BONES_PER_MESH = 55;
+	public static final int BONE_INDEX_OFFSET = 0;
+	public static final int BONE_WEIGHT_OFFSET = MAX_BONES_PER_VERTEX;
 	
 	public Mesh(float[] vertexData, short[] drawOrder) {
-		this.vertexData = vertexData;
-		this.drawOrder = drawOrder;
+		vertexDataSize = vertexData.length;
+		drawListSize = drawOrder.length;
 		
 	    // initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(vertexData.length * OpenGLRenderer.BYTES_PER_FLOAT);
@@ -42,14 +50,41 @@ public class Mesh {
         drawListBuffer = dlb.asShortBuffer();
         drawListBuffer.put(drawOrder);
         drawListBuffer.position(0);
+      
+	}
 
+	
+	/** 
+	 * Assign vertices to bones.
+	 * The weights indicates how much the bone transformation will affect the vertices.
+	 * The array needs to have the following format:
+	 * numBones bone_index_1 bone_index_2 ...  weight_1 weight_2
+	 * Whereas 
+	 * numBones contains number of bones affecting this vertex
+	 * bone_index_x is the index xth of the bone affecting this vertex (1 Byte)
+	 * bone_weight_x is the xth weight of the bxth bone (Float, 4 Byte)
+	 * For each vertex a total space for 4 bone indicies/weights must be provided
+	 * So in total 4 * 8 = 32 Byte per vertex
+	 */
+	public void setVertexBones(float[] boneData) {
+	    boneDataSize = boneData.length;
+		
+		// initialize bone byte buffer for animation data
+		
+        ByteBuffer bb = ByteBuffer.allocateDirect(boneData.length * OpenGLRenderer.BYTES_PER_FLOAT);
+        
+        // use the device hardware's native byte order
+        bb.order(ByteOrder.nativeOrder());
+        
+        boneBuffer = bb.asFloatBuffer();
+        
+        boneBuffer.put(boneData);
+        
+        boneBuffer.position(0);
+      
 	}
 	
-	public float[] getVertexData() {
-		return vertexData;
-	}
-	
-	public short[] getDrawOrder() {
-		return drawOrder;
+	public FloatBuffer getBoneBuffer() {
+		return boneBuffer;
 	}
 }

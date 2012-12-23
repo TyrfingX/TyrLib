@@ -15,6 +15,8 @@ public class Program {
 	protected String fragmentShader;
 	protected String[] bindAttributes;
 	
+	private static Program inUse;
+	
 	public Program(int handle) {
 		this.handle = handle;
 	}
@@ -23,7 +25,10 @@ public class Program {
 	 * Use this program for rendering
 	 */
 	public void use() {
-		GLES20.glUseProgram(handle);
+		if (inUse != this) {
+			GLES20.glUseProgram(handle);
+			inUse = this;
+		}
 	}
 	
 	/**

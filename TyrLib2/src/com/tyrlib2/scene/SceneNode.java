@@ -20,28 +20,28 @@ public class SceneNode {
 	protected List<SceneObject> attachedObjects;
 	
 	/** The children of this node **/
-	private List<SceneNode> children;
+	protected List<SceneNode> children;
 	
 	/** The parent node **/
-	private SceneNode parent;
+	protected SceneNode parent;
 	
 	/** The relative position of this node **/
-	private Vector3 pos;
+	protected Vector3 pos;
 	
 	/** Absolute Position of this node in the world **/
-	private Vector3 absolutePos;
+	protected Vector3 absolutePos;
 	
 	/** Rotation of this node relative to its parent **/
-	private Quaternion rot;
+	protected Quaternion rot;
 	
 	/** Absolute rotation in the world **/
-	private Quaternion absoluteRot;
+	protected Quaternion absoluteRot;
 	
 	/** relative scaling of this node to the parent node **/
-	private Vector3 scale = new Vector3(1,1,1);
+	protected Vector3 scale = new Vector3(1,1,1);
 	
 	/** absolute scaling of this node in the world **/
-	private Vector3 absoluteScale = new Vector3(1,1,1);
+	protected Vector3 absoluteScale = new Vector3(1,1,1);
 	
 	/** Transforms model space to world space **/
 	protected float[] modelMatrix = new float[16];
@@ -106,8 +106,11 @@ public class SceneNode {
 	 */
 	
 	public void setAbsolutePos(Vector3 pos) {
-		Vector3 parentPos = parent.getAbsolutePos();
-		Vector3 newPos = pos.sub(parentPos);
+		Vector3 newPos = pos;
+		if (parent != null) {
+			Vector3 parentPos = parent.getAbsolutePos();
+			newPos = pos.sub(parentPos);
+		}
 		this.setRelativePos(newPos);
 	}
 	
@@ -163,7 +166,12 @@ public class SceneNode {
 	 * @param quaternion	The rotation in world space
 	 */
 	public void setAbsoluteRot(Quaternion rotation) {
-		
+		Quaternion newRot = rotation;
+		if (parent != null) {
+			Quaternion parentRot = parent.getAbsoluteRot();
+			newRot = rotation.sub(parentRot);
+		}
+		this.setRelativeRot(newRot);
 	}
 	
 	/**
@@ -220,8 +228,11 @@ public class SceneNode {
 	 */
 	
 	public void setAbsoluteScale(Vector3 scale) {
-		Vector3 parentScale = parent.getAbsoluteScale();
-		Vector3 newScale = pos.sub(parentScale);
+		Vector3 newScale = scale;
+		if (parent != null) {
+			Vector3 parentScale = parent.getAbsoluteScale();
+			newScale = scale.sub(parentScale);
+		}
 		this.setRelativeScale(newScale);
 	}
 	
@@ -362,7 +373,7 @@ public class SceneNode {
 	 * be informed and update their matrices accordingly.
 	 */
 	
-	private void updateAll(Vector3 parentPos, Quaternion parentRot, Vector3 parentScale, float[] parentTransform) {
+	public void updateAll(Vector3 parentPos, Quaternion parentRot, Vector3 parentScale, float[] parentTransform) {
 		
 		Matrix.setIdentityM(modelMatrix, 0);
 		absolutePos = parentPos.add(pos);

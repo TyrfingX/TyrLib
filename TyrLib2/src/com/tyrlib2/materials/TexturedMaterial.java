@@ -95,6 +95,11 @@ public class TexturedMaterial extends LightedMaterial {
 	
 	protected void setup(String textureName, int repeatX, int repeatY, LightingType type, Color[] colors) {
 		lighted = true;
+		animated = true;
+		
+		this.boneParam = "u_Bone";
+		this.boneIndexParam = "a_BoneIndex";
+		this.boneWeightParam = "a_BoneWeight";
 		
 		this.textureName = textureName;
 		this.colors = colors; 

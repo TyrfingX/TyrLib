@@ -21,7 +21,7 @@ public class MeshMixer {
 	private int countVertices;
 	private int countIndices;
 	private Material material;
-	
+	/*
 	public MeshMixer(Material material) {
 		inputRenderables = new ArrayList<Renderable>();
 		this.material = material;
@@ -39,7 +39,7 @@ public class MeshMixer {
 	 * Create the renderable
 	 * @return
 	 */
-	
+	/*
 	public Renderable create() {
 		float[] vertexData = new float[countVertices];
 		short[] drawOrder = new short[countIndices];
@@ -51,8 +51,8 @@ public class MeshMixer {
 			Renderable inputRenderable = inputRenderables.get(i);
 			Mesh inputMesh = inputRenderable.getMesh();
 			
-			float[] vertexDataMesh = inputMesh.getVertexData();
-			short[] drawOrderMesh = inputMesh.getDrawOrder();
+			//float[] vertexDataMesh = inputMesh.getVertexData();
+			//short[] drawOrderMesh = inputMesh.getDrawOrder();
 			for (int j = 0; j < vertexDataMesh.length; ++j) {
 				
 				// TODO: Transform the vertex data using the parent scene node of the renderable
@@ -75,4 +75,5 @@ public class MeshMixer {
 		
 		return renderable;
 	}
+	*/
 }

@@ -3,20 +3,24 @@ package com.tyrlib2.renderables;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.tyrlib.animation.Animation;
+import com.tyrlib.animation.Skeleton;
+import com.tyrlib2.game.IUpdateable;
 import com.tyrlib2.renderer.IRenderable;
 import com.tyrlib2.scene.SceneNode;
 import com.tyrlib2.scene.SceneObject;
 
 /**
- * This class represents an Entity object. Entities are higher level objects which employ animation and consist
- * of several subentities.
+ * This class represents an Entity object. Entities are higher level objects which employ
+ * skeletal animation and consist of several subentities.
  * @author Sascha
  *
  */
 
-public class Entity extends SceneObject implements IRenderable {
+public class Entity extends SceneObject implements IRenderable, IUpdateable {
 
 	private Map<String, SubEntity> subEntities;
+	protected Skeleton skeleton;
 	
 	public Entity() {
 		subEntities = new HashMap<String, SubEntity>();
@@ -43,8 +47,11 @@ public class Entity extends SceneObject implements IRenderable {
 	
 	@Override
 	public void render(float[] vpMatrix) {
+		
+		float[] boneData = skeleton.getBoneData();
+		
 		for (SubEntity subEntity : subEntities.values()) {
-			subEntity.render(vpMatrix);
+			subEntity.render(vpMatrix, boneData, skeleton.getCountBones());
 		}
 	}
 	
@@ -65,5 +72,29 @@ public class Entity extends SceneObject implements IRenderable {
 		return super.detach();
 	}
 	
+	/** 
+	 * Get the skeleton of this entity if it has one
+	 * @return The skeleton of this entity
+	 */
+	public Skeleton getSkeleton() {
+		return skeleton;
+	}
+	
+	public void playAnimation(String animName) {
+		Animation anim = skeleton.getAnimation(animName);
+		anim.play();
+	}
+
+	@Override
+	public void onUpdate(float time) {
+		if (skeleton != null) {
+			skeleton.onUpdate(time);
+		}
+	}
+
+	@Override
+	public boolean isFinished() {
+		return false;
+	}
 
 }

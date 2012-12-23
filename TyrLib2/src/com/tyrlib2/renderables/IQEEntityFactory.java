@@ -1,6 +1,7 @@
 package com.tyrlib2.renderables;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -11,7 +12,12 @@ import java.util.StringTokenizer;
 
 import android.content.Context;
 
+import com.tyrlib.animation.Animation;
+import com.tyrlib.animation.AnimationFrame;
+import com.tyrlib.animation.Bone;
+import com.tyrlib.animation.Skeleton;
 import com.tyrlib2.materials.TexturedMaterial;
+import com.tyrlib2.math.Quaternion;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.renderer.Mesh;
@@ -26,12 +32,20 @@ import com.tyrlib2.renderer.TextureManager;
 
 public class IQEEntityFactory implements IEntityFactory {
 	
-	private static final String OBJECT = "mesh";
-	private static final String VERTEX = "vp";
-	private static final String UV_COORD = "vt";
-	private static final String NORMAL = "vn";
-	private static final String TRIANGLE = "fm";
-	private static final String MATERIAL = "material";
+	private static final String OBJECT = "mesh";		// Begin a new sub entity
+	private static final String VERTEX = "vp";			// Begin a new vertex and set the pos
+	private static final String UV_COORD = "vt";		// Set the UV Texture for the current vertex
+	private static final String NORMAL = "vn";			// Set the normal vector for the current vertex
+	private static final String TRIANGLE = "fm";		// Make a triangle
+	private static final String BONE_BINDING = "vb";	// Binds bones to a vertex
+	private static final String MATERIAL = "material";	// Use a new material
+	private static final String BONE = "joint";			// Create a new bone
+	private static final String BONE_POSE = "pq";		// Set a bone pose
+	private static final String ANIMATION = "animation";// Begin a new animation
+	private static final String FRAMERATE = "framerate";// Set the framerate of the current animation
+	private static final String FRAME = "frame";		// Begin a new animation frame
+	
+	public static int MAX_BONES_PER_VERTEX = 4;
 	
 	
 	/** Holds the data for one triangle **/
@@ -39,23 +53,67 @@ public class IQEEntityFactory implements IEntityFactory {
 		short[] data = new short[3];
 	}
 	
+	
+	/** Contains the data for binding a vertex to a bone **/ 
+	private class BoneBinding {
+		float boneIndex;
+		float boneWeight;
+	}
+	
+	/** Contains per vertex data **/
+	private class VertexData {
+		public Vector3 pos;
+		public Vector2 uv;
+		public Vector3 normal;
+		public List<BoneBinding> boneBindings;
+		
+		public VertexData() {
+			boneBindings = new ArrayList<BoneBinding>();
+		}
+	}
+	
 	/** Contains data for creating a SubEntity **/
 	private class SubEntityData {
 		public String name;
 		public String matName;
 		public List<Triangle> triangles;
-		private List<Vector3> pos;
-		private List<Vector2> uv;
-		private List<Vector3> normals;
+		private List<VertexData> vertexData;
 		public SubEntityData(String name) {
 			this.name = name;
 			triangles = new ArrayList<Triangle>();
-			pos = new ArrayList<Vector3>();
-			uv = new ArrayList<Vector2>();
-			normals = new ArrayList<Vector3>();
+			vertexData = new ArrayList<VertexData>();
 		}
 	}
 	
+	/** Contains data for creating a bone **/
+	private class BoneData {
+		public String name;
+		public Vector3 pos;
+		public Quaternion rot;
+		public int parentIndex;
+	}
+	
+	/** Contains data for creating an animation **/
+	private class AnimationData {
+		public String name;
+		public List<AnimationFrame> animationFrames;
+		public float frameRate;
+		public AnimationData() {
+			animationFrames = new ArrayList<AnimationFrame>();
+		}
+	}
+	
+	/** Contains data for creating a skeleton **/
+	private class SkeletonData {
+		public List<BoneData> bones;
+		public List<AnimationData> animations;
+		public SkeletonData() {
+			bones = new ArrayList<BoneData>();
+			animations = new ArrayList<AnimationData>();
+		}
+	}
+	
+
 	
 	/** Contains a SubEntity prototyp which contains data shared
 	 * by all SubEntities of this type created with this factory
@@ -72,6 +130,8 @@ public class IQEEntityFactory implements IEntityFactory {
 	private StringTokenizer tokenizer;
 	private TexturedMaterial baseMaterial;
 	private Map<String, TexturedMaterial> materials;
+	private SkeletonData skeletonData;
+	private BufferedReader in;
 
 	
 	public IQEEntityFactory(Context context, String fileName, TexturedMaterial baseMaterial) {
@@ -79,6 +139,7 @@ public class IQEEntityFactory implements IEntityFactory {
 		this.baseMaterial = baseMaterial;
 		
 		subEntityData = new ArrayList<SubEntityData>();
+		skeletonData = new SkeletonData();
 		
 		materials = new HashMap<String, TexturedMaterial>();
 		
@@ -87,7 +148,7 @@ public class IQEEntityFactory implements IEntityFactory {
 			InputStream inputStream = context.getResources().getAssets().open(fileName);
 			
 			// setup Bufferedreader
-			BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
+			in = new BufferedReader(new InputStreamReader(inputStream));
 
 			// Try to parse the file
 			String line = null;
@@ -103,16 +164,27 @@ public class IQEEntityFactory implements IEntityFactory {
 						createUVCoord();
 					} else if (token.equals(NORMAL)) {
 						createNormal();
+					} else if (token.equals(BONE_BINDING)) {
+						createBoneBinding();
 					} else if (token.equals(TRIANGLE)) {
 						createTriangle();
+					} else if (token.equals(BONE)) {
+						createBone();
+					} else if (token.equals(BONE_POSE)) {
+						createBonePose();
 					} else if (token.equals(MATERIAL)) {
 						createMaterial();
-					}
+					} else if (token.equals(ANIMATION)) {
+						createAnimations();
+					} 
 				}
 			}
-		} catch (Exception e) {
+			
+			inputStream.close();
+			in.close();
+		} catch (IOException e) {
 			throw new RuntimeException("Failed to load entity " + fileName + ".");
-		}
+		} 
 		
 		if (currentDataBlock != null) {
 			subEntityData.add(currentDataBlock);
@@ -129,12 +201,15 @@ public class IQEEntityFactory implements IEntityFactory {
 			
 			// Next create the vertex data
 			int byteStride = baseMaterial.getByteStride();
-			float[] vertexData = new float[byteStride * data.pos.size()];
+			float[] vertexData = new float[byteStride * data.vertexData.size()];
 			short[] drawOrder = new short[data.triangles.size() * 3];
+			float[] boneData = new float[data.vertexData.size() * Mesh.BONE_BYTE_STRIDE];
 			int bytePos = 0;
+			int boneBytePos = 0;
 			
-			for (int j = 0; j < data.pos.size(); ++j) {
-				Vector3 pos = data.pos.get(j);
+			for (int j = 0; j < data.vertexData.size(); ++j) {
+				VertexData vertex = data.vertexData.get(j);
+				Vector3 pos = vertex.pos;
 				vertexData[bytePos + baseMaterial.getPositionOffset() + 0] = pos.y;
 				vertexData[bytePos + baseMaterial.getPositionOffset() + 1] = pos.x;
 				vertexData[bytePos + baseMaterial.getPositionOffset() + 2] = pos.z;
@@ -144,16 +219,33 @@ public class IQEEntityFactory implements IEntityFactory {
 				vertexData[bytePos + baseMaterial.getColorOffset() + 2] = 1;
 				vertexData[bytePos + baseMaterial.getColorOffset() + 3] = 1;
 				
-				Vector3 normal = data.normals.get(j);
+				Vector3 normal = vertex.normal;
 				vertexData[bytePos + baseMaterial.getNormalOffset() + 0] = normal.y;
 				vertexData[bytePos + baseMaterial.getNormalOffset() + 1] = normal.x;
 				vertexData[bytePos + baseMaterial.getNormalOffset() + 2] = normal.z;
 				
-				Vector2 uv = data.uv.get(j);
+				Vector2 uv = vertex.uv;
 				vertexData[bytePos + baseMaterial.getUVOffset() + 0] = uv.x;
 				vertexData[bytePos + baseMaterial.getUVOffset() + 1] = uv.y;
 				
 				bytePos += byteStride;
+
+				int offset = 0;
+				for (int k = 0; k < vertex.boneBindings.size(); ++k) {
+					BoneBinding binding = vertex.boneBindings.get(k);
+					boneData[boneBytePos + offset] = binding.boneIndex;
+					offset++;
+				}
+				
+				offset = Mesh.MAX_BONES_PER_VERTEX;
+				
+				for (int k = 0; k < vertex.boneBindings.size(); ++k) {
+					BoneBinding binding = vertex.boneBindings.get(k);
+					boneData[boneBytePos + offset] =  binding.boneWeight;
+					offset++;
+				}
+				
+				boneBytePos += Mesh.BONE_BYTE_STRIDE;
 			}
 			
 			for (short j = 0; j < data.triangles.size(); ++j) {
@@ -164,6 +256,7 @@ public class IQEEntityFactory implements IEntityFactory {
 			}
 			
 			Mesh mesh = new Mesh(vertexData, drawOrder);
+			mesh.setVertexBones(boneData);
 			prototype.material = materials.get(data.matName);
 			prototype.mesh = mesh;
 		}
@@ -177,10 +270,35 @@ public class IQEEntityFactory implements IEntityFactory {
 	public Entity create() {
 		Entity entity = new Entity();
 		for (int i = 0; i < subEntityPrototypes.length; ++i) {
+			// Use the prototypes to create the actual sub entities
 			SubEntityPrototype prototype = subEntityPrototypes[i];
 			SubEntity subEntity = new SubEntity(prototype.name, prototype.mesh, prototype.material);
 			entity.addSubEntity(subEntity);
 		}
+		
+		// Now create a new skeleton
+		Skeleton skeleton = new Skeleton();
+		entity.skeleton = skeleton;
+		for (int i = 0; i < skeletonData.bones.size(); ++i) {
+			BoneData boneData = skeletonData.bones.get(i);
+			Bone bone = new Bone(boneData.name);
+			if (boneData.parentIndex != -1) {
+				Bone parentBone = skeleton.getBone(boneData.parentIndex);
+				parentBone.attachChild(bone);
+			}
+			bone.setPose(boneData.pos, boneData.rot);
+			skeleton.addBone(bone);
+		}
+		
+		for (int i = 0; i < skeletonData.animations.size(); ++i) {
+			AnimationData animData = skeletonData.animations.get(i);
+			Animation animation = new Animation(animData.name);
+			skeleton.addAnimation(animation);
+			animation.addAllFrames(animData.animationFrames);
+			
+		}
+		
+		
 		return entity;
 	}
 
@@ -203,8 +321,9 @@ public class IQEEntityFactory implements IEntityFactory {
 		float x = Float.valueOf(tokenizer.nextToken());
 		float y = Float.valueOf(tokenizer.nextToken());
 		float z = Float.valueOf(tokenizer.nextToken());
-		Vector3 vertex = new Vector3(x,y,z);
-		currentDataBlock.pos.add(vertex);
+		VertexData vertexData = new VertexData();
+		vertexData.pos = new Vector3(x,y,z);
+		currentDataBlock.vertexData.add(vertexData);
 	}
 	
 	/** 
@@ -213,8 +332,7 @@ public class IQEEntityFactory implements IEntityFactory {
 	private void createUVCoord() {
 		float u = Float.valueOf(tokenizer.nextToken());
 		float v = Float.valueOf(tokenizer.nextToken());
-		Vector2 uvCoord = new Vector2(u,v);
-		currentDataBlock.uv.add(uvCoord);
+		currentDataBlock.vertexData.get(currentDataBlock.vertexData.size()-1).uv = new Vector2(u,v);
 	}
 	
 	/**
@@ -226,7 +344,48 @@ public class IQEEntityFactory implements IEntityFactory {
 		float z = Float.valueOf(tokenizer.nextToken());
 		Vector3 normal = new Vector3(x,y,z);
 		normal.normalize();
-		currentDataBlock.normals.add(normal);
+		currentDataBlock.vertexData.get(currentDataBlock.vertexData.size()-1).normal = normal;
+	}
+	
+	/**
+	 * Binds bones to a vertex/a vertex to bones
+	 */
+	private void createBoneBinding() {
+		VertexData vertex = currentDataBlock.vertexData.get(currentDataBlock.vertexData.size()-1);
+		while(tokenizer.hasMoreElements()) {
+			BoneBinding binding = new BoneBinding();
+			binding.boneIndex = Byte.valueOf(tokenizer.nextToken());
+			binding.boneWeight = Float.valueOf(tokenizer.nextToken());
+			vertex.boneBindings.add(binding);
+		}
+		
+		// Renormalize
+		float total = 0;
+		for (int i = 0; i < vertex.boneBindings.size(); ++i) {
+			total += vertex.boneBindings.get(i).boneWeight;
+		}
+		
+		if (total != 0) {
+			for (int i = 0; i < vertex.boneBindings.size(); ++i) {
+				vertex.boneBindings.get(i).boneWeight /= total;
+			}
+		}
+		
+		// Kick out the weakest bone bindings
+		while(vertex.boneBindings.size() > Mesh.MAX_BONES_PER_VERTEX) {
+			float min = 1;
+			int minIndex = 0;
+			for (int i = 0; i < vertex.boneBindings.size(); ++i) {
+				float weight = vertex.boneBindings.get(i).boneWeight;
+				if (weight < min) {
+					minIndex = i;
+					min = weight;
+				}
+			}
+			
+			vertex.boneBindings.remove(minIndex);
+		}
+		
 	}
 	
 	/** Creates a new triangle **/
@@ -239,6 +398,43 @@ public class IQEEntityFactory implements IEntityFactory {
 		currentDataBlock.triangles.add(triangle);
 	}
 	
+	/** Create a new bone **/
+	private void createBone() {
+		String boneName = tokenizer.nextToken();
+		BoneData bone = new BoneData();
+		bone.name = boneName;
+		int parentIndex = Integer.valueOf(tokenizer.nextToken());
+		bone.parentIndex = parentIndex;		
+		
+		skeletonData.bones.add(bone);
+	}
+	
+	private void createBonePose() {
+		BoneData bone = skeletonData.bones.get(skeletonData.bones.size()-1);
+		
+		float x = Float.valueOf(tokenizer.nextToken());
+		float y = Float.valueOf(tokenizer.nextToken());
+		float z = Float.valueOf(tokenizer.nextToken());
+		bone.pos = new Vector3(x,z,y);
+		
+		float rotZ = Float.valueOf(tokenizer.nextToken());
+		float angle = Float.valueOf(tokenizer.nextToken());
+		float rotX = Float.valueOf(tokenizer.nextToken());
+		float rotY = Float.valueOf(tokenizer.nextToken());
+		bone.rot = new Quaternion(angle,rotZ,rotX,rotY);
+		
+		if (rotY == 0 && rotX == 0 && rotZ == 0) {
+			bone.rot.rotZ = 1;
+		}
+		
+		bone.rot.angle = (float)(2 * Math.acos(bone.rot.angle) * 180 / Math.PI);
+		
+		//float scaleX = Float.valueOf(tokenizer.nextToken());
+		//float scaleY = Float.valueOf(tokenizer.nextToken());
+		//float scaleZ = Float.valueOf(tokenizer.nextToken());
+		//bone.scale = new Vector3(scaleX,scaleY,scaleZ);
+	}
+	
 	/** Create a new material **/
 	private void createMaterial() {
 		String matName = tokenizer.nextToken();
@@ -248,6 +444,75 @@ public class IQEEntityFactory implements IEntityFactory {
 		mat.setTexture(texture, matName);
 		materials.put(matName, mat);
 		currentDataBlock.matName = matName;
+	}
+	
+	/** Create all animations **/
+	private void createAnimations() throws IOException {
+		if (tokenizer.hasMoreElements()) {
+			createAnimation();
+		}
+	}
+	
+	/** Create a new animation **/
+	private void createAnimation() throws IOException {
+		String animName = tokenizer.nextToken();
+		animName = animName.substring(1, animName.length()-1); // get rid of the ""
+		AnimationData animData = new AnimationData();
+		animData.name = animName;
+		skeletonData.animations.add(animData);
+		
+		// parse the data for this animation
+		
+		String line =  in.readLine();
+		tokenizer = new StringTokenizer(line);
+		String token = tokenizer.nextToken();
+		if (token.equals(FRAMERATE)) {
+			animData.frameRate = Float.valueOf(tokenizer.nextToken());
+		}
+		
+		in.readLine(); // Empty line
+		int currentBone = 0;
+		
+		AnimationFrame animFrame = null;
+		
+		while((line = in.readLine()) != null) {
+			tokenizer = new StringTokenizer(line);
+			if (tokenizer.hasMoreElements()) {
+				token = tokenizer.nextToken();
+				if (token.equals(BONE_POSE)) {
+					float x = Float.valueOf(tokenizer.nextToken());
+					float y = Float.valueOf(tokenizer.nextToken());
+					float z = Float.valueOf(tokenizer.nextToken());
+					animFrame.bonePos[currentBone] = new Vector3(x,z,y);
+					
+					float rotZ = Float.valueOf(tokenizer.nextToken());
+					float angle = Float.valueOf(tokenizer.nextToken());
+					float rotX = Float.valueOf(tokenizer.nextToken());
+					float rotY = Float.valueOf(tokenizer.nextToken());
+					
+					
+					animFrame.boneRot[currentBone] = new Quaternion(angle,rotZ,rotX,rotY);
+					
+					if (rotY == 0 && rotX == 0 && rotZ == 0) {
+						animFrame.boneRot[currentBone].rotZ = 1;
+					}
+					
+					animFrame.boneRot[currentBone].angle = (float)(2 * Math.acos(animFrame.boneRot[currentBone].angle) * 180 / Math.PI);
+					
+					currentBone++;
+				} else if (token.equals(FRAME)) {
+					currentBone = 0;
+					animFrame = new AnimationFrame(skeletonData.bones.size());
+					animFrame.time += animData.animationFrames.size() * 1 / animData.frameRate;
+					animData.animationFrames.add(animFrame);
+					if (animData.animationFrames.size() == 20) {
+						animFrame.time = animFrame.time;
+					}
+				}else if (token.equals(ANIMATION)) {
+					break;
+				}
+			}
+		}
 	}
 
 }
