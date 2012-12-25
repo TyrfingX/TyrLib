@@ -142,7 +142,7 @@ public class SceneNode {
 		absoluteRot = rot;
 		
 		if (parent != null) {
-			rot = rot.add(parent.getAbsoluteRot());
+			rot = parent.getAbsoluteRot().multiply(rot);
 		}
 		
 		return absoluteRot;
@@ -169,7 +169,7 @@ public class SceneNode {
 		Quaternion newRot = rotation;
 		if (parent != null) {
 			Quaternion parentRot = parent.getAbsoluteRot();
-			newRot = rotation.sub(parentRot);
+			newRot = rotation.multiply(parentRot.inverse());
 		}
 		this.setRelativeRot(newRot);
 	}
@@ -377,11 +377,11 @@ public class SceneNode {
 		
 		Matrix.setIdentityM(modelMatrix, 0);
 		absolutePos = parentPos.add(pos);
-		absoluteRot = parentRot.add(rot);
+		absoluteRot = parentRot.multiply(parentRot);
 		absoluteScale = new Vector3(scale.x * parentScale.x, scale.y * parentScale.y, scale.z * parentScale.z);
 		
 		Matrix.translateM(modelMatrix, 0, pos.x, pos.y, pos.z);
-		Matrix.rotateM(modelMatrix, 0, rot.angle, rot.rotX, rot.rotY, rot.rotZ);
+		Matrix.multiplyMM(modelMatrix, 0, rot.toMatrix(), 0, modelMatrix, 0);
 		Matrix.scaleM(modelMatrix, 0, scale.x, scale.y, scale.z);
 		
 		Matrix.multiplyMM(modelMatrix, 0, parentTransform, 0, modelMatrix, 0);
@@ -418,7 +418,7 @@ public class SceneNode {
 	 */
 	
 	public void rotate(Quaternion rotation) {
-		setRelativeRot(this.rot.add(rotation));
+		setRelativeRot(this.rot.multiply(rotation));
 	}
 	
 	/**

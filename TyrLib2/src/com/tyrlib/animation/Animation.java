@@ -81,17 +81,20 @@ public class Animation implements IUpdateable {
 			AnimationFrame frame = getCurrentFrame();
 			//skeleton.getBone(0).rotate(new Quaternion(30*time,0,1,1));
 			//skeleton.getBone(1).rotate(new Quaternion(30*time,0,1,0));
-			//skeleton.getBone(2).rotate(new Quaternion(-30*time,0,1,0));
+			skeleton.getBone(31).rotate(Quaternion.fromAxisAngle(new Vector3(0,1,0), time*30));
+			
 			for (int i = 0; i < skeleton.bones.size(); ++i) {
+				/*
 				Bone bone = skeleton.bones.get(i);
-				bone.setRelativePos(frame.bonePos[i].sub(bone.initPos));
+				bone.setRelativePos(frame.bonePos[i]);
 				Quaternion q = frame.boneRot[i];
-				Quaternion quat = new Quaternion(q);
-
-				if (quat.rotX == 0 && quat.rotY == 0 && quat.rotZ == 0) {
-					quat.rotZ = 1;
+				Quaternion quat = bone.initRot.multiply(q);
+				
+				if (quat.x == 0 && quat.y == 0 && quat.z == 0) {
+					quat.w = 1;
 				}
 				bone.setRelativeRot(quat);
+				*/
 			}	
 			
 		}

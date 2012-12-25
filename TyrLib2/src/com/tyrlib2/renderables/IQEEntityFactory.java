@@ -417,17 +417,16 @@ public class IQEEntityFactory implements IEntityFactory {
 		float z = Float.valueOf(tokenizer.nextToken());
 		bone.pos = new Vector3(x,z,y);
 		
-		float rotZ = Float.valueOf(tokenizer.nextToken());
-		float angle = Float.valueOf(tokenizer.nextToken());
+		
 		float rotX = Float.valueOf(tokenizer.nextToken());
 		float rotY = Float.valueOf(tokenizer.nextToken());
-		bone.rot = new Quaternion(angle,rotZ,rotX,rotY);
+		float rotZ = Float.valueOf(tokenizer.nextToken());
+		float angle = Float.valueOf(tokenizer.nextToken());
+		bone.rot = new Quaternion(rotX,rotZ,rotY,angle);
 		
 		if (rotY == 0 && rotX == 0 && rotZ == 0) {
-			bone.rot.rotZ = 1;
+			bone.rot.w = 1;
 		}
-		
-		bone.rot.angle = (float)(2 * Math.acos(bone.rot.angle) * 180 / Math.PI);
 		
 		//float scaleX = Float.valueOf(tokenizer.nextToken());
 		//float scaleY = Float.valueOf(tokenizer.nextToken());
@@ -485,19 +484,18 @@ public class IQEEntityFactory implements IEntityFactory {
 					float z = Float.valueOf(tokenizer.nextToken());
 					animFrame.bonePos[currentBone] = new Vector3(x,z,y);
 					
-					float rotZ = Float.valueOf(tokenizer.nextToken());
-					float angle = Float.valueOf(tokenizer.nextToken());
 					float rotX = Float.valueOf(tokenizer.nextToken());
 					float rotY = Float.valueOf(tokenizer.nextToken());
+					float rotZ = Float.valueOf(tokenizer.nextToken());
+					float angle = Float.valueOf(tokenizer.nextToken());
 					
 					
-					animFrame.boneRot[currentBone] = new Quaternion(angle,rotZ,rotX,rotY);
+					animFrame.boneRot[currentBone] = new Quaternion(rotX,rotZ,rotY,angle);
 					
 					if (rotY == 0 && rotX == 0 && rotZ == 0) {
-						animFrame.boneRot[currentBone].rotZ = 1;
+						animFrame.boneRot[currentBone].w = 1;
 					}
-					
-					animFrame.boneRot[currentBone].angle = (float)(2 * Math.acos(animFrame.boneRot[currentBone].angle) * 180 / Math.PI);
+
 					
 					currentBone++;
 				} else if (token.equals(FRAME)) {

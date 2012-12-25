@@ -10,82 +10,155 @@ import android.util.FloatMath;
  */
 
 public class Quaternion {
-	public float angle;
-	public float rotX;
-	public float rotY;
-	public float rotZ;
+	public float x;
+	public float y;
+	public float z;
+	public float w;
 	
-	public Quaternion(float angle, float rotX, float rotY, float rotZ) {
-		Vector3 tmp = new Vector3(rotX, rotY, rotZ);
-		tmp.normalize();
-		this.rotX = tmp.x;
-		this.rotY = tmp.y;
-		this.rotZ = tmp.z;
-		this.angle = angle;
-		this.clamp();
-	}
+	private static final Quaternion IDENTITY = new Quaternion(0,0,0,1);
 	
-	public Quaternion(Quaternion quaternion) {
-		this.rotX = quaternion.rotX;
-		this.rotY = quaternion.rotY;
-		this.rotZ = quaternion.rotZ;
-		this.angle = quaternion.angle;
-		this.clamp();
-	}
-	
+	/** Defaults to the identity quaternion **/
 	public Quaternion() {
-		this(0,0,0,0);
+		w = 1;
 	}
 	
-	public Quaternion(float angle, Vector3 axis) {
-		this(angle, axis.x, axis.y, axis.z);
+	public Quaternion(float x, float y, float z, float w) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.w = w;
 	}
 	
-	public Quaternion add(Quaternion other) {
-		Quaternion quaternion = new Quaternion(angle + other.angle, rotX + other.rotX, rotY + other.rotY, rotZ + other.rotZ);
-		return quaternion;
-	}
-	
-	public Quaternion sub(Quaternion other) {
-		Quaternion quaternion = new Quaternion(angle - other.angle, rotX - other.rotX, rotY - other.rotY, rotZ - other.rotZ);
-		return quaternion;
-	}
-	
-	public Quaternion multiply(Quaternion other) {
-		Vector3 axisThis = new Vector3(rotX, rotY, rotZ);
-		Vector3 axisOther = new Vector3(other.rotX, other.rotY, other.rotZ);
-		float newAngle = angle * other.angle - axisThis.dot(axisOther);
-		Vector3 newAxis = axisOther.multiply(angle).add(axisThis.multiply(other.angle)).add(axisThis.cross(axisOther));
-		return new Quaternion(newAngle, newAxis);
-	}
-	
-	public Vector3 multiply(Vector3 vector) {
-		Vector3 axisThis = new Vector3(rotX, rotY, rotZ);
-		Quaternion rotator = new Quaternion((float)Math.cos(angle/2), axisThis.multiply((float)Math.sin(angle/2)));
-		Quaternion other = new Quaternion(0, vector);
-		Quaternion tmp = rotator.multiply(other).multiply(rotator.conjugate());
-		Vector3 rotatedVector = new Vector3(tmp.rotX, tmp.rotY, tmp.rotZ);
-		return rotatedVector;
-	}
-	
-	public Quaternion conjugate() {
-		return new Quaternion(angle, -rotX, -rotY, -rotZ);
+	public Quaternion(Quaternion other) {
+		this.x = other.x;
+		this.y = other.y;
+		this.z = other.z;
+		this.w = other.w;
 	}
 	
 	/**
-	 * Clamps the angle to [-2pi, 2pi]
+	 * Get a normalized version of this quaternion
+	 * @return	The normalized quaternion
 	 */
-	
-	public void clamp() {
-		int factor = (int) (angle / 360);
-		angle -= factor * 360;
+	public Quaternion normalized() {
+		Quaternion normalized = new Quaternion(this);
+		normalized.normalize();
+		return normalized;
 	}
 	
+	/**
+	 * Get the "length" of this quaternion
+	 * @return
+	 */
+	public float length() {
+		return FloatMath.sqrt(x*x + y*y + z*z + w*w);
+	}
+	
+	/**
+	 * Normalize this quaternion
+	 */
 	public void normalize() {
-		float magnitude = FloatMath.sqrt(angle * angle + rotX * rotX + rotY * rotY + rotZ * rotZ);
-		angle = angle / magnitude;
-		rotX = rotX /  magnitude;
-		rotY = rotY / magnitude;
-		rotZ = rotZ / magnitude;
+		float length = length();
+		x /= length;
+		y /= length;
+		z /= length;
+		w /= length;
+	}
+	
+	/**
+	 * Get the inverse of this quaternion
+	 * @return	The inverse of this quaternion
+	 */
+	public Quaternion inverse() {
+		float length = 1.0f / length();
+		Quaternion inverse = new Quaternion(-length, -length, -length, length);
+		return inverse;
+	}
+	
+	/**
+	 * Multiply this quaternion with another
+	 * @param other
+	 * @return	The resulting quaternion
+	 */
+	public Quaternion multiply(Quaternion other) {
+
+		Vector3 vector1 = new Vector3(x,y,z);
+		Vector3 vector2 = new Vector3(other.x,other.y,other.z);
+
+		float angle = (w * other.w) - vector1.dot(vector2);
+
+		Vector3 cross = vector1.cross(vector2);
+		
+		vector1 = vector1.multiply(other.w);
+		vector2 = vector2.multiply(w);
+		
+		Quaternion result = new Quaternion();
+		result.x = vector1.x + vector2.x + cross.x;
+		result.y = vector1.y + vector2.y + cross.y;
+		result.z = vector1.z + vector2.z + cross.z;
+		result.w = angle;
+		
+		return result;
+	}
+	
+	public Quaternion rotate(Vector3 axis, float angle) {
+		Quaternion rotation = Quaternion.fromAxisAngle(axis, angle);
+		Quaternion result = this.multiply(rotation);
+		return result;
+	}
+	
+	/**
+	 * Converts this quaternion to a 4x4 matrix
+	 * @return
+	 */
+	public float[] toMatrix() {
+		
+		float[] matrix = new float[16];
+		
+		matrix[0]  = (1.0f - (2.0f * ((y * y) + (z * z))));
+		matrix[1]  =         (2.0f * ((x *y) + (z * w)));
+		matrix[2]  =         (2.0f * ((x * z) - (y * w)));
+		matrix[3]  = 0.0f;
+		matrix[4]  =         (2.0f * ((x * y) - (z * w)));
+		matrix[5]  = (1.0f - (2.0f * ((x * x) + (z * z))));
+		matrix[6]  =         (2.0f * ((y * z) + (x * w)));
+		matrix[7]  = 0.0f;
+		matrix[8]  =         (2.0f * ((x * z) + (y * w)));
+		matrix[9]  =         (2.0f * ((y * z) - (x * w)));
+		matrix[10] = (1.0f - (2.0f * ((x * x) + (y * y))));
+		matrix[11] = 0.0f;
+		matrix[12] = 0.0f;
+		matrix[13] = 0.0f;
+		matrix[14] = 0.0f;
+		matrix[15] = 1.0f;
+		  
+		return matrix;
+	}
+	
+	public static Quaternion getIdentity() {
+		return new Quaternion(IDENTITY);
+	}
+	
+
+	
+	
+	/** 
+	 * Create a quaternion from an axis-angle rotation 
+	 **/
+	public static Quaternion fromAxisAngle(Vector3 axis, float angle) {
+		Vector3 newAxis = new Vector3(axis);
+		newAxis.normalize();
+		
+		Quaternion q = new Quaternion();
+		
+		float radiantAngle = 0.5f * angle * (float)Math.PI / 180;
+		float sinAngle = FloatMath.sin(radiantAngle);
+		
+		q.x = newAxis.x * sinAngle;
+		q.y = newAxis.y * sinAngle;
+		q.z = newAxis.z * sinAngle;
+		q.w = FloatMath.cos(radiantAngle);
+		
+		return q;
 	}
 }

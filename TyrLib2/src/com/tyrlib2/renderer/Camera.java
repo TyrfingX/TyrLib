@@ -65,13 +65,11 @@ public class Camera extends SceneObject {
 	 */
 	
 	public void update() {
-		
-
 		Vector3 pos = parent.getAbsolutePos();
 		Matrix.setLookAtM(viewMatrix, 0, 0, 0, 0, lookDirection.x, lookDirection.y, lookDirection.z, up.x, up.y, up.z);
 		Quaternion rotation = parent.getAbsoluteRot();
 		Matrix.translateM(viewMatrix, 0, -pos.x, -pos.y, -pos.z);
-		Matrix.rotateM(viewMatrix, 0, rotation.angle, rotation.rotX, rotation.rotY, rotation.rotZ);
-
+		Matrix.multiplyMM(viewMatrix, 0, rotation.toMatrix(), 0, viewMatrix, 0);
+		//Matrix.rotateM(viewMatrix, 0, rotation.angle, rotation.rotX, rotation.rotY, rotation.rotZ);
 	}
 }
