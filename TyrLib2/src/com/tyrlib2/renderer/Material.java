@@ -127,4 +127,8 @@ public class Material {
 		return boneWeightParam;
 	}
 	
+	public void setAnimated(boolean animated) {
+		this.animated = animated;
+	}
+	
 }

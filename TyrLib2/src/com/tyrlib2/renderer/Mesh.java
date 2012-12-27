@@ -15,9 +15,10 @@ public class Mesh {
 	protected FloatBuffer vertexBuffer;
 	protected ShortBuffer drawListBuffer;
 	protected FloatBuffer boneBuffer;
-	protected int vertexDataSize;
-	protected int drawListSize;
-	protected int boneDataSize;
+	
+	protected float[] vertexData;
+	protected short[] drawOrder;
+	protected float[] boneData;
 	
 	public static final int MAX_BONES_PER_VERTEX = 4;
 	public static final int BONE_BYTE_STRIDE = MAX_BONES_PER_VERTEX * 2;
@@ -26,8 +27,8 @@ public class Mesh {
 	public static final int BONE_WEIGHT_OFFSET = MAX_BONES_PER_VERTEX;
 	
 	public Mesh(float[] vertexData, short[] drawOrder) {
-		vertexDataSize = vertexData.length;
-		drawListSize = drawOrder.length;
+		this.vertexData = vertexData;
+		this.drawOrder = drawOrder;
 		
 	    // initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(vertexData.length * OpenGLRenderer.BYTES_PER_FLOAT);
@@ -67,7 +68,7 @@ public class Mesh {
 	 * So in total 4 * 8 = 32 Byte per vertex
 	 */
 	public void setVertexBones(float[] boneData) {
-	    boneDataSize = boneData.length;
+	    this.boneData = boneData;
 		
 		// initialize bone byte buffer for animation data
 		

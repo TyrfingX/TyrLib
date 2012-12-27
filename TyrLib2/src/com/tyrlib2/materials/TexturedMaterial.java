@@ -58,7 +58,7 @@ public class TexturedMaterial extends LightedMaterial {
 													context, 
 													com.tyrlib2.R.raw.textured_ppl_vs, 
 													com.tyrlib2.R.raw.textured_ppl_fs, 
-													new String[]{"a_Position", "a_Normal", "a_Color", "a_TexCoordinate"});
+													new String[]{"a_Position", "a_Normal", "a_Color", "a_TexCoordinate", "a_BoneIndex", "a_BoneWeight"});
 		} else {
 			program = ProgramManager.getInstance().getProgram(PER_PIXEL_PROGRAM_NAME);
 		}
@@ -68,7 +68,10 @@ public class TexturedMaterial extends LightedMaterial {
 			colors[0] = new Color(1,1,1,1);
 		}
 		
-		texture = TextureManager.getInstance().getTexture(textureName);
+		if (textureName != null) {
+			texture = TextureManager.getInstance().getTexture(textureName);
+		}
+		
 		setup(textureName, repeatX, repeatY, type, colors);
 
 	}
@@ -87,7 +90,10 @@ public class TexturedMaterial extends LightedMaterial {
 		
 		this.type = type;
 		
-		texture = TextureManager.getInstance().getTexture(textureName);
+		if (textureName != null) {
+			texture = TextureManager.getInstance().getTexture(textureName);
+		}
+		
 		setup(textureName, repeatX, repeatY, type, colors);
 
 
@@ -95,7 +101,7 @@ public class TexturedMaterial extends LightedMaterial {
 	
 	protected void setup(String textureName, int repeatX, int repeatY, LightingType type, Color[] colors) {
 		lighted = true;
-		animated = true;
+		this.type = type;
 		
 		this.boneParam = "u_Bone";
 		this.boneIndexParam = "a_BoneIndex";
@@ -160,6 +166,14 @@ public class TexturedMaterial extends LightedMaterial {
 	 
 	    // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
 	    GLES20.glUniform1i(textureUniformHandle, 0);
+	    
+	    if (!animated) {
+
+	    	// pass some data to make sure skinning is disabled
+	    	int indexHandle = GLES20.glGetAttribLocation(program.handle, boneIndexParam);
+	    	GLES20.glDisableVertexAttribArray(indexHandle);
+	    	GLES20.glVertexAttrib4f(indexHandle, -1, -1, -1, -1);
+	    }
 
 	}
 

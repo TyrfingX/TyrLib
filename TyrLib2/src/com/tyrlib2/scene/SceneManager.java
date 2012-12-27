@@ -1,13 +1,22 @@
 package com.tyrlib2.scene;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import android.content.Context;
 
 import com.tyrlib2.lighting.DirectionalLight;
 import com.tyrlib2.lighting.Light;
+import com.tyrlib2.lighting.LightingType;
 import com.tyrlib2.lighting.PointLight;
+import com.tyrlib2.materials.TexturedMaterial;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.renderables.Box;
+import com.tyrlib2.renderables.Entity;
+import com.tyrlib2.renderables.IEntityFactory;
+import com.tyrlib2.renderables.IQEEntityFactory;
 import com.tyrlib2.renderer.Camera;
 import com.tyrlib2.renderer.IFrameListener;
 import com.tyrlib2.renderer.Material;
@@ -28,6 +37,9 @@ public class SceneManager {
 	
 	private List<Light> lights;
 	
+	/** Factories for creating entities **/
+	private Map<String, IEntityFactory> entityFactories;
+	
 	/** Global ambient illumination **/
 	private Color ambientLight;
 	
@@ -37,6 +49,8 @@ public class SceneManager {
 		// Per default completely slightly light the scene so that
 		// no further setup needs to be done to actually see something
 		ambientLight = new Color(0.5f,0.5f,0.5f,0);
+		
+		entityFactories = new HashMap<String, IEntityFactory>();
 	}
 	
 	public static SceneManager getInstance() {
@@ -159,6 +173,33 @@ public class SceneManager {
 		Box box = new Box(material, min, max);
 		renderer.addRenderable(box);
 		return box;
+	}
+	
+	/**
+	 * Create an entity from a file source
+	 * @param context	The context for loading the file
+	 * @param path		The path to the file
+	 * @return			The newly created entity
+	 */
+	public Entity createEntity(Context context, String path) {
+		if (entityFactories.containsKey(path)) {
+			return entityFactories.get(path).create();
+		}
+		
+		IEntityFactory factory = null;
+		
+		if (path.endsWith("iqe")) {
+			TexturedMaterial mat = new TexturedMaterial(context, null, 1, 1, LightingType.PER_PIXEL, null);
+			factory = new IQEEntityFactory(context, path, mat);
+			entityFactories.put(path, factory);
+		} else {
+			throw new RuntimeException("Format for loading entity " +  path + " not supported!");
+		}
+		
+		Entity entity = factory.create();
+		renderer.addRenderable(entity);
+		
+		return entity;
 	}
 	
 }

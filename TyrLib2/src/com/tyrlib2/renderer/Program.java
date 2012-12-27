@@ -15,7 +15,7 @@ public class Program {
 	protected String fragmentShader;
 	protected String[] bindAttributes;
 	
-	private static Program inUse;
+	protected static Program inUse;
 	
 	public Program(int handle) {
 		this.handle = handle;

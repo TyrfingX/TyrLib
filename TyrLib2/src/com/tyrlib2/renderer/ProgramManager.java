@@ -125,6 +125,8 @@ public class ProgramManager {
 	 */
 	
 	public void recreateAll() {
+		Program.inUse = null;
+		
 		for (String programName : programs.keySet()) {
 			
 			Program program = programs.get(programName);

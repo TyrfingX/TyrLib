@@ -84,6 +84,7 @@ public class Skeleton implements IUpdateable {
 				if (bone.getParent() == null) {
 					rootNode.attachChild(bone);
 				}
+				bone.setDirty();
 			}
 			
 			rootNode.update();

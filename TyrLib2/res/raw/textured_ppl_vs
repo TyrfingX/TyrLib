@@ -21,20 +21,18 @@ void main()
 	vec4 position = vec4(vec3(a_Position), 1.0);
 	vec4 normal = vec4(a_Normal, 0.0);
 	
-	position =  a_BoneWeight.x * u_Bone[ int(a_BoneIndex.x) ] * position +
-		                  a_BoneWeight.y * u_Bone[ int(a_BoneIndex.y) ] * position +
-		                  a_BoneWeight.z * u_Bone[ int(a_BoneIndex.z) ] * position +
-		                  a_BoneWeight.w * u_Bone[ int(a_BoneIndex.w) ] * position;
+	if (int(a_BoneIndex.x) != -1) {
+		mat4 boneMatrix =  	a_BoneWeight.x * u_Bone[ int(a_BoneIndex.x) ]  +
+			                a_BoneWeight.y * u_Bone[ int(a_BoneIndex.y) ]  +
+			                a_BoneWeight.z * u_Bone[ int(a_BoneIndex.z) ]  +
+			                a_BoneWeight.w * u_Bone[ int(a_BoneIndex.w) ];
+			                
+	    position = boneMatrix * position;
+	    
+		normal = normalize(boneMatrix * normal);
+	}
 
 
-    position = vec4(vec3(position), 1.0);
-    
-    	normal =  a_BoneWeight.x * u_Bone[ int(a_BoneIndex.x) ] * normal +
-		                  a_BoneWeight.y * u_Bone[ int(a_BoneIndex.y) ] * normal +
-		                  a_BoneWeight.z * u_Bone[ int(a_BoneIndex.z) ] * normal +
-		                  a_BoneWeight.w * u_Bone[ int(a_BoneIndex.w) ] * normal;
-    
-	normal = normalize(normal);
 
     // Transform the vertex into eye space.
     v_Position = vec3(u_MVMatrix * position);

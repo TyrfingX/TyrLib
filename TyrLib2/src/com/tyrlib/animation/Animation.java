@@ -69,32 +69,45 @@ public class Animation implements IUpdateable {
 		if (playing) {
 			animTime += time;
 			
-			while(animTime > animationFrames.get(currentFrame).time) {
+			while(animTime > animationFrames.get(currentFrame+1).time) {
 				currentFrame++;
-				if (currentFrame == animationFrames.size()) {
+				if (currentFrame == animationFrames.size() - 1) {
 					currentFrame = 0;
 					animTime -= duration;
-					
 				}
 			}
 			
 			AnimationFrame frame = getCurrentFrame();
-			//skeleton.getBone(0).rotate(new Quaternion(30*time,0,1,1));
-			//skeleton.getBone(1).rotate(new Quaternion(30*time,0,1,0));
-			skeleton.getBone(31).rotate(Quaternion.fromAxisAngle(new Vector3(0,1,0), time*30));
+			float alpha = 0;// blend factor between the current frame and the next one
+			AnimationFrame nextFrame = null;
+			
+			if (currentFrame < animationFrames.size() - 1) {
+				nextFrame = animationFrames.get(currentFrame+1);
+				float timeDiff = animTime - frame.time;
+				float totalTimeDiff = nextFrame.time -  frame.time;
+				alpha = timeDiff / totalTimeDiff;
+			}
 			
 			for (int i = 0; i < skeleton.bones.size(); ++i) {
-				/*
+			
 				Bone bone = skeleton.bones.get(i);
-				bone.setRelativePos(frame.bonePos[i]);
-				Quaternion q = frame.boneRot[i];
-				Quaternion quat = bone.initRot.multiply(q);
 				
-				if (quat.x == 0 && quat.y == 0 && quat.z == 0) {
-					quat.w = 1;
+				Quaternion q1 = frame.boneRot[i];
+				Vector3 v1 = frame.bonePos[i];
+				
+				if (nextFrame != null) {
+					Quaternion q2 = nextFrame.boneRot[i];
+					q1 = Quaternion.slerp(q1, q2, alpha);
+					
+					Vector3 v2 = nextFrame.bonePos[i];
+					v1 = Vector3.lerp(v1, v2, alpha);
 				}
+				
+				Quaternion quat = bone.initRot.inverse().multiply(q1);
+				
+				bone.setRelativePos(v1.sub(bone.initPos));
 				bone.setRelativeRot(quat);
-				*/
+				
 			}	
 			
 		}

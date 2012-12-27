@@ -210,8 +210,8 @@ public class IQEEntityFactory implements IEntityFactory {
 			for (int j = 0; j < data.vertexData.size(); ++j) {
 				VertexData vertex = data.vertexData.get(j);
 				Vector3 pos = vertex.pos;
-				vertexData[bytePos + baseMaterial.getPositionOffset() + 0] = pos.y;
-				vertexData[bytePos + baseMaterial.getPositionOffset() + 1] = pos.x;
+				vertexData[bytePos + baseMaterial.getPositionOffset() + 0] = pos.x;
+				vertexData[bytePos + baseMaterial.getPositionOffset() + 1] = pos.y;
 				vertexData[bytePos + baseMaterial.getPositionOffset() + 2] = pos.z;
 				
 				vertexData[bytePos + baseMaterial.getColorOffset() + 0] = 1;
@@ -220,8 +220,8 @@ public class IQEEntityFactory implements IEntityFactory {
 				vertexData[bytePos + baseMaterial.getColorOffset() + 3] = 1;
 				
 				Vector3 normal = vertex.normal;
-				vertexData[bytePos + baseMaterial.getNormalOffset() + 0] = normal.y;
-				vertexData[bytePos + baseMaterial.getNormalOffset() + 1] = normal.x;
+				vertexData[bytePos + baseMaterial.getNormalOffset() + 0] = normal.x;
+				vertexData[bytePos + baseMaterial.getNormalOffset() + 1] = normal.y;
 				vertexData[bytePos + baseMaterial.getNormalOffset() + 2] = normal.z;
 				
 				Vector2 uv = vertex.uv;
@@ -251,13 +251,14 @@ public class IQEEntityFactory implements IEntityFactory {
 			for (short j = 0; j < data.triangles.size(); ++j) {
 				Triangle triangle = data.triangles.get(j);
 				for (short k = 0; k < triangle.data.length; ++k) {
-					drawOrder[j*3 + k] = triangle.data[k];
+					drawOrder[j*3 + 2 - k] = triangle.data[k];
 				}
 			}
 			
 			Mesh mesh = new Mesh(vertexData, drawOrder);
 			mesh.setVertexBones(boneData);
 			prototype.material = materials.get(data.matName);
+			prototype.material.setAnimated(true);
 			prototype.mesh = mesh;
 		}
 		
@@ -415,14 +416,14 @@ public class IQEEntityFactory implements IEntityFactory {
 		float x = Float.valueOf(tokenizer.nextToken());
 		float y = Float.valueOf(tokenizer.nextToken());
 		float z = Float.valueOf(tokenizer.nextToken());
-		bone.pos = new Vector3(x,z,y);
+		bone.pos = new Vector3(x,y,z);
 		
 		
 		float rotX = Float.valueOf(tokenizer.nextToken());
 		float rotY = Float.valueOf(tokenizer.nextToken());
 		float rotZ = Float.valueOf(tokenizer.nextToken());
 		float angle = Float.valueOf(tokenizer.nextToken());
-		bone.rot = new Quaternion(rotX,rotZ,rotY,angle);
+		bone.rot = new Quaternion(rotX,rotY,rotZ,angle);
 		
 		if (rotY == 0 && rotX == 0 && rotZ == 0) {
 			bone.rot.w = 1;
@@ -482,7 +483,7 @@ public class IQEEntityFactory implements IEntityFactory {
 					float x = Float.valueOf(tokenizer.nextToken());
 					float y = Float.valueOf(tokenizer.nextToken());
 					float z = Float.valueOf(tokenizer.nextToken());
-					animFrame.bonePos[currentBone] = new Vector3(x,z,y);
+					animFrame.bonePos[currentBone] = new Vector3(x,y,z);
 					
 					float rotX = Float.valueOf(tokenizer.nextToken());
 					float rotY = Float.valueOf(tokenizer.nextToken());
@@ -490,7 +491,7 @@ public class IQEEntityFactory implements IEntityFactory {
 					float angle = Float.valueOf(tokenizer.nextToken());
 					
 					
-					animFrame.boneRot[currentBone] = new Quaternion(rotX,rotZ,rotY,angle);
+					animFrame.boneRot[currentBone] = new Quaternion(rotX,rotY,rotZ,angle);
 					
 					if (rotY == 0 && rotX == 0 && rotZ == 0) {
 						animFrame.boneRot[currentBone].w = 1;

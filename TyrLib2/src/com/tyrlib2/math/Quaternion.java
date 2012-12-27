@@ -17,6 +17,9 @@ public class Quaternion {
 	
 	private static final Quaternion IDENTITY = new Quaternion(0,0,0,1);
 	
+	/** When to perform slerp and when lerp (due to numerical instability) **/
+	private static final float SLERP_TO_LERP_SWITCH_THRESHOLD = 0.01f;
+	
 	/** Defaults to the identity quaternion **/
 	public Quaternion() {
 		w = 1;
@@ -70,8 +73,7 @@ public class Quaternion {
 	 * @return	The inverse of this quaternion
 	 */
 	public Quaternion inverse() {
-		float length = 1.0f / length();
-		Quaternion inverse = new Quaternion(-length, -length, -length, length);
+		Quaternion inverse = new Quaternion(-x, -y, -z, w);
 		return inverse;
 	}
 	
@@ -161,4 +163,46 @@ public class Quaternion {
 		
 		return q;
 	}
+
+	/**
+	 * Perform a spherical linear interpolation between the two quaternion q1 and q2
+	 * @param start	The start rotation
+	 * @param end	The end rotation
+	 * @param alpha	The blending factor (0 <= alpha <= 1) with 
+	 * 				0: 	start rotation and
+	 * 				1:	end rotation
+	 * @return		A quaternion representing the interpolated rotation
+	 */
+	public static Quaternion slerp(Quaternion start, Quaternion end, float alpha) {
+		float diff = (start.x * end.x) + (start.y * end.y) + (start.z * end.z) * (start.w * end.w);
+		
+		float startWeight, endWeight;
+		
+		if (1.0f - Math.abs(diff) > SLERP_TO_LERP_SWITCH_THRESHOLD) {
+			float theta = (float) Math.acos(Math.abs(diff));
+			float oneOverTheta = 1.0f / FloatMath.sin(theta);
+			
+			startWeight = FloatMath.sin(theta * (1.0f - alpha)) * oneOverTheta;
+			endWeight 	= FloatMath.sin(theta * alpha)			* oneOverTheta;
+			
+			if (diff < 0.0f) {
+				startWeight = -startWeight;
+			}
+			
+		} else {
+			startWeight = 1.0f - alpha;
+			endWeight = alpha;
+		}
+		
+		Quaternion result = new Quaternion();
+		result.x = start.x * startWeight + end.x * endWeight;
+		result.y = start.y * startWeight + end.y * endWeight;
+		result.z = start.z * startWeight + end.z * endWeight;
+		result.w = start.w * startWeight + end.w * endWeight;
+		
+		result.normalize();
+		
+		return result;
+	}
+
 }

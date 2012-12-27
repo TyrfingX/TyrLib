@@ -72,6 +72,14 @@ public class SceneNode {
 		setRelativeRot(new Quaternion(0,0,0,1));
 	}
 	
+	
+	/** 
+	 * Force this node to update 
+	 * **/
+	public void setDirty() {
+		update = true;
+	}
+	
 	/**
 	 * Gets the absolute position of this SceneNode
 	 * Currently iterates through all parent nodes, therefore expensive.
@@ -347,7 +355,7 @@ public class SceneNode {
 	public void update(Vector3 parentPos, Quaternion parentRot, Vector3 parentScale, float[] parentTransform) {
 		if (update) {			
 			// there was an update, all children of this tree must be updated
-			updateAll(parentPos, parentRot, absoluteScale, parentTransform);
+			updateAll(parentPos, parentRot, parentScale, parentTransform);
 		} else {
 			// There was no update, hopefully the children also had no update
 			for (int i = 0; i < children.size(); ++i) {	
@@ -364,7 +372,7 @@ public class SceneNode {
 	
 	public void update() {
 		for (int i = 0; i < children.size(); ++i) {	
-			children.get(i).update(pos, rot, absoluteScale, modelMatrix);
+			children.get(i).update(pos, rot, scale, modelMatrix);
 		}
 	}
 	
@@ -380,17 +388,29 @@ public class SceneNode {
 		absoluteRot = parentRot.multiply(parentRot);
 		absoluteScale = new Vector3(scale.x * parentScale.x, scale.y * parentScale.y, scale.z * parentScale.z);
 		
-		Matrix.translateM(modelMatrix, 0, pos.x, pos.y, pos.z);
-		Matrix.multiplyMM(modelMatrix, 0, rot.toMatrix(), 0, modelMatrix, 0);
-		Matrix.scaleM(modelMatrix, 0, scale.x, scale.y, scale.z);
+		float[] rotation = rot.toMatrix();
+		float[] translation = new float[16];
+		float[] scaling = new float[16];
+		Matrix.setIdentityM(translation, 0);
+		Matrix.setIdentityM(scaling, 0);
 		
+		Matrix.scaleM(scaling, 0, scale.x, scale.y, scale.z);
+		Matrix.multiplyMM(modelMatrix, 0, scaling, 0, modelMatrix, 0);
+		
+		Matrix.multiplyMM(modelMatrix, 0, rotation, 0, modelMatrix, 0);
+		Matrix.translateM(translation, 0, pos.x / parentScale.x, pos.y / parentScale.y, pos.z / parentScale.z);
+		Matrix.multiplyMM(modelMatrix, 0, translation, 0, modelMatrix, 0);
 		Matrix.multiplyMM(modelMatrix, 0, parentTransform, 0, modelMatrix, 0);
+		
 		update = false;
 		
 		
 		for (int i = 0; i < children.size(); ++i) {	
 			children.get(i).updateAll(absolutePos, absoluteRot, absoluteScale, modelMatrix);
 		}
+		
+		Matrix.scaleM(scaling, 0, absoluteScale.x, absoluteScale.y, absoluteScale.z);
+		
 	}
 	
 	
