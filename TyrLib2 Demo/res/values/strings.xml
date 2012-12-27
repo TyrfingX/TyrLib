@@ -3,5 +3,6 @@
     <color name="black">#000000</color>
     <string name="example_one">Example 1: Creating a scene</string>
     <string name="example_one_subtitle">Create a basic scene with a lighted object.</string>
-    <string name="example_one">Example 1: Basic Scene</string>
+    <string name="example_two">Example 2: Entities</string>
+    <string name="example_two_subtitle">Load exported models and play animations</string>
 </resources>

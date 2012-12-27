@@ -90,7 +90,7 @@ public class FrameListener implements IFrameListener {
 	@Override
 	public void onFrameRendered(float time) {
 		/* Lets rotate our box a bit */
-		boxNode.rotate(new Quaternion(100*time,1,1,1));
+		boxNode.rotate(Quaternion.fromAxisAngle(new Vector3(1,1,1), 100*time));
 	}
 
 }
