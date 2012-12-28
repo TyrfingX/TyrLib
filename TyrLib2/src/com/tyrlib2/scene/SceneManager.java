@@ -11,7 +11,7 @@ import com.tyrlib2.lighting.DirectionalLight;
 import com.tyrlib2.lighting.Light;
 import com.tyrlib2.lighting.LightingType;
 import com.tyrlib2.lighting.PointLight;
-import com.tyrlib2.materials.TexturedMaterial;
+import com.tyrlib2.materials.DefaultMaterial3;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.renderables.Box;
 import com.tyrlib2.renderables.Entity;
@@ -189,7 +189,7 @@ public class SceneManager {
 		IEntityFactory factory = null;
 		
 		if (path.endsWith("iqe")) {
-			TexturedMaterial mat = new TexturedMaterial(context, null, 1, 1, LightingType.PER_PIXEL, null);
+			DefaultMaterial3 mat = new DefaultMaterial3(context, null, 1, 1, LightingType.PER_PIXEL, null);
 			factory = new IQEEntityFactory(context, path, mat);
 			entityFactories.put(path, factory);
 		} else {

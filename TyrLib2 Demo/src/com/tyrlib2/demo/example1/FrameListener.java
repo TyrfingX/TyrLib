@@ -5,7 +5,7 @@ import com.tyrlib2.demo.R;
 import com.tyrlib2.lighting.DirectionalLight;
 import com.tyrlib2.lighting.Light.Type;
 import com.tyrlib2.lighting.LightingType;
-import com.tyrlib2.materials.TexturedMaterial;
+import com.tyrlib2.materials.DefaultMaterial3;
 import com.tyrlib2.math.Quaternion;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.renderables.Box;
@@ -43,7 +43,7 @@ public class FrameListener implements IFrameListener {
 		 * by using TexturedMaterial
 		 */
 		
-		TexturedMaterial mat = new TexturedMaterial(ExampleOneActivity.CONTEXT, "SOIL", 1, 1, 
+		DefaultMaterial3 mat = new DefaultMaterial3(ExampleOneActivity.CONTEXT, "SOIL", 1, 1, 
 													LightingType.PER_PIXEL, null);
 		
 		/* Now we need to create the actual object we want to render

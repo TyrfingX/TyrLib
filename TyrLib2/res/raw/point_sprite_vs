@@ -1,0 +1,12 @@
+uniform mat4 u_MVPMatrix;
+uniform vec2 u_Size;
+
+attribute vec4 a_Position;
+
+varying float v_Alpha;
+
+void main() {
+	  gl_PointSize = u_Size.x;
+	  gl_Position = u_MVPMatrix * a_Position;
+	  v_Alpha = u_Size.y;
+}

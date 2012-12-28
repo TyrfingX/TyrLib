@@ -10,6 +10,7 @@ import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.util.SparseArray;
 
 import com.tyrlib2.lighting.Light;
 import com.tyrlib2.scene.SceneManager;
@@ -23,10 +24,18 @@ import com.tyrlib2.scene.SceneNode;
 
 public class OpenGLRenderer implements GLSurfaceView.Renderer {
     
+	/** 
+	 * These are the default rendering channels. They are rendered starting with the lowest number.
+	 */
+	
+	public static final int BACKGROUND_CHANNEL = 0;
+	public static final int DEFAULT_CHANNEL = 100;
+	public static final int OVERLAY_CHANNEL = 1000;
+	
 	public static final int BYTES_PER_FLOAT = 4;
 	
 	private List<IFrameListener> frameListeners;
-	private List<IRenderable> renderables;
+	private SparseArray<List<IRenderable>> renderChannels;
 	private SceneNode rootSceneNode;
 	private Viewport viewport;
 	private Camera camera;
@@ -44,7 +53,12 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	
 	public OpenGLRenderer(Context context) {
 		frameListeners = new Vector<IFrameListener>();
-		renderables = new Vector<IRenderable>();
+		renderChannels = new SparseArray<List<IRenderable>>();
+		
+		renderChannels.put(BACKGROUND_CHANNEL, new Vector<IRenderable>());
+		renderChannels.put(DEFAULT_CHANNEL, new Vector<IRenderable>());
+		renderChannels.put(OVERLAY_CHANNEL, new Vector<IRenderable>());
+		
 		rootSceneNode = new SceneNode();
 		this.context = context;
 		rendering = false;
@@ -53,7 +67,6 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	public void onSurfaceCreated(GL10 unused, EGLConfig config) {
 		
         // Enable depth testing
-        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
         GLES20.glDepthFunc( GLES20.GL_LEQUAL );
         GLES20.glDepthMask( true );
         
@@ -84,7 +97,14 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 													context, 
 													com.tyrlib2.R.raw.point_light_vs, 
 													com.tyrlib2.R.raw.point_light_fs, 
-													new String[]{"a_Position" });
+													new String[]{"a_Position"});
+		
+		// Create a material to render point sprites
+		ProgramManager.getInstance().createProgram(	"POINT_SPRITE", 
+													context, 
+													com.tyrlib2.R.raw.point_sprite_vs, 
+													com.tyrlib2.R.raw.point_sprite_fs, 
+													new String[]{"a_Position"});
 		
 		// Create a program for rendering shadow depth maps
 		ProgramManager.getInstance().createProgram(	"SHADOW_DEPTH", 
@@ -109,7 +129,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	
 	public void destroy() {
 		rendering = false;
-		renderables.clear();
+		renderChannels.clear();
 	}
 	
     public void onDrawFrame(GL10 unused) {
@@ -146,12 +166,26 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     }
     
     private void drawScene() {
-
     	
-	    for (int i = 0; i < renderables.size(); ++i) {
-	    	renderables.get(i).render(vpMatrix);
-	    }
+    	drawChannel(renderChannels.get(BACKGROUND_CHANNEL), vpMatrix);
+    	
+    	
+    	GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+    	drawChannel(renderChannels.get(DEFAULT_CHANNEL), vpMatrix);
+    	GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+    	
+    	float[] proj = new float[16];
+    	Matrix.orthoM(proj, 0, 0, 1, 0, 1, -1, 1);
+    	
+    	drawChannel(renderChannels.get(OVERLAY_CHANNEL), proj);
+    	
     }
+
+	private void drawChannel(List<IRenderable> renderables, float[] transformMatrix) {
+	    for (int i = 0; i < renderables.size(); ++i) {
+	    	renderables.get(i).render(transformMatrix);
+	    }
+	}
     
     
     private void updateListeners() {
@@ -207,11 +241,29 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     }
 
     public void addRenderable(IRenderable renderable) {
-    	renderables.add(renderable);
+    	renderChannels.get(DEFAULT_CHANNEL).add(renderable);
     }
     
     public void removeRenderable(IRenderable renderable) {
-    	renderables.remove(renderable);
+    	renderChannels.get(DEFAULT_CHANNEL).remove(renderable);
+    }
+    
+    public void addRenderable(IRenderable renderable, int channel) {
+    	List<IRenderable> renderables = renderChannels.get(channel);
+    	if (renderables != null) {
+    		renderables.add(renderable);
+    	} else {
+    		renderables = new Vector<IRenderable>();
+    		renderChannels.put(channel, renderables);
+    		renderables.add(renderable);
+    	}
+    }
+    
+    public void removeRenderable(IRenderable renderable, int channel) {
+    	List<IRenderable> renderables = renderChannels.get(channel);
+    	if (renderables != null) {
+    		renderables.remove(renderable);
+    	} 
     }
     
 }

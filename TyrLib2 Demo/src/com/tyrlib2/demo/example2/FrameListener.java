@@ -1,6 +1,5 @@
 package com.tyrlib2.demo.example2;
 
-import com.tyrli2.input.Updater;
 import com.tyrlib2.demo.R;
 import com.tyrlib2.math.Quaternion;
 import com.tyrlib2.math.Vector3;

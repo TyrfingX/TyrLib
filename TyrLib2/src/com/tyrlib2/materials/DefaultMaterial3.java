@@ -16,7 +16,18 @@ import com.tyrlib2.renderer.TextureManager;
 import com.tyrlib2.scene.SceneManager;
 import com.tyrlib2.util.Color;
 
-public class TexturedMaterial extends LightedMaterial {
+/**
+ * Default material for rendering 3D objects especially entities.
+ * Supports:
+ * - Lighting
+ * - Per vertex coloring
+ * - Skinning/skeletal animation
+ * - Texturing
+ * @author Sascha
+ *
+ */
+
+public class DefaultMaterial3 extends LightedMaterial {
 	
 	private LightingType type;
 	
@@ -47,11 +58,11 @@ public class TexturedMaterial extends LightedMaterial {
 	public static final String PER_VERTEX_PROGRAM_NAME = "TEXTURED_PVL";
 	public static final String PER_PIXEL_PROGRAM_NAME = "TEXTURED_PPL";
 
-	public TexturedMaterial() {
+	public DefaultMaterial3() {
 		
 	}
 	
-	public TexturedMaterial(Context context, String textureName, int repeatX, int repeatY, LightingType type, Color[] colors) {
+	public DefaultMaterial3(Context context, String textureName, int repeatX, int repeatY, LightingType type, Color[] colors) {
 		if (!ProgramManager.getInstance().isProgramLoaded(PER_PIXEL_PROGRAM_NAME)) {
 			program = ProgramManager.getInstance()
 									.createProgram(	PER_PIXEL_PROGRAM_NAME, 
@@ -76,7 +87,7 @@ public class TexturedMaterial extends LightedMaterial {
 
 	}
 	
-	public TexturedMaterial(String textureName, int repeatX, int repeatY, LightingType type, Color[] colors) {
+	public DefaultMaterial3(String textureName, int repeatX, int repeatY, LightingType type, Color[] colors) {
 		
 
 		switch (type) {
@@ -271,7 +282,7 @@ public class TexturedMaterial extends LightedMaterial {
 	}
 	
 	public Material copy() {
-		TexturedMaterial material = new TexturedMaterial(textureName, repeatX, repeatY, type, colors);
+		DefaultMaterial3 material = new DefaultMaterial3(textureName, repeatX, repeatY, type, colors);
 		return material;
 	}
 	

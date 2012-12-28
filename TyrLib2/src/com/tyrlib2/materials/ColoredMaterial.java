@@ -16,34 +16,52 @@ import com.tyrlib2.util.Color;
  *
  */
 
-public class BasicMultiColorMaterial extends Material {
+public class ColoredMaterial extends Material implements IBlendableMaterial {
 
 	private int colorOffset = 3;
 	private int colorDataSize = 4;
 	private int colorHandle;
 	private Color[] colors;
 
+	private float alpha = 1;
 	
-	public BasicMultiColorMaterial(Color[] colors) {
+	public ColoredMaterial(Color[] colors) {
 		
 		this.colors = colors;
 		
 		program = ProgramManager.getInstance().getProgram("BASIC");
 		init(7,0,3, "u_MVPMatrix", "a_Position");
-		colorHandle = GLES20.glGetAttribLocation(program.handle, "a_Color");
 	}
 	
 	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
+		super.render(vertexBuffer, modelMatrix);
+		
+		colorHandle = GLES20.glGetAttribLocation(program.handle, "a_Color");
+		
 	    // Pass in the color information
 	    vertexBuffer.position(colorOffset);
 	    GLES20.glVertexAttribPointer(colorHandle, colorDataSize, GLES20.GL_FLOAT, false,
 	    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
 	 
 	    GLES20.glEnableVertexAttribArray(colorHandle);
+	    
+	    int alphaHandle = GLES20.glGetUniformLocation(program.handle, "u_Alpha");
+	    GLES20.glUniform1f(alphaHandle, alpha);
+	    
+	    GLES20.glEnable( GLES20.GL_BLEND );
+	    GLES20.glBlendFunc( GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA );
 	}
 	
 	public Color[] getColors() {
 		return colors;
+	}
+	
+	public void setAlpha(float alpha) {
+		this.alpha = alpha;
+	}
+	
+	public float getAlpha() {
+		return alpha;
 	}
 	
 	/**

@@ -118,7 +118,7 @@ public class Quaternion {
 		float[] matrix = new float[16];
 		
 		matrix[0]  = (1.0f - (2.0f * ((y * y) + (z * z))));
-		matrix[1]  =         (2.0f * ((x *y) + (z * w)));
+		matrix[1]  =         (2.0f * ((x * y) + (z * w)));
 		matrix[2]  =         (2.0f * ((x * z) - (y * w)));
 		matrix[3]  = 0.0f;
 		matrix[4]  =         (2.0f * ((x * y) - (z * w)));

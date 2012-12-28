@@ -16,7 +16,7 @@ import com.tyrlib.animation.Animation;
 import com.tyrlib.animation.AnimationFrame;
 import com.tyrlib.animation.Bone;
 import com.tyrlib.animation.Skeleton;
-import com.tyrlib2.materials.TexturedMaterial;
+import com.tyrlib2.materials.DefaultMaterial3;
 import com.tyrlib2.math.Quaternion;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.math.Vector3;
@@ -120,7 +120,7 @@ public class IQEEntityFactory implements IEntityFactory {
 	 */
 	private class SubEntityPrototype {
 		public Mesh mesh;
-		public TexturedMaterial material;
+		public DefaultMaterial3 material;
 		public String name;
 	}
 	
@@ -128,20 +128,20 @@ public class IQEEntityFactory implements IEntityFactory {
 	private SubEntityPrototype[] subEntityPrototypes;
 	private SubEntityData currentDataBlock = null;
 	private StringTokenizer tokenizer;
-	private TexturedMaterial baseMaterial;
-	private Map<String, TexturedMaterial> materials;
+	private DefaultMaterial3 baseMaterial;
+	private Map<String, DefaultMaterial3> materials;
 	private SkeletonData skeletonData;
 	private BufferedReader in;
 
 	
-	public IQEEntityFactory(Context context, String fileName, TexturedMaterial baseMaterial) {
+	public IQEEntityFactory(Context context, String fileName, DefaultMaterial3 baseMaterial) {
 		
 		this.baseMaterial = baseMaterial;
 		
 		subEntityData = new ArrayList<SubEntityData>();
 		skeletonData = new SkeletonData();
 		
-		materials = new HashMap<String, TexturedMaterial>();
+		materials = new HashMap<String, DefaultMaterial3>();
 		
 		// Due to efficiency reasons this class does not employ the file reader but rather parses the file directly
 		try {
@@ -440,7 +440,7 @@ public class IQEEntityFactory implements IEntityFactory {
 		String matName = tokenizer.nextToken();
 		matName = matName.substring(1, matName.length()-1); // get rid of the ""
 		Texture texture = TextureManager.getInstance().getTexture(matName);
-		TexturedMaterial mat = (TexturedMaterial) baseMaterial.copy();
+		DefaultMaterial3 mat = (DefaultMaterial3) baseMaterial.copy();
 		mat.setTexture(texture, matName);
 		materials.put(matName, mat);
 		currentDataBlock.matName = matName;

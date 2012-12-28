@@ -88,4 +88,12 @@ public class Mesh {
 	public FloatBuffer getBoneBuffer() {
 		return boneBuffer;
 	}
+	
+	public short[] getDrawOrder() {
+		return drawOrder;
+	}
+	
+	public ShortBuffer getDrawOrderBuffer() {
+		return drawListBuffer;
+	}
 }

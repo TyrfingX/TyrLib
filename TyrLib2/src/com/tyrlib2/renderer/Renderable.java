@@ -29,7 +29,7 @@ public class Renderable extends SceneObject implements IRenderable {
 	protected float[] modelMatrix;
 	
 	/** Allocate storage for the final combined matrix. This will be passed into the shader program. */
-	private float[] mvpMatrix = new float[16];
+	protected float[] mvpMatrix = new float[16];
 	
 	public Renderable(Mesh mesh, Material material) {
 		this();
@@ -74,6 +74,8 @@ public class Renderable extends SceneObject implements IRenderable {
 
 		if (modelMatrix != null) {
 	        
+			GLES20.glDisable(GLES20.GL_BLEND);
+			
 			material.program.use();
 	
 			mesh.vertexBuffer.position(material.positionOffest);
