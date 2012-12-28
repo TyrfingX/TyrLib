@@ -63,16 +63,8 @@ public class DefaultMaterial3 extends LightedMaterial {
 	}
 	
 	public DefaultMaterial3(Context context, String textureName, int repeatX, int repeatY, LightingType type, Color[] colors) {
-		if (!ProgramManager.getInstance().isProgramLoaded(PER_PIXEL_PROGRAM_NAME)) {
-			program = ProgramManager.getInstance()
-									.createProgram(	PER_PIXEL_PROGRAM_NAME, 
-													context, 
-													com.tyrlib2.R.raw.textured_ppl_vs, 
-													com.tyrlib2.R.raw.textured_ppl_fs, 
-													new String[]{"a_Position", "a_Normal", "a_Color", "a_TexCoordinate", "a_BoneIndex", "a_BoneWeight"});
-		} else {
-			program = ProgramManager.getInstance().getProgram(PER_PIXEL_PROGRAM_NAME);
-		}
+
+		program = ProgramManager.getInstance().getProgram(PER_PIXEL_PROGRAM_NAME);
 		
 		if (colors == null) {
 			colors = new Color[1];

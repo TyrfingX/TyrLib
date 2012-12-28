@@ -1,4 +1,4 @@
-package com.tyrlib2.renderables;
+package com.tyrlib2.util;
 
 import java.util.ArrayList;
 import java.util.List;

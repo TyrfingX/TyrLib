@@ -15,13 +15,13 @@ import com.tyrlib2.materials.DefaultMaterial3;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.renderables.Box;
 import com.tyrlib2.renderables.Entity;
-import com.tyrlib2.renderables.IEntityFactory;
-import com.tyrlib2.renderables.IQEEntityFactory;
 import com.tyrlib2.renderer.Camera;
 import com.tyrlib2.renderer.IFrameListener;
 import com.tyrlib2.renderer.Material;
 import com.tyrlib2.renderer.OpenGLRenderer;
 import com.tyrlib2.util.Color;
+import com.tyrlib2.util.IEntityFactory;
+import com.tyrlib2.util.IQEEntityFactory;
 
 /**
  * This singleton class manages the creation and destruction of Scene objects.

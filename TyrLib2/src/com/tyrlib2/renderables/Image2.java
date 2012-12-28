@@ -2,9 +2,9 @@ package com.tyrlib2.renderables;
 
 import android.opengl.GLES20;
 
-import com.tyrlib2.materials.PointSpriteMaterial;
-import com.tyrlib2.math.Vector3;
-import com.tyrlib2.renderer.Material;
+import com.tyrlib2.materials.TexturedMaterial;
+import com.tyrlib2.math.Vector2;
+import com.tyrlib2.renderer.Mesh;
 import com.tyrlib2.renderer.Renderable2;
 
 /**
@@ -15,25 +15,28 @@ import com.tyrlib2.renderer.Renderable2;
 
 public class Image2 extends Renderable2 {
 	private String textureName;
-	private float size;
+	private Vector2 size;
 	
-	private Material material;
+	public static final short[] DRAW_ORDER_IMAGE = { 0, 1, 2, 1, 3, 2};
 	
-	public Image2(float size, String textureName) {
+	public Image2(Vector2 size, String textureName) {
 		this.size = size;
 		this.textureName = textureName;
 		
-		material = new PointSpriteMaterial(textureName, size, 1);
+		this.material = new TexturedMaterial(textureName);
 		
-		Vector3[] points = { new Vector3(0,0,0) }; 
-		short[] drawOrder = { 0 };
-		
-		init(material, points, drawOrder);
+		float[] vertexData = { 0, 0, 0, 0, 0,
+							   size.x, 0, 0, 1, 0,
+							   0, size.y, 0, 0, 1,
+							   size.x, size.y, 0, 1, 1
+							 };
+
+		this.mesh = new Mesh(vertexData, DRAW_ORDER_IMAGE);
 	}
 	
 	
 	
-	public float getSize() {
+	public Vector2 getSize() {
 		return size;
 	}
 	
@@ -43,7 +46,7 @@ public class Image2 extends Renderable2 {
 	
 	@Override
 	public void render(float[] vpMatrix) {
-		renderMode = GLES20.GL_POINTS;
+		renderMode = GLES20.GL_TRIANGLES;
 		drawOrderLength = mesh.getDrawOrder().length;
 		drawOrderBuffer = mesh.getDrawOrderBuffer();
 		super.render(vpMatrix);

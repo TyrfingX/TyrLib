@@ -13,6 +13,7 @@ import android.opengl.Matrix;
 import android.util.SparseArray;
 
 import com.tyrlib2.lighting.Light;
+import com.tyrlib2.materials.DefaultMaterial3;
 import com.tyrlib2.scene.SceneManager;
 import com.tyrlib2.scene.SceneNode;
 
@@ -85,12 +86,27 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         // Setup the SceneManager
         SceneManager.getInstance().setRenderer(this);
 		
-		// Create a default program to use
+		// Create a default program for 2D primitives
 		ProgramManager.getInstance().createProgram(	"BASIC", 
 													context, 
 													com.tyrlib2.R.raw.basic_color_vs, 
 													com.tyrlib2.R.raw.basic_color_fs, 
 													new String[]{"a_Position", "a_Color"});
+		
+		// Create a default program for textured 2D primitives
+		ProgramManager.getInstance().createProgram(	"TEXTURED", 
+													context, 
+													com.tyrlib2.R.raw.textured_vs, 
+													com.tyrlib2.R.raw.textured_fs, 
+													new String[]{"a_Position", "a_TexCoordinate"});
+		
+		// Default program for 3D objects
+		ProgramManager.getInstance()
+					  .createProgram(DefaultMaterial3.PER_PIXEL_PROGRAM_NAME, 
+									 context, 
+									 com.tyrlib2.R.raw.textured_ppl_vs, 
+									 com.tyrlib2.R.raw.textured_ppl_fs, 
+									 new String[]{"a_Position", "a_Normal", "a_Color", "a_TexCoordinate", "a_BoneIndex", "a_BoneWeight"});
 		
 		// Create a material for point lights
 		ProgramManager.getInstance().createProgram(	"POINT_LIGHT", 

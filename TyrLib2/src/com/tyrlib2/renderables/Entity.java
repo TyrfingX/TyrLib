@@ -80,6 +80,10 @@ public class Entity extends SceneObject implements IRenderable, IUpdateable {
 		return skeleton;
 	}
 	
+	public void setSkeleton(Skeleton skeleton) {
+		this.skeleton = skeleton;
+	}
+	
 	public void playAnimation(String animName) {
 		Animation anim = skeleton.getAnimation(animName);
 		anim.play();

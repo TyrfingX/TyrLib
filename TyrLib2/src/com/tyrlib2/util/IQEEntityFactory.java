@@ -1,4 +1,4 @@
-package com.tyrlib2.renderables;
+package com.tyrlib2.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,6 +20,8 @@ import com.tyrlib2.materials.DefaultMaterial3;
 import com.tyrlib2.math.Quaternion;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.math.Vector3;
+import com.tyrlib2.renderables.Entity;
+import com.tyrlib2.renderables.SubEntity;
 import com.tyrlib2.renderer.Mesh;
 import com.tyrlib2.renderer.Texture;
 import com.tyrlib2.renderer.TextureManager;
@@ -279,7 +281,7 @@ public class IQEEntityFactory implements IEntityFactory {
 		
 		// Now create a new skeleton
 		Skeleton skeleton = new Skeleton();
-		entity.skeleton = skeleton;
+		entity.setSkeleton(skeleton);
 		for (int i = 0; i < skeletonData.bones.size(); ++i) {
 			BoneData boneData = skeletonData.bones.get(i);
 			Bone bone = new Bone(boneData.name);
