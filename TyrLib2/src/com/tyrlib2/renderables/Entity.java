@@ -1,14 +1,16 @@
 package com.tyrlib2.renderables;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.tyrlib.animation.Animation;
 import com.tyrlib.animation.Skeleton;
 import com.tyrlib2.game.IUpdateable;
-import com.tyrlib2.renderer.IRenderable;
+import com.tyrlib2.math.AABB;
+import com.tyrlib2.renderer.BoundedRenderable;
 import com.tyrlib2.scene.SceneNode;
-import com.tyrlib2.scene.SceneObject;
 
 /**
  * This class represents an Entity object. Entities are higher level objects which employ
@@ -17,13 +19,16 @@ import com.tyrlib2.scene.SceneObject;
  *
  */
 
-public class Entity extends SceneObject implements IRenderable, IUpdateable {
+public class Entity extends BoundedRenderable implements IUpdateable {
 
 	private Map<String, SubEntity> subEntities;
+	private List<SubEntity> subEntityList;
 	protected Skeleton skeleton;
+	protected int countSubEntities;
 	
 	public Entity() {
 		subEntities = new HashMap<String, SubEntity>();
+		subEntityList = new ArrayList<SubEntity>();
 	}
 	
 	/**
@@ -32,7 +37,10 @@ public class Entity extends SceneObject implements IRenderable, IUpdateable {
 	 */
 	
 	public void addSubEntity(SubEntity subEntity) {
+		countSubEntities++;
 		subEntities.put(subEntity.name, subEntity);
+		subEntityList.add(subEntity);
+		calcBoundingBox();
 	}
 	
 	/**
@@ -45,19 +53,29 @@ public class Entity extends SceneObject implements IRenderable, IUpdateable {
 		return subEntities.get(name);
 	}
 	
+	/**
+	 * Get a subentity by index
+	 * @param index
+	 * @return
+	 */
+	
+	public SubEntity getSubEntity(int index) {
+		return subEntityList.get(index);
+	}
+	
 	@Override
 	public void render(float[] vpMatrix) {
 		
 		float[] boneData = skeleton.getBoneData();
 		
-		for (SubEntity subEntity : subEntities.values()) {
+		for (SubEntity subEntity : subEntityList) {
 			subEntity.render(vpMatrix, boneData, skeleton.getCountBones());
 		}
 	}
 	
 	@Override
 	public void attachTo(SceneNode node)  {
-		for (SubEntity subEntity : subEntities.values()) {
+		for (SubEntity subEntity : subEntityList) {
 			subEntity.attachTo(node);
 		}
 		super.attachTo(node);
@@ -70,6 +88,8 @@ public class Entity extends SceneObject implements IRenderable, IUpdateable {
 			subEntity.detach();
 		}
 		return super.detach();
+		
+		
 	}
 	
 	/** 
@@ -100,5 +120,31 @@ public class Entity extends SceneObject implements IRenderable, IUpdateable {
 	public boolean isFinished() {
 		return false;
 	}
+	
+	@Override
+	protected AABB createUntransformedBoundingBox() {
+		float[] points = new float[countSubEntities * 6];
+		
+		int i = 0;
+		for (SubEntity sub : subEntityList) {
+			AABB subBoundingBox = sub.getUntransformedBoundingBox();
+			
+			points[i + 0] = subBoundingBox.min.x;
+			points[i + 1] = subBoundingBox.min.y;
+			points[i + 2] = subBoundingBox.min.z;
+			
+			points[i + 3] = subBoundingBox.max.x;
+			points[i + 4] = subBoundingBox.max.y;
+			points[i + 5] = subBoundingBox.max.z;
+			
+			i += 6;
+		}
+		
+		return AABB.createFromPoints(points, 3); 
+	}
+	
+
+	
+	
 
 }

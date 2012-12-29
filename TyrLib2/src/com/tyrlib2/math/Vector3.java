@@ -64,6 +64,11 @@ public class Vector3 {
 		return new Vector3(x*m, y*m, z*m);
 	}
 	
+	public Vector3 multiply(Vector3 other)
+	{
+		return new Vector3(x*other.x, y*other.y, z*other.z);
+	}
+	
 	/**
 	 * Adds this vector to another.
 	 * @param other	The other vector which will be added

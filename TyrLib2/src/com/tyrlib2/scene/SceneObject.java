@@ -31,6 +31,8 @@ public abstract class SceneObject {
 	
 	public SceneNode detach() {
 		SceneNode oldParent = parent;
+		parent.attachedObjects.remove(this);
+		parent = null;
 		return oldParent;
 	}
 	
@@ -80,6 +82,15 @@ public abstract class SceneObject {
 		} 
 		
 		return null;
+	}
+	
+	
+	/** 
+	 * Called if the node to which this scene object is attached to
+	 * has been transformed due to translation, rotation, etc
+	 */
+	
+	public void onTransformed() {
 	}
 	
 }

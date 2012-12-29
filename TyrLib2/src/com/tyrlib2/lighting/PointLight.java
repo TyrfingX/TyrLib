@@ -4,6 +4,7 @@ import android.opengl.GLES20;
 import android.opengl.Matrix;
 
 import com.tyrlib2.materials.PointLightMaterial;
+import com.tyrlib2.math.AABB;
 import com.tyrlib2.renderer.IRenderable;
 import com.tyrlib2.renderer.Material;
 import com.tyrlib2.scene.SceneNode;
@@ -72,6 +73,15 @@ public class PointLight extends Light implements IRenderable {
 	
 	public float[] getLightVector() {
 		return eyeSpaceVector;
+	}
+
+	@Override
+	public AABB getBoundingBox() {
+		return null;
+	}
+
+	@Override
+	public void setBoundingBoxVisible(boolean visible) {
 	}
 	
 }

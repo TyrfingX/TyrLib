@@ -45,9 +45,9 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	/** View projection matrix of the camera **/
 	private float[] vpMatrix = new float[16];
 	
-	private float timeLastFrame;
+	private long lastTime;
 	
-	private static long BILLION = 1000000000;
+	private static float BILLION = 1000000000;
 	
 	protected boolean rendering = false;
 	private boolean init = false;
@@ -137,7 +137,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         	frameListeners.get(i).onSurfaceCreated();
         }
         
-        timeLastFrame = 0;
+        lastTime = 0;
         
         rendering = true;
         init = true;
@@ -205,17 +205,26 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     
     
     private void updateListeners() {
-	    float time = (float) System.nanoTime() / BILLION - timeLastFrame;
 	    
-	    if (timeLastFrame != 0) {
-	    
+	    if (lastTime != 0) {
+	    	
+	    	try {
+				Thread.sleep(5);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    	
+	    	long time = System.nanoTime();
+	    	long diff = time - lastTime;
+	    	
 	        for (IFrameListener listener : frameListeners) {
-	        	listener.onFrameRendered(time);
+	        	listener.onFrameRendered(diff / BILLION);
 	        }
         
 	    }
         
-        timeLastFrame = (float) System.nanoTime() / BILLION;
+        lastTime = System.nanoTime();
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height) {

@@ -257,7 +257,7 @@ public class IQEEntityFactory implements IEntityFactory {
 				}
 			}
 			
-			Mesh mesh = new Mesh(vertexData, drawOrder);
+			Mesh mesh = new Mesh(vertexData, drawOrder, data.vertexData.size());
 			mesh.setVertexBones(boneData);
 			prototype.material = materials.get(data.matName);
 			prototype.material.setAnimated(true);

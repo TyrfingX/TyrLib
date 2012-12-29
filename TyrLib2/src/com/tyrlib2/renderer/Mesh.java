@@ -5,6 +5,8 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
+import com.tyrlib2.math.AABB;
+
 /**
  * This class represents a mesh, containing the neccessary vertex data, etc.
  * @author Sascha
@@ -26,9 +28,15 @@ public class Mesh {
 	public static final int BONE_INDEX_OFFSET = 0;
 	public static final int BONE_WEIGHT_OFFSET = MAX_BONES_PER_VERTEX;
 	
-	public Mesh(float[] vertexData, short[] drawOrder) {
+	private int vertexCount;
+	
+	/** A bounding box enclosing this mesh **/
+	protected AABB boundingBox;
+	
+	public Mesh(float[] vertexData, short[] drawOrder, int vertexCount) {
 		this.vertexData = vertexData;
 		this.drawOrder = drawOrder;
+		this.vertexCount = vertexCount;
 		
 	    // initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(vertexData.length * OpenGLRenderer.BYTES_PER_FLOAT);
@@ -52,6 +60,9 @@ public class Mesh {
         drawListBuffer.put(drawOrder);
         drawListBuffer.position(0);
       
+        int stride = vertexData.length / vertexCount;
+        
+        boundingBox = AABB.createFromPoints(vertexData, stride);
 	}
 
 	
@@ -96,4 +107,22 @@ public class Mesh {
 	public ShortBuffer getDrawOrderBuffer() {
 		return drawListBuffer;
 	}
+	
+	public float[] getVertexData() {
+		return vertexData;
+	}
+	
+	public int getVertexCount() {
+		return vertexCount;
+	}
+	
+	public AABB getBoundingBox() {
+		return boundingBox;
+	}
+	
+	public void setVertexInfo(int index, float info) {
+		vertexBuffer.put(index, info);
+		vertexData[index] = info;
+	}
+
 }

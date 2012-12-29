@@ -402,6 +402,11 @@ public class SceneNode {
 		Matrix.multiplyMM(modelMatrix, 0, translation, 0, modelMatrix, 0);
 		Matrix.multiplyMM(modelMatrix, 0, parentTransform, 0, modelMatrix, 0);
 		
+		for (int i = 0; i < attachedObjects.size(); ++i) {
+			SceneObject so = attachedObjects.get(i);
+			so.onTransformed();
+		}
+		
 		update = false;
 		
 		

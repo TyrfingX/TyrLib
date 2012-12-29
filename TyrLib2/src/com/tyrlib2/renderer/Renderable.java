@@ -4,10 +4,11 @@ import android.opengl.GLES20;
 import android.opengl.Matrix;
 
 import com.tyrlib2.materials.LightedMaterial;
+import com.tyrlib2.math.AABB;
 import com.tyrlib2.math.Vector3;
+import com.tyrlib2.renderables.BoundingBox;
 import com.tyrlib2.scene.SceneManager;
 import com.tyrlib2.scene.SceneNode;
-import com.tyrlib2.scene.SceneObject;
 
 
 
@@ -17,7 +18,7 @@ import com.tyrlib2.scene.SceneObject;
  *
  */
 
-public class Renderable extends SceneObject implements IRenderable {
+public class Renderable extends BoundedRenderable {
 	
 	/** The Mesh of this renderable **/
 	protected Mesh mesh;
@@ -30,6 +31,8 @@ public class Renderable extends SceneObject implements IRenderable {
 	
 	/** Allocate storage for the final combined matrix. This will be passed into the shader program. */
 	protected float[] mvpMatrix = new float[16];
+	
+	protected BoundingBox boundingBoxRenderable;
 	
 	public Renderable(Mesh mesh, Material material) {
 		this();
@@ -47,7 +50,7 @@ public class Renderable extends SceneObject implements IRenderable {
 	public void init(Material material, Vector3[] points, short[] drawOrder) {
 		this.material = material;
 		float[] vertexData = material.createVertexData(points, drawOrder);
-		mesh = new Mesh(vertexData, drawOrder);
+		mesh = new Mesh(vertexData, drawOrder, vertexData.length / material.strideBytes);
 	}
 	
 	public void setMesh(Mesh mesh) {
@@ -135,5 +138,10 @@ public class Renderable extends SceneObject implements IRenderable {
 	
 	public Material getMaterial() {
 		return material;
+	}
+
+	@Override
+	protected AABB createUntransformedBoundingBox() {
+		return mesh.getBoundingBox();
 	}
 }

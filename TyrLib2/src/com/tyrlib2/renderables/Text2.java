@@ -7,6 +7,7 @@ import android.graphics.Rect;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
 
+import com.tyrlib2.math.AABB;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.renderer.IBlendable;
 import com.tyrlib2.renderer.IRenderable;
@@ -133,6 +134,16 @@ public class Text2 extends SceneObject implements IRenderable, IBlendable {
 	@Override
 	public void setAlpha(float alpha) {
 		image.setAlpha(alpha);
+	}
+
+	@Override
+	public AABB getBoundingBox() {
+		return image.getBoundingBox();
+	}
+
+	@Override
+	public void setBoundingBoxVisible(boolean visible) {
+		image.setBoundingBoxVisible(visible);
 	}
 }
 

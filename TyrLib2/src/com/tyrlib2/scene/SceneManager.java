@@ -12,11 +12,17 @@ import com.tyrlib2.lighting.Light;
 import com.tyrlib2.lighting.LightingType;
 import com.tyrlib2.lighting.PointLight;
 import com.tyrlib2.materials.DefaultMaterial3;
+import com.tyrlib2.math.Vector2;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.renderables.Box;
 import com.tyrlib2.renderables.Entity;
+import com.tyrlib2.renderables.Image2;
+import com.tyrlib2.renderables.Line2;
+import com.tyrlib2.renderables.Rectangle2;
+import com.tyrlib2.renderables.Text2;
 import com.tyrlib2.renderer.Camera;
 import com.tyrlib2.renderer.IFrameListener;
+import com.tyrlib2.renderer.IRenderable;
 import com.tyrlib2.renderer.Material;
 import com.tyrlib2.renderer.OpenGLRenderer;
 import com.tyrlib2.util.Color;
@@ -175,6 +181,13 @@ public class SceneManager {
 		return box;
 	}
 	
+	public void destroyRenderable(IRenderable renderable) {
+		if (renderable instanceof SceneObject) {
+			((SceneObject) renderable).detach();
+		}
+		renderer.removeRenderable(renderable);
+	}
+	
 	/**
 	 * Create an entity from a file source
 	 * @param context	The context for loading the file
@@ -202,4 +215,27 @@ public class SceneManager {
 		return entity;
 	}
 	
+	public Rectangle2 createRectangle2(Vector2 size, Color color) {
+		Rectangle2 rect = new Rectangle2(size, color);
+		renderer.addRenderable(rect, OpenGLRenderer.OVERLAY_CHANNEL);
+		return rect;
+	}
+	
+	public Line2 createLine2(Vector2 from, Vector2 to, Color color, int thickness) {
+		Line2 line = new Line2(from, to, color, thickness);
+		renderer.addRenderable(line, OpenGLRenderer.OVERLAY_CHANNEL);
+		return line;
+	}
+	
+	public Image2 createImage2(Vector2 size, String textureName) {
+		Image2 image = new Image2(size, textureName);
+		renderer.addRenderable(image, OpenGLRenderer.OVERLAY_CHANNEL);
+		return image;
+	}
+	
+	public Text2 createText2(String text, int size, Color color) {
+		Text2 text2 = new Text2(text, color);
+		renderer.addRenderable(text2, OpenGLRenderer.OVERLAY_CHANNEL);
+		return text2;
+	}
 }

@@ -31,7 +31,7 @@ public class Image2 extends Renderable2 {
 							   size.x, size.y, 0, 1, 0
 							 };
 
-		this.mesh = new Mesh(vertexData, DRAW_ORDER_IMAGE);
+		this.mesh = new Mesh(vertexData, DRAW_ORDER_IMAGE, 4);
 	}
 	public Image2(Vector2 size, String textureName) {
 		this.size = size;
@@ -45,7 +45,7 @@ public class Image2 extends Renderable2 {
 							   size.x, size.y, 0, 1, 1
 							 };
 
-		this.mesh = new Mesh(vertexData, DRAW_ORDER_IMAGE);
+		this.mesh = new Mesh(vertexData, DRAW_ORDER_IMAGE, 4);
 	}
 
 	
