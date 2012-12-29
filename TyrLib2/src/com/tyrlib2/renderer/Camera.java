@@ -70,6 +70,26 @@ public class Camera extends SceneObject {
 		Quaternion rotation = parent.getAbsoluteRot();
 		Matrix.translateM(viewMatrix, 0, -pos.x, -pos.y, -pos.z);
 		Matrix.multiplyMM(viewMatrix, 0, rotation.toMatrix(), 0, viewMatrix, 0);
-		//Matrix.rotateM(viewMatrix, 0, rotation.angle, rotation.rotX, rotation.rotY, rotation.rotZ);
+	}
+	
+	/**
+	 * Get the look diretion of the camera in world space
+	 * @return
+	 */
+	
+	public Vector3 getWorldLookDirection() {
+		float[] look = { lookDirection.x, lookDirection.y, lookDirection.z, 1 };
+		float[] transform = parent.getAbsoluteRot().toMatrix();
+		Matrix.multiplyMV(look, 0, transform, 0, look, 0);
+		Vector3 direction = new Vector3(look[0], look[1], look[2]);
+		return direction;
+	}
+	
+	public Vector3 getWorldUpVector() {
+		float[] upFloat = { up.x, up.y, up.z, 1 };
+		float[] transform = parent.getAbsoluteRot().toMatrix();
+		Matrix.multiplyMV(upFloat, 0, transform, 0, upFloat, 0);
+		Vector3 up = new Vector3(upFloat[0], upFloat[1], upFloat[2]);
+		return up;
 	}
 }

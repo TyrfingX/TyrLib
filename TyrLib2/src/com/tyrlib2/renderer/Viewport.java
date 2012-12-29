@@ -17,6 +17,9 @@ public class Viewport {
 	private int height;
 	private float ratio;
 	
+	private int nearClip = 3;
+	private int farClip = 800;
+	
 	/**
 	 * Creates a blank view port
 	 */
@@ -49,7 +52,15 @@ public class Viewport {
 		this.width = width;
 		this.height = height;
 		ratio = (float) width / height;
-		Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1, 1, 3, 800);
+		Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1, 1, nearClip, farClip);
+	}
+	
+	public float getNearClipWidth() {
+		return ratio * 2;
+	}
+	
+	public float getNearClipHeight() {
+		return 2;
 	}
 	
 	public float[] getProjectionMatrix() {
@@ -62,5 +73,13 @@ public class Viewport {
 	
 	public int getHeight() {
 		return height;
+	}
+	
+	public int getNearClip() {
+		return nearClip;
+	}
+	
+	public int getFarClip() {
+		return farClip;
 	}
 }

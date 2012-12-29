@@ -17,6 +17,12 @@ public class Program {
 	
 	protected static Program inUse;
 	
+	/** The currently passed mesh **/
+	protected Mesh mesh;
+	
+	/** Mesh must be changed **/
+	public boolean meshChange;
+	
 	public Program(int handle) {
 		this.handle = handle;
 	}
@@ -28,6 +34,8 @@ public class Program {
 		if (inUse != this) {
 			GLES20.glUseProgram(handle);
 			inUse = this;
+			
+			mesh = null;
 		}
 	}
 	

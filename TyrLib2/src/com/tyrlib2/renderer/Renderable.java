@@ -80,7 +80,7 @@ public class Renderable extends BoundedRenderable {
 			GLES20.glDisable(GLES20.GL_BLEND);
 			
 			material.program.use();
-	
+			
 			mesh.vertexBuffer.position(material.positionOffest);
 
 	        // Apply the projection and view transformation
@@ -88,17 +88,21 @@ public class Renderable extends BoundedRenderable {
 			
 	        // Combine the rotation matrix with the projection and camera view
 	        GLES20.glUniformMatrix4fv(material.mvpMatrixHandle, 1, false, mvpMatrix, 0);
-
 	        
-			
 	        // Enable a handle to the triangle vertices
 	        GLES20.glEnableVertexAttribArray(material.positionHandle);
 	
-	        // Prepare the coordinate data
-	        GLES20.glVertexAttribPointer(material.positionHandle, material.positionDataSize,
-	                                     GLES20.GL_FLOAT, false,
-	                                     material.strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, 
-	                                     mesh.vertexBuffer);
+	        if (material.program.mesh != mesh) {
+	        
+		        // Prepare the coordinate data
+		        GLES20.glVertexAttribPointer(material.positionHandle, material.positionDataSize,
+		                                     GLES20.GL_FLOAT, false,
+		                                     material.strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, 
+		                                     mesh.vertexBuffer);
+		        
+		        material.program.meshChange = true;
+	        
+	        }
 	        
 	        material.render(mesh.vertexBuffer, modelMatrix);
 	        
@@ -132,6 +136,9 @@ public class Renderable extends BoundedRenderable {
 	        
 	        // Disable vertex array
 	        GLES20.glDisableVertexAttribArray(material.positionHandle);
+	        
+	        material.program.mesh = mesh;
+	        material.program.meshChange = false;
 		}
 
 	}

@@ -127,11 +127,10 @@ public class Vector3 {
 	 * @return		The interpolated vector
 	 */
 	public static Vector3 lerp(Vector3 start, Vector3 end, float alpha) {
-		Vector3 result = new Vector3();
-		result.x = start.x + (end.x - start.x) * alpha;
-		result.y = start.y + (end.y - start.y) * alpha;
-		result.z = start.z + (end.z - start.z) * alpha;
-		return result;
+		float x = start.x + (end.x - start.x) * alpha;
+		float y = start.y + (end.y - start.y) * alpha;
+		float z = start.z + (end.z - start.z) * alpha;
+		return new Vector3(x,y,z);
 	}
 	
 }

@@ -84,20 +84,16 @@ public class Quaternion {
 	 */
 	public Quaternion multiply(Quaternion other) {
 
-		Vector3 vector1 = new Vector3(x,y,z);
-		Vector3 vector2 = new Vector3(other.x,other.y,other.z);
-
-		float angle = (w * other.w) - vector1.dot(vector2);
-
-		Vector3 cross = vector1.cross(vector2);
+		float angle = (w * other.w) - (x * other.x + y * other.y + z * other.z);
 		
-		vector1 = vector1.multiply(other.w);
-		vector2 = vector2.multiply(w);
-		
+		float crossX = y * other.z - z * other.y;
+		float crossY = -(x * other.z - z * other.x);
+		float crossZ = x * other.y - y * other.x;
+
 		Quaternion result = new Quaternion();
-		result.x = vector1.x + vector2.x + cross.x;
-		result.y = vector1.y + vector2.y + cross.y;
-		result.z = vector1.z + vector2.z + cross.z;
+		result.x = x * other.w + other.x * w + crossX;
+		result.y = y * other.w + other.y * w + crossY;
+		result.z = z * other.w + other.z * w + crossZ;
 		result.w = angle;
 		
 		return result;

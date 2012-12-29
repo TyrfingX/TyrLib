@@ -15,6 +15,21 @@ public class AABB {
 		max = new Vector3();
 	}
 	
+	public Vector3[] getPoints() {
+		Vector3 points[] = {	
+				new Vector3(min),
+				new Vector3(max.x, min.y, min.z),
+				new Vector3(min.x, max.y, min.z),
+				new Vector3(max.x, max.y, min.z),
+				new Vector3(min.x, min.y, max.z),
+				new Vector3(max.x, min.y, max.z),
+				new Vector3(min.x, max.y, max.z),
+				new Vector3(max),
+
+		};
+		
+		return points;
+	}
 	
 	/**
 	 * Create a bounding box containing all the passed points.

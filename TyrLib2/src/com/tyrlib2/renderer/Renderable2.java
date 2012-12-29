@@ -2,6 +2,8 @@ package com.tyrlib2.renderer;
 
 import java.nio.ShortBuffer;
 
+import com.tyrlib2.math.AABB;
+
 
 import android.opengl.GLES20;
 import android.opengl.Matrix;
@@ -71,5 +73,10 @@ public abstract class Renderable2 extends Renderable {
 		}
 		
 		return 1;
+	}
+	
+	@Override
+	public AABB getBoundingBox() {
+		return null;
 	}
 }

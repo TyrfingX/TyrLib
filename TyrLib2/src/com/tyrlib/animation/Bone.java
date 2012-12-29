@@ -52,8 +52,6 @@ public class Bone extends SceneNode {
 		
 		Matrix.invertM(inverseBindPos, 0,bindPos, 0);
 		
-		float[] test ={ 0, 0, 0, 1};
-		Matrix.multiplyMV(test, 0, bindPos, 0, test, 0);
 	}
 	
 	@Override
@@ -68,7 +66,7 @@ public class Bone extends SceneNode {
 		
 		Matrix.setIdentityM(modelMatrix, 0);
 		Matrix.multiplyMM(modelMatrix, 0, rotation, 0, modelMatrix, 0);
-		Matrix.translateM(translation, 0, initPos.add(pos).x, initPos.add(pos).y, initPos.add(pos).z);
+		Matrix.translateM(translation, 0, initPos.x + pos.x, initPos.y + pos.y, initPos.z + pos.z);
 		Matrix.multiplyMM(modelMatrix, 0, translation, 0, modelMatrix, 0);
 
 		Matrix.multiplyMM(modelMatrix, 0, parentTransform, 0, modelMatrix, 0);

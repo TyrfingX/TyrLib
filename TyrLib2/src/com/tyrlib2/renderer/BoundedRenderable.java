@@ -132,6 +132,8 @@ public abstract class BoundedRenderable extends SceneObject implements IRenderab
 						mesh.setVertexInfo(i*mat.getByteStride() + 1, pointsTransformed[i*4 + 1]);
 						mesh.setVertexInfo(i*mat.getByteStride() + 2, pointsTransformed[i*4 + 2]);
 					}
+					
+					boundingBoxRenderable.setBoundingBox(boundingBox);
 				}
 			}
 		

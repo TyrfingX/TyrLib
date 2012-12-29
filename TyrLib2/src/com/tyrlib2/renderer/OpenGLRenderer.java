@@ -14,6 +14,8 @@ import android.util.SparseArray;
 
 import com.tyrlib2.lighting.Light;
 import com.tyrlib2.materials.DefaultMaterial3;
+import com.tyrlib2.math.AABB;
+import com.tyrlib2.math.FrustumG;
 import com.tyrlib2.scene.SceneManager;
 import com.tyrlib2.scene.SceneNode;
 
@@ -51,6 +53,8 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	
 	protected boolean rendering = false;
 	private boolean init = false;
+	
+	private FrustumG frustum;
 	
 	public OpenGLRenderer(Context context) {
 		frameListeners = new Vector<IFrameListener>();
@@ -160,6 +164,14 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 		    // Update the view matrix of the camera
 		    camera.update();
 		    
+		    frustum = new FrustumG(	camera.getAbsolutePos(), 
+		    						camera.getWorldLookDirection(), 
+		    						camera.getWorldUpVector(), 
+		    						viewport.getNearClip(), 
+		    						viewport.getFarClip(),
+		    						viewport.getNearClipWidth(),
+		    						viewport.getNearClipHeight());
+		    
 		    // Update the eye space matrices of all lights
 		    SceneManager sceneManager = SceneManager.getInstance();
 		    for (int i = 0; i < sceneManager.getLightCount(); ++i) {
@@ -199,7 +211,13 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 
 	private void drawChannel(List<IRenderable> renderables, float[] transformMatrix) {
 	    for (int i = 0; i < renderables.size(); ++i) {
-	    	renderables.get(i).render(transformMatrix);
+	    	IRenderable r = renderables.get(i);
+	    	AABB boundingBox = r.getBoundingBox();
+	    	if (boundingBox == null) {
+	    		r.render(transformMatrix);
+	    	} else if (frustum.aabbInFrustum(boundingBox)) {
+	    		r.render(transformMatrix);
+	    	}
 	    }
 	}
     

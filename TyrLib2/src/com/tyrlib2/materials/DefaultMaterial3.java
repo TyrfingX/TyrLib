@@ -132,19 +132,30 @@ public class DefaultMaterial3 extends LightedMaterial {
 	    colorHandle = GLES20.glGetAttribLocation(program.handle, "a_Color");
 		int textureHandle = texture.getHandle();
 		
-	    // Pass in the color information
-	    vertexBuffer.position(colorOffset);
-	    GLES20.glVertexAttribPointer(colorHandle, colorDataSize, GLES20.GL_FLOAT, false,
-	    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
-	 
-	    GLES20.glEnableVertexAttribArray(colorHandle);
+		if (program.meshChange) {
 		
-	    // Pass in the normal information
-	    vertexBuffer.position(normalOffset);
-	    GLES20.glVertexAttribPointer(normalHandle, normalDataSize, GLES20.GL_FLOAT, false,
-	    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
-	 
-	    GLES20.glEnableVertexAttribArray(normalHandle);
+		    // Pass in the color information
+		    vertexBuffer.position(colorOffset);
+		    GLES20.glVertexAttribPointer(colorHandle, colorDataSize, GLES20.GL_FLOAT, false,
+		    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
+		 
+		    GLES20.glEnableVertexAttribArray(colorHandle);
+			
+		    // Pass in the normal information
+		    vertexBuffer.position(normalOffset);
+		    GLES20.glVertexAttribPointer(normalHandle, normalDataSize, GLES20.GL_FLOAT, false,
+		    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
+		 
+		    GLES20.glEnableVertexAttribArray(normalHandle);
+		    
+	        // Pass in the texture coordinate information
+	        vertexBuffer.position(uvOffset);
+	        GLES20.glVertexAttribPointer(textureCoordinateHandle, uvDataSize, GLES20.GL_FLOAT, false, 
+	        		strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
+	        
+	        GLES20.glEnableVertexAttribArray(textureCoordinateHandle);
+	    
+		}
 	    
 	    SceneManager sceneManager = SceneManager.getInstance();
 	    float[] viewMatrix = sceneManager.getRenderer().getCamera().getViewMatrix();
@@ -152,14 +163,6 @@ public class DefaultMaterial3 extends LightedMaterial {
 	    
         // Pass in the modelview matrix.
         GLES20.glUniformMatrix4fv(mvMatrixHandle, 1, false, mvMatrix, 0);
-	 
-	    
-        // Pass in the texture coordinate information
-        vertexBuffer.position(uvOffset);
-        GLES20.glVertexAttribPointer(textureCoordinateHandle, uvDataSize, GLES20.GL_FLOAT, false, 
-        		strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
-        
-        GLES20.glEnableVertexAttribArray(textureCoordinateHandle);
 	    
 	    // Set the active texture unit to texture unit 0.
 	    GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
