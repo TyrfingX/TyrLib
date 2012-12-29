@@ -5,6 +5,7 @@ import java.nio.FloatBuffer;
 import android.opengl.GLES20;
 
 import com.tyrlib2.math.Vector3;
+import com.tyrlib2.renderer.IBlendable;
 import com.tyrlib2.renderer.Material;
 import com.tyrlib2.renderer.OpenGLRenderer;
 import com.tyrlib2.renderer.ProgramManager;
@@ -16,7 +17,7 @@ import com.tyrlib2.util.Color;
  *
  */
 
-public class ColoredMaterial extends Material implements IBlendableMaterial {
+public class ColoredMaterial extends Material implements IBlendable {
 
 	private int colorOffset = 3;
 	private int colorDataSize = 4;

@@ -2,7 +2,6 @@ package com.tyrlib2.renderer;
 
 import java.nio.ShortBuffer;
 
-import com.tyrlib2.materials.IBlendableMaterial;
 
 import android.opengl.GLES20;
 import android.opengl.Matrix;
@@ -59,15 +58,15 @@ public abstract class Renderable2 extends Renderable {
 	}
 	
 	public void setAlpha(float alpha) {
-		if (material instanceof IBlendableMaterial) {
-			IBlendableMaterial mat = (IBlendableMaterial) material;
+		if (material instanceof IBlendable) {
+			IBlendable mat = (IBlendable) material;
 			mat.setAlpha(alpha);
 		}
 	}
 	
 	public float getAlpha() {
-		if (material instanceof IBlendableMaterial) {
-			IBlendableMaterial mat = (IBlendableMaterial) material;
+		if (material instanceof IBlendable) {
+			IBlendable mat = (IBlendable) material;
 			return mat.getAlpha();
 		}
 		

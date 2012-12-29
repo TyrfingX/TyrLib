@@ -7,9 +7,14 @@ public class Texture {
 	
 	public Texture(int handle) {
 		this.handle = handle;
+		this.resId = -1;
 	}
 	
 	public int getHandle()  {
 		return handle;
+	}
+	
+	public void setHandle(int handle) {
+		this.handle = handle;
 	}
 }

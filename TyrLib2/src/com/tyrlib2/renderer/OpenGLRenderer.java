@@ -173,7 +173,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 			GLES20.glViewport(0, 0, viewport.getWidth(), viewport.getHeight());
 		    
 		    Matrix.multiplyMM(vpMatrix, 0, viewport.projectionMatrix, 0, camera.viewMatrix, 0);
-			
+		    
 		    drawScene();
 		    updateListeners();
 		   

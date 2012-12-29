@@ -4,6 +4,7 @@ import java.nio.FloatBuffer;
 
 import android.opengl.GLES20;
 
+import com.tyrlib2.renderer.IBlendable;
 import com.tyrlib2.renderer.Material;
 import com.tyrlib2.renderer.OpenGLRenderer;
 import com.tyrlib2.renderer.ProgramManager;
@@ -16,21 +17,24 @@ import com.tyrlib2.renderer.TextureManager;
  *
  */
 
-public class TexturedMaterial extends Material implements IBlendableMaterial  {
+public class TexturedMaterial extends Material implements IBlendable  {
 
-	private float alpha;
+	private float alpha = 1;
 	private String textureName;
 	private Texture texture;
 	private int uvDataSize = 2;
 	private int uvOffset = 3;
 	
-	public TexturedMaterial(String textureName) {
-		this.textureName = textureName;
-		this.texture = TextureManager.getInstance().getTexture(textureName);
-		
+	public TexturedMaterial(Texture texture) {
+		this.texture = texture;
 		program = ProgramManager.getInstance().getProgram("TEXTURED");
-		
 		init(5,0,3, "u_MVPMatrix", "a_Position");
+	}
+	
+	
+	public TexturedMaterial(String textureName) {
+		this(TextureManager.getInstance().getTexture(textureName));
+		this.textureName = textureName;
 	}
 	
 	@Override
@@ -74,9 +78,10 @@ public class TexturedMaterial extends Material implements IBlendableMaterial  {
 	    // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
 	    GLES20.glUniform1i(textureUniformHandle, 0);
 	    
-	    GLES20.glEnable( GLES20.GL_BLEND );
-	    GLES20.glBlendFunc( GLES20.GL_SRC_ALPHA, GLES20.GL_SRC_ALPHA);
-	    
+
+    	//GLES20.glEnable( GLES20.GL_BLEND );
+    	//GLES20.glBlendFunc( GLES20.GL_SRC_ALPHA, GLES20.GL_SRC_ALPHA);
+
 	}
 
 }

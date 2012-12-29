@@ -4,6 +4,7 @@ import java.nio.FloatBuffer;
 
 import android.opengl.GLES20;
 
+import com.tyrlib2.renderer.IBlendable;
 import com.tyrlib2.renderer.Material;
 import com.tyrlib2.renderer.ProgramManager;
 import com.tyrlib2.renderer.Texture;
@@ -15,7 +16,7 @@ import com.tyrlib2.renderer.TextureManager;
  *
  */
 
-public class PointSpriteMaterial extends Material implements IBlendableMaterial {
+public class PointSpriteMaterial extends Material implements IBlendable {
 	
 	private String textureName;
 	private Texture texture;
