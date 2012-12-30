@@ -29,7 +29,7 @@ public class SubEntity extends Renderable {
 	
 	public void render(float[] vpMatrix, float[] skeletonBuffer, int bones) {
 		
-		if (skeletonBuffer != null) {
+		if (skeletonBuffer != null && skeletonBuffer.length > 0) {
 		
 			Program program = material.getProgram();
 			program.use();
