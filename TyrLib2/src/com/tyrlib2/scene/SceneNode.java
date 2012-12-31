@@ -270,6 +270,7 @@ public class SceneNode {
 	
 	public void attachSceneObject(SceneObject object) {
 		object.attachTo(this);
+		update = true;
 	}
 	
 	/**

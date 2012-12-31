@@ -3,13 +3,21 @@ package com.tyrlib2.util;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
 
+import com.tyrlib.animation.Animation;
+import com.tyrlib.animation.AnimationFrame;
+import com.tyrlib.animation.Bone;
 import com.tyrlib.animation.Skeleton;
 import com.tyrlib2.materials.DefaultMaterial3;
+import com.tyrlib2.math.Quaternion;
+import com.tyrlib2.math.Vector3;
 import com.tyrlib2.renderables.Entity;
 import com.tyrlib2.renderables.SubEntity;
 import com.tyrlib2.renderer.Mesh;
@@ -22,6 +30,9 @@ public class IQMEntityFactory implements IEntityFactory {
 	private static final int HEADER_SIZE = 27*4;
 	private static final int SUBENTITY_SIZE = 6*4;
 	private static final int VERTEX_ARRAY_SIZE = 5*4;
+	private static final int JOINT_SIZE = 12*4;
+	private static final int POSE_SIZE = 22*4;
+	private static final int ANIM_SIZE = 5*4;
 	
 	private class Header {
 	    int version;
@@ -96,8 +107,47 @@ public class IQMEntityFactory implements IEntityFactory {
 		int countTriangles;
 	}
 	
+	/** Contains data for creating a bone **/
+	private class BoneData {
+		public String name;
+		public Vector3 pos;
+		public Quaternion rot;
+		public int parentIndex;
+	}
+	
+	/** Contains data for creating an animation **/
+	private class AnimationData {
+		public String name;
+		public AnimationFrame[] animationFrames;
+		public float frameRate;
+		public int flag;
+	}
+	
+	private class PoseData {
+	    int parent;
+	    int channelmask; // mask of which 10 channels are present for this joint pose
+	    float[] channeloffset = new float[10];
+	    float[] channelscale = new float[10]; 
+	    // channels 0..2 are translation <Tx, Ty, Tz> and channels 3..6 are quaternion rotation <Qx, Qy, Qz, Qw>
+	    // rotation is in relative/parent local space
+	    // channels 7..9 are scale <Sx, Sy, Sz>
+	    // output = (input*scale)*rotation + translation
+	}
+	
+	/** Contains data for creating a skeleton **/
+	private class SkeletonData {
+		public List<BoneData> bones;
+		public PoseData[] poses;
+		public List<AnimationData> animations;
+		public SkeletonData() {
+			bones = new ArrayList<BoneData>();
+			animations = new ArrayList<AnimationData>();
+		}
+	}
+	
 	private class EntityData {
 		SubEntityData[] subEntities;
+		SkeletonData skeletonData;
 	}
 	
 	private class SubEntityPrototype {
@@ -123,6 +173,7 @@ public class IQMEntityFactory implements IEntityFactory {
 	private int readBytes;
 	private EntityData entityData;
 	private List<String> texts;
+	private int textPos = 1;
 	private DefaultMaterial3 baseMaterial;
 	private VertexArray[] vertexArrays;
 	
@@ -148,6 +199,9 @@ public class IQMEntityFactory implements IEntityFactory {
 			readVertexArrays();
 			readVertices();
 			readFaces();
+			readAdjacency();
+			readSkeleton();
+			readAnimations();
 			
 		} catch (IOException e) {
 			throw new RuntimeException("Failed to load entity " + fileName + ".");
@@ -162,12 +216,16 @@ public class IQMEntityFactory implements IEntityFactory {
 			entityPrototype.subEntityPrototypes[i] = p;
 			
 			p.mesh = new Mesh(data.vertexData, data.triangleData, data.countVertices);
+			p.mesh.setVertexBones(data.boneData);
 			p.material = (DefaultMaterial3) baseMaterial.copy();
 			Texture texture = TextureManager.getInstance().getTexture(data.material);
 			p.material.setTexture(texture, data.material);
+			
+			if (entityData.skeletonData.bones.size() > 0) {
+				p.material.setAnimated(true);
+			}
 		}
 		
-		entityData = null;
 	}
 	
 	@Override
@@ -180,8 +238,32 @@ public class IQMEntityFactory implements IEntityFactory {
 			entity.addSubEntity(subEntity);
 		}
 		
+		// Now create a new skeleton
 		Skeleton skeleton = new Skeleton();
 		entity.setSkeleton(skeleton);
+		
+
+		
+		for (int i = 0; i < entityData.skeletonData.bones.size(); ++i) {
+			BoneData boneData = entityData.skeletonData.bones.get(i);
+			Bone bone = new Bone(boneData.name);
+			if (boneData.parentIndex != -1) {
+				Bone parentBone = skeleton.getBone(boneData.parentIndex);
+				parentBone.attachChild(bone);
+			}
+			bone.setPose(boneData.pos, boneData.rot);
+			skeleton.addBone(bone);
+		}
+		
+		for (int i = 0; i < entityData.skeletonData.animations.size(); ++i) {
+			AnimationData animData = entityData.skeletonData.animations.get(i);
+			Animation animation = new Animation(animData.name);
+			skeleton.addAnimation(animation);
+			for (int j = 0; j < animData.animationFrames.length; ++j) {
+				animation.addFrame(animData.animationFrames[j]);
+			}
+			
+		}
 		
 		return entity;
 	}
@@ -211,15 +293,15 @@ public class IQMEntityFactory implements IEntityFactory {
 			readBytes += in.read(buffer);
 			
 			int pos = 0;
-			int nameTextIndex = toInt(buffer, (pos++)*4);
-			int materialTextIndex = toInt(buffer, (pos++)*4);
+			pos++;
+			pos++;
 			int firstVertex = toInt(buffer, (pos++)*4);
 			int numVertices = toInt(buffer, (pos++)*4);
 			int firstTriangle = toInt(buffer, (pos++)*4);
 			int numTriangles = toInt(buffer, (pos++)*4);
 			
-			subEntity.name = texts.get(nameTextIndex);
-			subEntity.material = texts.get(nameTextIndex+1);
+			subEntity.name = texts.get(textPos++);
+			subEntity.material = texts.get(textPos++);
 			subEntity.firstTriangleIndex = firstTriangle;
 			subEntity.firstVertexIndex = firstVertex;
 			subEntity.countTriangles = numTriangles;
@@ -305,8 +387,7 @@ public class IQMEntityFactory implements IEntityFactory {
 					for (int k = 0; k < subEntity.countVertices; ++k) {
 						for (int m = 0; m < 4; ++m) {
 							int intVal = buffer[pos++] & 0xff;
-							float index = Float.intBitsToFloat(intVal);
-							subEntity.boneData[k * Mesh.BONE_BYTE_STRIDE + offset + m] = index;
+							subEntity.boneData[k * Mesh.BONE_BYTE_STRIDE + offset + m] = intVal;
 						}
 					}
 					break;
@@ -315,8 +396,7 @@ public class IQMEntityFactory implements IEntityFactory {
 					for (int k = 0; k < subEntity.countVertices; ++k) {
 						for (int m = 0; m < 4; ++m) {
 							int intVal = buffer[pos++] & 0xff;
-							float weight = Float.intBitsToFloat(intVal);
-							weight /= 255;
+							float weight = intVal / 255.f;
 							subEntity.boneData[k * Mesh.BONE_BYTE_STRIDE + offset + m] = weight;
 						}
 					}
@@ -434,9 +514,151 @@ public class IQMEntityFactory implements IEntityFactory {
 		}	
 
 	}
+
+	private void readAdjacency() throws IOException {
+		// Not needed to just jump over the data
+		byte[] buffer = new byte[header.num_triangles*3*4];
+		readBytes += in.read(buffer);
+	}
+	
+	private void readSkeleton() throws IOException {
+		entityData.skeletonData = new SkeletonData();
+		
+		if (header.ofs_joints == readBytes) {
+			byte[] buffer = new byte[JOINT_SIZE * header.num_joints];
+			readBytes += in.read(buffer);
+			
+			int pos = 0;
+			
+			for (int i = 0; i < header.num_joints; ++i) {
+			
+				BoneData bone = new BoneData();
+				entityData.skeletonData.bones.add(bone);
+				
+				pos++;
+				bone.name = texts.get(textPos++);
+				bone.parentIndex = toInt(buffer, (pos++)*4);
+				
+				bone.pos = new Vector3();
+				bone.pos.x = toFloat(buffer, (pos++)*4);
+				bone.pos.y = toFloat(buffer, (pos++)*4);
+				bone.pos.z = toFloat(buffer, (pos++)*4);
+				
+				bone.rot = new Quaternion();
+				bone.rot.x = toFloat(buffer, (pos++)*4);
+				bone.rot.y = toFloat(buffer, (pos++)*4);
+				bone.rot.z = toFloat(buffer, (pos++)*4);
+				bone.rot.w = toFloat(buffer, (pos++)*4);
+				
+				pos += 3; // Scale info not supported yet
+			
+			}
+		}
+		
+		if (header.ofs_poses == readBytes) {
+			// Dont know why the fuck I would need these...
+			byte[] buffer = new byte[POSE_SIZE * header.num_poses];
+			readBytes += in.read(buffer);
+			
+			int pos = 0;
+			
+			entityData.skeletonData.poses = new PoseData[header.num_poses];
+			
+			for (int i = 0; i < header.num_poses; ++i) {
+				PoseData pose = new PoseData();
+				entityData.skeletonData.poses[i] = pose;
+				
+				pose.parent = toInt(buffer, (pos++)*4);
+				pose.channelmask = toInt(buffer, (pos++)*4);
+				for (int j = 0; j < 10; ++j) {
+					pose.channeloffset[j] = toFloat(buffer, (pos++)*4);
+				}
+				for (int j = 0; j < 10; ++j) {
+					pose.channelscale[j] = toFloat(buffer, (pos++)*4);
+				}
+			}
+		}
+		
+	}
+	
+	private void readAnimations() throws IOException {
+		if (header.ofs_anims == readBytes) {
+			for (int i = 0; i < header.num_anims; ++i) {
+				byte[] buffer = new byte[ANIM_SIZE];
+				readBytes += in.read(buffer);
+				
+				int pos = 0;
+				
+				AnimationData animData = new AnimationData();
+				
+				pos++;
+				animData.name = texts.get(textPos++);
+				int firstFrame = toInt(buffer, (pos++)*4);
+				int numFrames = toInt(buffer, (pos++)*4);
+				animData.animationFrames = new AnimationFrame[numFrames];
+				animData.frameRate = toFloat(buffer, (pos++)*4);
+				animData.flag = toInt(buffer, (pos++)*4);
+				
+				entityData.skeletonData.animations.add(animData);
+			}
+		}
+		
+		if (header.ofs_frames == readBytes) {
+			for (int i = 0; i < header.num_anims; ++i) {
+				AnimationData animData = entityData.skeletonData.animations.get(i);
+				
+				byte[] buffer = new byte[2 * animData.animationFrames.length * header.num_framechannels];
+				readBytes += in.read(buffer);
+				
+				int pos = 0;
+				float prevTime = 0;
+				
+				
+				for (int j = 0; j < animData.animationFrames.length; ++j) {
+					AnimationFrame frame = new AnimationFrame(header.num_joints);
+					animData.animationFrames[j] = frame;
+					frame.time = prevTime;
+					prevTime +=  1 / animData.frameRate;		
+					
+					for (int k = 0; k < header.num_poses; ++k) {
+						
+						PoseData p = entityData.skeletonData.poses[k];
+						Vector3 translate = new Vector3(p.channeloffset[0], p.channeloffset[1], p.channeloffset[2]);
+						
+						if((p.channelmask&0x01) != 0) translate.x += toShort(buffer, (pos++)*2) * p.channelscale[0];
+			            if((p.channelmask&0x02) != 0) translate.y += toShort(buffer, (pos++)*2) * p.channelscale[1];
+			            if((p.channelmask&0x04) != 0) translate.z += toShort(buffer, (pos++)*2) * p.channelscale[2];
+						
+			            Quaternion rotate = new Quaternion(p.channeloffset[3], p.channeloffset[4], p.channeloffset[5], p.channeloffset[6]);
+			            
+			            if((p.channelmask&0x08) != 0) rotate.x += toShort(buffer, (pos++)*2) * p.channelscale[3];
+			            if((p.channelmask&0x10) != 0) rotate.y += toShort(buffer, (pos++)*2) * p.channelscale[4];
+			            if((p.channelmask&0x20) != 0) rotate.z += toShort(buffer, (pos++)*2) * p.channelscale[5];
+			            if((p.channelmask&0x40) != 0) rotate.w += toShort(buffer, (pos++)*2) * p.channelscale[6];
+			            
+			            if((p.channelmask&0x80) != 0) pos++;
+			            if((p.channelmask&0x100) != 0) pos++;
+			            if((p.channelmask&0x200) != 0) pos++;
+		            
+			            frame.bonePos[k] = translate;
+			            frame.boneRot[k] = rotate;
+			            
+					}
+
+					
+				}
+				
+			}
+		}
+	}
 	
 	private int toInt(byte[] buffer, int pos) {
 		int intVal = ((buffer[pos+3] & 0xff) << 24) | ((buffer[pos+2] & 0xff) << 16) | ((buffer[pos+1] & 0xff) << 8) | (buffer[pos+0] & 0xff);
+		return intVal;
+	}
+
+	private int toShort(byte[] buffer, int pos) {
+		int intVal = ((buffer[pos+1] & 0xff) << 8) | (buffer[pos+0] & 0xff);
 		return intVal;
 	}
 	

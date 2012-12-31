@@ -1,5 +1,6 @@
 package com.tyrlib2.math;
 
+
 /**
  * An axis aligned bounding box
  * @author Sascha
@@ -59,5 +60,64 @@ public class AABB {
 		
 		return box;
 		
+	}
+	
+	/**
+	 * Calculates intersection with the given ray between a certain distance
+	 * interval.
+	 * 
+	 * Ray-box intersection is using IEEE numerical properties to ensure the
+	 * test is both robust and efficient, as described in:
+	 * 
+	 * Amy Williams, Steve Barrus, R. Keith Morley, and Peter Shirley: "An
+	 * Efficient and Robust Ray-Box Intersection Algorithm" Journal of graphics
+	 * tools, 10(1):49-54, 2005
+	 * 
+	 * @param ray
+	 *            incident ray
+	 * @param minDir
+	 * @param maxDir
+	 * @return intersection point on the bounding box (only the first is
+	 *         returned) or null if no intersection
+	 */
+	public Vector3 intersectsRay(Ray ray, float minDir, float maxDir) {
+		Vector3 invDir = new Vector3(1f / ray.direction.x, 1f / ray.direction.y, 1f / ray.direction.z);
+		
+		boolean signDirX = invDir.x < 0;
+		boolean signDirY = invDir.y < 0;
+		boolean signDirZ = invDir.z < 0;
+		
+		Vector3 bbox = signDirX ? max : min;
+		
+		float tmin = (bbox.x - ray.origin.x) * invDir.x;
+		bbox = signDirX ? min : max;
+		float tmax = (bbox.x - ray.origin.x) * invDir.x;
+		bbox = signDirY ? max : min;
+		float tymin = (bbox.y - ray.origin.y) * invDir.y;
+		bbox = signDirY ? min : max;
+		float tymax = (bbox.y - ray.origin.y) * invDir.y;
+
+		if ((tmin > tymax) || (tymin > tmax))
+			return null;
+		if (tymin > tmin)
+			tmin = tymin;
+		if (tymax < tmax)
+			tmax = tymax;
+
+		bbox = signDirZ ? max : min;
+		float tzmin = (bbox.z - ray.origin.z) * invDir.z;
+		bbox = signDirZ ? min : max;
+		float tzmax = (bbox.z - ray.origin.z) * invDir.z;
+
+		if ((tmin > tzmax) || (tzmin > tmax))
+			return null;
+		if (tzmin > tmin)
+			tmin = tzmin;
+		if (tzmax < tmax)
+			tmax = tzmax;
+		if ((tmin < maxDir) && (tmax > minDir)) {
+			return ray.getPointAtDistance(tmin);
+		}
+		return null;
 	}
 }

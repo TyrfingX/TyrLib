@@ -210,15 +210,17 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     }
 
 	private void drawChannel(List<IRenderable> renderables, float[] transformMatrix) {
-	    for (int i = 0; i < renderables.size(); ++i) {
-	    	IRenderable r = renderables.get(i);
-	    	AABB boundingBox = r.getBoundingBox();
-	    	if (boundingBox == null) {
-	    		r.render(transformMatrix);
-	    	} else if (frustum.aabbInFrustum(boundingBox)) {
-	    		r.render(transformMatrix);
-	    	}
-	    }
+		if (renderables != null) {
+		    for (int i = 0; i < renderables.size(); ++i) {
+		    	IRenderable r = renderables.get(i);
+		    	AABB boundingBox = r.getBoundingBox();
+		    	if (boundingBox == null) {
+		    		r.render(transformMatrix);
+		    	} else if (frustum.aabbInFrustum(boundingBox)) {
+		    		r.render(transformMatrix);
+		    	}
+		    }
+		}
 	}
     
     
@@ -284,11 +286,11 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     }
 
     public void addRenderable(IRenderable renderable) {
-    	renderChannels.get(DEFAULT_CHANNEL).add(renderable);
+    	this.addRenderable(renderable, DEFAULT_CHANNEL);
     }
     
     public void removeRenderable(IRenderable renderable) {
-    	renderChannels.get(DEFAULT_CHANNEL).remove(renderable);
+    	this.removeRenderable(renderable, DEFAULT_CHANNEL);
     }
     
     public void addRenderable(IRenderable renderable, int channel) {
@@ -309,4 +311,20 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     	} 
     }
     
+    public IRenderable getRenderable(int index) {
+    	List<IRenderable> renderables = renderChannels.get(DEFAULT_CHANNEL);
+    	if (renderables != null) {
+    		return renderables.get(index);
+    	}
+    	
+    	return null;
+    }
+    
+    public int getCountRenderables() {
+    	List<IRenderable> renderables = renderChannels.get(DEFAULT_CHANNEL);
+    	if (renderables != null) {
+    		return renderables.size();
+    	}
+    	return 0;
+    }
 }

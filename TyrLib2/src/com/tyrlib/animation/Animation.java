@@ -63,6 +63,18 @@ public class Animation implements IUpdateable {
 		this.animationFrames.addAll(animationFrames);
 		duration = animationFrames.get(animationFrames.size()-1).time;
 	}
+	
+	public void addFrame(AnimationFrame frame) {
+		if (animationFrames.size() != 0) {
+			if (frame.time > animationFrames.get(animationFrames.size()-1).time) {
+				duration = frame.time;
+			}
+		} else {
+			duration = frame.time;
+		}
+		this.animationFrames.add(frame);
+
+	}
 
 	@Override
 	public void onUpdate(float time) {
@@ -121,6 +133,14 @@ public class Animation implements IUpdateable {
 	public boolean isFinished() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	public int getCountFrames() {
+		return animationFrames.size();
+	}
+	
+	public AnimationFrame getFrame(int frame) {
+		return animationFrames.get(frame);
 	}
 	
 }

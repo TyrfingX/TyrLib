@@ -25,6 +25,7 @@ import com.tyrlib2.renderer.IFrameListener;
 import com.tyrlib2.renderer.IRenderable;
 import com.tyrlib2.renderer.Material;
 import com.tyrlib2.renderer.OpenGLRenderer;
+import com.tyrlib2.renderer.Viewport;
 import com.tyrlib2.util.Color;
 import com.tyrlib2.util.IEntityFactory;
 import com.tyrlib2.util.IQEEntityFactory;
@@ -237,5 +238,13 @@ public class SceneManager {
 		Text2 text2 = new Text2(text, color);
 		renderer.addRenderable(text2, OpenGLRenderer.OVERLAY_CHANNEL);
 		return text2;
+	}
+	
+	public Camera getActiveCamera() {
+		return renderer.getCamera();
+	}
+	
+	public Viewport getViewport() {
+		return renderer.getViewport();
 	}
 }

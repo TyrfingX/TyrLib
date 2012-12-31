@@ -25,6 +25,7 @@ public class Camera extends SceneObject {
 	
 	public Camera(Vector3 up) {
 		this.up = up;
+		up.normalize();
 	}
 	
 	/**

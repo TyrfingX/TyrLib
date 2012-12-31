@@ -44,7 +44,7 @@ public class Line2 extends Renderable2 {
 	@Override
 	public void render(float[] vpMatrix) {
 
-		renderMode = GLES20.GL_LINE_LOOP;
+		renderMode = GLES20.GL_LINES;
 		GLES20.glLineWidth(thickness);
 		drawOrderLength = mesh.getDrawOrder().length;
 		drawOrderBuffer = mesh.getDrawOrderBuffer();
