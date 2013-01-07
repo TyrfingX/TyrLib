@@ -76,7 +76,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         GLES20.glDepthMask( true );
         
 		// Use culling to remove back faces.
-		GLES20.glEnable(GLES20.GL_CULL_FACE);
+		//GLES20.glEnable(GLES20.GL_CULL_FACE);
 		
 		// Set the blend function
 		GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE);

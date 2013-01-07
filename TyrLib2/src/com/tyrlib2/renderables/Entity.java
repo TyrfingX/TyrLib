@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.tyrlib.animation.Animation;
-import com.tyrlib.animation.Skeleton;
+import com.tyrlib2.animation.Animation;
+import com.tyrlib2.animation.Skeleton;
 import com.tyrlib2.game.IUpdateable;
 import com.tyrlib2.math.AABB;
 import com.tyrlib2.renderer.BoundedRenderable;

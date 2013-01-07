@@ -12,10 +12,10 @@ import java.util.StringTokenizer;
 
 import android.content.Context;
 
-import com.tyrlib.animation.Animation;
-import com.tyrlib.animation.AnimationFrame;
-import com.tyrlib.animation.Bone;
-import com.tyrlib.animation.Skeleton;
+import com.tyrlib2.animation.Animation;
+import com.tyrlib2.animation.AnimationFrame;
+import com.tyrlib2.animation.Bone;
+import com.tyrlib2.animation.Skeleton;
 import com.tyrlib2.materials.DefaultMaterial3;
 import com.tyrlib2.math.Quaternion;
 import com.tyrlib2.math.Vector2;

@@ -203,13 +203,15 @@ public class DefaultMaterial3 extends LightedMaterial {
 			normals[i] = new Vector3();
 
 			for (int j = 0; j < drawOrder.length; j += 3) {
-				if (drawOrder[j] == i || drawOrder[j+1] == i || drawOrder[j + 2] == i) {
-					Vector3 u = points[drawOrder[j]].vectorTo(points[drawOrder[j+1]]);
-					Vector3 v = points[drawOrder[j+1]].vectorTo(points[drawOrder[j+2]]);
-					Vector3 normal = u.cross(v);
-					normal.normalize();
-					
-					normals[i] = normals[i].add(normal);
+				if (j + 2 < drawOrder.length) {
+					if (drawOrder[j] == i || drawOrder[j+1] == i || drawOrder[j + 2] == i) {
+						Vector3 u = points[drawOrder[j]].vectorTo(points[drawOrder[j+1]]);
+						Vector3 v = points[drawOrder[j+1]].vectorTo(points[drawOrder[j+2]]);
+						Vector3 normal = u.cross(v);
+						normal.normalize();
+						
+						normals[i] = normals[i].add(normal);
+					}
 				}
 			}
 			normals[i].normalize();

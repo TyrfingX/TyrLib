@@ -1,4 +1,4 @@
-package com.tyrlib.animation;
+package com.tyrlib2.animation;
 
 import android.opengl.Matrix;
 

@@ -1,4 +1,4 @@
-package com.tyrlib.animation;
+package com.tyrlib2.animation;
 
 import com.tyrlib2.math.Quaternion;
 import com.tyrlib2.math.Vector3;
