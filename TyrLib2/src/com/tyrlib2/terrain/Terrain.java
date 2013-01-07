@@ -80,8 +80,8 @@ public class Terrain extends Renderable {
 		terrain.size = size;
 		terrain.maxHeight = maxHeight;
 		
-		short width = 32;
-		short height = 32;
+		short width = (short) texture.getSize().x;
+		short height = (short) texture.getSize().y;
 		
 		float stepX = size.x / width;
 		float stepY = size.y / height;
@@ -119,6 +119,8 @@ public class Terrain extends Renderable {
 		float[] vertexData = new float[tileMaterial.getByteStride()*width*height];
 		Vector3[] points = new Vector3[width*height];
 		
+		Vector2 textureRepeat = tileMaterial.getRepeat();
+		
 		for (int y = 0; y < height; ++y) {
 			for (int x = 0; x < width; ++x) {
 				int arrPos = x + width*y;
@@ -135,8 +137,8 @@ public class Terrain extends Renderable {
 				int uvX = x;
 				int uvY = y;
 				
-				vertexData[vertexPos + tileMaterial.getUVOffset() + 0] = uvX;
-				vertexData[vertexPos + tileMaterial.getUVOffset() + 1] = uvY;
+				vertexData[vertexPos + tileMaterial.getUVOffset() + 0] = uvX * textureRepeat.x;
+				vertexData[vertexPos + tileMaterial.getUVOffset() + 1] = uvY * textureRepeat.y;
 				
 				vertexData[vertexPos + tileMaterial.getColorOffset() + 0] = 1;
 				vertexData[vertexPos + tileMaterial.getColorOffset() + 1] = 1;

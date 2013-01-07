@@ -119,6 +119,13 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 													com.tyrlib2.R.raw.point_light_fs, 
 													new String[]{"a_Position"});
 		
+		// Create a material for rendering terrain
+		ProgramManager.getInstance().createProgram(	"TERRAIN", 
+													context, 
+													com.tyrlib2.R.raw.terrain_vs, 
+													com.tyrlib2.R.raw.terrain_fs, 
+													new String[]{"a_Position", "a_Normal", "a_TexCoordinate", "a_TexWeights"});
+		
 		// Create a material to render point sprites
 		ProgramManager.getInstance().createProgram(	"POINT_SPRITE", 
 													context, 

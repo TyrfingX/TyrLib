@@ -11,6 +11,8 @@ import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
 
+import com.tyrlib2.math.Vector2;
+
 public class TextureManager {
 	private static TextureManager instance;
 	
@@ -43,6 +45,8 @@ public class TextureManager {
 	    
 	    GLES20.glGenTextures(1, textureHandle, 0);
 	 
+	    Vector2 size = null;
+	    
 	    if (textureHandle[0] != 0)
 	    {
 	        final BitmapFactory.Options options = new BitmapFactory.Options();
@@ -50,7 +54,9 @@ public class TextureManager {
 	 
 	        // Read in the resource
 	        final Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resourceId, options);
-	 
+	        size = new Vector2(bitmap.getWidth(), bitmap.getHeight());
+	        
+	        
 	        // Bind to the texture in OpenGL
 	        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0]);
 	 
@@ -71,6 +77,7 @@ public class TextureManager {
 	    }
 	    
 	    Texture texture = new Texture(textureHandle[0]);
+	    texture.size = size;
 	    textures.put(name, texture);
 	    texture.resId = resourceId;
 	 

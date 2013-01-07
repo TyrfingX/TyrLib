@@ -1,0 +1,48 @@
+precision mediump float;        // Set the default precision to medium. We don't need as high of a
+                                // precision in the fragment shader.
+uniform vec3 u_LightPos;        // The position of the light in eye space.
+uniform float u_LightType;		// The type of the light
+uniform vec4 u_Ambient;			// Constant global ambient illumination
+uniform sampler2D u_Texture[4]; // The input textures.
+ 
+varying vec3 v_Position;        // Interpolated position for this fragment.
+varying vec3 v_Normal;          // Interpolated normal for this fragment.
+varying vec2 v_TexCoordinate;   // Interpolated texture coordinate per fragment.
+varying vec4 v_TexWeights;	    // Interpolated texture weights per fragment.
+ 
+// The entry point for our fragment shader.
+void main()
+{
+
+	float diffuse = 1.0;
+	
+	if (u_LightType > 0.7) {
+
+		// SPOT LIGHT
+	    // Will be used for attenuation.
+	    float distance = length(u_LightPos - v_Position);
+	 
+	    // Get a lighting direction vector from the light to the vertex.
+	    vec3 lightVector = normalize(u_LightPos - v_Position);
+	 
+	    // Calculate the dot product of the light vector and vertex normal. If the normal and light vector are
+	    // pointing in the same direction then it will get max illumination.
+	    diffuse = max(dot(v_Normal, lightVector), 0.0);
+	 
+	    // Add attenuation.
+	    diffuse = diffuse * (1.0 / (1.0 + (0.10 * distance * distance)));
+	} else if (u_LightType > 0.3) {
+		// Calculate the dot product of the light vector and vertex normal. If the normal and light vector are
+	    // pointing in the same direction then it will get max illumination.
+	    diffuse = max(dot(v_Normal, u_LightPos), 0.0);
+	}
+	
+	// Multiply the color by the diffuse illumination level and texture value to get final output color.
+	
+	vec4 texColor = texture2D(u_Texture[0], v_TexCoordinate) * v_TexWeights.x + 
+					texture2D(u_Texture[1], v_TexCoordinate) * v_TexWeights.y + 
+					texture2D(u_Texture[2], v_TexCoordinate) * v_TexWeights.z + 
+					texture2D(u_Texture[3], v_TexCoordinate) * v_TexWeights.w;
+	
+	gl_FragColor = (diffuse + u_Ambient) * texColor;
+  }
