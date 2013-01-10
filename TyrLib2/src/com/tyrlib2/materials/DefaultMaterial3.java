@@ -7,6 +7,7 @@ import android.opengl.GLES20;
 import android.opengl.Matrix;
 
 import com.tyrlib2.lighting.LightingType;
+import com.tyrlib2.math.Vector2;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.renderer.Material;
 import com.tyrlib2.renderer.OpenGLRenderer;
@@ -49,8 +50,8 @@ public class DefaultMaterial3 extends LightedMaterial {
 	private int textureCoordinateHandle;
 	private String textureName;
 	private Texture texture;
-	private int repeatX;
-	private int repeatY;
+	private float repeatX;
+	private float repeatY;
 	
 	/** Contains the model*view matrix **/
 	private float[] mvMatrix = new float[16];
@@ -62,7 +63,7 @@ public class DefaultMaterial3 extends LightedMaterial {
 		
 	}
 	
-	public DefaultMaterial3(Context context, String textureName, int repeatX, int repeatY, LightingType type, Color[] colors) {
+	public DefaultMaterial3(Context context, String textureName, float repeatX, float repeatY, LightingType type, Color[] colors) {
 
 		program = ProgramManager.getInstance().getProgram(PER_PIXEL_PROGRAM_NAME);
 		
@@ -79,7 +80,7 @@ public class DefaultMaterial3 extends LightedMaterial {
 
 	}
 	
-	public DefaultMaterial3(String textureName, int repeatX, int repeatY, LightingType type, Color[] colors) {
+	public DefaultMaterial3(String textureName, float repeatX, float repeatY, LightingType type, Color[] colors) {
 		
 
 		switch (type) {
@@ -102,7 +103,7 @@ public class DefaultMaterial3 extends LightedMaterial {
 
 	}
 	
-	protected void setup(String textureName, int repeatX, int repeatY, LightingType type, Color[] colors) {
+	protected void setup(String textureName, float repeatX, float repeatY, LightingType type, Color[] colors) {
 		lighted = true;
 		this.type = type;
 		
@@ -286,5 +287,9 @@ public class DefaultMaterial3 extends LightedMaterial {
 	public void setTexture(Texture texture, String textureName) {
 		this.texture = texture;
 		this.textureName = textureName;
+	}
+	
+	public Vector2 getRepeat() {
+		return new Vector2(repeatX, repeatY);
 	}
 }

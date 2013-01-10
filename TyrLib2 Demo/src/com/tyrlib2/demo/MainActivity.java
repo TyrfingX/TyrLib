@@ -17,6 +17,7 @@ import android.widget.SimpleAdapter;
 
 import com.tyrlib2.demo.example1.ExampleOneActivity;
 import com.tyrlib2.demo.example2.ExampleTwoActivity;
+import com.tyrlib2.demo.example3.ExampleThreeActivity;
 
 public class MainActivity extends ListActivity {
 	
@@ -50,6 +51,14 @@ public class MainActivity extends ListActivity {
 			item.put(ITEM_SUBTITLE, getText(R.string.example_two_subtitle));
 			data.add(item);
 			activityMapping.put(i++, ExampleTwoActivity.class);			
+		}
+		
+		{
+			final Map<String, Object> item = new HashMap<String, Object>();
+			item.put(ITEM_TITLE, getText(R.string.example_three));
+			item.put(ITEM_SUBTITLE, getText(R.string.example_three_subtitle));
+			data.add(item);
+			activityMapping.put(i++, ExampleThreeActivity.class);			
 		}
 		
 		final SimpleAdapter dataAdapter = new SimpleAdapter(this, data, R.layout.toc_item, new String[] {ITEM_IMAGE, ITEM_TITLE, ITEM_SUBTITLE}, new int[] {R.id.Image, R.id.Title, R.id.SubTitle});

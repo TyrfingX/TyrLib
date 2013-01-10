@@ -54,13 +54,17 @@ public class TerrainTexture {
 	public float getWeight(float height, float slope) {
 		float weight = 0;
 		float w = (float) (1.0 - ((Math.abs(height - heightRegion) / heightRange)));
-		if (w > 0 ){
+		
 			weight += w * heightWeight;
-		}
+
 		
 		w = (float) (1.0 - ((Math.abs(slope - slopeRegion) / slopeRange)));
-		if (w > 0 ){
+
 			weight += w * slopeWeight;
+
+		
+		if (weight < 0) {
+			weight = 0;
 		}
 		
 		return weight;
