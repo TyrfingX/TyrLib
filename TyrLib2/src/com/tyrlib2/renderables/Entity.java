@@ -87,9 +87,7 @@ public class Entity extends BoundedRenderable implements IUpdateable {
 		for (SubEntity subEntity : subEntities.values()) {
 			subEntity.detach();
 		}
-		return super.detach();
-		
-		
+		return super.detach();	
 	}
 	
 	/** 

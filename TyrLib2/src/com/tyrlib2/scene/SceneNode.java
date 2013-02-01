@@ -385,7 +385,6 @@ public class SceneNode {
 	public void updateAll(Vector3 parentPos, Quaternion parentRot, Vector3 parentScale, float[] parentTransform) {
 		
 		Matrix.setIdentityM(modelMatrix, 0);
-		absolutePos = parentPos.add(pos);
 		absoluteRot = parentRot.multiply(parentRot);
 		absoluteScale = new Vector3(scale.x * parentScale.x, scale.y * parentScale.y, scale.z * parentScale.z);
 		
@@ -402,6 +401,11 @@ public class SceneNode {
 		Matrix.translateM(translation, 0, pos.x / parentScale.x, pos.y / parentScale.y, pos.z / parentScale.z);
 		Matrix.multiplyMM(modelMatrix, 0, translation, 0, modelMatrix, 0);
 		Matrix.multiplyMM(modelMatrix, 0, parentTransform, 0, modelMatrix, 0);
+		
+		float[] transPos = new float[4];
+		float[] untransfPos = { pos.x, pos.y, pos.z, 1.0f };
+		Matrix.multiplyMV(transPos, 0, modelMatrix, 0, untransfPos, 0);
+		absolutePos = new Vector3(transPos[0], transPos[1], transPos[2]);
 		
 		for (int i = 0; i < attachedObjects.size(); ++i) {
 			SceneObject so = attachedObjects.get(i);

@@ -200,5 +200,24 @@ public class Quaternion {
 		
 		return result;
 	}
+	
+	public Vector3 multiply(Vector3 vector) {
+		  Quaternion vectorQuaternion = new Quaternion();
+		  vectorQuaternion.x = vector.x;
+		  vectorQuaternion.y = vector.y;
+		  vectorQuaternion.z = vector.z;
+		  vectorQuaternion.w = 0.0f;
+		  
+		  Quaternion inverseQuaternion = this.inverse();
+		  Quaternion resultQuaternion = vectorQuaternion.multiply(inverseQuaternion);
+		  resultQuaternion = this.multiply(resultQuaternion);
+		  
+		  Vector3 resultVector = new Vector3();
+		  resultVector.x = resultQuaternion.x;
+		  resultVector.y = resultQuaternion.y;
+		  resultVector.z = resultQuaternion.z;
+		  
+		  return resultVector;
+		}
 
 }

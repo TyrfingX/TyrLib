@@ -23,6 +23,9 @@ public class Program {
 	/** Mesh must be changed **/
 	public boolean meshChange;
 	
+	/** The handle to the texture currently passed to the GPU **/
+	public int textureHandle;
+	
 	public Program(int handle) {
 		this.handle = handle;
 	}
@@ -36,6 +39,7 @@ public class Program {
 			inUse = this;
 			
 			mesh = null;
+			textureHandle = 0;
 		}
 	}
 	

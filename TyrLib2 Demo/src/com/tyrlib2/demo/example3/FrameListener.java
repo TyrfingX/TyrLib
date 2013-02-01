@@ -2,7 +2,7 @@ package com.tyrlib2.demo.example3;
 
 import com.tyrli2.input.Controller;
 import com.tyrli2.input.InputManager;
-import com.tyrli2.input.Updater;
+import com.tyrlib2.game.Updater;
 import com.tyrlib2.lighting.DirectionalLight;
 import com.tyrlib2.lighting.Light.Type;
 import com.tyrlib2.materials.TerrainMaterial;
@@ -77,7 +77,7 @@ public class FrameListener implements IFrameListener {
 		terrMat.setTexture(terrTex4, 3);
 	 
 		// This is where we actually create our terrain
-		Terrain terrain = Terrain.fromHeightmap("MAP", terrMat, new Vector2(50,50), 20);
+		Terrain terrain = Terrain.fromHeightmap("MAP", terrMat, new Vector2(50,50), 25);
 		SceneManager.getInstance().getRootSceneNode().createChild(new Vector3()).attachSceneObject(terrain);
 		SceneManager.getInstance().getRenderer().addRenderable(terrain);
 	
@@ -91,7 +91,7 @@ public class FrameListener implements IFrameListener {
 			@Override
 			public boolean onTouchMove(Vector2 point) {
 				Vector2 movement = lastPoint.vectorTo(point).multiply(30);
-				movement.x *= -1;
+				movement.y *= -1;
 				
 				lastPoint = new Vector2(point);
 

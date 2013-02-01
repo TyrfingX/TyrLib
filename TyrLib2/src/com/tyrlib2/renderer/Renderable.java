@@ -75,7 +75,7 @@ public class Renderable extends BoundedRenderable {
 	 */
 	public void render(float[] vpMatrix) {
 
-		if (modelMatrix != null) {
+		if (parent != null && modelMatrix != null) {
 	        
 			GLES20.glDisable(GLES20.GL_BLEND);
 			
@@ -151,4 +151,5 @@ public class Renderable extends BoundedRenderable {
 	protected AABB createUntransformedBoundingBox() {
 		return mesh.getBoundingBox();
 	}
+
 }

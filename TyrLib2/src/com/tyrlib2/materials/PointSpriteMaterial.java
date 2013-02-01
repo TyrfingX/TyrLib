@@ -9,6 +9,7 @@ import com.tyrlib2.renderer.Material;
 import com.tyrlib2.renderer.ProgramManager;
 import com.tyrlib2.renderer.Texture;
 import com.tyrlib2.renderer.TextureManager;
+import com.tyrlib2.util.Color;
 
 /** 
  * Material for rendering point sprites.
@@ -21,14 +22,14 @@ public class PointSpriteMaterial extends Material implements IBlendable {
 	private String textureName;
 	private Texture texture;
 	private float size;
-	private float alpha;
+	private Color color;
 	
-	public PointSpriteMaterial(String textureName, float size, float alpha) {
+	public PointSpriteMaterial(String textureName, float size, Color color) {
 		program = ProgramManager.getInstance().getProgram("POINT_SPRITE");
 		
 		this.textureName = textureName;
 		this.size = size;
-		this.alpha = alpha;
+		this.color = color;
 				
 		if (textureName != null) {
 			texture = TextureManager.getInstance().getTexture(textureName);
@@ -38,21 +39,33 @@ public class PointSpriteMaterial extends Material implements IBlendable {
 	}
 	
 	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
+        super.render(vertexBuffer, modelMatrix);
         
 		int sizeHandle = GLES20.glGetUniformLocation(program.handle, "u_Size");
-		GLES20.glUniform2f(sizeHandle, size, alpha);
+		GLES20.glUniform1f(sizeHandle, size);
+		
+		int colorHandle = GLES20.glGetUniformLocation(program.handle, "u_Color");
+		GLES20.glUniform4f(colorHandle, 1, 1, 1,1);
 		
 		int textureHandle = texture.getHandle();
-		int textureUniformHandle = GLES20.glGetUniformLocation(program.handle, "u_Texture");
+	
+		if (program.textureHandle != textureHandle) {
 		
-	    // Set the active texture unit to texture unit 0.
-	    GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-	 
-	    // Bind the texture to this unit.
-	    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle);
-	 
-	    // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
-	    GLES20.glUniform1i(textureUniformHandle, 0);
+			int textureUniformHandle = GLES20.glGetUniformLocation(program.handle, "u_Texture");
+			GLES20.glEnableVertexAttribArray(textureUniformHandle);
+			
+		    // Set the active texture unit to texture unit 0.
+		    GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+		 
+		    // Bind the texture to this unit.
+		    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle);
+		 
+		    // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
+		    GLES20.glUniform1i(textureUniformHandle, 0);
+		    
+		    program.textureHandle = textureHandle;
+		    
+		}
 	    
 	    GLES20.glEnable( GLES20.GL_BLEND );
 	    GLES20.glBlendFunc( GLES20.GL_SRC_ALPHA, GLES20.GL_SRC_ALPHA);
@@ -64,11 +77,27 @@ public class PointSpriteMaterial extends Material implements IBlendable {
 
 	@Override
 	public float getAlpha() {
-		return alpha;
+		return color.a;
 	}
 
 	@Override
 	public void setAlpha(float alpha) {
-		this.alpha = alpha;
+		this.color.a = alpha;
+	}
+	
+	public Color getColor() {
+		return color;
+	}
+	
+	public void setColor(Color color) {
+		this.color = color;
+	}
+	
+	public Material copy() {
+		return new PointSpriteMaterial(textureName, size, color.copy());
+	}
+	
+	public Texture getTexture() {
+		return texture;
 	}
 }

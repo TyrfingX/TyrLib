@@ -131,7 +131,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 													context, 
 													com.tyrlib2.R.raw.point_sprite_vs, 
 													com.tyrlib2.R.raw.point_sprite_fs, 
-													new String[]{"a_Position"});
+													new String[]{"a_Position, a_Color"});
 		
 		// Create a program for rendering shadow depth maps
 		ProgramManager.getInstance().createProgram(	"SHADOW_DEPTH", 

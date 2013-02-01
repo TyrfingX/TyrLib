@@ -131,4 +131,8 @@ public class Material {
 		this.animated = animated;
 	}
 	
+	public Material copy() {
+		return new Material();
+	}
+	
 }
