@@ -3,9 +3,9 @@ package com.tyrlib2.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.tyrlib2.renderer.Material;
-import com.tyrlib2.renderer.Mesh;
-import com.tyrlib2.renderer.Renderable;
+import com.tyrlib2.graphics.renderer.Material;
+import com.tyrlib2.graphics.renderer.Mesh;
+import com.tyrlib2.graphics.renderer.Renderable;
 
 
 /**

@@ -2,9 +2,8 @@ package com.tyrlib2.demo.example2;
 
 import android.content.Context;
 
-import com.tyrlib2.demo.example2.FrameListener;
+import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.main.OpenGLActivity;
-import com.tyrlib2.scene.SceneManager;
 
 /**
  * This demonstrates how to load a model exported by a 3D modelling program

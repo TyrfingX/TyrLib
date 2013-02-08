@@ -1,20 +1,20 @@
 package com.tyrlib2.demo.example3;
 
-import com.tyrli2.input.Controller;
-import com.tyrli2.input.InputManager;
 import com.tyrlib2.game.Updater;
-import com.tyrlib2.lighting.DirectionalLight;
-import com.tyrlib2.lighting.Light.Type;
-import com.tyrlib2.materials.TerrainMaterial;
+import com.tyrlib2.graphics.lighting.DirectionalLight;
+import com.tyrlib2.graphics.lighting.Light.Type;
+import com.tyrlib2.graphics.materials.TerrainMaterial;
+import com.tyrlib2.graphics.renderer.Camera;
+import com.tyrlib2.graphics.renderer.IFrameListener;
+import com.tyrlib2.graphics.renderer.TextureManager;
+import com.tyrlib2.graphics.scene.SceneManager;
+import com.tyrlib2.graphics.scene.SceneNode;
+import com.tyrlib2.graphics.terrain.Terrain;
+import com.tyrlib2.graphics.terrain.TerrainTexture;
+import com.tyrlib2.input.Controller;
+import com.tyrlib2.input.InputManager;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.math.Vector3;
-import com.tyrlib2.renderer.Camera;
-import com.tyrlib2.renderer.IFrameListener;
-import com.tyrlib2.renderer.TextureManager;
-import com.tyrlib2.scene.SceneManager;
-import com.tyrlib2.scene.SceneNode;
-import com.tyrlib2.terrain.Terrain;
-import com.tyrlib2.terrain.TerrainTexture;
 import com.tyrlib2.util.Color;
 
 public class FrameListener implements IFrameListener {

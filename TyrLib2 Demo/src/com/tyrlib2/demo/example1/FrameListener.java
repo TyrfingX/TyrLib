@@ -2,18 +2,18 @@ package com.tyrlib2.demo.example1;
 
 
 import com.tyrlib2.demo.R;
-import com.tyrlib2.lighting.DirectionalLight;
-import com.tyrlib2.lighting.Light.Type;
-import com.tyrlib2.lighting.LightingType;
-import com.tyrlib2.materials.DefaultMaterial3;
+import com.tyrlib2.graphics.lighting.DirectionalLight;
+import com.tyrlib2.graphics.lighting.Light.Type;
+import com.tyrlib2.graphics.lighting.LightingType;
+import com.tyrlib2.graphics.materials.DefaultMaterial3;
+import com.tyrlib2.graphics.renderables.Box;
+import com.tyrlib2.graphics.renderer.Camera;
+import com.tyrlib2.graphics.renderer.IFrameListener;
+import com.tyrlib2.graphics.renderer.TextureManager;
+import com.tyrlib2.graphics.scene.SceneManager;
+import com.tyrlib2.graphics.scene.SceneNode;
 import com.tyrlib2.math.Quaternion;
 import com.tyrlib2.math.Vector3;
-import com.tyrlib2.renderables.Box;
-import com.tyrlib2.renderer.Camera;
-import com.tyrlib2.renderer.IFrameListener;
-import com.tyrlib2.renderer.TextureManager;
-import com.tyrlib2.scene.SceneManager;
-import com.tyrlib2.scene.SceneNode;
 import com.tyrlib2.util.Color;
 
 /**

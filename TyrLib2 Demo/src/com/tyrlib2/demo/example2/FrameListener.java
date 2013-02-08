@@ -1,14 +1,14 @@
 package com.tyrlib2.demo.example2;
 
 import com.tyrlib2.demo.R;
+import com.tyrlib2.graphics.renderables.Entity;
+import com.tyrlib2.graphics.renderer.Camera;
+import com.tyrlib2.graphics.renderer.IFrameListener;
+import com.tyrlib2.graphics.renderer.TextureManager;
+import com.tyrlib2.graphics.scene.SceneManager;
+import com.tyrlib2.graphics.scene.SceneNode;
 import com.tyrlib2.math.Quaternion;
 import com.tyrlib2.math.Vector3;
-import com.tyrlib2.renderables.Entity;
-import com.tyrlib2.renderer.Camera;
-import com.tyrlib2.renderer.IFrameListener;
-import com.tyrlib2.renderer.TextureManager;
-import com.tyrlib2.scene.SceneManager;
-import com.tyrlib2.scene.SceneNode;
 import com.tyrlib2.util.Color;
 
 public class FrameListener implements IFrameListener {

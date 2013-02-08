@@ -2,9 +2,8 @@ package com.tyrlib2.demo.example3;
 
 import android.content.Context;
 
-import com.tyrlib2.demo.example3.FrameListener;
+import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.main.OpenGLActivity;
-import com.tyrlib2.scene.SceneManager;
 
 /**
  * This demonstrates how to create terrain using a heightmap and how

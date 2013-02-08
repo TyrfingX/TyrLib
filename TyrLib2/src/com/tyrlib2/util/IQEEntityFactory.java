@@ -12,19 +12,19 @@ import java.util.StringTokenizer;
 
 import android.content.Context;
 
-import com.tyrlib2.animation.Animation;
-import com.tyrlib2.animation.AnimationFrame;
-import com.tyrlib2.animation.Bone;
-import com.tyrlib2.animation.Skeleton;
-import com.tyrlib2.materials.DefaultMaterial3;
+import com.tyrlib2.graphics.animation.Animation;
+import com.tyrlib2.graphics.animation.AnimationFrame;
+import com.tyrlib2.graphics.animation.Bone;
+import com.tyrlib2.graphics.animation.Skeleton;
+import com.tyrlib2.graphics.materials.DefaultMaterial3;
+import com.tyrlib2.graphics.renderables.Entity;
+import com.tyrlib2.graphics.renderables.SubEntity;
+import com.tyrlib2.graphics.renderer.Mesh;
+import com.tyrlib2.graphics.renderer.Texture;
+import com.tyrlib2.graphics.renderer.TextureManager;
 import com.tyrlib2.math.Quaternion;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.math.Vector3;
-import com.tyrlib2.renderables.Entity;
-import com.tyrlib2.renderables.SubEntity;
-import com.tyrlib2.renderer.Mesh;
-import com.tyrlib2.renderer.Texture;
-import com.tyrlib2.renderer.TextureManager;
 
 /**
  * Creates Entities by reading .iqe files

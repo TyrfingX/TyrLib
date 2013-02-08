@@ -4,11 +4,11 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
 
-import com.tyrli2.input.InputManager;
-import com.tyrlib2.renderer.OpenGLRenderer;
-import com.tyrlib2.renderer.ProgramManager;
-import com.tyrlib2.renderer.ShaderManager;
-import com.tyrlib2.scene.SceneManager;
+import com.tyrlib2.graphics.renderer.OpenGLRenderer;
+import com.tyrlib2.graphics.renderer.ProgramManager;
+import com.tyrlib2.graphics.renderer.ShaderManager;
+import com.tyrlib2.graphics.scene.SceneManager;
+import com.tyrlib2.input.InputManager;
 
 /**
  * View for the game. Properly sets the renderer up and sets the rendering options.

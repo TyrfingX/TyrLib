@@ -3,26 +3,23 @@ package com.tyrlib2.util;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
 
-import com.tyrlib2.animation.Animation;
-import com.tyrlib2.animation.AnimationFrame;
-import com.tyrlib2.animation.Bone;
-import com.tyrlib2.animation.Skeleton;
-import com.tyrlib2.materials.DefaultMaterial3;
+import com.tyrlib2.graphics.animation.Animation;
+import com.tyrlib2.graphics.animation.AnimationFrame;
+import com.tyrlib2.graphics.animation.Bone;
+import com.tyrlib2.graphics.animation.Skeleton;
+import com.tyrlib2.graphics.materials.DefaultMaterial3;
+import com.tyrlib2.graphics.renderables.Entity;
+import com.tyrlib2.graphics.renderables.SubEntity;
+import com.tyrlib2.graphics.renderer.Mesh;
+import com.tyrlib2.graphics.renderer.Texture;
+import com.tyrlib2.graphics.renderer.TextureManager;
 import com.tyrlib2.math.Quaternion;
 import com.tyrlib2.math.Vector3;
-import com.tyrlib2.renderables.Entity;
-import com.tyrlib2.renderables.SubEntity;
-import com.tyrlib2.renderer.Mesh;
-import com.tyrlib2.renderer.Texture;
-import com.tyrlib2.renderer.TextureManager;
 
 public class IQMEntityFactory implements IEntityFactory {
 	

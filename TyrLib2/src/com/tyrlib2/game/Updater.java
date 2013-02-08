@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import com.tyrlib2.renderer.IFrameListener;
+import com.tyrlib2.graphics.renderer.IFrameListener;
 
 public class Updater implements IFrameListener {
 	
