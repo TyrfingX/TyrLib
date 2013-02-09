@@ -21,9 +21,12 @@
         <activity
             android:name=".example2.ExampleTwoActivity"
             android:label="@string/example_two" />
-                <activity
+        <activity
             android:name=".example3.ExampleThreeActivity"
             android:label="@string/example_three" />
+        <activity
+            android:name=".example4.ExampleFourActivity"
+            android:label="@string/example_four" />
     </application>
 
 </manifest>

@@ -16,6 +16,9 @@ public abstract class Affector extends SceneObject {
 	protected float timeMin;
 	protected float timeMax;
 	
+	public Affector() {
+		
+	}
 
 	public void setParticleSystem(ParticleSystem system) { 
 		if (system.getParent() != null) {
@@ -25,8 +28,8 @@ public abstract class Affector extends SceneObject {
 	};
 	
 	public boolean isApplicable(Particle particle, float time) {
-		if (timeMin == 0 || particle.getAge() >= timeMin) {
-			if (timeMax == 0 ||  particle.getAge() <= timeMax) {
+		if (timeMin == 0 || particle.passedTime >= timeMin) {
+			if (timeMax == 0 ||  particle.passedTime <= timeMax) {
 				return true;
 			}
 		}
@@ -54,5 +57,6 @@ public abstract class Affector extends SceneObject {
 	
 	public ParticleSystem getParticleSystem() { return system; };
 	
+	public abstract Affector copy();
 
 }

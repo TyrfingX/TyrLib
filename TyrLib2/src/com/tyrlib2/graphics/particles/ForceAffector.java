@@ -8,6 +8,10 @@ public class ForceAffector extends Affector {
 	private float radialDependency = 0;
 	private float power = 0;
 	
+	public ForceAffector() {
+		
+	}
+	
 	public ForceAffector(Vector3 force) {
 		this.force = force;
 	}
@@ -15,6 +19,15 @@ public class ForceAffector extends Affector {
 	public ForceAffector(float radialDependency, float power) {
 		this.radialDependency = radialDependency;
 		this.power = power;
+	}
+	
+	
+	public ForceAffector(ForceAffector other) {
+		force = other.force;
+		radialDependency = other.radialDependency;
+		power = other.power;
+		timeMin = other.timeMin;
+		timeMax = other.timeMax;
 	}
 	
 	@Override
@@ -37,5 +50,36 @@ public class ForceAffector extends Affector {
 		
 
 	}
+
+	@Override
+	public Affector copy() {
+		return new ForceAffector(this);
+	}
+
+	public Vector3 getForce() {
+		return force;
+	}
+
+	public void setForce(Vector3 force) {
+		this.force = force;
+	}
+
+	public float getRadialDependency() {
+		return radialDependency;
+	}
+
+	public void setRadialDependency(float radialDependency) {
+		this.radialDependency = radialDependency;
+	}
+
+	public float getPower() {
+		return power;
+	}
+
+	public void setPower(float power) {
+		this.power = power;
+	}
+	
+	
 
 }

@@ -3,6 +3,7 @@ package com.tyrlib2.graphics.particles;
 import java.util.Random;
 
 import com.tyrlib2.game.IUpdateable;
+import com.tyrlib2.graphics.scene.SceneNode;
 import com.tyrlib2.graphics.scene.SceneObject;
 import com.tyrlib2.math.Vector3;
 
@@ -46,6 +47,16 @@ public class Emitter extends SceneObject implements IUpdateable {
 		velocity = new Vector3();
 	}
 	
+	public Emitter(Emitter other) {
+		particleFactory = other.particleFactory;
+		interval = other.interval;
+		amount = other.amount;
+		velocity = other.velocity;
+		randomVelocity = other.randomVelocity;
+		randomPos = other.randomPos;
+		parent = new SceneNode(other.getRelativePos());
+	}
+	
 	@Override
 	public void onUpdate(float time) {
 		passedTime += time;
@@ -53,7 +64,7 @@ public class Emitter extends SceneObject implements IUpdateable {
 		while (passedTime >= interval) {
 			passedTime -= interval;
 			
-			if (!pause && system.getMaxParticles() > system.getCountParticles()) {
+			if (!pause && system.allowsMoreParticles()) {
 				emit();
 			}
 		}
@@ -128,4 +139,8 @@ public class Emitter extends SceneObject implements IUpdateable {
 		return pause;
 	}
 		
+	
+	public Emitter copy() {
+		return new Emitter(this);
+	}
 }

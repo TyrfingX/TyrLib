@@ -7,8 +7,18 @@ public class ColorChanger extends Affector {
 	// Color change per second
 	private Color colorChange;
 	
+	public ColorChanger() {
+		
+	}
+	
 	public ColorChanger(Color colorChange) {
 		this.colorChange = colorChange;
+	}
+	
+	public ColorChanger(ColorChanger other) {
+		colorChange = other.colorChange.copy();
+		timeMin = other.timeMin;
+		timeMax = other.timeMax;
 	}
 	
 	@Override
@@ -21,5 +31,20 @@ public class ColorChanger extends Affector {
 		
 		color.clamp();
 	}
+
+	@Override
+	public Affector copy() {
+		return new ColorChanger(this);
+	}
+
+	public Color getColorChange() {
+		return colorChange;
+	}
+
+	public void setColorChange(Color colorChange) {
+		this.colorChange = colorChange;
+	}
+	
+	
 
 }

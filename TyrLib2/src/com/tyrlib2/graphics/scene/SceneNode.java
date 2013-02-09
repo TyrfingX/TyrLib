@@ -350,6 +350,15 @@ public class SceneNode {
 	}
 	
 	/**
+	 * Create a new child scene node at the parents origin
+	 * @return	The newely created child scene node with an relative offset of (0,0,0) to its parent
+	 */
+	
+	public SceneNode createChild() {
+		return createChild(new Vector3());
+	}
+	
+	/**
 	 * Updates the model matrix
 	 */
 	

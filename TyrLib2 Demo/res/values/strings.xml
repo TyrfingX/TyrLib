@@ -7,4 +7,6 @@
     <string name="example_two_subtitle">Load exported models and play animations</string>
     <string name="example_three">Example 3: Terrain</string>
     <string name="example_three_subtitle">Create terrain from a heightmap and splat textures onto it.</string>
+    <string name="example_four">Example 4: Particles</string>
+    <string name="example_four_subtitle">Create a particle system from an XML file.</string>
 </resources>

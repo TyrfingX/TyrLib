@@ -54,61 +54,70 @@ public class ParticleSystem extends SceneObject implements IUpdateable, IRendera
 	
 	private int countParticles;
 	
-	public ParticleSystem(int maxParticles) {
+	private int steps = 1;
+	
+	public ParticleSystem() {
 		affectors = new ArrayList<Affector>();
 		emitters = new ArrayList<Emitter>();
 		particleMap = new HashMap<PointSpriteMaterial, List<Particle>>();
 		particleDataMap = new HashMap<PointSpriteMaterial, FloatArray>();
 		materials = new ArrayList<PointSpriteMaterial>();
-		
-		this.maxParticles = maxParticles;
-		
 		modelMatrix = SceneManager.getInstance().getRootSceneNode().getModelMatrix();
 	}
-
+	
+	public ParticleSystem(int maxParticles) {
+		this();
+		this.maxParticles = maxParticles;
+	}
+	
 	@Override
 	public void onUpdate(float time) {
 		
+		time /= steps;
+		
 		// Update everything
 		
-		for (int j = 0; j < materials.size(); ++j) {
-			
-			PointSpriteMaterial material = materials.get(j);
-			List<Particle> particles = particleMap.get(material);
-			for (int i = 0; i < particles.size(); ++i) {
-				Particle particle = particles.get(i);
-				particle.onUpdate(time);
-				particle.acceleration = new Vector3();
-				if (particle.isFinished()) {
-					removeParticle(i, material);
-					--i;
-				} else {
-					FloatArray particleData = particleDataMap.get(material);
-					particleData.buffer[particle.dataIndex + 0] = particle.pos.x;
-					particleData.buffer[particle.dataIndex + 1] = particle.pos.y;
-					particleData.buffer[particle.dataIndex + 2] = particle.pos.z;
+		for (int l = 0; l < steps; ++l) {
+		
+			for (int j = 0; j < materials.size(); ++j) {
+				
+				PointSpriteMaterial material = materials.get(j);
+				List<Particle> particles = particleMap.get(material);
+				for (int i = 0; i < particles.size(); ++i) {
+					Particle particle = particles.get(i);
+					particle.onUpdate(time);
+					particle.acceleration = new Vector3();
+					if (particle.isFinished()) {
+						removeParticle(i, material);
+						--i;
+					} else {
+						FloatArray particleData = particleDataMap.get(material);
+						particleData.buffer[particle.dataIndex + 0] = particle.pos.x;
+						particleData.buffer[particle.dataIndex + 1] = particle.pos.y;
+						particleData.buffer[particle.dataIndex + 2] = particle.pos.z;
+						
+						Color color = particle.color;
+						particleData.buffer[particle.dataIndex + 3] = color.r;
+						particleData.buffer[particle.dataIndex + 4] = color.g;
+						particleData.buffer[particle.dataIndex + 5] = color.b;
+						particleData.buffer[particle.dataIndex + 6] = color.a;
 					
-					Color color = particle.color;
-					particleData.buffer[particle.dataIndex + 3] = color.r;
-					particleData.buffer[particle.dataIndex + 4] = color.g;
-					particleData.buffer[particle.dataIndex + 5] = color.b;
-					particleData.buffer[particle.dataIndex + 6] = color.a;
-				
-					for (int k = 0; k < affectors.size(); ++k) {
-						Affector affector = affectors.get(k);
-						if (affector.isApplicable(particle, time)) {
-							affector.onUpdate(particle, time);
+						for (int k = 0; k < affectors.size(); ++k) {
+							Affector affector = affectors.get(k);
+							if (affector.isApplicable(particle, time)) {
+								affector.onUpdate(particle, time);
+							}
 						}
+					
 					}
-				
 				}
 			}
-		}
+			
+			for (int i = 0; i < emitters.size(); ++i) {
+				emitters.get(i).onUpdate(time);
+			}
 		
-		for (int i = 0; i < emitters.size(); ++i) {
-			emitters.get(i).onUpdate(time);
 		}
-		
 		
 	}
 	
@@ -275,5 +284,38 @@ public class ParticleSystem extends SceneObject implements IUpdateable, IRendera
 	public int getMaxParticles() {
 		return maxParticles;
 	}
+	
+	public boolean allowsMoreParticles() {
+		if (maxParticles == 0) return true;
+		return (maxParticles > countParticles);
+	}
+	
+	public void setMaxParticles(int maxParticles) {
+		this.maxParticles = maxParticles;
+	}
+	
+	public ParticleSystem copy() {
+		ParticleSystem other = new ParticleSystem(maxParticles);
+		
+		for (int i = 0; i < affectors.size(); ++i) {
+			other.addAffector(affectors.get(i).copy());
+		}
+
+		for (int i = 0; i < emitters.size(); ++i) {
+			other.addEmitter(emitters.get(i).copy());
+		}
+		
+		return other;
+	}
+
+	public int getSteps() {
+		return steps;
+	}
+
+	public void setSteps(int steps) {
+		this.steps = steps;
+	}
+	
+	
 
 }
