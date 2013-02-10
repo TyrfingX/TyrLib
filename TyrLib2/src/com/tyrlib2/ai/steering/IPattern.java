@@ -7,5 +7,5 @@ package com.tyrlib2.ai.steering;
  */
 
 public interface IPattern {
-
+	public void apply(IVehicle vehicle);
 }

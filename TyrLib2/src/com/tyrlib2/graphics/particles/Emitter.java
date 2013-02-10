@@ -90,7 +90,7 @@ public class Emitter extends SceneObject implements IUpdateable {
 			v.y += (float) (random.nextGaussian() * randomVelocity.y);
 			v.z += (float) (random.nextGaussian() * randomVelocity.z);
 			
-			particle.velocity = parent.getAbsoluteRot().multiply(v);
+			particle.velocity = parent.getCachedAbsoluteRot().multiply(v);
 			system.addParticle(particle);
 		}
 	}

@@ -189,7 +189,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 		    GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			GLES20.glClear( GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
 		    
-			GLES20.glViewport(0, 0, viewport.getWidth(), viewport.getHeight());
+			GLES20.glViewport(-(int)(viewport.getWidth()*0.2f), -(int)(viewport.getHeight()*0.2f), (int)(viewport.getWidth()*1.4f), (int)(viewport.getHeight()*1.4f));
 		    
 		    Matrix.multiplyMM(vpMatrix, 0, viewport.projectionMatrix, 0, camera.viewMatrix, 0);
 		    
@@ -210,7 +210,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     	GLES20.glDisable(GLES20.GL_DEPTH_TEST);
     	
     	float[] proj = new float[16];
-    	Matrix.orthoM(proj, 0, 0, 1, 0, 1, -1, 1);
+    	Matrix.orthoM(proj, 0, -0.16f, 1, -0.16f, 1, -1, 1);
     	
     	drawChannel(renderChannels.get(OVERLAY_CHANNEL), proj);
     	

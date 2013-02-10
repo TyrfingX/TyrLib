@@ -2,7 +2,7 @@
 <ParticleSystem maxParticles="1000">
     <Factories>
     	<Factory name="factory1" lifeTime="5">
-     		<Material size="20" r="0.2" g="0.8" b="0.8" a="0" texture="DUST"></Material>
+     		<Material size="200" r="0.2" g="0.8" b="0.8" a="0" texture="DUST"></Material>
     	</Factory>
     </Factories>
     <Emitters>

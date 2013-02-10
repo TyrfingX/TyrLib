@@ -394,7 +394,7 @@ public class SceneNode {
 	public void updateAll(Vector3 parentPos, Quaternion parentRot, Vector3 parentScale, float[] parentTransform) {
 		
 		Matrix.setIdentityM(modelMatrix, 0);
-		absoluteRot = parentRot.multiply(parentRot);
+		absoluteRot = parentRot.multiply(rot);
 		absoluteScale = new Vector3(scale.x * parentScale.x, scale.y * parentScale.y, scale.z * parentScale.z);
 		
 		float[] rotation = rot.toMatrix();

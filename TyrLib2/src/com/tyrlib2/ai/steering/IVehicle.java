@@ -1,5 +1,6 @@
 package com.tyrlib2.ai.steering;
 
+import com.tyrlib2.game.IUpdateable;
 import com.tyrlib2.math.Quaternion;
 import com.tyrlib2.math.Vector3;
 
@@ -10,12 +11,25 @@ import com.tyrlib2.math.Vector3;
  *
  */
 
-public interface IVehicle {
+public interface IVehicle extends IUpdateable {
 	public float getMass();
 	public Vector3 getPosition();
 	public Vector3 getVelocity();
+	public float getMaxVelocity();
+	public float getMaxForce();
 	public Quaternion getOrientation();
 	
-	public void accelerate(Vector3 velocity);
+	public void accelerate(float velocity);
 	public void translate(Vector3 position);
+	
+	/**
+	 * Reset the accumulated steering forces
+	 */
+	public void resetSteeringForces();
+	
+	/**
+	 * Add a new steering force
+	 * @param steering The new steering force
+	 */
+	public void addSteeringForce(Vector3 steering);
 }
