@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.tyrlib2.game.IUpdateable;
+import com.tyrlib2.math.Vector3;
 
 /**
  * Main class for steering. This class takes the patterns which compose the 
@@ -30,7 +31,8 @@ public class Steerer implements IUpdateable {
 		vehicle.resetSteeringForces();
 		
 		for (int i = 0; i < patterns.size(); ++i) {
-			patterns.get(i).apply(vehicle);
+			Vector3 steeringForce = patterns.get(i).apply(vehicle);
+			vehicle.addSteeringForce(steeringForce);
 		}
 		
 		vehicle.onUpdate(time);

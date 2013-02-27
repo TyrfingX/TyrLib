@@ -1,5 +1,7 @@
 package com.tyrlib2.ai.steering;
 
+import com.tyrlib2.math.Vector3;
+
 /**
  * An interface for steering patterns.
  * @author Sascha
@@ -7,5 +9,5 @@ package com.tyrlib2.ai.steering;
  */
 
 public interface IPattern {
-	public void apply(IVehicle vehicle);
+	public Vector3 apply(IVehicle vehicle);
 }
