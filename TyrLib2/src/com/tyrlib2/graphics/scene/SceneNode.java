@@ -412,7 +412,7 @@ public class SceneNode {
 		Matrix.multiplyMM(modelMatrix, 0, parentTransform, 0, modelMatrix, 0);
 		
 		float[] transPos = new float[4];
-		float[] untransfPos = { pos.x, pos.y, pos.z, 1.0f };
+		float[] untransfPos = { 0, 0, 0, 1.0f };
 		Matrix.multiplyMV(transPos, 0, modelMatrix, 0, untransfPos, 0);
 		absolutePos = new Vector3(transPos[0], transPos[1], transPos[2]);
 		

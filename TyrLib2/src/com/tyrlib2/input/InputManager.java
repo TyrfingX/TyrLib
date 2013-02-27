@@ -61,15 +61,15 @@ public class InputManager {
 			ITouchListener listener = queue.poll();
 			if (event.getAction() == MotionEvent.ACTION_DOWN)
 			{
-				if (listener.onTouchDown(point)) break;
+				if (listener.onTouchDown(point, event)) break;
 			}
 			else if (event.getAction() == MotionEvent.ACTION_UP)
 			{	
-				if (listener.onTouchUp(point)) break;
+				if (listener.onTouchUp(point, event)) break;
 			}
 			else if (event.getAction() == MotionEvent.ACTION_MOVE)
 			{	
-				if (listener.onTouchMove(point)) break;
+				if (listener.onTouchMove(point, event)) break;
 			}
 		}
 		

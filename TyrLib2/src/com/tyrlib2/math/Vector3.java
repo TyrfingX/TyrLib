@@ -37,6 +37,14 @@ public class Vector3 {
 	}
 	
 	/**
+	 * @return Squared length of this vector.
+	 */
+	
+	public float squaredLength() {
+		return this.x * this.x + this.y * this.y + this.z *  this.z;
+	}
+	
+	/**
 	 * Sets the length of this vector to 1.
 	 * @return The length from before normalizing the vector.
 	 */

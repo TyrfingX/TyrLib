@@ -34,6 +34,7 @@ public class Camera extends SceneObject {
 	 */
 	public void setLookDirection(Vector3 lookDirection) {
 		this.lookDirection = lookDirection;
+		this.lookDirection.normalize();
 	}
 	
 	/**
@@ -66,11 +67,16 @@ public class Camera extends SceneObject {
 	 */
 	
 	public void update() {
-		Vector3 pos = parent.getAbsolutePos();
-		Matrix.setLookAtM(viewMatrix, 0, 0, 0, 0, lookDirection.x, lookDirection.y, lookDirection.z, up.x, up.y, up.z);
-		Quaternion rotation = parent.getAbsoluteRot();
-		Matrix.translateM(viewMatrix, 0, -pos.x, -pos.y, -pos.z);
-		Matrix.multiplyMM(viewMatrix, 0, rotation.toMatrix(), 0, viewMatrix, 0);
+		
+		Vector3 pos = parent.getCachedAbsolutePos();
+		Quaternion rot = parent.getCachedAbsoluteRot();
+		
+		Vector3 look = rot.multiply(lookDirection);
+		Vector3 up = rot.multiply(this.up);
+		
+		
+		Matrix.setLookAtM(viewMatrix, 0, pos.x, pos.y, pos.z, look.x + pos.x, look.y + pos.y, look.z + pos.z, up.x, up.y, up.z);
+
 	}
 	
 	/**
@@ -79,18 +85,12 @@ public class Camera extends SceneObject {
 	 */
 	
 	public Vector3 getWorldLookDirection() {
-		float[] look = { lookDirection.x, lookDirection.y, lookDirection.z, 1 };
-		float[] transform = parent.getAbsoluteRot().toMatrix();
-		Matrix.multiplyMV(look, 0, transform, 0, look, 0);
-		Vector3 direction = new Vector3(look[0], look[1], look[2]);
+		Vector3 direction = new Vector3(-viewMatrix[8], -viewMatrix[9], -viewMatrix[10]);
 		return direction;
 	}
 	
 	public Vector3 getWorldUpVector() {
-		float[] upFloat = { up.x, up.y, up.z, 1 };
-		float[] transform = parent.getAbsoluteRot().toMatrix();
-		Matrix.multiplyMV(upFloat, 0, transform, 0, upFloat, 0);
-		Vector3 up = new Vector3(upFloat[0], upFloat[1], upFloat[2]);
+		Vector3 up = new Vector3(viewMatrix[4], viewMatrix[5], viewMatrix[6]);
 		return up;
 	}
 }

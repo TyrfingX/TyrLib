@@ -52,7 +52,7 @@ public abstract class SceneObject {
 	
 	public Vector3 getAbsolutePos() {
 		if (parent != null) {
-			return parent.getAbsolutePos();
+			return parent.getCachedAbsolutePos();
 		} 
 		
 		return null;

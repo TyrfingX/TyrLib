@@ -7,6 +7,7 @@ import android.opengl.GLES20;
 import com.tyrlib2.graphics.renderer.IBlendable;
 import com.tyrlib2.graphics.renderer.Material;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
+import com.tyrlib2.graphics.renderer.Program;
 import com.tyrlib2.graphics.renderer.ProgramManager;
 import com.tyrlib2.graphics.renderer.Texture;
 import com.tyrlib2.graphics.renderer.TextureManager;
@@ -25,10 +26,18 @@ public class TexturedMaterial extends Material implements IBlendable  {
 	private int uvDataSize = 2;
 	private int uvOffset = 3;
 	
-	public TexturedMaterial(Texture texture) {
+	public TexturedMaterial() {
+		
+	}
+	
+	public TexturedMaterial(Texture texture, Program program) {
 		this.texture = texture;
-		program = ProgramManager.getInstance().getProgram("TEXTURED");
+		this.program = program;
 		init(5,0,3, "u_MVPMatrix", "a_Position");
+	}
+	
+	public TexturedMaterial(Texture texture) {
+		this(texture, ProgramManager.getInstance().getProgram("TEXTURED"));
 	}
 	
 	
@@ -82,6 +91,10 @@ public class TexturedMaterial extends Material implements IBlendable  {
     	//GLES20.glEnable( GLES20.GL_BLEND );
     	//GLES20.glBlendFunc( GLES20.GL_SRC_ALPHA, GLES20.GL_SRC_ALPHA);
 
+	}
+	
+	public void setProgram(Program program) {
+		this.program = program;
 	}
 
 }

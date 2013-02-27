@@ -9,6 +9,7 @@ import android.opengl.Matrix;
 import com.tyrlib2.graphics.lighting.LightingType;
 import com.tyrlib2.graphics.renderer.Material;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
+import com.tyrlib2.graphics.renderer.Program;
 import com.tyrlib2.graphics.renderer.ProgramManager;
 import com.tyrlib2.graphics.renderer.Texture;
 import com.tyrlib2.graphics.renderer.TextureManager;
@@ -63,6 +64,21 @@ public class DefaultMaterial3 extends LightedMaterial {
 		
 	}
 	
+	public DefaultMaterial3(Program program, String textureName, float repeatX, float repeatY, Color[] colors) {
+		this.program = program;
+		
+		if (colors == null) {
+			colors = new Color[1];
+			colors[0] = new Color(1,1,1,1);
+		}
+		
+		if (textureName != null) {
+			texture = TextureManager.getInstance().getTexture(textureName);
+		}
+		
+		setup(textureName, repeatX, repeatY, type, colors);
+	}
+	
 	public DefaultMaterial3(Context context, String textureName, float repeatX, float repeatY, LightingType type, Color[] colors) {
 
 		program = ProgramManager.getInstance().getProgram(PER_PIXEL_PROGRAM_NAME);
@@ -83,6 +99,11 @@ public class DefaultMaterial3 extends LightedMaterial {
 	public DefaultMaterial3(String textureName, float repeatX, float repeatY, LightingType type, Color[] colors) {
 		
 
+		if (colors == null) {
+			colors = new Color[1];
+			colors[0] = new Color(1,1,1,1);
+		}
+		
 		switch (type) {
 		case PER_PIXEL:
 			program = ProgramManager.getInstance().getProgram(PER_PIXEL_PROGRAM_NAME);
@@ -91,7 +112,7 @@ public class DefaultMaterial3 extends LightedMaterial {
 			program = ProgramManager.getInstance().getProgram(PER_VERTEX_PROGRAM_NAME);
 			break;
 		}
-		
+
 		this.type = type;
 		
 		if (textureName != null) {
@@ -292,4 +313,6 @@ public class DefaultMaterial3 extends LightedMaterial {
 	public Vector2 getRepeat() {
 		return new Vector2(repeatX, repeatY);
 	}
+	
+	
 }

@@ -76,7 +76,8 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         GLES20.glDepthMask( true );
         
 		// Use culling to remove back faces.
-		//GLES20.glEnable(GLES20.GL_CULL_FACE);
+		GLES20.glEnable(GLES20.GL_CULL_FACE);
+		GLES20.glCullFace(GLES20.GL_BACK);
 		
 		// Set the blend function
 		GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE);
@@ -223,9 +224,9 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 		    	AABB boundingBox = r.getBoundingBox();
 		    	if (boundingBox == null) {
 		    		r.render(transformMatrix);
-		    	} else if (frustum.aabbInFrustum(boundingBox)) {
+		    	} else if (frustum.aabbInFrustum(boundingBox) || true) {
 		    		r.render(transformMatrix);
-		    	}
+		    	} 
 		    }
 		}
 	}
