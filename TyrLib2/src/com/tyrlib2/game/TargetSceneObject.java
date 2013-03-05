@@ -1,4 +1,4 @@
-package com.tyrlib2.ai.steering;
+package com.tyrlib2.game;
 
 import com.tyrlib2.graphics.scene.SceneObject;
 import com.tyrlib2.math.Vector3;

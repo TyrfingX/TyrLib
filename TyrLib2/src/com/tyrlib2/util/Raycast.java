@@ -60,20 +60,20 @@ public class Raycast {
 		
 		OpenGLRenderer r = SceneManager.getInstance().getRenderer();
 		
-		for (int i = 0; i < r.getCountRenderables(); ++i) {
-			IRenderable renderable = r.getRenderable(i);
-			AABB boundingBox = renderable.getBoundingBox();
-			if (boundingBox != null) {
-				Vector3 intersect = boundingBox.intersectsRay(ray, 0, maxDist);
-				if (intersect != null) {
-					RaycastResult result = new RaycastResult();
-					result.renderable = renderable;
-					result.intersection = intersect;
-					result.distance = ray.origin.sub(intersect).length();
-					results.add(result);
-				}
-			}
-		}
+//		for (int i = 0; i < r.getCountRenderables(); ++i) {
+//			IRenderable renderable = r.getRenderable(i);
+//			AABB boundingBox = renderable.getBoundingBox();
+//			if (boundingBox != null) {
+//				Vector3 intersect = boundingBox.intersectsRay(ray, 0, maxDist);
+//				if (intersect != null) {
+//					RaycastResult result = new RaycastResult();
+//					result.renderable = renderable;
+//					result.intersection = intersect;
+//					result.distance = ray.origin.sub(intersect).length();
+//					results.add(result);
+//				}
+//			}
+//		}
 		
 		return results;
 	}

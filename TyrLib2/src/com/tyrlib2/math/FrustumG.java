@@ -58,20 +58,17 @@ public class FrustumG {
 	}
 	
 	public boolean aabbInFrustum(AABB aabb) {
-		for (int i = 0; i < planes.length; ++i) {
+		planeCheck: for (int i = 0; i < planes.length; ++i) {
 			
 			Vector3[] points = aabb.getPoints();
-			int pointsOutside = 0;
 			
 			for (int j = 0; j < points.length; ++j) {
-				if (planes[i].distance(points[j]) < -2) {
-					pointsOutside++;
+				if (planes[i].distance(points[j]) >= -2) {
+					continue planeCheck;
 				}
 			}
 			
-			if (pointsOutside == points.length) {
-				return false;
-			}
+			return false;
 		}
 		
 		return true;

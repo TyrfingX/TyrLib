@@ -3,7 +3,8 @@ package com.tyrlib2.collision;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.tyrlib2.graphics.scene.SceneObject;
+import com.tyrlib2.graphics.scene.BoundedSceneObject;
+import com.tyrlib2.math.AABB;
 import com.tyrlib2.math.Vector3;
 
 /**
@@ -12,11 +13,14 @@ import com.tyrlib2.math.Vector3;
  *
  */
 
-public class CollisionSphere extends SceneObject {
+public class CollisionSphere extends BoundedSceneObject {
 	private List<CollisionSphere> collisions;
 	private float radius;
 	private int tag;
+	protected AABB boundingBox;
 	
+	private boolean testCollision;
+
 	public CollisionSphere(float radius) {
 		collisions = new ArrayList<CollisionSphere>();
 		this.radius = radius;
@@ -49,6 +53,7 @@ public class CollisionSphere extends SceneObject {
 
 	public void setRadius(float radius) {
 		this.radius = radius;
+
 	}
 
 	public int getTag() {
@@ -58,8 +63,37 @@ public class CollisionSphere extends SceneObject {
 	public void setTag(int tag) {
 		this.tag = tag;
 	}
+
+	@Override
+	public AABB getBoundingBox() {
+		if (boundingBox == null) {
+			Vector3 pos = parent.getCachedAbsolutePos();
+			boundingBox = new AABB(	new Vector3(pos.x + -radius, pos.y + -radius, pos.z + -radius),
+									new Vector3(pos.x + radius,  pos.y + radius, pos.z + radius));
+		}
+		return boundingBox;
+	}
+
+	@Override
+	public void setBoundingBoxVisible(boolean visible) {
+	}
+	
+	@Override
+	public void onTransformed() {
+		super.onTransformed();
+		Vector3 pos = parent.getCachedAbsolutePos();
+		boundingBox = new AABB(	new Vector3(pos.x + -radius, pos.y + -radius, pos.z + -radius),
+								new Vector3(pos.x + radius,  pos.y + radius, pos.z + radius));
+	}
 	
 	
+	public boolean isTestingCollision() {
+		return testCollision;
+	}
+
+	public void setTestCollision(boolean testCollision) {
+		this.testCollision = testCollision;
+	}
 	
 	
 }

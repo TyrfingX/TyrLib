@@ -7,7 +7,6 @@ import com.tyrlib2.graphics.materials.PointLightMaterial;
 import com.tyrlib2.graphics.renderer.IRenderable;
 import com.tyrlib2.graphics.renderer.Material;
 import com.tyrlib2.graphics.scene.SceneNode;
-import com.tyrlib2.math.AABB;
 
 /**
  * Represents a point light. Emits light from the assigned position.
@@ -73,15 +72,6 @@ public class PointLight extends Light implements IRenderable {
 	
 	public float[] getLightVector() {
 		return eyeSpaceVector;
-	}
-
-	@Override
-	public AABB getBoundingBox() {
-		return null;
-	}
-
-	@Override
-	public void setBoundingBoxVisible(boolean visible) {
 	}
 	
 }

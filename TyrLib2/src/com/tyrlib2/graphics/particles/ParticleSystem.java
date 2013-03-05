@@ -18,7 +18,6 @@ import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.graphics.scene.SceneNode;
 import com.tyrlib2.graphics.scene.SceneObject;
-import com.tyrlib2.math.AABB;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.util.Color;
 import com.tyrlib2.util.FloatArray;
@@ -270,15 +269,6 @@ public class ParticleSystem extends SceneObject implements IUpdateable, IRendera
 			}
 		}
 		
-	}
-
-	@Override
-	public AABB getBoundingBox() {
-		return null;
-	}
-
-	@Override
-	public void setBoundingBoxVisible(boolean visible) {
 	}
 	
 	public int getMaxParticles() {

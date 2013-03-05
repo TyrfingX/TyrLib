@@ -1,5 +1,7 @@
 package com.tyrlib2.util;
 
+import java.util.Random;
+
 public class Color {
 	
 	public static final Color BLACK = new Color(0,0,0,1);
@@ -45,5 +47,10 @@ public class Color {
 	
 	public Color copy() {
 		return new Color(r,g,b,a);
+	}
+	
+	public static Color getRandomColor() {
+		Random random = new Random();
+		return new Color(random.nextFloat(), random.nextFloat(), random.nextFloat(), random.nextFloat());
 	}
 }

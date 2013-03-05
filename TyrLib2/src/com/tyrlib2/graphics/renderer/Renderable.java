@@ -4,7 +4,6 @@ import android.opengl.GLES20;
 import android.opengl.Matrix;
 
 import com.tyrlib2.graphics.materials.LightedMaterial;
-import com.tyrlib2.graphics.renderables.BoundingBox;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.graphics.scene.SceneNode;
 import com.tyrlib2.math.AABB;
@@ -31,8 +30,6 @@ public class Renderable extends BoundedRenderable {
 	
 	/** Allocate storage for the final combined matrix. This will be passed into the shader program. */
 	protected float[] mvpMatrix = new float[16];
-	
-	protected BoundingBox boundingBoxRenderable;
 	
 	public Renderable(Mesh mesh, Material material) {
 		this();

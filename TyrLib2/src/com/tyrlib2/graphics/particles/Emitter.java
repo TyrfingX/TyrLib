@@ -42,6 +42,9 @@ public class Emitter extends SceneObject implements IUpdateable {
 	// The emitter is pausing
 	private boolean pause;
 	
+	// Random generator
+	private Random random = new Random();
+	
 	public Emitter(IParticleFactory particleFactory) {
 		this.particleFactory = particleFactory;
 		velocity = new Vector3();
@@ -75,22 +78,22 @@ public class Emitter extends SceneObject implements IUpdateable {
 	 */
 	
 	public void emit() {
+		
+		Vector3 rotatedVelocity = parent.getCachedAbsoluteRot().multiply(velocity);
+		
 		for (int i = 0; i < amount; ++i) {
 			Particle particle = particleFactory.create();
-			particle.pos = new Vector3(parent.getAbsolutePos());
+			particle.pos = new Vector3(parent.getCachedAbsolutePos());
 			
-			Random random = new Random();
+			particle.pos.x += (0.5f-random.nextFloat()) * randomPos.x;
+			particle.pos.y += (0.5f-random.nextFloat()) * randomPos.y;
+			particle.pos.z += (0.5f-random.nextFloat()) * randomPos.z;
 			
-			particle.pos.x += (float) (random.nextGaussian() * randomPos.x);
-			particle.pos.y += (float) (random.nextGaussian() * randomPos.y);
-			particle.pos.z += (float) (random.nextGaussian() * randomPos.z);
+			Vector3 v = new Vector3(rotatedVelocity.x + (0.5f-random.nextFloat()) * randomVelocity.x,
+									rotatedVelocity.y + (0.5f-random.nextFloat()) * randomVelocity.y,
+									rotatedVelocity.z + (0.5f-random.nextFloat()) * randomVelocity.z);
 			
-			Vector3 v = new Vector3(velocity);
-			v.x += (float) (random.nextGaussian() * randomVelocity.x);
-			v.y += (float) (random.nextGaussian() * randomVelocity.y);
-			v.z += (float) (random.nextGaussian() * randomVelocity.z);
-			
-			particle.velocity = parent.getCachedAbsoluteRot().multiply(v);
+			particle.velocity = new Vector3(v);
 			system.addParticle(particle);
 		}
 	}

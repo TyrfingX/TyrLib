@@ -1,5 +1,7 @@
 package com.tyrlib2.demo.example3;
 
+import android.view.MotionEvent;
+
 import com.tyrlib2.game.Updater;
 import com.tyrlib2.graphics.lighting.DirectionalLight;
 import com.tyrlib2.graphics.lighting.Light.Type;
@@ -89,7 +91,7 @@ public class FrameListener implements IFrameListener {
 			Vector2 lastPoint = null;
 			
 			@Override
-			public boolean onTouchMove(Vector2 point) {
+			public boolean onTouchMove(Vector2 point, MotionEvent event) {
 				Vector2 movement = lastPoint.vectorTo(point).multiply(30);
 				movement.y *= -1;
 				
@@ -101,7 +103,7 @@ public class FrameListener implements IFrameListener {
 			}
 			
 			@Override
-			public boolean onTouchDown(Vector2 point) {
+			public boolean onTouchDown(Vector2 point, MotionEvent event) {
 				lastPoint = new Vector2(point);
 				return true;
 			}

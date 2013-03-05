@@ -23,6 +23,10 @@ public class Camera extends SceneObject {
 	/** Direction in which the camera looks **/
 	private Vector3 lookDirection;
 	
+	private Vector3 rotatedLookDirection;
+	
+	private Vector3 rotatedUp;
+	
 	public Camera(Vector3 up) {
 		this.up = up;
 		up.normalize();
@@ -71,11 +75,14 @@ public class Camera extends SceneObject {
 		Vector3 pos = parent.getCachedAbsolutePos();
 		Quaternion rot = parent.getCachedAbsoluteRot();
 		
-		Vector3 look = rot.multiply(lookDirection);
-		Vector3 up = rot.multiply(this.up);
+		rotatedLookDirection = rot.multiply(lookDirection);
+		rotatedUp = rot.multiply(this.up);
 		
-		
-		Matrix.setLookAtM(viewMatrix, 0, pos.x, pos.y, pos.z, look.x + pos.x, look.y + pos.y, look.z + pos.z, up.x, up.y, up.z);
+		Matrix.setLookAtM	(viewMatrix, 
+							0, 
+							pos.x, pos.y, pos.z, 
+							rotatedLookDirection.x + pos.x, rotatedLookDirection.y + pos.y, rotatedLookDirection.z + pos.z,
+							rotatedUp.x, rotatedUp.y, rotatedUp.z);
 
 	}
 	
@@ -85,12 +92,10 @@ public class Camera extends SceneObject {
 	 */
 	
 	public Vector3 getWorldLookDirection() {
-		Vector3 direction = new Vector3(-viewMatrix[8], -viewMatrix[9], -viewMatrix[10]);
-		return direction;
+		return rotatedLookDirection;
 	}
 	
 	public Vector3 getWorldUpVector() {
-		Vector3 up = new Vector3(viewMatrix[4], viewMatrix[5], viewMatrix[6]);
-		return up;
+		return rotatedUp;
 	}
 }

@@ -17,7 +17,7 @@ public class Particle implements IUpdateable {
 	protected Vector3 pos;
 	protected Vector3 velocity;
 	protected Vector3 acceleration = new Vector3();
-	protected Color color = new Color(1, 1, 1, 1);
+	protected Color color = Color.WHITE;
 	protected float inertia = 1;
 	protected float lifeTime;
 	protected float passedTime;

@@ -3,17 +3,12 @@ package com.tyrlib2.graphics.renderables;
 import android.content.Context;
 import android.opengl.GLES20;
 
-import com.tyrlib2.graphics.lighting.LightingType;
 import com.tyrlib2.graphics.materials.DefaultMaterial3;
-import com.tyrlib2.graphics.materials.TexturedMaterial;
 import com.tyrlib2.graphics.renderer.IRenderable;
 import com.tyrlib2.graphics.renderer.Program;
 import com.tyrlib2.graphics.renderer.ProgramManager;
-import com.tyrlib2.graphics.renderer.Texture;
-import com.tyrlib2.graphics.renderer.TextureManager;
 import com.tyrlib2.graphics.scene.SceneNode;
 import com.tyrlib2.graphics.scene.SceneObject;
-import com.tyrlib2.math.AABB;
 import com.tyrlib2.math.Vector3;
 
 /**
@@ -62,14 +57,5 @@ public class Skybox extends SceneObject implements IRenderable {
 	public SceneNode detach() {
 		box.detach();
 		return super.detach();	
-	}
-	
-	@Override
-	public AABB getBoundingBox() {
-		return null;
-	}
-
-	@Override
-	public void setBoundingBoxVisible(boolean visible) {
 	}
 }

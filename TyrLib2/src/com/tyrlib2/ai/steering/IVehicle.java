@@ -17,7 +17,11 @@ public interface IVehicle extends IUpdateable {
 	public Vector3 getVelocity();
 	public float getMaxVelocity();
 	public float getMaxForce();
+	public Vector3 getForward();
+	public Vector3 getInitForward();
+	public Vector3 getUp();
 	public Quaternion getOrientation();
+	public void setOrientation(Quaternion orientation);
 	
 	public void accelerate(float velocity);
 	public void translate(Vector3 position);

@@ -247,4 +247,8 @@ public class SceneManager {
 	public Viewport getViewport() {
 		return renderer.getViewport();
 	}
+
+	public void performSceneQuery(ISceneQuery query) {
+		renderer.getOctree(OpenGLRenderer.DEFAULT_CHANNEL).query(query);
+	}
 }

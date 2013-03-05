@@ -11,8 +11,8 @@ import com.tyrlib2.graphics.renderer.IBlendable;
 import com.tyrlib2.graphics.renderer.IRenderable;
 import com.tyrlib2.graphics.renderer.Texture;
 import com.tyrlib2.graphics.renderer.TextureManager;
+import com.tyrlib2.graphics.scene.BoundedSceneObject;
 import com.tyrlib2.graphics.scene.SceneNode;
-import com.tyrlib2.graphics.scene.SceneObject;
 import com.tyrlib2.math.AABB;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.util.Color;
@@ -23,7 +23,7 @@ import com.tyrlib2.util.Color;
  *
  */
 
-public class Text2 extends SceneObject implements IRenderable, IBlendable {
+public class Text2 extends BoundedSceneObject implements IRenderable, IBlendable {
 	
 	
 	private String text;
@@ -145,6 +145,7 @@ public class Text2 extends SceneObject implements IRenderable, IBlendable {
 	public void setBoundingBoxVisible(boolean visible) {
 		image.setBoundingBoxVisible(visible);
 	}
+
 }
 
 

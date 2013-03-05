@@ -22,6 +22,8 @@ public abstract class LightedMaterial extends Material{
 	protected int ambientHandle;
 	protected int lightTypeHandle;
 	
+	private static final Color DEFAULT_AMBIENT = new Color(0,0,0,0);
+	
 	public LightedMaterial() {
 		lighted = true;
 	}
@@ -34,7 +36,7 @@ public abstract class LightedMaterial extends Material{
 			light = SceneManager.getInstance().getLight(lightIndex);
 		}
 		
-        Color ambient = new Color(0,0,0,0);
+        Color ambient = DEFAULT_AMBIENT;
 		
 		if (lightIndex == 0) {
 	        //Pass in the global scene illumination only for the first light

@@ -3,6 +3,7 @@ package com.tyrlib2.ai.steering;
 import java.util.List;
 
 import com.tyrlib2.collision.CollisionSphere;
+import com.tyrlib2.game.TargetSceneObject;
 import com.tyrlib2.math.Vector3;
 
 public class ObstacleAvoidance implements IPattern {

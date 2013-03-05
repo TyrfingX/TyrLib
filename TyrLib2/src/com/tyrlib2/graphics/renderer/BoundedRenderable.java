@@ -3,9 +3,9 @@ package com.tyrlib2.graphics.renderer;
 import android.opengl.Matrix;
 
 import com.tyrlib2.graphics.renderables.BoundingBox;
+import com.tyrlib2.graphics.scene.BoundedSceneObject;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.graphics.scene.SceneNode;
-import com.tyrlib2.graphics.scene.SceneObject;
 import com.tyrlib2.math.AABB;
 import com.tyrlib2.math.Vector3;
 
@@ -16,7 +16,7 @@ import com.tyrlib2.math.Vector3;
  *
  */
 
-public abstract class BoundedRenderable extends SceneObject implements IRenderable {
+public abstract class BoundedRenderable extends BoundedSceneObject implements IRenderable {
 	
 	private AABB boundingBox;
 	private AABB untransformedBoundingBox;
@@ -29,11 +29,6 @@ public abstract class BoundedRenderable extends SceneObject implements IRenderab
 		boundingBoxRenderable = new BoundingBox(boundingBox);
 		SceneManager.getInstance().getRenderer().addRenderable(boundingBoxRenderable);
 		parent.attachSceneObject(boundingBoxRenderable);
-	}
-	
-	@Override
-	public void onTransformed() {
-		calcBoundingBox();
 	}
 	
 	@Override

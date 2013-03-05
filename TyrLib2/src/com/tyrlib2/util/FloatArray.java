@@ -18,16 +18,12 @@ public class FloatArray {
 		buffer[size++] = f;
 	}
 
-	public float popBack() {
-		float f = back();
-
+	public void popBack() {
 		size--;
 
 		if (size == buffer.length / 4 && size > MIN_SIZE) {
 			resize();
 		}
-
-		return f;
 	}
 	
 	public void popBack(int number) {

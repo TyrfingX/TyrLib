@@ -29,13 +29,13 @@ public class Joystick implements ITouchListener {
 	private Vector2 basePoint;
 	
 	/** The listeners of this joystick **/
-	private List<JoystickListener> listeners;
+	private List<IJoystickListener> listeners;
 	
 	/** The id of the finger which is currently controlling this joystick **/
 	private int fingerId;
 	
 	public Joystick() {
-		listeners = new ArrayList<JoystickListener>();
+		listeners = new ArrayList<IJoystickListener>();
 	}
 	
 	@Override
@@ -94,11 +94,11 @@ public class Joystick implements ITouchListener {
 		return enabled;
 	}
 	
-	public void addListener(JoystickListener listener) {
+	public void addListener(IJoystickListener listener) {
 		listeners.add(listener);
 	}
 	
-	public void removeListener(JoystickListener listener) {
+	public void removeListener(IJoystickListener listener) {
 		listeners.remove(listener);
 	}
 

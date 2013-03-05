@@ -11,23 +11,37 @@ public class AABB {
 	public Vector3 min;
 	public Vector3 max;
 	
+	private Vector3 points[];
+	
 	public AABB() {
 		min = new Vector3();
 		max = new Vector3();
 	}
 	
+	public AABB(Vector3 min, Vector3 max) {
+		this.min = min;
+		this.max = max;
+	}
+	
+	public Vector3 getCenter() {
+		Vector3 diff = min.vectorTo(max);
+		return min.add(diff.multiply(0.5f));
+	}
+	
 	public Vector3[] getPoints() {
-		Vector3 points[] = {	
-				new Vector3(min),
-				new Vector3(max.x, min.y, min.z),
-				new Vector3(min.x, max.y, min.z),
-				new Vector3(max.x, max.y, min.z),
-				new Vector3(min.x, min.y, max.z),
-				new Vector3(max.x, min.y, max.z),
-				new Vector3(min.x, max.y, max.z),
-				new Vector3(max),
-
-		};
+		
+		if (points == null) {
+			points = new Vector3[] {	
+					new Vector3(min),
+					new Vector3(max.x, min.y, min.z),
+					new Vector3(min.x, max.y, min.z),
+					new Vector3(max.x, max.y, min.z),
+					new Vector3(min.x, min.y, max.z),
+					new Vector3(max.x, min.y, max.z),
+					new Vector3(min.x, max.y, max.z),
+					new Vector3(max),
+			};
+		}
 		
 		return points;
 	}
@@ -119,5 +133,30 @@ public class AABB {
 			return ray.getPointAtDistance(tmin);
 		}
 		return null;
+	}
+	
+	
+	public boolean intersectsAABB(AABB other) {
+
+	    if (min.x > other.max.x) return false;
+	    if (other.min.x > max.x) return false;
+	    if (min.y > other.max.y) return false;
+	    if (other.min.y > max.y) return false;
+	    if (min.z > other.max.z) return false;
+	    if (other.min.z > max.z) return false;
+
+	    return true;
+	}
+	
+	public boolean containsAABB(AABB other) {
+		if (min.x > other.min.x) return false;
+		if (min.y > other.min.y) return false;
+		if (min.z > other.min.z) return false;
+		
+		if (max.x < other.max.x) return false;
+		if (max.y < other.max.y) return false;
+		if (max.z < other.max.z) return false;
+		
+		return true;
 	}
 }

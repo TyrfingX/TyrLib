@@ -70,6 +70,8 @@ public class SceneNode {
 		children = new ArrayList<SceneNode>();
 		setRelativePos(pos);
 		setRelativeRot(new Quaternion(0,0,0,1));
+		
+		Matrix.setIdentityM(modelMatrix, 0);
 	}
 	
 	
@@ -299,6 +301,8 @@ public class SceneNode {
 	public void attachChild(SceneNode node) {
 		children.add(node);
 		node.parent = this;
+		
+		this.update();
 	}
 	
 	/**

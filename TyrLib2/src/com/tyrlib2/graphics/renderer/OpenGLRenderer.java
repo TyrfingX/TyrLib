@@ -14,10 +14,11 @@ import android.util.SparseArray;
 
 import com.tyrlib2.graphics.lighting.Light;
 import com.tyrlib2.graphics.materials.DefaultMaterial3;
+import com.tyrlib2.graphics.scene.Octree;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.graphics.scene.SceneNode;
-import com.tyrlib2.math.AABB;
 import com.tyrlib2.math.FrustumG;
+import com.tyrlib2.math.Vector3;
 
 /**
  * This class initiates the actual rendering.
@@ -27,6 +28,17 @@ import com.tyrlib2.math.FrustumG;
 
 public class OpenGLRenderer implements GLSurfaceView.Renderer {
     
+	private class RenderChannel {
+		Octree octree;
+		List<IRenderable> renderables;
+		
+		public RenderChannel() {
+			octree = new Octree(5, 20, new Vector3(), 20);
+			renderables = new Vector<IRenderable>();
+			octree.attachTo(rootSceneNode);
+		}
+	}
+	
 	/** 
 	 * These are the default rendering channels. They are rendered starting with the lowest number.
 	 */
@@ -38,7 +50,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	public static final int BYTES_PER_FLOAT = 4;
 	
 	private List<IFrameListener> frameListeners;
-	private SparseArray<List<IRenderable>> renderChannels;
+	private SparseArray<RenderChannel> renderChannels;
 	private SceneNode rootSceneNode;
 	private Viewport viewport;
 	private Camera camera;
@@ -58,13 +70,14 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	
 	public OpenGLRenderer(Context context) {
 		frameListeners = new Vector<IFrameListener>();
-		renderChannels = new SparseArray<List<IRenderable>>();
-		
-		renderChannels.put(BACKGROUND_CHANNEL, new Vector<IRenderable>());
-		renderChannels.put(DEFAULT_CHANNEL, new Vector<IRenderable>());
-		renderChannels.put(OVERLAY_CHANNEL, new Vector<IRenderable>());
+		renderChannels = new SparseArray<RenderChannel>();
 		
 		rootSceneNode = new SceneNode();
+
+		renderChannels.put(BACKGROUND_CHANNEL, new RenderChannel());
+		renderChannels.put(DEFAULT_CHANNEL, new RenderChannel());
+		renderChannels.put(OVERLAY_CHANNEL, new RenderChannel());
+		
 		this.context = context;
 		rendering = false;
 	}
@@ -217,17 +230,19 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     	
     }
 
-	private void drawChannel(List<IRenderable> renderables, float[] transformMatrix) {
-		if (renderables != null) {
-		    for (int i = 0; i < renderables.size(); ++i) {
-		    	IRenderable r = renderables.get(i);
-		    	AABB boundingBox = r.getBoundingBox();
-		    	if (boundingBox == null) {
-		    		r.render(transformMatrix);
-		    	} else if (frustum.aabbInFrustum(boundingBox) || true) {
-		    		r.render(transformMatrix);
-		    	} 
+	private void drawChannel(RenderChannel channel, final float[] transformMatrix) {
+		
+		// Draw all unbounded objects first
+		if (channel.renderables != null) {
+		    for (int i = 0; i < channel.renderables.size(); ++i) {
+		    	channel.renderables.get(i).render(transformMatrix);
 		    }
+		}
+		
+		// Now draw all bounded objects
+		if (channel.octree != null) {
+			channel.octree.update();
+			channel.octree.query(new RenderSceneQuery(frustum, transformMatrix));    
 		}
 	}
     
@@ -246,13 +261,17 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	    	long time = System.nanoTime();
 	    	long diff = time - lastTime;
 	    	
+	    	lastTime = System.nanoTime();
+	    	
 	        for (IFrameListener listener : frameListeners) {
 	        	listener.onFrameRendered(diff / BILLION);
 	        }
         
+	    } else {
+	    	lastTime = System.nanoTime();
 	    }
         
-        lastTime = System.nanoTime();
+        
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height) {
@@ -297,42 +316,72 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     	this.addRenderable(renderable, DEFAULT_CHANNEL);
     }
     
+    public void addRenderable(BoundedRenderable renderable) {
+    	this.addRenderable(renderable, DEFAULT_CHANNEL);
+    }
+    
     public void removeRenderable(IRenderable renderable) {
     	this.removeRenderable(renderable, DEFAULT_CHANNEL);
     }
     
+    public void removeRenderable(BoundedRenderable renderable) {
+    	this.removeRenderable(renderable, DEFAULT_CHANNEL);
+    }
+    
     public void addRenderable(IRenderable renderable, int channel) {
-    	List<IRenderable> renderables = renderChannels.get(channel);
-    	if (renderables != null) {
-    		renderables.add(renderable);
+    	RenderChannel renderChannel = renderChannels.get(channel);
+    	if (renderChannel != null) {
+    		renderChannel.renderables.add(renderable);
     	} else {
-    		renderables = new Vector<IRenderable>();
-    		renderChannels.put(channel, renderables);
-    		renderables.add(renderable);
+    		renderChannel = new RenderChannel();
+    		renderChannels.put(channel, renderChannel);
+    		renderChannel.renderables.add(renderable);
+    	}
+    }
+    
+    public void addRenderable(BoundedRenderable renderable, int channel) {
+    	RenderChannel renderChannel = renderChannels.get(channel);
+    	if (renderChannel != null) {
+    		renderChannel.octree.addObject(renderable);
+    	} else {
+    		renderChannel = new RenderChannel();
+    		renderChannels.put(channel, renderChannel);
+    		renderChannel.octree.addObject(renderable);
     	}
     }
     
     public void removeRenderable(IRenderable renderable, int channel) {
-    	List<IRenderable> renderables = renderChannels.get(channel);
-    	if (renderables != null) {
-    		renderables.remove(renderable);
+    	RenderChannel renderChannel = renderChannels.get(channel);
+    	if (renderChannel != null) {
+    		renderChannel.renderables.remove(renderable);
+    	} 
+    }
+    
+    public void removeRenderable(BoundedRenderable renderable, int channel) {
+    	RenderChannel renderChannel = renderChannels.get(channel);
+    	if (renderChannel != null) {
+    		renderChannel.octree.removeObject(renderable);
     	} 
     }
     
     public IRenderable getRenderable(int index) {
-    	List<IRenderable> renderables = renderChannels.get(DEFAULT_CHANNEL);
-    	if (renderables != null) {
-    		return renderables.get(index);
+    	RenderChannel renderChannel = renderChannels.get(DEFAULT_CHANNEL);
+    	if (renderChannel != null) {
+    		return renderChannel.renderables.get(index);
     	}
     	
     	return null;
     }
     
     public int getCountRenderables() {
-    	List<IRenderable> renderables = renderChannels.get(DEFAULT_CHANNEL);
-    	if (renderables != null) {
-    		return renderables.size();
+    	RenderChannel renderChannel = renderChannels.get(DEFAULT_CHANNEL);
+    	if (renderChannel != null) {
+    		return renderChannel.renderables.size();
     	}
     	return 0;
+    }
+    
+    public Octree getOctree(int channel) {
+    	return renderChannels.get(DEFAULT_CHANNEL).octree;
     }
 }

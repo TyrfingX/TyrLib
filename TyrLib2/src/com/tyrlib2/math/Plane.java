@@ -12,7 +12,9 @@ public class Plane {
 	}
 	
 	public float distance(Vector3 point) {
-		float distance = normal.dot(point.sub(this.point));
+		float distance = normal.x * (point.x - this.point.x) +
+						 normal.y * (point.y - this.point.y) + 
+						 normal.z * (point.z - this.point.z);
 		return distance;
 	}
 	

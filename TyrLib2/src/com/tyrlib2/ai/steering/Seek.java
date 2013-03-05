@@ -1,5 +1,6 @@
 package com.tyrlib2.ai.steering;
 
+import com.tyrlib2.game.ITargetProvider;
 import com.tyrlib2.math.Vector3;
 
 /**

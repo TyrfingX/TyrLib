@@ -78,6 +78,16 @@ public class Quaternion {
 	}
 	
 	/**
+	 * Invert this quaternion
+	 */
+	
+	public void invert() {
+		x = -x;
+		y = -y;
+		z = -z;
+	}
+	
+	/**
 	 * Multiply this quaternion with another
 	 * @param other
 	 * @return	The resulting quaternion
@@ -97,6 +107,24 @@ public class Quaternion {
 		result.w = angle;
 		
 		return result;
+	}
+	
+	/**
+	 * Multiply this quaternion with another
+	 * @param other
+	 */
+	public void multiplyNoTmp(Quaternion other) {
+
+		float angle = (w * other.w) - (x * other.x + y * other.y + z * other.z);
+		
+		float crossX = y * other.z - z * other.y;
+		float crossY = -(x * other.z - z * other.x);
+		float crossZ = x * other.y - y * other.x;
+
+		x = x * other.w + other.x * w + crossX;
+		y = y * other.w + other.y * w + crossY;
+		z = z * other.w + other.z * w + crossZ;
+		w = angle;
 	}
 	
 	public Quaternion rotate(Vector3 axis, float angle) {
@@ -208,9 +236,10 @@ public class Quaternion {
 		  vectorQuaternion.z = vector.z;
 		  vectorQuaternion.w = 0.0f;
 		  
-		  Quaternion inverseQuaternion = this.inverse();
-		  Quaternion resultQuaternion = vectorQuaternion.multiply(inverseQuaternion);
-		  resultQuaternion = this.multiply(resultQuaternion);
+		  this.invert();
+		  vectorQuaternion.multiplyNoTmp(this);
+		  this.invert();
+		  Quaternion resultQuaternion = this.multiply(vectorQuaternion);
 		  
 		  Vector3 resultVector = new Vector3();
 		  resultVector.x = resultQuaternion.x;

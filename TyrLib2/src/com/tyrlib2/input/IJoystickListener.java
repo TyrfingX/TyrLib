@@ -8,7 +8,7 @@ import com.tyrlib2.math.Vector2;
  *
  */
 
-public interface JoystickListener {
+public interface IJoystickListener {
 	
 	/** The user started using the joystick **/
 	public void onJoystickActivated();
