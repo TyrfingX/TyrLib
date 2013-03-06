@@ -30,6 +30,7 @@ public class Octree extends SceneObject {
 	}
 	
 	public void update() {
+		root.update();
 		getCurrentRoot();
 	}
 	

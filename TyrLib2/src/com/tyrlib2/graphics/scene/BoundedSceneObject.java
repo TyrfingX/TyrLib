@@ -7,15 +7,13 @@ public abstract class BoundedSceneObject extends SceneObject {
 	public abstract AABB getBoundingBox();
 	public abstract void setBoundingBoxVisible(boolean visible);
 	protected void calcBoundingBox() {}
-	
-	protected OctreeNode octreeNode;
+
+	private boolean dirty;
 	
 	@Override
 	public void onTransformed() {
 		calcBoundingBox();
-		if (octreeNode != null) {
-			octreeNode.update(this);
-		}
+		dirty = true;
 	}
 	
 	@Override
@@ -28,5 +26,13 @@ public abstract class BoundedSceneObject extends SceneObject {
 	public SceneNode detach() {
 		onTransformed();
 		return super.detach();
+	}
+	
+	public void setClean() {
+		dirty = false;
+	}
+	
+	public boolean isDity() {
+		return dirty;
 	}
 }

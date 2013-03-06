@@ -76,7 +76,6 @@ public class OctreeNode extends BoundedSceneObject {
 		AABB aabb = sceneObject.getBoundingBox();
 		
 		if (aabb == null) {
-			sceneObject.octreeNode = this;
 			objects.add(sceneObject);
 			return;
 		}
@@ -84,7 +83,6 @@ public class OctreeNode extends BoundedSceneObject {
 		if (boundingBox.containsAABB(aabb)) {
 		
 			if (objects.size() <= maximumObjectsPerNode) {
-				sceneObject.octreeNode = this;
 				objects.add(sceneObject);
 			} else {
 				
@@ -99,7 +97,6 @@ public class OctreeNode extends BoundedSceneObject {
 				if (!addObjectIntoChild(sceneObject)) {
 					
 					// If this doesnt work out, then add the object to this node
-					sceneObject.octreeNode = this;
 					objects.add(sceneObject);
 				}
 			}
@@ -243,41 +240,48 @@ public class OctreeNode extends BoundedSceneObject {
 		objects.set(i, objects.get(objects.size()-1));
 		objects.remove(objects.size()-1);
 	}
-
+	
 	/**
 	 * Update the tree (check the partitions, merging, splitting, etc)
 	 */
-	
-	public void update(BoundedSceneObject sceneObject) {
-		
-		AABB aabb = sceneObject.getBoundingBox();
-		if (aabb != null) {
-			
-			boolean movedToChild = false;
-			if (children != null) {
-				movedToChild = addObjectIntoChild(sceneObject);
-			}
-			
-			if (!movedToChild) {
-				if (!boundingBox.containsAABB(aabb)) {
-					
-					int i = objects.indexOf(sceneObject);
-					removeLocalObject(i);
-					
-					if (parentOctree != null) {
-						parentOctree.addObject(sceneObject);
-					} else {
-						this.addObject(sceneObject);
-					}
+
+	public void update() {
+		for (int i = 0; i < objects.size(); ++i) {
+			BoundedSceneObject object = objects.get(i);
+			if (object.isDity() && object.getBoundingBox() != null) {
+
+				boolean movedToChild = false;
+				if (children != null) {
+					movedToChild = addObjectIntoChild(object);
 				}
-			} else {
-				int i = objects.indexOf(sceneObject);
-				removeLocalObject(i);
-				--i;
+
+				if (!movedToChild) {
+					if (!boundingBox.containsAABB(object.getBoundingBox())) {
+
+						removeLocalObject(i);
+						--i;
+
+						if (parentOctree != null) {
+							parentOctree.addObject(object);
+						} else {
+							this.addObject(object);
+						}
+					}
+				} else {
+					removeLocalObject(i);
+					--i;
+				}
+
+				object.setClean();
 			}
 		}
-		
-		
+
+		if (children != null) {
+			for (int i = 0; i < CHILDREN_PER_NODE; ++i) {
+				children[i].update();
+			}
+		}
+
 	}
 	
 	@Override

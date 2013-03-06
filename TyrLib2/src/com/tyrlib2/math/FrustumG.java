@@ -58,17 +58,33 @@ public class FrustumG {
 	}
 	
 	public boolean aabbInFrustum(AABB aabb) {
-		planeCheck: for (int i = 0; i < planes.length; ++i) {
+		
+		Vector3 p = new Vector3();
+		
+		for (int i = 0; i < planes.length; ++i) {
 			
-			Vector3[] points = aabb.getPoints();
-			
-			for (int j = 0; j < points.length; ++j) {
-				if (planes[i].distance(points[j]) >= -2) {
-					continue planeCheck;
-				}
+			if (planes[i].normal.x >= 0) {
+				p.x = aabb.max.x;
+			} else {
+				p.x = aabb.min.x;
 			}
 			
-			return false;
+			if (planes[i].normal.y >= 0) {
+				p.y = aabb.max.y;
+			} else {
+				p.y = aabb.min.y;
+			}
+			
+			if (planes[i].normal.z >= 0) {
+				p.z = aabb.max.z;
+			} else {
+				p.z = aabb.min.z;
+			}
+			
+			
+			// is the positive vertex outside?
+			if (planes[i].distance(p) < 0)
+				return false;
 		}
 		
 		return true;
