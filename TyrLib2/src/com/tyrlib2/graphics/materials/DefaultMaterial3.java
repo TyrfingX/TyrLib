@@ -34,25 +34,28 @@ public class DefaultMaterial3 extends LightedMaterial {
 	private LightingType type;
 	
 	/** Per vertex color of this object **/
-	private int colorOffset = 6;
-	private int colorDataSize = 4;
+	public static final int colorOffset = 6;
+	public static final int colorDataSize = 4;
 	private int colorHandle;
 	private Color[] colors;
 	
 	/** Per vertex normals of this object **/
-	private int normalOffset = 3;
-	private int normalDataSize = 3;
+	public static final int normalOffset = 3;
+	public static final int normalDataSize = 3;
 	private int normalHandle;
 	
 	/** Texture information of this object **/
-	private int uvOffset = 10;
-	private int uvDataSize = 2;
+	public static final int uvOffset = 10;
+	public static final int uvDataSize = 2;
 	private int textureUniformHandle;
 	private int textureCoordinateHandle;
 	private String textureName;
 	private Texture texture;
 	private float repeatX;
 	private float repeatY;
+	
+	public static final int dataSize = 12;
+	public static final int posOffset = 0;
 	
 	/** Contains the model*view matrix **/
 	private float[] mvMatrix = new float[16];
@@ -137,7 +140,7 @@ public class DefaultMaterial3 extends LightedMaterial {
 		this.repeatX = repeatX;
 		this.repeatY = repeatY;
 		
-		init(12,0,3, "u_MVPMatrix", "a_Position");
+		init(12,posOffset,3, "u_MVPMatrix", "a_Position");
 
 	}
 	

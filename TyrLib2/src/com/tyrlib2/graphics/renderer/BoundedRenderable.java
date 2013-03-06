@@ -5,7 +5,6 @@ import android.opengl.Matrix;
 import com.tyrlib2.graphics.renderables.BoundingBox;
 import com.tyrlib2.graphics.scene.BoundedSceneObject;
 import com.tyrlib2.graphics.scene.SceneManager;
-import com.tyrlib2.graphics.scene.SceneNode;
 import com.tyrlib2.math.AABB;
 import com.tyrlib2.math.Vector3;
 
@@ -49,19 +48,6 @@ public abstract class BoundedRenderable extends BoundedSceneObject implements IR
 	@Override
 	public void setBoundingBoxVisible(boolean visible) {		
 		boundingBoxVisible = visible;
-	}
-	
-	@Override
-	public void attachTo(SceneNode node)  {
-		super.attachTo(node);
-		calcBoundingBox();
-	}
-	
-
-	@Override
-	public SceneNode detach() {
-		calcBoundingBox();
-		return super.detach();
 	}
 	
 	protected void calcBoundingBox() {

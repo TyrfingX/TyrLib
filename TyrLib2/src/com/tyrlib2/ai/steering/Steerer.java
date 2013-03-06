@@ -25,6 +25,10 @@ public class Steerer implements IUpdateable {
 	public void addPattern(IPattern pattern) {
 		patterns.add(pattern);
 	}
+	
+	public void removePattern(IPattern pattern) {
+		patterns.remove(pattern);
+	}
 
 	@Override
 	public void onUpdate(float time) {
@@ -41,5 +45,9 @@ public class Steerer implements IUpdateable {
 	@Override
 	public boolean isFinished() {
 		return false;
+	}
+	
+	public IVehicle getVehicle() {
+		return vehicle;
 	}
 }

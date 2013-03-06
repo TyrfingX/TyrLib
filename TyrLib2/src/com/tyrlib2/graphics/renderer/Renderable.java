@@ -40,6 +40,11 @@ public class Renderable extends BoundedRenderable {
 	public Renderable() {
 	}
 	
+	public Renderable(Material material, Mesh mesh) {
+		this.material = material;
+		this.mesh = mesh;
+	}
+	
 	public Renderable(Material material, Vector3[] points, short[] drawOrder) {
 		init(material, points, drawOrder);
 	}
@@ -147,6 +152,10 @@ public class Renderable extends BoundedRenderable {
 	@Override
 	protected AABB createUntransformedBoundingBox() {
 		return mesh.getBoundingBox();
+	}
+	
+	public Renderable createShallowCopy() {
+		return new Renderable(material, mesh);
 	}
 
 }

@@ -5,8 +5,9 @@ import java.util.List;
 
 import com.tyrlib2.graphics.renderer.Camera;
 import com.tyrlib2.graphics.renderer.IRenderable;
-import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.renderer.Viewport;
+import com.tyrlib2.graphics.scene.BoundedSceneObject;
+import com.tyrlib2.graphics.scene.ISceneQuery;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.math.AABB;
 import com.tyrlib2.math.Ray;
@@ -23,6 +24,36 @@ public class Raycast {
 	
 	private Ray ray;
 	private float maxDist;
+	
+	private class RaySceneQuery implements ISceneQuery {
+		
+		private Vector3 intersect;
+		private List<RaycastResult> results;
+		
+		public RaySceneQuery(List<RaycastResult> results) {
+			this.results = results;
+		}
+		
+		@Override
+		public boolean intersects(AABB aabb) {
+			if (aabb != null) {
+				Vector3 intersect = aabb.intersectsRay(ray, 0, maxDist);
+				return (intersect != null);
+			} 
+			
+			return false;
+		}
+
+		@Override
+		public void callback(BoundedSceneObject sceneObject) {
+			RaycastResult result = new RaycastResult();
+			result.renderable = (IRenderable) sceneObject;
+			result.intersection = intersect;
+			result.distance = ray.origin.sub(intersect).length();
+			results.add(result);
+		}
+		
+	}
 	
 	public class RaycastResult implements Comparable<RaycastResult> {
 		public IRenderable renderable;
@@ -57,24 +88,7 @@ public class Raycast {
 	
 	public List<RaycastResult> performRaycast() {
 		List<RaycastResult> results = new ArrayList<RaycastResult>();
-		
-		OpenGLRenderer r = SceneManager.getInstance().getRenderer();
-		
-//		for (int i = 0; i < r.getCountRenderables(); ++i) {
-//			IRenderable renderable = r.getRenderable(i);
-//			AABB boundingBox = renderable.getBoundingBox();
-//			if (boundingBox != null) {
-//				Vector3 intersect = boundingBox.intersectsRay(ray, 0, maxDist);
-//				if (intersect != null) {
-//					RaycastResult result = new RaycastResult();
-//					result.renderable = renderable;
-//					result.intersection = intersect;
-//					result.distance = ray.origin.sub(intersect).length();
-//					results.add(result);
-//				}
-//			}
-//		}
-		
+		SceneManager.getInstance().performSceneQuery(new RaySceneQuery(results));
 		return results;
 	}
 	

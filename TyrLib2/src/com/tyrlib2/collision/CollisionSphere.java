@@ -3,7 +3,10 @@ package com.tyrlib2.collision;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.tyrlib2.graphics.renderables.BoundingBox;
 import com.tyrlib2.graphics.scene.BoundedSceneObject;
+import com.tyrlib2.graphics.scene.SceneManager;
+import com.tyrlib2.graphics.scene.SceneNode;
 import com.tyrlib2.math.AABB;
 import com.tyrlib2.math.Vector3;
 
@@ -18,6 +21,7 @@ public class CollisionSphere extends BoundedSceneObject {
 	private float radius;
 	private int tag;
 	protected AABB boundingBox;
+	private BoundingBox boundingBoxRenderable;
 	
 	private boolean testCollision;
 
@@ -68,24 +72,56 @@ public class CollisionSphere extends BoundedSceneObject {
 	public AABB getBoundingBox() {
 		if (boundingBox == null) {
 			Vector3 pos = parent.getCachedAbsolutePos();
-			boundingBox = new AABB(	new Vector3(pos.x + -radius, pos.y + -radius, pos.z + -radius),
-									new Vector3(pos.x + radius,  pos.y + radius, pos.z + radius));
+			if (pos != null) {
+				boundingBox = new AABB(	new Vector3(pos.x + -radius, pos.y + -radius, pos.z + -radius),
+										new Vector3(pos.x + radius,  pos.y + radius, pos.z + radius));
+			}
 		}
 		return boundingBox;
 	}
 
 	@Override
 	public void setBoundingBoxVisible(boolean visible) {
+		if (boundingBoxRenderable == null && visible) {
+			AABB aabb = new AABB(new Vector3(-radius, -radius, -radius),
+								 new Vector3(radius,  radius, radius)); 
+			
+			boundingBoxRenderable = new BoundingBox(aabb);
+			SceneManager.getInstance().getRenderer().addRenderable(boundingBoxRenderable);
+			parent.attachSceneObject(boundingBoxRenderable);
+		} else if (boundingBoxRenderable != null && !visible) {
+			parent.detachSceneObject(boundingBoxRenderable);
+			SceneManager.getInstance().destroyRenderable(boundingBoxRenderable);
+			boundingBoxRenderable = null;
+		}
 	}
 	
 	@Override
 	public void onTransformed() {
 		super.onTransformed();
 		Vector3 pos = parent.getCachedAbsolutePos();
-		boundingBox = new AABB(	new Vector3(pos.x + -radius, pos.y + -radius, pos.z + -radius),
-								new Vector3(pos.x + radius,  pos.y + radius, pos.z + radius));
+		if (pos != null) {
+			boundingBox = new AABB(	new Vector3(pos.x + -radius, pos.y + -radius, pos.z + -radius),
+									new Vector3(pos.x + radius,  pos.y + radius, pos.z + radius));
+		}
 	}
 	
+	@Override
+	public void attachTo(SceneNode node)  {
+		if (boundingBoxRenderable != null) {
+			boundingBoxRenderable.attachTo(node);
+		}
+		super.attachTo(node);
+	}
+	
+
+	@Override
+	public SceneNode detach() {
+		if (boundingBoxRenderable != null) {
+			boundingBoxRenderable.detach();
+		}
+		return super.detach();	
+	}
 	
 	public boolean isTestingCollision() {
 		return testCollision;

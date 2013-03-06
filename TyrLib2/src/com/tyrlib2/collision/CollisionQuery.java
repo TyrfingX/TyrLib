@@ -20,7 +20,7 @@ public class CollisionQuery implements ISceneQuery {
 	@Override
 	public void callback(BoundedSceneObject sceneObject) {
 		CollisionSphere other = (CollisionSphere) sceneObject;
-		if (sphere.collidesWith(other)) {
+		if (sphere != other && sphere.collidesWith(other)) {
 			sphere.addCollision(other);
 		}
 	}

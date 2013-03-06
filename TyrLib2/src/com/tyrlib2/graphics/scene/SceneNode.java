@@ -46,8 +46,11 @@ public class SceneNode {
 	/** Transforms model space to world space **/
 	protected float[] modelMatrix = new float[16];
 	
-	/** Was this node updated after the last update call? **/
+	/** This node has been transformed and requires an update for itself and all children **/
 	protected boolean update;
+	
+	/** A child node requires an update. **/
+	protected boolean dirty;
 	
 	/**
 	 * Creates a SceneNode with default position (0,0,0)
@@ -78,8 +81,18 @@ public class SceneNode {
 	/** 
 	 * Force this node to update 
 	 * **/
-	public void setDirty() {
+	public void forceUpdate() {
 		update = true;
+		setDirty();
+	}
+	
+	public void setDirty() {
+		dirty = true;
+		if (parent != null) {
+			if (!parent.dirty) {
+				parent.setDirty();
+			}
+		}
 	}
 	
 	/**
@@ -140,7 +153,7 @@ public class SceneNode {
 	
 	public void setRelativePos(Vector3 pos) {
 		this.pos = new Vector3(pos);
-		update = true;
+		forceUpdate();
 	}
 	
 	/**
@@ -191,7 +204,7 @@ public class SceneNode {
 	
 	public void setRelativeRot(Quaternion rotation) {
 		this.rot = rotation;
-		update = true;
+		forceUpdate();
 	}
 	
 	/**
@@ -262,7 +275,7 @@ public class SceneNode {
 	
 	public void setRelativeScale(Vector3 scale) {
 		this.scale = new Vector3(scale);
-		update = true;
+		forceUpdate();
 	}
 	
 	/**
@@ -272,7 +285,7 @@ public class SceneNode {
 	
 	public void attachSceneObject(SceneObject object) {
 		object.attachTo(this);
-		update = true;
+		forceUpdate();
 	}
 	
 	/**
@@ -302,7 +315,7 @@ public class SceneNode {
 		children.add(node);
 		node.parent = this;
 		
-		this.update();
+		this.setDirty();
 	}
 	
 	/**
@@ -371,9 +384,13 @@ public class SceneNode {
 			// there was an update, all children of this tree must be updated
 			updateAll(parentPos, parentRot, parentScale, parentTransform);
 		} else {
-			// There was no update, hopefully the children also had no update
-			for (int i = 0; i < children.size(); ++i) {	
-				children.get(i).update(absolutePos, absoluteRot, absoluteScale, modelMatrix);
+			
+			if (dirty) {
+				// There was no update, but some child node requires an update
+				for (int i = 0; i < children.size(); ++i) {	
+					children.get(i).update(absolutePos, absoluteRot, absoluteScale, modelMatrix);
+				}
+				dirty = false;
 			}
 		}
 		
@@ -388,6 +405,8 @@ public class SceneNode {
 		for (int i = 0; i < children.size(); ++i) {	
 			children.get(i).update(pos, rot, scale, modelMatrix);
 		}
+		
+		dirty = false;
 	}
 	
 	/**
@@ -426,6 +445,7 @@ public class SceneNode {
 		}
 		
 		update = false;
+		dirty = false;
 		
 		
 		for (int i = 0; i < children.size(); ++i) {	

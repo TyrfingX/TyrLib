@@ -54,7 +54,9 @@ public class BoundingBox extends Renderable {
 	public void render(float[] vpMatrix) {
 		GLES20.glDepthMask(false);
 		GLES20.glDisable(GLES20.GL_CULL_FACE);
-		modelMatrix = unitMatrix;
+		if (modelMatrix == null) {
+			modelMatrix = unitMatrix;
+		}
 		super.render(vpMatrix);
 		GLES20.glEnable(GLES20.GL_CULL_FACE);
 		GLES20.glDepthMask(true);
