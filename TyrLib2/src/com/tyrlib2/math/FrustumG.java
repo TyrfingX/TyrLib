@@ -10,6 +10,7 @@ public class FrustumG {
 	public static final int TOP_CLIP_PLANE = 5;
 	
 	public Plane[] planes = new Plane[6];
+	private Vector3 p = new Vector3();
 	
 	public FrustumG(Vector3 camPos, Vector3 lookDirection, Vector3 up, int nearClip, int farClip, float nearWidth, float nearHeight) {
 		
@@ -58,8 +59,6 @@ public class FrustumG {
 	}
 	
 	public boolean aabbInFrustum(AABB aabb) {
-		
-		Vector3 p = new Vector3();
 		
 		for (int i = 0; i < planes.length; ++i) {
 			

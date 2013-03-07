@@ -24,6 +24,8 @@ import com.tyrlib2.graphics.renderer.IRenderable;
 import com.tyrlib2.graphics.renderer.Material;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.renderer.Viewport;
+import com.tyrlib2.graphics.text.Font;
+import com.tyrlib2.graphics.text.GLText;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.util.Color;
@@ -47,8 +49,13 @@ public class SceneManager {
 	/** Factories for creating entities **/
 	private Map<String, IEntityFactory> entityFactories;
 	
+	/** Loaded fonts **/
+	private Map<String, Font> fonts;
+	
 	/** Global ambient illumination **/
 	private Color ambientLight;
+	
+	private Font activeFont;
 	
 	public SceneManager() {
 		lights = new ArrayList<Light>();
@@ -58,6 +65,8 @@ public class SceneManager {
 		ambientLight = new Color(0.5f,0.5f,0.5f,0);
 		
 		entityFactories = new HashMap<String, IEntityFactory>();
+		
+		fonts = new HashMap<String, Font>();
 	}
 	
 	public static SceneManager getInstance() {
@@ -234,8 +243,24 @@ public class SceneManager {
 		return image;
 	}
 	
-	public Text2 createText2(String text, int size, Color color) {
-		Text2 text2 = new Text2(text, color);
+	public void loadFont(String name, int size, Context context) {
+		GLText glText = new GLText(context.getAssets());
+		glText.load( name, size, 2, 2 );  // Create Font (Height: 14 Pixels / X+Y Padding 2 Pixels)
+		activeFont = new Font(glText);
+		fonts.put(name, activeFont);
+	}
+	
+	public void recreateFonts(Context context) {
+		for (String fontName : fonts.keySet()) {
+			Font font = fonts.get(fontName);
+			GLText glText = new GLText(context.getAssets());
+			glText.load(fontName, font.glText.getSize(), 2, 2 );
+			font.glText = glText;
+		}
+	}
+	
+	public Text2 createText2(String text, int rotation, Color color) {
+		Text2 text2 = new Text2(text, rotation, color, activeFont);
 		renderer.addRenderable(text2, OpenGLRenderer.OVERLAY_CHANNEL);
 		return text2;
 	}

@@ -9,11 +9,15 @@ public abstract class BoundedSceneObject extends SceneObject {
 	protected void calcBoundingBox() {}
 
 	private boolean dirty;
+	protected OctreeNode octree;
 	
 	@Override
 	public void onTransformed() {
 		calcBoundingBox();
 		dirty = true;
+		if (octree != null) {
+			octree.setDirty();
+		}
 	}
 	
 	@Override

@@ -47,7 +47,7 @@ public class PointMass implements IVehicle {
 
 	@Override
 	public Vector3 getPosition() {
-		return node.getAbsolutePos();
+		return node.getCachedAbsolutePos();
 	}
 
 	@Override
@@ -82,12 +82,16 @@ public class PointMass implements IVehicle {
 	
 	@Override
 	public void resetSteeringForces() {
-		steeringForces = new Vector3();
+		steeringForces.x = 0;
+		steeringForces.y = 0;
+		steeringForces.z = 0;
 	}
 
 	@Override
 	public void addSteeringForce(Vector3 steering) {
-		steeringForces = steeringForces.add(steering);
+		steeringForces.x += steering.x;
+		steeringForces.y += steering.y;
+		steeringForces.z += steering.z;
 	}
 
 	@Override

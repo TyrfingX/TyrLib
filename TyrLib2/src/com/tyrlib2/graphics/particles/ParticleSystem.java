@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import android.opengl.GLES20;
 import android.opengl.Matrix;
@@ -18,7 +19,6 @@ import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.graphics.scene.SceneNode;
 import com.tyrlib2.graphics.scene.SceneObject;
-import com.tyrlib2.math.Vector3;
 import com.tyrlib2.util.Color;
 import com.tyrlib2.util.FloatArray;
 
@@ -37,6 +37,7 @@ public class ParticleSystem extends SceneObject implements IUpdateable, IRendera
 	private List<Affector> affectors;
 	private List<Emitter> emitters;
 	private List<PointSpriteMaterial> materials;
+	private Stack<Particle> deadParticles;
 	
 	protected Map<PointSpriteMaterial, FloatArray> particleDataMap;
 	protected Map<PointSpriteMaterial, List<Particle>> particleMap;
@@ -55,6 +56,9 @@ public class ParticleSystem extends SceneObject implements IUpdateable, IRendera
 	
 	private int steps = 1;
 	
+	private FloatBuffer buffer;
+	
+	
 	public ParticleSystem() {
 		affectors = new ArrayList<Affector>();
 		emitters = new ArrayList<Emitter>();
@@ -62,11 +66,18 @@ public class ParticleSystem extends SceneObject implements IUpdateable, IRendera
 		particleDataMap = new HashMap<PointSpriteMaterial, FloatArray>();
 		materials = new ArrayList<PointSpriteMaterial>();
 		modelMatrix = SceneManager.getInstance().getRootSceneNode().getModelMatrix();
+		deadParticles = new Stack<Particle>();
 	}
 	
 	public ParticleSystem(int maxParticles) {
 		this();
 		this.maxParticles = maxParticles;
+		
+        ByteBuffer bb = ByteBuffer.allocateDirect(maxParticles * OpenGLRenderer.BYTES_PER_FLOAT * PARTICLE_DATA_SIZE);
+        
+        // use the device hardware's native byte order
+        bb.order(ByteOrder.nativeOrder());
+        buffer = bb.asFloatBuffer();
 	}
 	
 	@Override
@@ -85,7 +96,9 @@ public class ParticleSystem extends SceneObject implements IUpdateable, IRendera
 				for (int i = 0; i < particles.size(); ++i) {
 					Particle particle = particles.get(i);
 					particle.onUpdate(time);
-					particle.acceleration = new Vector3();
+					particle.acceleration.x = 0;
+					particle.acceleration.y = 0;
+					particle.acceleration.z = 0;
 					if (particle.isFinished()) {
 						removeParticle(i, material);
 						--i;
@@ -149,6 +162,7 @@ public class ParticleSystem extends SceneObject implements IUpdateable, IRendera
 	private void removeParticle(int index, PointSpriteMaterial material) {
 		List<Particle> particles = particleMap.get(material);
 		Particle particle = particles.get(index);
+		deadParticles.push(particle);
 		
 		int indexLastParticle = particles.size() - 1;
 		Particle lastParticle = particles.get(indexLastParticle);
@@ -165,6 +179,14 @@ public class ParticleSystem extends SceneObject implements IUpdateable, IRendera
 		particles.remove(indexLastParticle);
 		
 		countParticles--;
+	}
+	
+	protected Particle requestDeadParticle() {
+		if (!deadParticles.empty()) {
+			return deadParticles.pop();
+		}
+		
+		return null;
 	}
 	
 	public void addEmitter(Emitter emitter) {
@@ -227,11 +249,7 @@ public class ParticleSystem extends SceneObject implements IUpdateable, IRendera
 			
 			if (particleData.getSize() > 0) {
 
-		        ByteBuffer bb = ByteBuffer.allocateDirect(particleData.getSize() * OpenGLRenderer.BYTES_PER_FLOAT);
-		        
-		        // use the device hardware's native byte order
-		        bb.order(ByteOrder.nativeOrder());
-		        FloatBuffer buffer = bb.asFloatBuffer();
+		        buffer.clear();
 		        buffer.put(particleData.buffer, 0, particleData.getSize());
 		        buffer.position(0);
 		        				
@@ -282,6 +300,11 @@ public class ParticleSystem extends SceneObject implements IUpdateable, IRendera
 	
 	public void setMaxParticles(int maxParticles) {
 		this.maxParticles = maxParticles;
+		
+        ByteBuffer bb = ByteBuffer.allocateDirect(maxParticles * OpenGLRenderer.BYTES_PER_FLOAT * PARTICLE_DATA_SIZE);
+        // use the device hardware's native byte order
+        bb.order(ByteOrder.nativeOrder());
+        buffer = bb.asFloatBuffer();
 	}
 	
 	public ParticleSystem copy() {

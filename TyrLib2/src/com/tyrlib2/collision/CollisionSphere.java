@@ -57,7 +57,6 @@ public class CollisionSphere extends BoundedSceneObject {
 
 	public void setRadius(float radius) {
 		this.radius = radius;
-
 	}
 
 	public int getTag() {
@@ -73,8 +72,8 @@ public class CollisionSphere extends BoundedSceneObject {
 		if (boundingBox == null) {
 			Vector3 pos = parent.getCachedAbsolutePos();
 			if (pos != null) {
-				boundingBox = new AABB(	new Vector3(pos.x + -radius, pos.y + -radius, pos.z + -radius),
-										new Vector3(pos.x + radius,  pos.y + radius, pos.z + radius));
+				boundingBox.min = new Vector3(pos.x + -radius, pos.y + -radius, pos.z + -radius);
+				boundingBox.max = new Vector3(pos.x + radius,  pos.y + radius, pos.z + radius);
 			}
 		}
 		return boundingBox;

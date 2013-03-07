@@ -101,7 +101,7 @@ public class DirectionalLight extends Light {
 			
 			Quaternion rot = parent.getCachedAbsoluteRot();
 			
-			rotMatrix = rot.toMatrix();
+			rot.toMatrix(rotMatrix);
 			Matrix.multiplyMV(lightDirectionVector, 0, rotMatrix, 0, lightDirectionVector, 0);
 		}
 		

@@ -1,5 +1,5 @@
 package com.tyrlib2.graphics.particles;
 
 public interface IParticleFactory {
-	Particle create();
+	public Particle create(Particle particle);
 }

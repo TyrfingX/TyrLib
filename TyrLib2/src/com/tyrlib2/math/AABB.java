@@ -1,5 +1,7 @@
 package com.tyrlib2.math;
 
+import android.util.FloatMath;
+
 
 /**
  * An axis aligned bounding box
@@ -26,6 +28,14 @@ public class AABB {
 	public Vector3 getCenter() {
 		Vector3 diff = min.vectorTo(max);
 		return min.add(diff.multiply(0.5f));
+	}
+	
+	public float getExtends() {
+		float x = max.x  - min.x;
+		float y = max.y  - min.y;
+		float z = max.z  - min.z;
+		
+		return FloatMath.sqrt(x*x+y*y+z*z);
 	}
 	
 	public Vector3[] getPoints() {
@@ -57,23 +67,32 @@ public class AABB {
 	public static AABB createFromPoints(float[] points, int stride) {
 		AABB box = new AABB();
 		
-		if (points.length > 0) {
-			box.min = new Vector3(points[0], points[1], points[2]);
-			box.max = new Vector3(points[0], points[1], points[2]);
-		}
-		
-		for (int i = stride; i < points.length; i += stride) {
-			if (points[i + 0] > box.max.x) box.max.x = points[i + 0];
-			if (points[i + 1] > box.max.y) box.max.y = points[i + 1];
-			if (points[i + 2] > box.max.z) box.max.z = points[i + 2];
-			
-			if (points[i + 0] < box.min.x) box.min.x = points[i + 0];
-			if (points[i + 1] < box.min.y) box.min.y = points[i + 1];
-			if (points[i + 2] < box.min.z) box.min.z = points[i + 2];
-		}
+		box.updateWithPoints(points, stride);
 		
 		return box;
 		
+	}
+	
+	public void updateWithPoints(float[] points, int stride) {
+		if (points.length > 0) {
+			min.x = points[0];
+			min.y = points[1];
+			min.z = points[2];
+			
+			max.x = points[0];
+			max.y = points[1];
+			max.z = points[2];
+		}
+		
+		for (int i = stride; i < points.length; i += stride) {
+			if (points[i + 0] > max.x) max.x = points[i + 0];
+			if (points[i + 1] > max.y) max.y = points[i + 1];
+			if (points[i + 2] > max.z) max.z = points[i + 2];
+			
+			if (points[i + 0] < min.x) min.x = points[i + 0];
+			if (points[i + 1] < min.y) min.y = points[i + 1];
+			if (points[i + 2] < min.z) min.z = points[i + 2];
+		}
 	}
 	
 	/**

@@ -26,7 +26,7 @@ public class SceneNode {
 	protected SceneNode parent;
 	
 	/** The relative position of this node **/
-	protected Vector3 pos;
+	protected Vector3 pos = new Vector3();
 	
 	/** Absolute Position of this node in the world **/
 	protected Vector3 absolutePos;
@@ -51,6 +51,12 @@ public class SceneNode {
 	
 	/** A child node requires an update. **/
 	protected boolean dirty;
+	
+	private static float[] translation = new float[16];
+	private static float[] rotation = new float[16];
+	private static float[] scaling = new float[16];
+	private static float[] transPos = new float[4];
+	private static float[] untransfPos = { 0, 0, 0, 1.0f };
 	
 	/**
 	 * Creates a SceneNode with default position (0,0,0)
@@ -152,7 +158,9 @@ public class SceneNode {
 	 */
 	
 	public void setRelativePos(Vector3 pos) {
-		this.pos = new Vector3(pos);
+		this.pos.x = pos.x;
+		this.pos.y = pos.y;
+		this.pos.z = pos.z;
 		forceUpdate();
 	}
 	
@@ -420,9 +428,7 @@ public class SceneNode {
 		absoluteRot = parentRot.multiply(rot);
 		absoluteScale = new Vector3(scale.x * parentScale.x, scale.y * parentScale.y, scale.z * parentScale.z);
 		
-		float[] rotation = rot.toMatrix();
-		float[] translation = new float[16];
-		float[] scaling = new float[16];
+		rot.toMatrix(rotation);
 		Matrix.setIdentityM(translation, 0);
 		Matrix.setIdentityM(scaling, 0);
 		
@@ -434,10 +440,14 @@ public class SceneNode {
 		Matrix.multiplyMM(modelMatrix, 0, translation, 0, modelMatrix, 0);
 		Matrix.multiplyMM(modelMatrix, 0, parentTransform, 0, modelMatrix, 0);
 		
-		float[] transPos = new float[4];
-		float[] untransfPos = { 0, 0, 0, 1.0f };
 		Matrix.multiplyMV(transPos, 0, modelMatrix, 0, untransfPos, 0);
-		absolutePos = new Vector3(transPos[0], transPos[1], transPos[2]);
+		if (absolutePos != null) {
+			absolutePos.x = transPos[0];
+			absolutePos.y = transPos[1];
+			absolutePos.z = transPos[2];
+		} else {
+			absolutePos = new Vector3(transPos[0], transPos[1], transPos[2]);
+		}
 		
 		for (int i = 0; i < attachedObjects.size(); ++i) {
 			SceneObject so = attachedObjects.get(i);
@@ -472,7 +482,10 @@ public class SceneNode {
 	 */
 	
 	public void translate(Vector3 translation) {
-		setRelativePos(pos.add(translation));
+		pos.x += translation.x;
+		pos.y += translation.y;
+		pos.z += translation.z;
+		forceUpdate();
 	}
 	
 	/**

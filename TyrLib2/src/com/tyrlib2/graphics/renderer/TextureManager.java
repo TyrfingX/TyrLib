@@ -78,7 +78,10 @@ public class TextureManager {
 	    
 	    Texture texture = new Texture(textureHandle[0]);
 	    texture.size = size;
+	    
+
 	    textures.put(name, texture);
+	    
 	    texture.resId = resourceId;
 	 
 	    return texture;
@@ -128,13 +131,13 @@ public class TextureManager {
 	 
 	        // Read in the resource
 	        final Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), texture.resId, options);
-	 
+
 	        // Bind to the texture in OpenGL
 	        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0]);
 	 
 	        // Set filtering
-	        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR_MIPMAP_LINEAR);
-	        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+	        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
+	        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST);
 	 
 	        // Load the bitmap into the bound texture.
 	        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);

@@ -1,6 +1,7 @@
 package com.tyrlib2.graphics.particles;
 
 import com.tyrlib2.graphics.materials.PointSpriteMaterial;
+import com.tyrlib2.util.Color;
 
 public class BasicParticleFactory implements IParticleFactory {
 
@@ -14,8 +15,18 @@ public class BasicParticleFactory implements IParticleFactory {
 
 	
 	@Override
-	public Particle create() {
-		Particle particle = new Particle();
+	public Particle create(Particle particle) {
+		if (particle == null) {
+			particle = new Particle();
+		} else {
+			particle.inertia = 1;
+			particle.acceleration.x = 0;
+			particle.acceleration.y = 0;
+			particle.acceleration.z = 0;
+			particle.color = Color.WHITE;
+			particle.passedTime = 0;
+		}
+		
 		particle.setMaterial(material);
 		particle.setLifeTime(lifeTime);
 		return particle;

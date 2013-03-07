@@ -141,6 +141,12 @@ public class Quaternion {
 		
 		float[] matrix = new float[16];
 		
+		toMatrix(matrix);
+		  
+		return matrix;
+	}
+	
+	public void toMatrix(float[] matrix) {
 		matrix[0]  = (1.0f - (2.0f * ((y * y) + (z * z))));
 		matrix[1]  =         (2.0f * ((x * y) + (z * w)));
 		matrix[2]  =         (2.0f * ((x * z) - (y * w)));
@@ -157,8 +163,6 @@ public class Quaternion {
 		matrix[13] = 0.0f;
 		matrix[14] = 0.0f;
 		matrix[15] = 1.0f;
-		  
-		return matrix;
 	}
 	
 	public static Quaternion getIdentity() {
@@ -248,5 +252,22 @@ public class Quaternion {
 		  
 		  return resultVector;
 		}
+	
+	public void multiplyNoTmp(Vector3 vector) {
+		  Quaternion vectorQuaternion = new Quaternion();
+		  vectorQuaternion.x = vector.x;
+		  vectorQuaternion.y = vector.y;
+		  vectorQuaternion.z = vector.z;
+		  vectorQuaternion.w = 0.0f;
+		  
+		  this.invert();
+		  vectorQuaternion.multiplyNoTmp(this);
+		  this.invert();
+		  Quaternion resultQuaternion = this.multiply(vectorQuaternion);
+		  
+		  vector.x = resultQuaternion.x;
+		  vector.y = resultQuaternion.y;
+		  vector.z = resultQuaternion.z;
+	}
 
 }

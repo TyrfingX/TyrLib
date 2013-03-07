@@ -22,6 +22,8 @@ public abstract class BoundedRenderable extends BoundedSceneObject implements IR
 	private boolean boundingBoxVisible;
 	private BoundingBox boundingBoxRenderable;
 	
+	private static float[] points = new float[4*8];
+	
 	protected abstract AABB createUntransformedBoundingBox();
 	
 	protected void createBoundingBoxRenderable() {
@@ -63,16 +65,45 @@ public abstract class BoundedRenderable extends BoundedSceneObject implements IR
 			Vector3 min = untransformedBoundingBox.min;
 			Vector3 max = untransformedBoundingBox.max;
 			
-			float[] points = {	
-					min.x, min.y, min.z,1,
-					max.x, min.y, min.z,1,
-					min.x, max.y, min.z,1,
-					max.x, max.y, min.z,1,
-					min.x, min.y, max.z,1,
-					max.x, min.y, max.z,1,
-					min.x, max.y, max.z,1,
-					max.x, max.y, max.z,1,
-			};
+			points[0] = min.x;
+			points[1] = min.y;
+			points[2] = min.z;
+			points[3] = 1;
+			
+			points[4] = max.x;
+			points[5] = min.y;
+			points[6] = min.z;
+			points[7] = 1;
+			
+			points[8] = min.x;
+			points[9] = max.y;
+			points[10] = min.z;
+			points[11] = 1;
+
+			points[12] = min.x;
+			points[13] = min.y;
+			points[14] = max.z;
+			points[15] = 1;
+			
+			points[16] = max.x;
+			points[17] = min.y;
+			points[18] = max.z;
+			points[19] = 1;
+			
+			points[20] = max.x;
+			points[21] = max.y;
+			points[22] = min.z;
+			points[23] = 1;
+			
+			points[24] = min.x;
+			points[25] = max.y;
+			points[26] = max.z;
+			points[27] = 1;
+			
+			points[28] = max.x;
+			points[29] = max.y;
+			points[30] = max.z;
+			points[31] = 1;
 			
 			// First get the untransformed bounding box and transform it by the scene node transform
 			
@@ -81,9 +112,11 @@ public abstract class BoundedRenderable extends BoundedSceneObject implements IR
 			}
 			
 			// Make the bounding box axis aligned
-			
-			boundingBox = AABB.createFromPoints(points, 4);
-			
+			if (boundingBox == null) {
+				boundingBox = AABB.createFromPoints(points, 4);
+			} else {
+				boundingBox.updateWithPoints(points, 4);
+			}
 			
 			min = boundingBox.min;
 			max = boundingBox.max;

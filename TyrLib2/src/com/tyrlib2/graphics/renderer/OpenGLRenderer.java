@@ -33,7 +33,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 		List<IRenderable> renderables;
 		
 		public RenderChannel() {
-			octree = new Octree(5, 30, new Vector3(), 200);
+			octree = new Octree(5, 40, new Vector3(), 200);
 			renderables = new Vector<IRenderable>();
 			octree.attachTo(rootSceneNode);
 		}
@@ -58,6 +58,8 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	
 	/** View projection matrix of the camera **/
 	private float[] vpMatrix = new float[16];
+	
+	private float[] proj = new float[16];
 	
 	private long lastTime;
 	
@@ -98,6 +100,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 		if (init) {
 			ProgramManager.getInstance().recreateAll();
 			TextureManager.getInstance().reloadAll(context);
+			SceneManager.getInstance().recreateFonts(context);
 			return;
 		}
 		
@@ -153,7 +156,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 													com.tyrlib2.R.raw.depth_vs, 
 													com.tyrlib2.R.raw.depth_fs, 
 													new String[]{"aPosition" });
-		
+
         // Set the background frame color
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         viewport = new Viewport();
@@ -209,7 +212,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 		    
 		    drawScene();
 		    updateListeners();
-		   
+
     	}
         
     }
@@ -223,8 +226,8 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     	drawChannel(renderChannels.get(DEFAULT_CHANNEL), vpMatrix);
     	GLES20.glDisable(GLES20.GL_DEPTH_TEST);
     	
-    	float[] proj = new float[16];
-    	Matrix.orthoM(proj, 0, -0.16f, 1, -0.16f, 1, -1, 1);
+    	float ortho = Math.min(viewport.getWidth(), viewport.getHeight());
+    	Matrix.orthoM(proj, 0, -ortho*0.2f, ortho, -ortho*0.2f, ortho, -1, 1);
     	
     	drawChannel(renderChannels.get(OVERLAY_CHANNEL), proj);
     	
@@ -232,17 +235,17 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 
 	private void drawChannel(RenderChannel channel, final float[] transformMatrix) {
 		
-		// Draw all unbounded objects first
-		if (channel.renderables != null) {
-		    for (int i = 0; i < channel.renderables.size(); ++i) {
-		    	channel.renderables.get(i).render(transformMatrix);
-		    }
-		}
-		
 		// Now draw all bounded objects
 		if (channel.octree != null) {
 			channel.octree.update();
 			channel.octree.query(new RenderSceneQuery(frustum, transformMatrix));    
+		}
+		
+		// Draw all unbounded objects
+		if (channel.renderables != null) {
+		    for (int i = 0; i < channel.renderables.size(); ++i) {
+		    	channel.renderables.get(i).render(transformMatrix);
+		    }
 		}
 	}
     

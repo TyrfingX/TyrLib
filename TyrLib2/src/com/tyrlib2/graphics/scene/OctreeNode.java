@@ -31,6 +31,8 @@ public class OctreeNode extends BoundedSceneObject {
 	private float dimension;
 	
 	private OctreeNode parentOctree;
+	
+	private boolean dirty;
 
 	/** Contains the offsets for calculating the new centers of the child nodes
 	 *  Each 3 sequential entries stand for the x,y,z coordinates
@@ -76,6 +78,7 @@ public class OctreeNode extends BoundedSceneObject {
 		AABB aabb = sceneObject.getBoundingBox();
 		
 		if (aabb == null) {
+			sceneObject.octree = this;
 			objects.add(sceneObject);
 			return;
 		}
@@ -83,7 +86,21 @@ public class OctreeNode extends BoundedSceneObject {
 		if (boundingBox.containsAABB(aabb)) {
 		
 			if (objects.size() <= maximumObjectsPerNode) {
+				sceneObject.octree = this;
 				objects.add(sceneObject);
+				
+				if (children == null && parentOctree == null) {
+					Vector3 pos = sceneObject.getAbsolutePos();
+					if (pos != null) {
+						float distance = sceneObject.getAbsolutePos().vectorTo(center).length();
+						if (dimension/2 < distance ) {
+							dimension = 3 * distance;
+							
+							boundingBox = new AABB(	new Vector3(-dimension/2+center.x, -dimension/2+center.y, -dimension/2+center.z),
+													new Vector3(dimension/2+center.x, dimension/2+center.y, dimension/2+center.z));
+						}
+					}
+				}
 			} else {
 				
 				if (children == null) {
@@ -97,6 +114,7 @@ public class OctreeNode extends BoundedSceneObject {
 				if (!addObjectIntoChild(sceneObject)) {
 					
 					// If this doesnt work out, then add the object to this node
+					sceneObject.octree = this;
 					objects.add(sceneObject);
 				}
 			}
@@ -246,40 +264,45 @@ public class OctreeNode extends BoundedSceneObject {
 	 */
 
 	public void update() {
-		for (int i = 0; i < objects.size(); ++i) {
-			BoundedSceneObject object = objects.get(i);
-			if (object.isDity() && object.getBoundingBox() != null) {
-
-				boolean movedToChild = false;
-				if (children != null) {
-					movedToChild = addObjectIntoChild(object);
-				}
-
-				if (!movedToChild) {
-					if (!boundingBox.containsAABB(object.getBoundingBox())) {
-
+		if (dirty) {
+			for (int i = 0; i < objects.size(); ++i) {
+				BoundedSceneObject object = objects.get(i);
+				if (object.isDity() && object.getBoundingBox() != null) {
+	
+					boolean movedToChild = false;
+					if (children != null) {
+						movedToChild = addObjectIntoChild(object);
+					}
+	
+					if (!movedToChild) {
+						if (!boundingBox.containsAABB(object.getBoundingBox())) {
+	
+							removeLocalObject(i);
+							--i;
+	
+							if (parentOctree != null) {
+								parentOctree.addObject(object);
+							} else {
+								this.addObject(object);
+							}
+						}
+					} else {
 						removeLocalObject(i);
 						--i;
-
-						if (parentOctree != null) {
-							parentOctree.addObject(object);
-						} else {
-							this.addObject(object);
-						}
 					}
-				} else {
-					removeLocalObject(i);
-					--i;
+	
+					object.setClean();
 				}
-
-				object.setClean();
 			}
-		}
-
-		if (children != null) {
-			for (int i = 0; i < CHILDREN_PER_NODE; ++i) {
-				children[i].update();
+	
+			if (children != null) {
+				for (int i = 0; i < CHILDREN_PER_NODE; ++i) {
+					children[i].update();
+				}
 			}
+			
+			dirty = false;
+		
 		}
 
 	}
@@ -400,6 +423,16 @@ public class OctreeNode extends BoundedSceneObject {
 	
 	public OctreeNode getParentOctree() {
 		return parentOctree;
+	}
+	
+	public void setDirty() {
+		dirty = true;
+		
+		if (parentOctree != null) {
+			if (!parentOctree.dirty) {
+				parentOctree.setDirty();
+			}
+		}
 	}
 	
 }

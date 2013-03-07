@@ -20,10 +20,16 @@ public class Seek implements IPattern {
 	@Override
 	public Vector3 apply(IVehicle vehicle) {
 		Vector3 target = targetProvider.getTargetPos();
-		Vector3 desiredVelocity = vehicle.getPosition().sub(target);
-		desiredVelocity.normalize();
-		desiredVelocity = desiredVelocity.multiply(vehicle.getMaxVelocity());
 		
+		Vector3 desiredVelocity = vehicle.getPosition();
+		desiredVelocity.x -= target.x;
+		desiredVelocity.y -= target.y;
+		desiredVelocity.z -= target.z;
+		
+		desiredVelocity.normalize();
+		desiredVelocity.x *= vehicle.getMaxVelocity();
+		desiredVelocity.y *= vehicle.getMaxVelocity();
+		desiredVelocity.z *= vehicle.getMaxVelocity();
 		
 		Vector3 velocity = vehicle.getVelocity();
 		

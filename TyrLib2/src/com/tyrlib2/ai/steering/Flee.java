@@ -25,7 +25,10 @@ public class Flee implements IPattern {
 		
 		Vector3 steering = velocity.sub(desiredVelocity);
 		steering.normalize();
-		steering = steering.multiply(range * vehicle.getMaxForce() / (distance*distance));
+		
+		if (distance != 0) {
+			steering = steering.multiply(range * vehicle.getMaxForce() / (distance*distance));
+		} 
 		
 		return steering;
 	}
