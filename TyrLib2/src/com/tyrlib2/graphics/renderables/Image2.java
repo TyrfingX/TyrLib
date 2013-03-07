@@ -47,9 +47,6 @@ public class Image2 extends Renderable2 {
 
 		this.mesh = new Mesh(vertexData, DRAW_ORDER_IMAGE, 4);
 	}
-
-	
-	
 	
 	public Vector2 getSize() {
 		return size;
@@ -65,6 +62,16 @@ public class Image2 extends Renderable2 {
 		drawOrderLength = mesh.getDrawOrder().length;
 		drawOrderBuffer = mesh.getDrawOrderBuffer();
 		super.render(vpMatrix);
+	}
+	
+	public void setAlpha(float alpha) {
+		TexturedMaterial mat = (TexturedMaterial) material;
+		mat.setAlpha(alpha);
+	}
+	
+	public float getAlpha() {
+		TexturedMaterial mat = (TexturedMaterial) material;
+		return mat.getAlpha();
 	}
 
 }
