@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.view.MotionEvent;
 
+import com.tyrlib2.game.DirectMovement;
 import com.tyrlib2.game.IUpdateable;
 import com.tyrlib2.graphics.scene.SceneNode;
 import com.tyrlib2.input.ITouchListener;
@@ -31,6 +32,9 @@ public class Window implements IUpdateable, ITouchListener {
 	
 	/** The size of this window **/
 	private Vector2 size;
+	
+	/** Takes care of moving this window **/
+	private DirectMovement movement;
 	
 	/** Has this window been destroyed? **/
 	protected boolean destroyed;
@@ -133,6 +137,8 @@ public class Window implements IUpdateable, ITouchListener {
 	
 	public void addChild(Window window) {
 		children.add(window);
+		window.node.detach();
+		node.attachChild(window.node);
 	}
 	
 	/**
@@ -142,6 +148,7 @@ public class Window implements IUpdateable, ITouchListener {
 	
 	public void removeChild(Window window) {
 		children.remove(window);
+		node.detachChild(window.node);
 	}
 	
 	/**
@@ -285,6 +292,9 @@ public class Window implements IUpdateable, ITouchListener {
 	public boolean onTouchDown(Vector2 point, MotionEvent event) {
 		Vector2 pos = getRelativePos();
 		if (Rectangle.pointInRectangle(pos, size, point)) {
+			if (!touchInWindow) {
+				onTouchEntersWindow();
+			}
 			onTouchDownWindow(point, event);
 			return !passTouchEventsThrough;
 		}
@@ -305,6 +315,9 @@ public class Window implements IUpdateable, ITouchListener {
 	public boolean onTouchUp(Vector2 point, MotionEvent event) {
 		Vector2 pos = getRelativePos();
 		if (Rectangle.pointInRectangle(pos, size, point)) {
+			if (touchInWindow) {
+				onTouchLeavesWindow();
+			}
 			onTouchUpWindow(point, event);
 			return !passTouchEventsThrough;
 		}
@@ -319,7 +332,6 @@ public class Window implements IUpdateable, ITouchListener {
 	 */
 	
 	protected void onTouchUpWindow(Vector2 point, MotionEvent event) {
-		
 	}
 
 	
@@ -332,8 +344,15 @@ public class Window implements IUpdateable, ITouchListener {
 	public boolean onTouchMove(Vector2 point, MotionEvent event) {
 		Vector2 pos = getRelativePos();
 		if (Rectangle.pointInRectangle(pos, size, point)) {
+			if (!touchInWindow) {
+				onTouchEntersWindow();
+			}
 			onTouchMoveWindow(point, event);
 			return !passTouchEventsThrough;
+		} else {
+			if (touchInWindow) {
+				onTouchLeavesWindow();
+			}
 		}
 		
 		return false;
