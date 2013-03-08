@@ -14,6 +14,7 @@ import com.tyrlib2.graphics.lighting.PointLight;
 import com.tyrlib2.graphics.materials.DefaultMaterial3;
 import com.tyrlib2.graphics.renderables.Box;
 import com.tyrlib2.graphics.renderables.Entity;
+import com.tyrlib2.graphics.renderables.FormattedText2;
 import com.tyrlib2.graphics.renderables.Image2;
 import com.tyrlib2.graphics.renderables.Line2;
 import com.tyrlib2.graphics.renderables.Rectangle2;
@@ -246,8 +247,13 @@ public class SceneManager {
 	public void loadFont(String name, int size, Context context) {
 		GLText glText = new GLText(context.getAssets());
 		glText.load( name, size, 2, 2 );  // Create Font (Height: 14 Pixels / X+Y Padding 2 Pixels)
+		glText.setScale(1);
 		activeFont = new Font(glText);
 		fonts.put(name, activeFont);
+	}
+	
+	public Font getFont(String name) {
+		return fonts.get(name);
 	}
 	
 	public void recreateFonts(Context context) {
@@ -261,6 +267,12 @@ public class SceneManager {
 	
 	public Text2 createText2(String text, int rotation, Color color) {
 		Text2 text2 = new Text2(text, rotation, color, activeFont);
+		renderer.addRenderable(text2, OpenGLRenderer.OVERLAY_CHANNEL);
+		return text2;
+	}
+	
+	public FormattedText2 createFormattedText2(String text, int rotation, Color color) {
+		FormattedText2 text2 = new FormattedText2(text, rotation, color, activeFont);
 		renderer.addRenderable(text2, OpenGLRenderer.OVERLAY_CHANNEL);
 		return text2;
 	}

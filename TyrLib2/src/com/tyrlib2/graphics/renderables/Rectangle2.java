@@ -31,7 +31,7 @@ public class Rectangle2 extends Renderable2 {
 	public static final Color 	DEFAULT_COLOR = Color.BLACK;
 	public static final int		DEFAULT_BORDER_WIDTH = 1;
 	
-	public static final short[] DRAW_ORDER_QUAD = { 0, 1, 2, 1, 3, 2};
+	public static final short[] DRAW_ORDER_QUAD = { 2, 1, 0, 2, 3, 1};
 	public static final short[] DRAW_ORDER_BORDER = { 0, 1, 3, 2};
 	private static ShortBuffer borderDrawOrderBuffer;
 	
@@ -44,8 +44,8 @@ public class Rectangle2 extends Renderable2 {
 		
 		Vector3[] points = { 	new Vector3(0, 0, 0),
 								new Vector3(size.x, 0, 0),
-								new Vector3(0, size.y, 0),
-								new Vector3(size.x, size.y, 0) };
+								new Vector3(0, -size.y, 0),
+								new Vector3(size.x, -size.y, 0) };
 		
 		Material material = new ColoredMaterial(new Color[] { color });
 		
@@ -105,5 +105,9 @@ public class Rectangle2 extends Renderable2 {
 	
 	public Color getColor() {
 		return new Color(color.r, color.g, color.b, color.a);
+	}
+	
+	public void setColor(Color color) {
+		this.color = color;
 	}
 }

@@ -7,11 +7,16 @@ import android.view.MotionEvent;
 
 import com.tyrlib2.game.DirectMovement;
 import com.tyrlib2.game.IUpdateable;
+import com.tyrlib2.game.Speed;
+import com.tyrlib2.game.TargetPoint;
+import com.tyrlib2.graphics.renderer.IRenderable;
 import com.tyrlib2.graphics.scene.SceneNode;
+import com.tyrlib2.graphics.scene.SceneObject;
 import com.tyrlib2.input.ITouchListener;
 import com.tyrlib2.math.Rectangle;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.math.Vector3;
+import com.tyrlib2.util.IPrioritizable;
 
 /** Basic window class
  * 
@@ -19,7 +24,7 @@ import com.tyrlib2.math.Vector3;
  *
  */
 
-public class Window implements IUpdateable, ITouchListener {
+public class Window implements IUpdateable, ITouchListener, IRenderable, IPrioritizable {
 	
 	/** The name of this window **/
 	private String name;
@@ -27,31 +32,37 @@ public class Window implements IUpdateable, ITouchListener {
 	/** The child windows of this window **/
 	private List<Window> children;
 	
-	/** The scene node of this window for integration into the scene graph **/
-	private SceneNode node;
-	
 	/** The size of this window **/
 	private Vector2 size;
 	
 	/** Takes care of moving this window **/
 	private DirectMovement movement;
 	
+	/** Movement speed of this window **/
+	private Speed speed;
+	
+	/** Integration into the scene graph **/
+	protected SceneNode node;
+	
 	/** Has this window been destroyed? **/
-	protected boolean destroyed;
+	protected boolean destroyed = false;
 	
 	/** Is this window receiving touch events **/
-	protected boolean receiveTouchEvents;
+	protected boolean receiveTouchEvents = true;
 	
 	/** Is this window allowing windows behind it to receive touch events? **/
-	protected boolean passTouchEventsThrough;
+	protected boolean passTouchEventsThrough = false;
 	
 	/** Is this window visible **/
-	protected boolean visible;
+	protected boolean visible = true;
 	
 	/** Is the user currently inside of the window? **/
-	protected boolean touchInWindow;
+	protected boolean touchInWindow = false;
 	
-	private enum BLEND_STATE {
+	/** Renderable components of this window **/
+	protected List<IRenderable> components;
+	
+	public enum BLEND_STATE {
 		IDLE,
 		FADE_IN,
 		FADE_OUT
@@ -66,9 +77,23 @@ public class Window implements IUpdateable, ITouchListener {
 	/** The target alpha value for a blending operation **/
 	private float targetAlpha;
 	
-	public Window() {
+	private Window() {
+		node = new SceneNode();
 		children = new ArrayList<Window>();
+		components = new ArrayList<IRenderable>();
 		blendState = BLEND_STATE.IDLE;
+		speed = new Speed(0);
+		movement = new DirectMovement(node, speed);
+	}
+	
+	protected Window(String name) {
+		this();
+		this.name = name;
+	}
+	
+	public Window(String name, Vector2 size) {
+		this(name);
+		this.size = size;
 	}
 	
 	/**
@@ -180,6 +205,8 @@ public class Window implements IUpdateable, ITouchListener {
 		if (blendState != BLEND_STATE.IDLE) {
 			updateBlending(time);
 		}
+		
+		movement.onUpdate(time);
 	}
 	
 	private void updateBlending(float time) {
@@ -457,8 +484,58 @@ public class Window implements IUpdateable, ITouchListener {
 	 * @return
 	 */
 	
-	public boolean getVisible() {
+	public boolean isVisible() {
 		return visible;
+	}
+	
+	/** Move to a specified point within the alloted time
+	 * 	Previous movement operations will be aborted;
+	 * @param point
+	 * @param time
+	 */
+	
+	public void moveTo(Vector2 point, float time) {
+		movement.clear();
+		Vector3 pos = node.getRelativePos();
+		Vector3 newPos = new Vector3(point.x, point.y, pos.z);
+		TargetPoint target = new TargetPoint(newPos);
+		movement.addTarget(target);
+		
+		float distance = pos.vectorTo(newPos).length();
+		speed.speed = distance / time;
+	}
+
+	/**
+	 * Translates the window by the given point
+	 * @param point
+	 * @param time
+	 */
+	
+	public void moveBy(Vector2 point, float time) {
+		Vector3 target = node.getRelativePos();
+		Vector2 target2 = new Vector2(target.x+point.x, target.y+point.y);
+		moveTo(target2, time);
+	}
+	
+	@Override
+	public void render(float[] vpMatrix) {
+		for (int i = 0; i < components.size(); ++i) {
+			components.get(i).render(vpMatrix);
+		}
+	}
+	
+	public void addComponent(IRenderable renderable) {
+		components.add(renderable);
+		if (renderable instanceof SceneObject) {
+			node.attachSceneObject((SceneObject) renderable);
+		}
+	}
+	
+	public void addComponent(IRenderable renderable, int position) {
+		components.add(position, renderable);
+		if (renderable instanceof SceneObject) {
+			node.attachSceneObject((SceneObject) renderable);
+		}
 	}
 	
 }

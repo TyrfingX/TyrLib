@@ -22,7 +22,11 @@ public abstract class Movement implements IUpdateable {
 	}
 	
 	public void addTarget(ITargetProvider targetProvider) {
-		targetProviders.add(targetProvider);
+		if (currentTargetProvider != null) {
+			targetProviders.add(targetProvider);
+		} else {
+			currentTargetProvider = targetProvider;
+		}
 	}
 	
 	public Vector3 getCurrentTarget() {
@@ -40,8 +44,8 @@ public abstract class Movement implements IUpdateable {
 	@Override
 	public void onUpdate(float time) {
 		
-		while (!targetProviders.isEmpty() && time > 0) {
-			if (currentTargetProvider == null) {
+		while (currentTargetProvider != null && time > 0) {
+			if (!targetProviders.isEmpty()) {
 				nextTargetProvider();
 			}
 			
@@ -51,11 +55,9 @@ public abstract class Movement implements IUpdateable {
 	}
 	
 	public void nextTargetProvider() {
+		currentTargetProvider = targetProviders.get(0);
 		targetProviders.remove(0);
-		if (!targetProviders.isEmpty()) {
-			currentTargetProvider = targetProviders.get(0);
-			newTargetProvider();
-		}
+		newTargetProvider();
 	}
 	
 	protected abstract void newTargetProvider();

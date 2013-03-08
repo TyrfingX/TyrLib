@@ -3,7 +3,7 @@ package com.tyrlib2.graphics.scene;
 import com.tyrlib2.math.Vector3;
 
 /**
- * Basic abstract class for representing scene objects. The objects can
+ * Basic class for representing scene objects. The objects can
  * be attached to SceneNode objects in order to be positioned.
  * @author Sascha
  *

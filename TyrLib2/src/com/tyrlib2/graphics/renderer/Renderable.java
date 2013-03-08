@@ -29,7 +29,7 @@ public class Renderable extends BoundedRenderable {
 	protected float[] modelMatrix;
 	
 	/** Allocate storage for the final combined matrix. This will be passed into the shader program. */
-	protected float[] mvpMatrix = new float[16];
+	protected static float[] mvpMatrix = new float[16];
 	
 	public Renderable(Mesh mesh, Material material) {
 		this();

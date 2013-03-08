@@ -8,6 +8,7 @@ import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.renderer.ProgramManager;
 import com.tyrlib2.graphics.renderer.ShaderManager;
 import com.tyrlib2.graphics.scene.SceneManager;
+import com.tyrlib2.gui.WindowManager;
 import com.tyrlib2.input.InputManager;
 
 /**
@@ -48,6 +49,7 @@ public class OpenGLSurfaceView extends GLSurfaceView {
         ProgramManager.getInstance().destroy();
         ShaderManager.getInstance().destroy();
         SceneManager.getInstance().destroy();
+        WindowManager.getInstance().destroy();
         OpenGLActivity.RUNNING = false;
 
 		
