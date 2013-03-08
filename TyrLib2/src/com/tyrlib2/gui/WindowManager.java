@@ -25,8 +25,12 @@ public class WindowManager {
 	
 	private Skin skin;
 	
+	private Map<String, TextureAtlas> atlases;
+	
 	public WindowManager() {
 		windows = new HashMap<String, Window>();
+		atlases = new HashMap<String, TextureAtlas>();
+		
 		updater = new Updater();
 		SceneManager.getInstance().addFrameListener(updater);
 		rootNode = SceneManager.getInstance().getRootSceneNode().createChild();
@@ -88,6 +92,12 @@ public class WindowManager {
 		return label;
 	}
 	
+	public Window createImageBox(String name, Vector2 pos, String atlasName, String atlasRegion, Vector2 size) {
+		ImageBox imageBox = new ImageBox(name, pos, atlasName, atlasRegion, size);
+		addWindow(imageBox);
+		return imageBox;
+	}
+	
 	protected void removeWindow(Window window) {
 		windows.remove(window);
 	}
@@ -98,5 +108,17 @@ public class WindowManager {
 	
 	protected SceneNode getRootNode() {
 		return rootNode;
+	}
+	
+	public void addTextureAtlas(String name, TextureAtlas atlas) {
+		atlases.put(name, atlas);
+	}
+	
+	public void removeTextureAtlas(String name) {
+		atlases.remove(name);
+	}
+	
+	public TextureAtlas getTextureAtlas(String name) {
+		return atlases.get(name);
 	}
 }

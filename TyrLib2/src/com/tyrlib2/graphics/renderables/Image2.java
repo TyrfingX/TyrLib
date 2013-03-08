@@ -6,6 +6,7 @@ import com.tyrlib2.graphics.materials.TexturedMaterial;
 import com.tyrlib2.graphics.renderer.Mesh;
 import com.tyrlib2.graphics.renderer.Renderable2;
 import com.tyrlib2.graphics.renderer.Texture;
+import com.tyrlib2.graphics.renderer.TextureRegion;
 import com.tyrlib2.math.Vector2;
 
 /**
@@ -33,6 +34,21 @@ public class Image2 extends Renderable2 {
 
 		this.mesh = new Mesh(vertexData, DRAW_ORDER_IMAGE, 4);
 	}
+	
+	public Image2(Vector2 size, Texture texture, TextureRegion textureRegion) {
+		this.size = size;
+		
+		this.material = new TexturedMaterial(texture);
+		
+		float[] vertexData = { 0, 0, 0, textureRegion.u1, textureRegion.v1,
+							   size.x, 0, 0, textureRegion.u2, textureRegion.v1,
+							   0, size.y, 0, textureRegion.u1, textureRegion.v2,
+							   size.x, size.y, 0, textureRegion.u2, textureRegion.v2
+		};
+
+		this.mesh = new Mesh(vertexData, DRAW_ORDER_IMAGE, 4);
+	}
+	
 	public Image2(Vector2 size, String textureName) {
 		this.size = size;
 		this.textureName = textureName;

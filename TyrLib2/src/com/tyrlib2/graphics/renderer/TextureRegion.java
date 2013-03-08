@@ -1,7 +1,9 @@
-package com.tyrlib2.graphics.text;
+package com.tyrlib2.graphics.renderer;
+
+import com.tyrlib2.math.Vector2;
 
 
-class TextureRegion {
+public class TextureRegion {
 
    //--Members--//
    public float u1, v1;                               // Top/Left U,V Coordinates
@@ -17,5 +19,9 @@ class TextureRegion {
       this.v1 = y / texHeight;                        // Calculate V1
       this.u2 = this.u1 + ( width / texWidth );       // Calculate U2
       this.v2 = this.v1 + ( height / texHeight );     // Calculate V2
+   }
+   
+   public TextureRegion(Vector2 texSize, Vector2 min, Vector2 size) {
+	   this(texSize.x, texSize.y, min.x, min.y, size.x, size.y);
    }
 }

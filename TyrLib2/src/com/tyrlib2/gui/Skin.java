@@ -9,11 +9,14 @@ import com.tyrlib2.util.Color;
  */
 
 public class Skin {
+	public String TEXTURE_ATLAS = "GUI";
+	
 	public Color LABEL_TEXT_COLOR = Color.BLACK;
 	public Color LABEL_BG_COLOR = Color.TRANSPARENT;
-	public String LABEL_FONT = "Roboto-Regular.ttf";
 	
+	public String LABEL_FONT = "Roboto-Regular.ttf";
 	public String BUTTON_FONT = "Roboto-Regular.ttf";
+	
 	public String BUTTON_NORMAL_BG_IMAGE = "BUTTON_NORMAL_BG_IMAGE";
 	public String BUTTON_HIGHLIGHT_BG_IMAGE = " BUTTON_HIGHLIGHT_BG_IMAGE";
 	
