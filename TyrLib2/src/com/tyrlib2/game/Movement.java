@@ -22,10 +22,10 @@ public abstract class Movement implements IUpdateable {
 	}
 	
 	public void addTarget(ITargetProvider targetProvider) {
-		if (currentTargetProvider != null) {
-			targetProviders.add(targetProvider);
-		} else {
-			currentTargetProvider = targetProvider;
+		targetProviders.add(targetProvider);
+		
+		if (currentTargetProvider == null) {
+			nextTargetProvider();
 		}
 	}
 	
@@ -45,12 +45,12 @@ public abstract class Movement implements IUpdateable {
 	public void onUpdate(float time) {
 		
 		while (currentTargetProvider != null && time > 0) {
-			if (!targetProviders.isEmpty()) {
-				nextTargetProvider();
-			}
-			
 			// Actually move and get the remaining time
 			time = moveTowardsTarget(time);
+			
+			if (!targetProviders.isEmpty() && currentTargetProvider == null) {
+				nextTargetProvider();
+			}
 		}
 	}
 	

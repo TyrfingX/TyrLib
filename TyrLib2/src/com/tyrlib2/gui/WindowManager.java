@@ -7,6 +7,7 @@ import com.tyrlib2.game.Updater;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.graphics.scene.SceneNode;
+import com.tyrlib2.input.InputManager;
 import com.tyrlib2.math.Vector2;
 
 /**
@@ -25,11 +26,10 @@ public class WindowManager {
 	
 	private Skin skin;
 	
-	private Map<String, TextureAtlas> atlases;
+	public static final long GUI_BASE_PRIORITY = 10000;
 	
 	public WindowManager() {
 		windows = new HashMap<String, Window>();
-		atlases = new HashMap<String, TextureAtlas>();
 		
 		updater = new Updater();
 		SceneManager.getInstance().addFrameListener(updater);
@@ -71,6 +71,7 @@ public class WindowManager {
 		windows.remove(window);
 		updater.removeItem(window);
 		window.node.detach();
+		InputManager.getInstance().removeTouchListener(window);
 	}
 	
 	private void addWindow(Window window) {
@@ -78,6 +79,7 @@ public class WindowManager {
 		renderer.addWindow(window);
 		windows.put(window.getName(), window);
 		updater.addItem(window);
+		InputManager.getInstance().addTouchListener(window);
 	}
 	
 	public Window createWindow(String name, Vector2 size) {
@@ -90,6 +92,12 @@ public class WindowManager {
 		Label label = new Label(name, pos, text);
 		addWindow(label);
 		return label;
+	}
+	
+	public Button createButton(String name, Vector2 pos, Vector2 size, String text) {
+		Button button = new Button(name, pos, size, text);
+		addWindow(button);
+		return button;
 	}
 	
 	public Window createImageBox(String name, Vector2 pos, String atlasName, String atlasRegion, Vector2 size) {
@@ -109,16 +117,6 @@ public class WindowManager {
 	protected SceneNode getRootNode() {
 		return rootNode;
 	}
-	
-	public void addTextureAtlas(String name, TextureAtlas atlas) {
-		atlases.put(name, atlas);
-	}
-	
-	public void removeTextureAtlas(String name) {
-		atlases.remove(name);
-	}
-	
-	public TextureAtlas getTextureAtlas(String name) {
-		return atlases.get(name);
-	}
+
 }
+	

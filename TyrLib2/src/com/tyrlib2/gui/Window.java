@@ -10,6 +10,8 @@ import com.tyrlib2.game.IUpdateable;
 import com.tyrlib2.game.Speed;
 import com.tyrlib2.game.TargetPoint;
 import com.tyrlib2.graphics.renderer.IRenderable;
+import com.tyrlib2.graphics.renderer.Viewport;
+import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.graphics.scene.SceneNode;
 import com.tyrlib2.graphics.scene.SceneObject;
 import com.tyrlib2.input.ITouchListener;
@@ -62,6 +64,9 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	/** Renderable components of this window **/
 	protected List<IRenderable> components;
 	
+	/** How "High" is this window in the display hirachy? **/
+	protected long priority;
+	
 	public enum BLEND_STATE {
 		IDLE,
 		FADE_IN,
@@ -84,6 +89,7 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 		blendState = BLEND_STATE.IDLE;
 		speed = new Speed(0);
 		movement = new DirectMovement(node, speed);
+		priority = WindowManager.GUI_BASE_PRIORITY;
 	}
 	
 	protected Window(String name) {
@@ -93,7 +99,7 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	
 	public Window(String name, Vector2 size) {
 		this(name);
-		this.size = size;
+		this.setSize(size);
 	}
 	
 	/**
@@ -275,7 +281,10 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	 */
 	
 	public void setRelativePos(Vector2 pos) {
-		node.setRelativePos(new Vector3(pos.x, pos.y, 0));
+		Viewport viewport = SceneManager.getInstance().getViewport();
+		float x = pos.x*viewport.getWidth();
+		float y = pos.y*viewport.getHeight();
+		node.setRelativePos(new Vector3(x, y, 0));
 	}
 	
 	/**
@@ -284,8 +293,19 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	 */
 	
 	public Vector2 getRelativePos() {
+		Viewport viewport = SceneManager.getInstance().getViewport();
 		Vector3 pos = node.getRelativePos();
-		return new Vector2(pos.x, pos.y);
+		return new Vector2(pos.x/viewport.getWidth(), pos.y/viewport.getHeight());
+	}
+	
+	/**
+	 * Get the absolute position of this window relative to its parent from the last frame
+	 */
+	
+	public Vector2 getAbsolutePos() {
+		Viewport viewport = SceneManager.getInstance().getViewport();
+		Vector3 pos = node.getCachedAbsolutePos();
+		return new Vector2(pos.x/viewport.getWidth(), pos.y/viewport.getHeight());
 	}
 	
 	/**
@@ -312,12 +332,21 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	
 	@Override
 	public long getPriority() {
-		return 0;
+		return priority;
+	}
+	
+	public void setPriority(long priority) {
+		this.priority = priority;
+		
+		for (int i = 0; i < children.size(); ++i) {
+			children.get(i).setPriority(priority+i+1);
+		}
 	}
 	
 	@Override
 	public boolean onTouchDown(Vector2 point, MotionEvent event) {
-		Vector2 pos = getRelativePos();
+		point = new Vector2(point.x, 1-point.y);
+		Vector2 pos = getAbsolutePos();
 		if (Rectangle.pointInRectangle(pos, size, point)) {
 			if (!touchInWindow) {
 				onTouchEntersWindow();
@@ -340,7 +369,8 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	
 	@Override
 	public boolean onTouchUp(Vector2 point, MotionEvent event) {
-		Vector2 pos = getRelativePos();
+		point = new Vector2(point.x, 1-point.y);
+		Vector2 pos = getAbsolutePos();
 		if (Rectangle.pointInRectangle(pos, size, point)) {
 			if (touchInWindow) {
 				onTouchLeavesWindow();
@@ -369,7 +399,8 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	
 	@Override
 	public boolean onTouchMove(Vector2 point, MotionEvent event) {
-		Vector2 pos = getRelativePos();
+		point = new Vector2(point.x, 1-point.y);
+		Vector2 pos = getAbsolutePos();
 		if (Rectangle.pointInRectangle(pos, size, point)) {
 			if (!touchInWindow) {
 				onTouchEntersWindow();
@@ -497,7 +528,8 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	public void moveTo(Vector2 point, float time) {
 		movement.clear();
 		Vector3 pos = node.getRelativePos();
-		Vector3 newPos = new Vector3(point.x, point.y, pos.z);
+		Viewport viewport = SceneManager.getInstance().getViewport();
+		Vector3 newPos = new Vector3(point.x*viewport.getWidth(), point.y*viewport.getHeight(), pos.z);
 		TargetPoint target = new TargetPoint(newPos);
 		movement.addTarget(target);
 		
@@ -513,7 +545,8 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	
 	public void moveBy(Vector2 point, float time) {
 		Vector3 target = node.getRelativePos();
-		Vector2 target2 = new Vector2(target.x+point.x, target.y+point.y);
+		Viewport viewport = SceneManager.getInstance().getViewport();
+		Vector2 target2 = new Vector2(target.x/viewport.getWidth()+point.x, target.y/viewport.getHeight()+point.y);
 		moveTo(target2, time);
 	}
 	

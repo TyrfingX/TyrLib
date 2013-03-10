@@ -252,4 +252,8 @@ public class FormattedText2 extends SceneObject implements IRenderable {
 	public Color getBaseColor() {
 		return baseColor;
 	}
+
+	public Font getFont() {
+		return font;
+	}
 }

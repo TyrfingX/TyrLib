@@ -160,10 +160,6 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         // Set the background frame color
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         viewport = new Viewport();
-		
-        for (int i = 0; i < frameListeners.size(); ++i) {
-        	frameListeners.get(i).onSurfaceCreated();
-        }
         
         lastTime = 0;
         
@@ -226,8 +222,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     	drawChannel(renderChannels.get(DEFAULT_CHANNEL), vpMatrix);
     	GLES20.glDisable(GLES20.GL_DEPTH_TEST);
     	
-    	float ortho = Math.min(viewport.getWidth(), viewport.getHeight());
-    	Matrix.orthoM(proj, 0, -ortho*0.2f, ortho, -ortho*0.2f, ortho, -1, 1);
+    	Matrix.orthoM(proj, 0, -viewport.getWidth()*0.2f, viewport.getWidth()*1.2f, -viewport.getHeight()*0.2f, viewport.getHeight()*1.2f, -1, 1);
     	
     	drawChannel(renderChannels.get(OVERLAY_CHANNEL), proj);
     	
@@ -279,6 +274,10 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 
     public void onSurfaceChanged(GL10 unused, int width, int height) {
        viewport.setFullscreen(width, height);
+       
+       for (int i = 0; i < frameListeners.size(); ++i) {
+       	frameListeners.get(i).onSurfaceCreated();
+       }
     }
     
     /**

@@ -82,4 +82,8 @@ public class Viewport {
 	public int getFarClip() {
 		return farClip;
 	}
+	
+	public int getMinExtends() {
+		return Math.min(width, height);
+	}
 }

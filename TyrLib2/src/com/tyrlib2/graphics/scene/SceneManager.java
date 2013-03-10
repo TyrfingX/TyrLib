@@ -24,6 +24,7 @@ import com.tyrlib2.graphics.renderer.IFrameListener;
 import com.tyrlib2.graphics.renderer.IRenderable;
 import com.tyrlib2.graphics.renderer.Material;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
+import com.tyrlib2.graphics.renderer.TextureAtlas;
 import com.tyrlib2.graphics.renderer.Viewport;
 import com.tyrlib2.graphics.text.Font;
 import com.tyrlib2.graphics.text.GLText;
@@ -56,6 +57,8 @@ public class SceneManager {
 	/** Global ambient illumination **/
 	private Color ambientLight;
 	
+	private Map<String, TextureAtlas> atlases;
+	
 	private Font activeFont;
 	
 	public SceneManager() {
@@ -68,6 +71,8 @@ public class SceneManager {
 		entityFactories = new HashMap<String, IEntityFactory>();
 		
 		fonts = new HashMap<String, Font>();
+		
+		atlases = new HashMap<String, TextureAtlas>();
 	}
 	
 	public static SceneManager getInstance() {
@@ -287,5 +292,17 @@ public class SceneManager {
 
 	public void performSceneQuery(ISceneQuery query) {
 		renderer.getOctree(OpenGLRenderer.DEFAULT_CHANNEL).query(query);
+	}
+
+	public void addTextureAtlas(String name, TextureAtlas atlas) {
+		atlases.put(name, atlas);
+	}
+	
+	public void removeTextureAtlas(String name) {
+		atlases.remove(name);
+	}
+	
+	public TextureAtlas getTextureAtlas(String name) {
+		return atlases.get(name);
 	}
 }

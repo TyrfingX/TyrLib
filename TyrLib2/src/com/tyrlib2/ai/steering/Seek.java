@@ -35,7 +35,7 @@ public class Seek implements IPattern {
 		
 		Vector3 steering = desiredVelocity.sub(velocity);
 		steering.normalize();
-		steering = steering.multiply(vehicle.getMaxForce());
+		steering = steering.multiply(-vehicle.getMaxForce());
 		
 		return steering;
 	}

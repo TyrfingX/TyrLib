@@ -189,14 +189,20 @@ public class DefaultMaterial3 extends LightedMaterial {
         // Pass in the modelview matrix.
         GLES20.glUniformMatrix4fv(mvMatrixHandle, 1, false, mvMatrix, 0);
 	    
-	    // Set the active texture unit to texture unit 0.
-	    GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-	 
-	    // Bind the texture to this unit.
-	    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle);
-	 
-	    // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
-	    GLES20.glUniform1i(textureUniformHandle, 0);
+        if (program.textureHandle != textureHandle) {
+        
+		    // Set the active texture unit to texture unit 0.
+		    GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+		 
+		    // Bind the texture to this unit.
+		    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle);
+		 
+		    // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
+		    GLES20.glUniform1i(textureUniformHandle, 0);
+		    
+		    program.textureHandle = textureHandle;
+	    
+        }
 	    
 	    if (!animated) {
 

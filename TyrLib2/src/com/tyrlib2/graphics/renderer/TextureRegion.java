@@ -24,4 +24,11 @@ public class TextureRegion {
    public TextureRegion(Vector2 texSize, Vector2 min, Vector2 size) {
 	   this(texSize.x, texSize.y, min.x, min.y, size.x, size.y);
    }
+   
+   public TextureRegion() {
+	   u1 = 0;
+	   v1 = 0;
+	   u2 = 1;
+	   v2 = 1;
+   }
 }

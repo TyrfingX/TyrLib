@@ -1,7 +1,10 @@
 package com.tyrlib2.gui;
 
 import com.tyrlib2.graphics.renderables.Image2;
+import com.tyrlib2.graphics.renderer.TextureAtlas;
 import com.tyrlib2.graphics.renderer.TextureRegion;
+import com.tyrlib2.graphics.renderer.Viewport;
+import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.math.Vector2;
 
 /**
@@ -22,9 +25,12 @@ public class ImageBox extends Window {
 		this.atlasName = atlasName;
 		this.atlasRegion = atlasRegion;
 		
-		TextureAtlas atlas = WindowManager.getInstance().getTextureAtlas(atlasName);
+		TextureAtlas atlas = SceneManager.getInstance().getTextureAtlas(atlasName);
 		TextureRegion region = atlas.getRegion(atlasRegion);
-		image = new Image2(size, atlas.getTexture(), region);
+		
+		Viewport viewport = SceneManager.getInstance().getViewport();
+		Vector2 imageSize = new Vector2(size.x * viewport.getWidth(), size.y * viewport.getHeight());
+		image = new Image2(imageSize, atlas.getTexture(), region);
 		
 		addComponent(image);
 		
@@ -47,5 +53,19 @@ public class ImageBox extends Window {
 	
 	public String getAtlasRegion() {
 		return atlasRegion;
+	}
+	
+	public void setAtlasRegion(String regionName) {
+		this.atlasRegion = regionName;
+		
+		TextureAtlas atlas = SceneManager.getInstance().getTextureAtlas(atlasName);
+		TextureRegion region = atlas.getRegion(atlasRegion);
+		image.setTextureRegion(region);
+	}
+	
+	public void setAtlas(String atlasName) {
+		this.atlasName = atlasName;
+		TextureAtlas atlas = SceneManager.getInstance().getTextureAtlas(atlasName);
+		image.setTexture(atlas.getTexture());
 	}
 }
