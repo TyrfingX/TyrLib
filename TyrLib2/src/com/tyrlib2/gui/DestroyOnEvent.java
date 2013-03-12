@@ -1,6 +1,6 @@
 package com.tyrlib2.gui;
 
-public class DestroyOnFadeOut implements IEventListener {
+public class DestroyOnEvent implements IEventListener {
 
 	@Override
 	public void onEvent(WindowEvent event) {

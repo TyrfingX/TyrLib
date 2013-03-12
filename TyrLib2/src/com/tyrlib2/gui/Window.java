@@ -585,7 +585,7 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 		movement.clear();
 		Vector3 pos = node.getRelativePos();
 		Viewport viewport = SceneManager.getInstance().getViewport();
-		Vector3 newPos = new Vector3(point.x*viewport.getWidth(), point.y*viewport.getHeight(), pos.z);
+		Vector3 newPos = new Vector3(point.x*viewport.getWidth(), -point.y*viewport.getHeight(), pos.z);
 		TargetPoint target = new TargetPoint(newPos);
 		movement.addTarget(target);
 		

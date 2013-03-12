@@ -30,6 +30,7 @@ public class WindowManager {
 	private Skin skin;
 	
 	public static final long GUI_BASE_PRIORITY = 10000;
+	public static final long GUI_OVERLAY_PRIORITY = 1000000;
 	
 	public WindowManager() {
 		windows = new HashMap<String, Window>();
@@ -122,7 +123,9 @@ public class WindowManager {
 	}
 	
 	public Window createOverlay(String name, Color color) {
-		return createOverlay(name, new Vector2(0,0), new Vector2(1,1), color);
+		Window overlay = createOverlay(name, new Vector2(0,0), new Vector2(1,1), color);
+		overlay.setPriority(GUI_OVERLAY_PRIORITY);
+		return overlay;
 	}
 	
 	/**
@@ -166,6 +169,14 @@ public class WindowManager {
 		});
 		return popup;
 	}
+	
+	
+	public Window createProgressBar(String name, Vector2 pos, Vector2 size, float maxProgress) {
+		Window progressBar = new ProgressBar(name, pos, size, maxProgress);
+		addWindow(progressBar);
+		return progressBar;
+	}
+	
 	protected void removeWindow(Window window) {
 		windows.remove(window);
 	}

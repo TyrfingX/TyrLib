@@ -41,25 +41,27 @@ public class Rectangle2 extends Renderable2 {
 		this.color = color;
 		this.filled = true;
 		this.hasBorder = false;
-		
+		createMesh();
+	}
+	
+	private void createMesh() {
 		Vector3[] points = { 	new Vector3(0, 0, 0),
 								new Vector3(size.x, 0, 0),
 								new Vector3(0, -size.y, 0),
 								new Vector3(size.x, -size.y, 0) };
-		
+
 		Material material = new ColoredMaterial(new Color[] { color });
-		
+
 		init(material, points, DRAW_ORDER_QUAD);
-	
+
 		if (borderDrawOrderBuffer == null) {
-	        // initialize byte buffer for the draw list
-	        ByteBuffer dlb = ByteBuffer.allocateDirect(DRAW_ORDER_BORDER.length * 2);
-	        dlb.order(ByteOrder.nativeOrder());
-	        borderDrawOrderBuffer = dlb.asShortBuffer();
-	        borderDrawOrderBuffer.put(DRAW_ORDER_BORDER);
-	        borderDrawOrderBuffer.position(0);
+			// initialize byte buffer for the draw list
+			ByteBuffer dlb = ByteBuffer.allocateDirect(DRAW_ORDER_BORDER.length * 2);
+			dlb.order(ByteOrder.nativeOrder());
+			borderDrawOrderBuffer = dlb.asShortBuffer();
+			borderDrawOrderBuffer.put(DRAW_ORDER_BORDER);
+			borderDrawOrderBuffer.position(0);
 		}
-		
 	}
 	
 	public Rectangle2(Vector2 size) {
@@ -68,6 +70,15 @@ public class Rectangle2 extends Renderable2 {
 	
 	public Vector2 getSize() {
 		return size;
+	}
+	
+	public void setSize(Vector2 size) {
+		this.size = size;
+		Vector3[] points = { 	new Vector3(0, 0, 0),
+								new Vector3(size.x, 0, 0),
+								new Vector3(0, -size.y, 0),
+								new Vector3(size.x, -size.y, 0) };
+		init(material, points, DRAW_ORDER_QUAD);
 	}
 	
 	public void setFilled(boolean filled) {

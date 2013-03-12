@@ -69,4 +69,7 @@ public class Skin {
 	
 	/** PROGRESS BAR SETTINGS **/
 	
+	public String PROGRESS_BAR_BG = "TRANSPARENT";
+	public Color PROGRESS_BAR_COLOR = Color.RED;
+	
 }

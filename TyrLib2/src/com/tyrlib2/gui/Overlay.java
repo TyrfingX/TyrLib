@@ -19,13 +19,13 @@ public class Overlay extends Window {
 	public Overlay(String name, Vector2 pos, Vector2 size, Color color) {
 		super(name, size);
 		
-		setRelativePos(pos);
-		
 		Viewport viewport = SceneManager.getInstance().getViewport();
 		Vector2 rectSize = new Vector2(viewport.getWidth()*size.x, viewport.getHeight()*size.y);
 		
 		bg = new Rectangle2(rectSize,color.copy());
 		addComponent(bg);
+		
+		setRelativePos(pos);
 	}
 	
 	public void setColor(Color color) {
@@ -46,6 +46,15 @@ public class Overlay extends Window {
 		bg.setAlpha(alpha);
 		
 		super.setAlpha(alpha);
+	}
+	
+	@Override
+	public void setSize(Vector2 size) {
+		super.setSize(size);
+		if (bg != null) {
+			Viewport viewport = SceneManager.getInstance().getViewport();
+			bg.setSize(new Vector2(size.x * viewport.getWidth(), size.y * viewport.getHeight()));
+		}
 	}
 
 }
