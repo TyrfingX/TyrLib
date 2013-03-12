@@ -36,6 +36,13 @@ public class Image2 extends Renderable2 {
 		createMesh();
 	}
 	
+	public Image2(Vector2 size, Texture texture, TextureRegion textureRegion, Vector2 uvSize) {
+		this.size = size;
+		this.textureRegion = textureRegion;
+		this.material = new TexturedMaterial(texture);
+		createMesh();
+	}
+	
 	public Image2(Vector2 size, String textureName) {
 		this.size = size;
 		this.textureName = textureName;

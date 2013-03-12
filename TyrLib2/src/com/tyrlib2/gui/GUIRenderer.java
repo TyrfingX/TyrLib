@@ -24,12 +24,13 @@ public class GUIRenderer implements IRenderable {
 	@Override
 	public void render(float[] vpMatrix) {
 		Collections.sort(windows, new PriorityComparator());
-		
+
 		for (Window window : windows) {
 			if (window.isVisible()) {
 				window.render(vpMatrix);
 			}
 		}
+
 	}
 	
 	public void addWindow(Window window) {

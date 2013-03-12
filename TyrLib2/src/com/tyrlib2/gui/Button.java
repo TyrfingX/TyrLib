@@ -1,5 +1,8 @@
 package com.tyrlib2.gui;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.tyrlib2.graphics.renderables.FormattedText2.ALIGNMENT;
 import com.tyrlib2.graphics.renderer.Viewport;
 import com.tyrlib2.graphics.scene.SceneManager;
@@ -15,20 +18,22 @@ import com.tyrlib2.util.Color;
 
 public class Button extends Window {
 
-	private String normalLeftBgImage;
-	private String normalMiddleBgImage;
-	private String normalRightBgImage;
-	private String highlightLeftBgImage;
-	private String highlightMiddleBgImage;
-	private String highlightRightBgImage;
+	public enum ButtonImagePosition {
+		LEFT,
+		MIDDLE,
+		RIGHT
+	}
+	
+	private Map<ButtonImagePosition, String> normalBgImages;
+	private Map<ButtonImagePosition, String> highlightBgImages;
+	private Map<ButtonImagePosition, ImageBox> bgImageBoxes;
+	
 	private float leftBgSize;
 	private float rightBgSize;
 	private Color normalTextColor;
 	private Color highlightTextColor;
 	
-	private ImageBox bgLeft;
-	private ImageBox bgMiddle;
-	private ImageBox bgRight;
+	private float alpha;
 	private Label label;
 	
 	public Button(String name, Vector2 pos, Vector2 size, String text) {
@@ -39,15 +44,19 @@ public class Button extends Window {
 		WindowManager windowManager = WindowManager.getInstance();
 		Skin skin = windowManager.getSkin();
 		
+		normalBgImages = new HashMap<ButtonImagePosition, String>();
+		highlightBgImages = new HashMap<ButtonImagePosition, String>();
+		bgImageBoxes = new HashMap<ButtonImagePosition, ImageBox>(); 
+		
 		String atlas = skin.TEXTURE_ATLAS;
 		
-		normalLeftBgImage = skin.BUTTON_NORMAL_LEFT;
-		normalMiddleBgImage = skin.BUTTON_NORMAL_MIDDLE;
-		normalRightBgImage = skin.BUTTON_NORMAL_RIGHT;
+		normalBgImages.put(ButtonImagePosition.LEFT, skin.BUTTON_NORMAL_LEFT);
+		normalBgImages.put(ButtonImagePosition.MIDDLE, skin.BUTTON_NORMAL_MIDDLE);
+		normalBgImages.put(ButtonImagePosition.RIGHT, skin.BUTTON_NORMAL_RIGHT);
 		
-		highlightLeftBgImage = skin.BUTTON_HIGHLIGHT_LEFT;
-		highlightMiddleBgImage = skin.BUTTON_HIGHLIGHT_MIDDLE;
-		highlightRightBgImage = skin.BUTTON_HIGHLIGHT_RIGHT;
+		highlightBgImages.put(ButtonImagePosition.LEFT, skin.BUTTON_HIGHLIGHT_LEFT);
+		highlightBgImages.put(ButtonImagePosition.MIDDLE, skin.BUTTON_HIGHLIGHT_MIDDLE);
+		highlightBgImages.put(ButtonImagePosition.RIGHT, skin.BUTTON_HIGHLIGHT_RIGHT);
 		
 		normalTextColor = skin.BUTTON_NORMAL_TEXT_COLOR;
 		highlightTextColor = skin.BUTTON_HIGHLIGHT_TEXT_COLOR;
@@ -55,41 +64,46 @@ public class Button extends Window {
 		leftBgSize = skin.BUTTON_LEFT_SIZE;
 		rightBgSize = skin.BUTTON_RIGHT_SIZE;
 		
-		bgLeft = (ImageBox) windowManager.createImageBox(name + "/BackgroundLeft", 
-														 new Vector2(), 
-														 atlas, 
-														 normalLeftBgImage, 
-														 new Vector2(leftBgSize, size.y));
-		bgLeft.setReceiveTouchEvents(false);
+		ImageBox bg;
 		
-		bgMiddle = (ImageBox) windowManager.createImageBox(name + "/BackgroundMiddle", 
+		bg = (ImageBox) windowManager.createImageBox(name + "/BackgroundLeft", 
+												     new Vector2(), 
+												     atlas, 
+													 normalBgImages.get(ButtonImagePosition.LEFT), 
+													 new Vector2(leftBgSize, size.y));
+		bgImageBoxes.put(ButtonImagePosition.LEFT, bg);
+		
+		bg = (ImageBox) windowManager.createImageBox(name + "/BackgroundMiddle", 
 														   new Vector2(skin.BUTTON_LEFT_SIZE, 0), 
 														   atlas, 
-														   normalMiddleBgImage, 
-														   new Vector2(size.x-(leftBgSize+rightBgSize), size.y));
-		bgMiddle.setReceiveTouchEvents(false);		
+														   normalBgImages.get(ButtonImagePosition.MIDDLE), 
+														   new Vector2(size.x-(leftBgSize+rightBgSize), size.y));	
+		bgImageBoxes.put(ButtonImagePosition.MIDDLE, bg);
 		
-		bgRight = (ImageBox) windowManager.createImageBox(name + "/BackgroundMiddle", 
+		bg = (ImageBox) windowManager.createImageBox(name + "/BackgroundMiddle", 
 														  new Vector2(size.x-skin.BUTTON_RIGHT_SIZE, 0), 
 														  atlas, 
-														  normalRightBgImage, 
+														  normalBgImages.get(ButtonImagePosition.RIGHT), 
 														  new Vector2(rightBgSize, size.y));
-		bgRight.setReceiveTouchEvents(false);	
+		bgImageBoxes.put(ButtonImagePosition.RIGHT, bg);
 		
-		Vector2 labelPos = new Vector2(size.x /2, -size.y /2);
+		Vector2 labelPos = new Vector2(size.x /2, size.y /2);
 	
 		label = (Label) windowManager.createLabel(name +  "/Label", labelPos, text);
 		label.setAlignment(ALIGNMENT.CENTER);
+		label.setColor(normalTextColor);
 		label.setReceiveTouchEvents(false);
 		
 		Viewport viewport = SceneManager.getInstance().getViewport();
 		Font font = label.getFont();
-		labelPos.y += font.glText.getCharHeight() / viewport.getHeight();
+		labelPos.y -= font.glText.getCharHeight() / viewport.getHeight();
 		label.setRelativePos(labelPos);
 		
-		this.addChild(bgLeft);
-		this.addChild(bgMiddle);
-		this.addChild(bgRight);
+		for (ButtonImagePosition position : ButtonImagePosition.values()) {
+			bgImageBoxes.get(position).setReceiveTouchEvents(false);
+			this.addChild(bgImageBoxes.get(position));
+		}
+		
 		this.addChild(label);
 		
 		this.setPriority(getPriority());
@@ -100,9 +114,9 @@ public class Button extends Window {
 		// Start highlighting the button
 		super.onTouchEntersWindow();
 		label.setColor(highlightTextColor);
-		bgLeft.setAtlasRegion(highlightLeftBgImage);
-		bgMiddle.setAtlasRegion(highlightMiddleBgImage);
-		bgRight.setAtlasRegion(highlightRightBgImage);
+		for (ButtonImagePosition position : ButtonImagePosition.values()) {
+			bgImageBoxes.get(position).setAtlasRegion(highlightBgImages.get(position));
+		}
 	}
 	
 	@Override 
@@ -110,40 +124,40 @@ public class Button extends Window {
 		// Stop highlighting the button
 		super.onTouchLeavesWindow();
 		label.setColor(normalTextColor);
-		bgLeft.setAtlasRegion(normalLeftBgImage);
-		bgMiddle.setAtlasRegion(normalMiddleBgImage);
-		bgRight.setAtlasRegion(normalRightBgImage);
-	}
-
-	public String getAtlas() {
-		return bgMiddle.getAtlasName();
-	}
-
-	public void setAtlas(String atlas) {
-		bgLeft.setAtlas(atlas);
-		bgMiddle.setAtlas(atlas);
-		bgRight.setAtlas(atlas);
-	}
-
-	public String getNormalLeftBgImage() {
-		return normalLeftBgImage;
-	}
-
-	public void setNormalLeftBgImage(String normalLeftBgImage) {
-		this.normalLeftBgImage = normalLeftBgImage;
-		if (!this.isBeingTouched()) {
-			bgLeft.setAtlasRegion(normalLeftBgImage);
+		for (ButtonImagePosition position : ButtonImagePosition.values()) {
+			bgImageBoxes.get(position).setAtlasRegion(normalBgImages.get(position));
 		}
 	}
 
-	public String getHighlightLeftBgImage() {
-		return highlightLeftBgImage;
+	public String getAtlas() {
+		return bgImageBoxes.get(ButtonImagePosition.MIDDLE).getAtlasName();
 	}
 
-	public void setHighlightLeftBgImage(String highlightLeftBgImage) {
-		this.highlightLeftBgImage = highlightLeftBgImage;
-		if (this.isBeingTouched()) {
-			bgLeft.setAtlasRegion(highlightLeftBgImage);
+	public void setAtlas(String atlas) {
+		for (ButtonImagePosition position : ButtonImagePosition.values()) {
+			bgImageBoxes.get(position).setAtlas(atlas);
+		}
+	}
+
+	public String getNormalBgImage(ButtonImagePosition position) {
+		return normalBgImages.get(position);
+	}
+	
+	public void setNormalBgImage(String normalBgImage, ButtonImagePosition position) {
+		normalBgImages.put(position, normalBgImage);
+		if (!this.isBeingTouched()) {
+			bgImageBoxes.get(position).setAtlasRegion(normalBgImage);
+		}
+	}
+
+	public String getHighlightBgImage(ButtonImagePosition position) {
+		return highlightBgImages.get(position);
+	}
+
+	public void setHighlightBgImage(String highlightBgImage, ButtonImagePosition position) {
+		highlightBgImages.put(position, highlightBgImage);
+		if (!this.isBeingTouched()) {
+			bgImageBoxes.get(position).setAtlasRegion(highlightBgImage);
 		}
 	}
 
@@ -167,6 +181,15 @@ public class Button extends Window {
 		if (this.isBeingTouched()) {
 			label.setColor(highlightTextColor);
 		}
+	}
+	
+	public float getAlpha() {
+		return alpha;
+	}
+	
+	public void setAlpha(float alpha) {
+		super.setAlpha(alpha);
+		this.alpha = alpha;
 	}
 	
 	

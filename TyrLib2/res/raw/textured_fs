@@ -10,5 +10,6 @@ void main()
     texColor.r *= v_Alpha;
     texColor.g *= v_Alpha;
     texColor.b *= v_Alpha;
+    texColor.a *= v_Alpha;
     gl_FragColor = vec4(texColor.rgb, texColor.a);
 }      

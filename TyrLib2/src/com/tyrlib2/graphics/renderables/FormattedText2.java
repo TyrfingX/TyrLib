@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.opengl.GLES20;
 
+import com.tyrlib2.graphics.renderer.IBlendable;
 import com.tyrlib2.graphics.renderer.IRenderable;
 import com.tyrlib2.graphics.scene.SceneObject;
 import com.tyrlib2.graphics.text.Font;
@@ -26,7 +27,7 @@ import com.tyrlib2.util.Color;
  *
  */
 
-public class FormattedText2 extends SceneObject implements IRenderable {
+public class FormattedText2 extends SceneObject implements IRenderable, IBlendable {
 	
 	public enum ALIGNMENT {
 		LEFT,
@@ -71,7 +72,7 @@ public class FormattedText2 extends SceneObject implements IRenderable {
 	@Override
 	public void render(float[] vpMatrix) {
 		GLES20.glEnable(GLES20.GL_BLEND);
-		GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+		GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 		GLText glText = font.glText;
 		Vector3 pos = parent.getCachedAbsolutePos();
 		for (int i = 0; i < textSections.size(); ++i) {
@@ -255,5 +256,16 @@ public class FormattedText2 extends SceneObject implements IRenderable {
 
 	public Font getFont() {
 		return font;
+	}
+
+	@Override
+	public float getAlpha() {
+		return baseColor.a;
+	}
+
+	@Override
+	public void setAlpha(float alpha) {
+		baseColor.a = alpha;
+		parseText();
 	}
 }

@@ -45,6 +45,8 @@ public class ImageBox extends Window {
 	@Override
 	public void setAlpha(float alpha) {
 		image.setAlpha(alpha);
+		
+		super.setAlpha(alpha);
 	}
 
 	public String getAtlasName() {

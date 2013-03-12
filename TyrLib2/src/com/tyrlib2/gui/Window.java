@@ -1,7 +1,9 @@
 package com.tyrlib2.gui;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.view.MotionEvent;
 
@@ -14,6 +16,7 @@ import com.tyrlib2.graphics.renderer.Viewport;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.graphics.scene.SceneNode;
 import com.tyrlib2.graphics.scene.SceneObject;
+import com.tyrlib2.gui.WindowEvent.WindowEventType;
 import com.tyrlib2.input.ITouchListener;
 import com.tyrlib2.math.Rectangle;
 import com.tyrlib2.math.Vector2;
@@ -67,6 +70,8 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	/** How "High" is this window in the display hirachy? **/
 	protected long priority;
 	
+	private Map<WindowEventType, List<IEventListener>> eventListeners;
+	
 	public enum BLEND_STATE {
 		IDLE,
 		FADE_IN,
@@ -82,6 +87,14 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	/** The target alpha value for a blending operation **/
 	private float targetAlpha;
 	
+	/** Data attached to this window **/
+	private Map<String, Object> data;
+	
+	/** The parent window **/
+	private Window parent;
+	
+	private float maxAlpha = 1;
+	
 	private Window() {
 		node = new SceneNode();
 		children = new ArrayList<Window>();
@@ -90,6 +103,8 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 		speed = new Speed(0);
 		movement = new DirectMovement(node, speed);
 		priority = WindowManager.GUI_BASE_PRIORITY;
+		eventListeners = new HashMap<WindowEventType, List<IEventListener>>();
+		data = new HashMap<String, Object>();
 	}
 	
 	protected Window(String name) {
@@ -128,6 +143,9 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 		for (int i = 0; i < children.size(); ++i) {
 			children.get(i).fadeIn(maxAlpha, time);
 		}
+		
+		maxAlpha = Math.min(this.maxAlpha, maxAlpha);
+		
 		blendState = BLEND_STATE.FADE_IN;
 		blendSpeed = (maxAlpha - getAlpha()) / time;
 		targetAlpha = maxAlpha;
@@ -153,11 +171,21 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	
 	public void endBlend() {
 		setAlpha(targetAlpha);
+		
+		if (blendState == BLEND_STATE.FADE_IN) {
+			fireEvent(new WindowEvent(this, WindowEventType.FADE_IN_FINISHED));
+		} else if (blendState == BLEND_STATE.FADE_OUT) {
+			fireEvent(new WindowEvent(this, WindowEventType.FADE_OUT_FINISHED));
+		}
+		
 		blendState = BLEND_STATE.IDLE;
 		
 		if (targetAlpha == 0) {
 			setVisible(false);
 		}
+		
+
+		
 	}
 
 	
@@ -170,6 +198,9 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 		children.add(window);
 		window.node.detach();
 		node.attachChild(window.node);
+		window.parent = this;
+		
+		window.setPriority(priority+children.size());
 	}
 	
 	/**
@@ -232,10 +263,18 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	 */
 	
 	protected void destroy() {
-		for (int i = 0; i < children.size(); ++i) {
-			WindowManager.getInstance().removeWindow(this);
-			destroyed = true;
-			children.get(i).destroy();
+		if (!destroyed) {
+			for (int i = 0; i < children.size(); ++i) {
+				WindowManager.getInstance().removeWindow(this);
+				destroyed = true;
+				children.get(i).destroy();
+			}
+			
+			if (parent != null && !parent.destroyed) {
+				parent.removeChild(this);
+			}
+			
+			fireEvent(new WindowEvent(this, WindowEventType.DESTROYED));
 		}
 	}
 
@@ -264,6 +303,9 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	 */
 	
 	public void setAlpha(float alpha) {
+		for (int i = 0; i < children.size(); ++i) {
+			children.get(i).setAlpha(alpha);
+		}
 	}
 	
 	/**
@@ -283,7 +325,7 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	public void setRelativePos(Vector2 pos) {
 		Viewport viewport = SceneManager.getInstance().getViewport();
 		float x = pos.x*viewport.getWidth();
-		float y = pos.y*viewport.getHeight();
+		float y = -pos.y*viewport.getHeight();
 		node.setRelativePos(new Vector3(x, y, 0));
 	}
 	
@@ -295,7 +337,7 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	public Vector2 getRelativePos() {
 		Viewport viewport = SceneManager.getInstance().getViewport();
 		Vector3 pos = node.getRelativePos();
-		return new Vector2(pos.x/viewport.getWidth(), pos.y/viewport.getHeight());
+		return new Vector2(pos.x/viewport.getWidth(), -pos.y/viewport.getHeight());
 	}
 	
 	/**
@@ -365,6 +407,10 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	 */
 	
 	protected void onTouchDownWindow(Vector2 point, MotionEvent event) {
+		WindowEvent windowEvent = new WindowEvent(this, WindowEventType.TOUCH_DOWN);
+		windowEvent.setParam("POINT", point);
+		windowEvent.setParam("MOTIONEVENT", event);
+		fireEvent(windowEvent);
 	}
 	
 	@Override
@@ -389,6 +435,10 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	 */
 	
 	protected void onTouchUpWindow(Vector2 point, MotionEvent event) {
+		WindowEvent windowEvent = new WindowEvent(this, WindowEventType.TOUCH_UP);
+		windowEvent.setParam("POINT", point);
+		windowEvent.setParam("MOTIONEVENT", event);
+		fireEvent(windowEvent);
 	}
 
 	
@@ -423,6 +473,10 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	 */
 	
 	protected void onTouchMoveWindow(Vector2 point, MotionEvent event) {
+		WindowEvent windowEvent = new WindowEvent(this, WindowEventType.TOUCH_MOVES);
+		windowEvent.setParam("POINT", point);
+		windowEvent.setParam("MOTIONEVENT", event);
+		fireEvent(windowEvent);
 	}
 	
 	/**
@@ -431,6 +485,7 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	
 	protected void onTouchEntersWindow() {
 		touchInWindow = true;
+		fireEvent(new WindowEvent(this, WindowEventType.TOUCH_ENTERS));
 	}
 	
 	/**
@@ -439,6 +494,7 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 
 	protected void onTouchLeavesWindow() {
 		touchInWindow = false;
+		fireEvent(new WindowEvent(this, WindowEventType.TOUCH_LEAVES));
 	}
 
 	/**
@@ -569,6 +625,60 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 		if (renderable instanceof SceneObject) {
 			node.attachSceneObject((SceneObject) renderable);
 		}
+	}
+	
+	public void addEventListener(WindowEventType event, IEventListener listener) {
+		List<IEventListener> listeners = eventListeners.get(event);
+		if (listeners == null) {
+			listeners = new ArrayList<IEventListener>();
+			eventListeners.put(event, listeners);
+		}
+		
+		listeners.add(listener);
+	}
+	
+	public void removeEventListener(WindowEventType event, IEventListener listener) {
+		List<IEventListener> listeners = eventListeners.get(event);
+		if (listeners != null) {
+			listeners.remove(listener);
+		}
+	}
+	
+	public void removeEventListeners(WindowEventType event) {
+		List<IEventListener> listeners = eventListeners.get(event);
+		if (listeners != null) {
+			listeners.clear();
+		}
+	}
+	
+	protected void fireEvent(WindowEvent event) {
+		List<IEventListener> listeners = eventListeners.get(event.getType());
+		if (listeners != null) {
+			for (int i = 0; i < listeners.size(); ++i) {
+				listeners.get(i).onEvent(event);
+			}
+		}
+	}
+	
+	public void setData(String name, Object value) {
+		data.put(name, value);
+	}
+	
+	public Object getData(String name) {
+		return data.get(name);
+	}
+	
+	public Window getParent() {
+		return parent;
+	}
+	
+	/** An alpha treshhold which will never be overstepped during blending processes event if
+	 * the target alpha is higher
+	 * @param maxAlpha
+	 */
+	
+	public void setMaxAlpha(float maxAlpha) {
+		this.maxAlpha = maxAlpha;
 	}
 	
 }

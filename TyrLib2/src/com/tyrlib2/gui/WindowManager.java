@@ -7,8 +7,11 @@ import com.tyrlib2.game.Updater;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.graphics.scene.SceneNode;
+import com.tyrlib2.gui.WindowEvent.WindowEventType;
 import com.tyrlib2.input.InputManager;
 import com.tyrlib2.math.Vector2;
+import com.tyrlib2.math.Vector3;
+import com.tyrlib2.util.Color;
 
 /**
  * Manages the life times of windows
@@ -33,7 +36,7 @@ public class WindowManager {
 		
 		updater = new Updater();
 		SceneManager.getInstance().addFrameListener(updater);
-		rootNode = SceneManager.getInstance().getRootSceneNode().createChild();
+		rootNode = SceneManager.getInstance().getRootSceneNode().createChild(new Vector3(0,SceneManager.getInstance().getViewport().getHeight(),0));
 		
 		renderer = new GUIRenderer();
 		SceneManager.getInstance().getRenderer().addRenderable(renderer, OpenGLRenderer.OVERLAY_CHANNEL);
@@ -100,12 +103,69 @@ public class WindowManager {
 		return button;
 	}
 	
+	public Frame createFrame(String name, Vector2 pos, Vector2 size) {
+		Frame frame = new Frame(name, pos, size);
+		addWindow(frame);
+		return frame;
+	}
+	
 	public Window createImageBox(String name, Vector2 pos, String atlasName, String atlasRegion, Vector2 size) {
 		ImageBox imageBox = new ImageBox(name, pos, atlasName, atlasRegion, size);
 		addWindow(imageBox);
 		return imageBox;
 	}
 	
+	public Window createOverlay(String name, Vector2 pos, Vector2 size, Color color) {
+		Overlay overlay = new Overlay(name, pos, size, color);
+		addWindow(overlay);
+		return overlay;
+	}
+	
+	public Window createOverlay(String name, Color color) {
+		return createOverlay(name, new Vector2(0,0), new Vector2(1,1), color);
+	}
+	
+	/**
+	 * This method turns a window into a popup hovering over all other windows
+	 * @param window
+	 * @param callback	Called when the popup is closed
+	 * @return
+	 */
+	
+	public Window createPopup(Window window) {
+		Skin skin = WindowManager.getInstance().getSkin();
+		Window overlay = createOverlay("PopupOverlay/" + window.getName(), skin.OVERLAY_COLOR);
+		overlay.addChild(window);
+		overlay.setVisible(false);
+		overlay.setAlpha(0);
+		overlay.setMaxAlpha(skin.OVERLAY_MAX_ALPHA);
+		return overlay;
+	}
+	
+	public Window createConfirmMessageBox(String name, String text, final IEventListener callback) {
+		Skin skin = getSkin();
+		Window frame = createFrame(name, new Vector2(skin.MESSAGE_BOX_X, skin.MESSAGE_BOX_Y), new Vector2(skin.MESSAGE_BOX_W, skin.MESSAGE_BOX_H));
+		Window button = createButton(	name + "/ConfirmButton", 
+										new Vector2(skin.MESSAGE_BOX_W/2 - skin.MESSAGE_BOX_W*skin.MESSAGE_BOX_BUTTON_W/2, skin.MESSAGE_BOX_H - skin.MESSAGE_BOX_H*(skin.MESSAGE_BOX_BUTTON_H - skin.MESSAGE_BOX_BUTTON_PAD_Y)),
+										new Vector2(skin.MESSAGE_BOX_W*skin.MESSAGE_BOX_BUTTON_W, skin.MESSAGE_BOX_H*skin.MESSAGE_BOX_BUTTON_H),
+										"Confirm");
+		frame.addChild(button);
+		Label label = (Label)createLabel(name + "/Label", new Vector2(skin.MESSAGE_BOX_W*skin.MESSAGE_BOX_LABEL_X, skin.MESSAGE_BOX_H*skin.MESSAGE_BOX_LABEL_Y), text);
+		label.setBgColor(Color.TRANSPARENT.copy());
+		frame.addChild(label);
+		Window popup = createPopup(frame);
+		
+		button.addEventListener(WindowEventType.TOUCH_UP, new IEventListener() {
+			@Override
+			public void onEvent(WindowEvent event) {
+				Window messageBox = event.getSource().getParent().getParent();
+				if (callback != null) {
+					callback.onEvent(new WindowEvent(messageBox, WindowEventType.CONFIRMED));
+				}
+			}
+		});
+		return popup;
+	}
 	protected void removeWindow(Window window) {
 		windows.remove(window);
 	}
