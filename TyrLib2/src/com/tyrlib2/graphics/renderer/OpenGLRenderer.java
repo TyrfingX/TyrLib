@@ -165,6 +165,10 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         
         rendering = true;
         init = true;
+        
+        for (int i = 0; i < frameListeners.size(); ++i) {
+           	frameListeners.get(i).onSurfaceCreated();
+        }
 	}
 	
 	public void destroy() {
@@ -276,7 +280,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
        viewport.setFullscreen(width, height);
        
        for (int i = 0; i < frameListeners.size(); ++i) {
-       	frameListeners.get(i).onSurfaceCreated();
+       	frameListeners.get(i).onSurfaceChanged();
        }
     }
     

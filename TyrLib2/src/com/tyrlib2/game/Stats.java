@@ -47,6 +47,10 @@ public class Stats {
 		}
 	}
 	
+	public boolean hasStat(String name) {
+		return stats.containsKey(name);
+	}
+	
 	/**
 	 * Inputs all stats into this stat collection
 	 * @param stats The collection of stats to be added to this
