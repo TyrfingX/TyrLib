@@ -1,8 +1,9 @@
-package com.tyrlib2.game;
+package com.tyrlib2.movement;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.tyrlib2.game.IUpdateable;
 import com.tyrlib2.math.Vector3;
 
 /**

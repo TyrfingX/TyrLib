@@ -32,7 +32,11 @@ public class ProgressBar extends Window {
 		frame.setReceiveTouchEvents(false);
 		this.addChild(frame);
 		
-		bar = (Overlay) WindowManager.getInstance().createOverlay(name + "/Bar", new Vector2(), size, skin.PROGRESS_BAR_COLOR);
+		float frameBorderSize = frame.getBorderSize();
+		bar = (Overlay) WindowManager.getInstance().createOverlay(	name + "/Bar", 
+																	new Vector2(frameBorderSize, frameBorderSize), 
+																	new Vector2(size.x - 2 * frameBorderSize, size.y - 2 * frameBorderSize), 
+																	skin.PROGRESS_BAR_COLOR);
 		bar.setReceiveTouchEvents(false);
 		this.addChild(bar);
 		
@@ -48,7 +52,8 @@ public class ProgressBar extends Window {
 	public void setProgress(float progress) {
 		this.progress = progress;
 	
-		Vector2 size = new Vector2(getSize());
+		Vector2 frameSize = getSize();
+		Vector2 size = new Vector2(frameSize.x - 2 * frame.getBorderSize(), frameSize.y - 2 * frame.getBorderSize());
 		size.x = size.x * progress/maxProgress;
 		bar.setSize(size);
 	}

@@ -125,4 +125,8 @@ public class Frame extends Window{
 		imageBox.setAtlasRegion(regionName);
 	}
 	
+	public float getBorderSize() {
+		return borderSize;
+	}
+	
 }

@@ -1,4 +1,4 @@
-package com.tyrlib2.game;
+package com.tyrlib2.movement;
 
 import com.tyrlib2.ai.steering.IVehicle;
 import com.tyrlib2.ai.steering.Seek;

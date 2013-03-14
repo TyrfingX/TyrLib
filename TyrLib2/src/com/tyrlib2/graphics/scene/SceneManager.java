@@ -289,6 +289,22 @@ public class SceneManager {
 	public Viewport getViewport() {
 		return renderer.getViewport();
 	}
+	
+	public Vector2 getViewportSize() {
+		return new Vector2(renderer.getViewport().getWidth(), renderer.getViewport().getHeight());
+	}
+	
+	public int getViewportWidth() {
+		return getViewport().getWidth();
+	}
+	
+	public int getViewportHeight() {
+		return getViewport().getHeight();
+	}
+	
+	public float getViewportRatio() {
+		return getViewport().getRatio();
+	}
 
 	public void performSceneQuery(ISceneQuery query) {
 		renderer.getOctree(OpenGLRenderer.DEFAULT_CHANNEL).query(query);

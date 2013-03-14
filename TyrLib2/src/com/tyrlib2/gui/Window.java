@@ -7,10 +7,7 @@ import java.util.Map;
 
 import android.view.MotionEvent;
 
-import com.tyrlib2.game.DirectMovement;
 import com.tyrlib2.game.IUpdateable;
-import com.tyrlib2.game.Speed;
-import com.tyrlib2.game.TargetPoint;
 import com.tyrlib2.graphics.renderer.IRenderable;
 import com.tyrlib2.graphics.renderer.Viewport;
 import com.tyrlib2.graphics.scene.SceneManager;
@@ -21,6 +18,9 @@ import com.tyrlib2.input.ITouchListener;
 import com.tyrlib2.math.Rectangle;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.math.Vector3;
+import com.tyrlib2.movement.DirectMovement;
+import com.tyrlib2.movement.Speed;
+import com.tyrlib2.movement.TargetPoint;
 import com.tyrlib2.util.IPrioritizable;
 
 /** Basic window class

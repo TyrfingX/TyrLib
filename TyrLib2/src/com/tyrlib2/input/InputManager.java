@@ -40,9 +40,9 @@ public class InputManager {
 	public boolean onTouch(View v, MotionEvent event) {
 		Vector2 point = new Vector2(event.getX() / v.getWidth(), event.getY() / v.getHeight());
 		
-		if (event.getAction() == MotionEvent.ACTION_DOWN)
+		if (event.getActionMasked() == MotionEvent.ACTION_DOWN || event.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN)
 			touching = true;
-		else if (event.getAction() == MotionEvent.ACTION_UP)
+		else if (event.getActionMasked() == MotionEvent.ACTION_UP || event.getActionMasked() == MotionEvent.ACTION_POINTER_UP)
 			touching = false;
 		
 		lastTouch = new Vector2(point.x, point.y);
@@ -59,15 +59,15 @@ public class InputManager {
 		while (!queue.isEmpty())
 		{
 			ITouchListener listener = queue.poll();
-			if (event.getAction() == MotionEvent.ACTION_DOWN)
+			if (event.getActionMasked() == MotionEvent.ACTION_DOWN || event.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN)
 			{
 				if (listener.onTouchDown(point, event)) break;
 			}
-			else if (event.getAction() == MotionEvent.ACTION_UP)
+			else if (event.getActionMasked() == MotionEvent.ACTION_UP || event.getActionMasked() == MotionEvent.ACTION_POINTER_UP)
 			{	
 				if (listener.onTouchUp(point, event)) break;
 			}
-			else if (event.getAction() == MotionEvent.ACTION_MOVE)
+			else if (event.getActionMasked() == MotionEvent.ACTION_MOVE)
 			{	
 				if (listener.onTouchMove(point, event)) break;
 			}

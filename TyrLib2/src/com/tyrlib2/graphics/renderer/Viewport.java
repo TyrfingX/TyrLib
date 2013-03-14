@@ -86,4 +86,8 @@ public class Viewport {
 	public int getMinExtends() {
 		return Math.min(width, height);
 	}
+	
+	public float getRatio() {
+		return ratio;
+	}
 }

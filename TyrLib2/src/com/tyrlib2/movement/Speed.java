@@ -1,4 +1,6 @@
-package com.tyrlib2.game;
+package com.tyrlib2.movement;
+
+import com.tyrlib2.game.IUpdateable;
 
 /**
  * Manages the speed of an object

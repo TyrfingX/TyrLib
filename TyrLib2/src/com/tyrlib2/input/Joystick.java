@@ -34,8 +34,12 @@ public class Joystick implements ITouchListener {
 	/** The id of the finger which is currently controlling this joystick **/
 	private int fingerId;
 	
-	public Joystick() {
+	/** Maximum offset **/
+	private float maxDistance;
+	
+	public Joystick(float maxDistance) {
 		listeners = new ArrayList<IJoystickListener>();
+		this.maxDistance = maxDistance;
 	}
 	
 	@Override
@@ -82,8 +86,14 @@ public class Joystick implements ITouchListener {
 	@Override
 	public boolean onTouchMove(Vector2 point, MotionEvent event) {
 		if (active && event.getActionIndex() == fingerId) {
+			
+			Vector2 movement = basePoint.vectorTo(point);
+			float distance = movement.normalize();
+			distance = Math.min(distance, maxDistance);
+			movement = movement.multiply(distance);
+			
 			for (int i = 0; i < listeners.size(); ++i) {
-				listeners.get(i).onJoystickMoved(basePoint.vectorTo(point));
+				listeners.get(i).onJoystickMoved(movement);
 			}
 		}
 		return true;
@@ -114,5 +124,8 @@ public class Joystick implements ITouchListener {
 		this.priority = priority;
 	}
 	
+	public float getMaxDistance() {
+		return maxDistance;
+	}
 
 }

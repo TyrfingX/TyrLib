@@ -1,7 +1,7 @@
 package com.tyrlib2.ai.steering;
 
-import com.tyrlib2.game.ITargetProvider;
 import com.tyrlib2.math.Vector3;
+import com.tyrlib2.movement.ITargetProvider;
 
 public class Flee implements IPattern {
 
