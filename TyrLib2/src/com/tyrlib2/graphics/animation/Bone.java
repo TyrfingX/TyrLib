@@ -85,4 +85,12 @@ public class Bone extends SceneNode {
 		}
 		
 	}
+	
+	public Vector3 getInitPos() {
+		return initPos;
+	}
+	
+	public Quaternion getInitRot() {
+		return initRot;
+	}
 }

@@ -32,15 +32,17 @@ public abstract class LightedMaterial extends Material{
     	
 		Light light = null;
 		
-		if (SceneManager.getInstance().getLightCount() > 0) {
-			light = SceneManager.getInstance().getLight(lightIndex);
+		SceneManager sceneManager = SceneManager.getInstance();
+		
+		if (sceneManager.getLightCount() > 0) {
+			light = sceneManager.getLight(lightIndex);
 		}
 		
         Color ambient = DEFAULT_AMBIENT;
 		
 		if (lightIndex == 0) {
 	        //Pass in the global scene illumination only for the first light
-			ambient = SceneManager.getInstance().getAmbientLight();
+			ambient = sceneManager.getAmbientLight();
 		}
 		
 		GLES20.glUniform4f(ambientHandle, ambient.r, ambient.g, ambient.b, ambient.a);

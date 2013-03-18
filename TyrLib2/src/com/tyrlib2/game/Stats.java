@@ -29,6 +29,11 @@ public class Stats {
 		stats.put(name, value);
 	}
 	
+	
+	public void changeStat(String name, Float value) {
+		stats.put(name, stats.get(name) + value);
+	}
+	
 	/**
 	 * Get a value of a stat
 	 * @param name	Name of the stat

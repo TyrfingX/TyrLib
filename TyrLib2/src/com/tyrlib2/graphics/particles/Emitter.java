@@ -80,6 +80,7 @@ public class Emitter extends SceneObject implements IUpdateable {
 	public void emit() {
 		
 		Vector3 rotatedVelocity = parent.getCachedAbsoluteRot().multiply(velocity);
+		Vector3 rotatedRandomVelocity = parent.getCachedAbsoluteRot().multiply(randomVelocity);
 		
 		for (int i = 0; i < amount; ++i) {
 			Particle particle = particleFactory.create(system.requestDeadParticle());
@@ -89,9 +90,9 @@ public class Emitter extends SceneObject implements IUpdateable {
 			particle.pos.y += (0.5f-random.nextFloat()) * randomPos.y;
 			particle.pos.z += (0.5f-random.nextFloat()) * randomPos.z;
 			
-			Vector3 v = new Vector3(rotatedVelocity.x + (0.5f-random.nextFloat()) * randomVelocity.x,
-									rotatedVelocity.y + (0.5f-random.nextFloat()) * randomVelocity.y,
-									rotatedVelocity.z + (0.5f-random.nextFloat()) * randomVelocity.z);
+			Vector3 v = new Vector3(rotatedVelocity.x + (0.5f-random.nextFloat()) * rotatedRandomVelocity.x,
+									rotatedVelocity.y + (0.5f-random.nextFloat()) * rotatedRandomVelocity.y,
+									rotatedVelocity.z + (0.5f-random.nextFloat()) * rotatedRandomVelocity.z);
 			
 			particle.velocity = v;
 			system.addParticle(particle);

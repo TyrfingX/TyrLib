@@ -39,6 +39,10 @@ public class GameStateMashine<T> {
 		currentState = state;
 	}
 	
+	public void enterState(int index) {
+		enterState(getGameState(index));
+	}
+	
 	public void addTransition(GameState start, T input, GameState end) {
 		Pair<GameState, T> pair = new Pair<GameState, T>(start, input);
 		transitions.put(pair, end);

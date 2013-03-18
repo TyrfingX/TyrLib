@@ -33,6 +33,7 @@ import com.tyrlib2.math.Vector3;
 import com.tyrlib2.util.Color;
 import com.tyrlib2.util.IEntityFactory;
 import com.tyrlib2.util.IQEEntityFactory;
+import com.tyrlib2.util.IQMEntityFactory;
 
 /**
  * This singleton class manages the creation and destruction of Scene objects.
@@ -184,11 +185,15 @@ public class SceneManager {
 	
 	
 	public void addFrameListener(IFrameListener frameListener) {
-		renderer.addFrameListener(frameListener);
+		if (renderer != null) {
+			renderer.addFrameListener(frameListener);
+		}
 	}
 	
 	public void removeFrameListener(IFrameListener frameListener) {
-		renderer.removeFrameListener(frameListener);
+		if (renderer != null) {
+			renderer.removeFrameListener(frameListener);
+		}
 	}
 	
 	public Box createBox(Material material, Vector3 min, Vector3 max) {
@@ -212,7 +217,9 @@ public class SceneManager {
 	 */
 	public Entity createEntity(Context context, String path) {
 		if (entityFactories.containsKey(path)) {
-			return entityFactories.get(path).create();
+			Entity entity = entityFactories.get(path).create();
+			renderer.addRenderable(entity);
+			return entity;
 		}
 		
 		IEntityFactory factory = null;
@@ -220,6 +227,10 @@ public class SceneManager {
 		if (path.endsWith("iqe")) {
 			DefaultMaterial3 mat = new DefaultMaterial3(context, null, 1, 1, LightingType.PER_PIXEL, null);
 			factory = new IQEEntityFactory(context, path, mat);
+			entityFactories.put(path, factory);
+		} else if (path.endsWith("iqm")) {
+			DefaultMaterial3 mat = new DefaultMaterial3(context, null, 1, 1, LightingType.PER_PIXEL, null);
+			factory = new IQMEntityFactory(context, path, mat);
 			entityFactories.put(path, factory);
 		} else {
 			throw new RuntimeException("Format for loading entity " +  path + " not supported!");

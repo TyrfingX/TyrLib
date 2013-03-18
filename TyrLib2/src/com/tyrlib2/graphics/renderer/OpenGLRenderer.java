@@ -95,6 +95,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 		GLES20.glCullFace(GLES20.GL_BACK);
 		
 		// Set the blend function
+		
 		GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE);
 		
 		if (init) {

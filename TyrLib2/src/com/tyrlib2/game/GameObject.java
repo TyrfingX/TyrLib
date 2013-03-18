@@ -30,4 +30,8 @@ public abstract class GameObject extends SceneObject implements IUpdateable {
 	public boolean hasStat(String name) {
 		return stats.hasStat(name);
 	}
+	
+	public void changeStat(String name, float value) {
+		stats.changeStat(name, value);
+	}
 }

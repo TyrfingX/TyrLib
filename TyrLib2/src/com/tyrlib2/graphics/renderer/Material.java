@@ -59,9 +59,7 @@ public class Material {
 	}
 	
 	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
-		mvpMatrixHandle = GLES20.glGetUniformLocation(program.handle, mvpParamName);
-		positionHandle = GLES20.glGetAttribLocation(program.handle, positionParamName);
-		
+
 	}
 	
 	/**
@@ -77,6 +75,10 @@ public class Material {
 		this.positionDataSize = positionDataSize;
 		this.mvpParamName = mvpParamName;
 		this.positionParamName = positionParamName;
+		
+		mvpMatrixHandle = GLES20.glGetUniformLocation(program.handle, mvpParamName);
+		positionHandle = GLES20.glGetAttribLocation(program.handle, positionParamName);
+		
 
 	}
 	

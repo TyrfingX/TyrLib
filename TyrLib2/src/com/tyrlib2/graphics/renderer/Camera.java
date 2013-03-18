@@ -75,8 +75,17 @@ public class Camera extends SceneObject {
 		Vector3 pos = parent.getCachedAbsolutePos();
 		Quaternion rot = parent.getCachedAbsoluteRot();
 		
-		rotatedLookDirection = rot.multiply(lookDirection);
-		rotatedUp = rot.multiply(this.up);
+		if (pos == null) {
+			pos = new Vector3();
+		}
+		
+		if (rot != null) {
+			rotatedLookDirection = rot.multiply(lookDirection);
+			rotatedUp = rot.multiply(this.up);
+		} else {
+			rotatedLookDirection = new Vector3(lookDirection);
+			rotatedUp = new Vector3(up);
+		}
 		
 		Matrix.setLookAtM	(viewMatrix, 
 							0, 

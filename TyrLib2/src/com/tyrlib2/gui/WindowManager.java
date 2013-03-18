@@ -33,14 +33,20 @@ public class WindowManager {
 	public static final long GUI_OVERLAY_PRIORITY = 1000000;
 	
 	public WindowManager() {
+
 		windows = new HashMap<String, Window>();
 		
 		updater = new Updater();
-		SceneManager.getInstance().addFrameListener(updater);
-		rootNode = SceneManager.getInstance().getRootSceneNode().createChild(new Vector3(0,SceneManager.getInstance().getViewport().getHeight(),0));
+
+		if (SceneManager.getInstance().getRenderer() != null) {
 		
-		renderer = new GUIRenderer();
-		SceneManager.getInstance().getRenderer().addRenderable(renderer, OpenGLRenderer.OVERLAY_CHANNEL);
+			SceneManager.getInstance().addFrameListener(updater);
+			rootNode = SceneManager.getInstance().getRootSceneNode().createChild(new Vector3(0,SceneManager.getInstance().getViewport().getHeight(),0));
+			
+			renderer = new GUIRenderer();
+			SceneManager.getInstance().getRenderer().addRenderable(renderer, OpenGLRenderer.OVERLAY_CHANNEL);
+		
+		}
 	}
 	
 	public void destroy() {

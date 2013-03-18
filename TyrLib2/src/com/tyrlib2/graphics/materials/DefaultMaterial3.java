@@ -141,12 +141,7 @@ public class DefaultMaterial3 extends LightedMaterial {
 		this.repeatY = repeatY;
 		
 		init(12,posOffset,3, "u_MVPMatrix", "a_Position");
-
-	}
-	
-	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
-	    super.render(vertexBuffer, modelMatrix);
-	    
+		
 		normalHandle = GLES20.glGetAttribLocation(program.handle, "a_Normal");
 		lightPosHandle = GLES20.glGetUniformLocation(program.handle, "u_LightPos");
 		lightTypeHandle = GLES20.glGetUniformLocation(program.handle, "u_LightType");
@@ -155,53 +150,22 @@ public class DefaultMaterial3 extends LightedMaterial {
 	    textureUniformHandle = GLES20.glGetUniformLocation(program.handle, "u_Texture");
 	    textureCoordinateHandle = GLES20.glGetAttribLocation(program.handle, "a_TexCoordinate");
 	    colorHandle = GLES20.glGetAttribLocation(program.handle, "a_Color");
+
+	}
+	
+	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
+	    super.render(vertexBuffer, modelMatrix);
+	    
 		int textureHandle = texture.getHandle();
 		
 		if (program.meshChange) {
-		
-		    // Pass in the color information
-		    vertexBuffer.position(colorOffset);
-		    GLES20.glVertexAttribPointer(colorHandle, colorDataSize, GLES20.GL_FLOAT, false,
-		    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
-		 
-		    GLES20.glEnableVertexAttribArray(colorHandle);
-			
-		    // Pass in the normal information
-		    vertexBuffer.position(normalOffset);
-		    GLES20.glVertexAttribPointer(normalHandle, normalDataSize, GLES20.GL_FLOAT, false,
-		    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
-		 
-		    GLES20.glEnableVertexAttribArray(normalHandle);
-		    
-	        // Pass in the texture coordinate information
-	        vertexBuffer.position(uvOffset);
-	        GLES20.glVertexAttribPointer(textureCoordinateHandle, uvDataSize, GLES20.GL_FLOAT, false, 
-	        		strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
-	        
-	        GLES20.glEnableVertexAttribArray(textureCoordinateHandle);
-	    
+			passMesh(vertexBuffer);
 		}
 	    
-	    SceneManager sceneManager = SceneManager.getInstance();
-	    float[] viewMatrix = sceneManager.getRenderer().getCamera().getViewMatrix();
-	    Matrix.multiplyMM(mvMatrix, 0, viewMatrix, 0, modelMatrix, 0);  
-	    
-        // Pass in the modelview matrix.
-        GLES20.glUniformMatrix4fv(mvMatrixHandle, 1, false, mvMatrix, 0);
+		passModelViewMatrix(modelMatrix);
 	    
         if (program.textureHandle != textureHandle) {
-        
-		    // Set the active texture unit to texture unit 0.
-		    GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-		 
-		    // Bind the texture to this unit.
-		    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle);
-		 
-		    // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
-		    GLES20.glUniform1i(textureUniformHandle, 0);
-		    
-		    program.textureHandle = textureHandle;
-	    
+        	passTexture(textureHandle);
         }
 	    
 	    if (!animated) {
@@ -212,6 +176,52 @@ public class DefaultMaterial3 extends LightedMaterial {
 	    	GLES20.glVertexAttrib4f(indexHandle, -1, -1, -1, -1);
 	    }
 
+	}
+	
+	private void passModelViewMatrix(float[] modelMatrix) {
+	    SceneManager sceneManager = SceneManager.getInstance();
+	    float[] viewMatrix = sceneManager.getRenderer().getCamera().getViewMatrix();
+	    Matrix.multiplyMM(mvMatrix, 0, viewMatrix, 0, modelMatrix, 0);  
+	    
+        // Pass in the modelview matrix.
+        GLES20.glUniformMatrix4fv(mvMatrixHandle, 1, false, mvMatrix, 0);
+	}
+	
+	private void passMesh(FloatBuffer vertexBuffer)
+	{
+	    // Pass in the color information
+	    vertexBuffer.position(colorOffset);
+	    GLES20.glVertexAttribPointer(colorHandle, colorDataSize, GLES20.GL_FLOAT, false,
+	    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
+	 
+	    GLES20.glEnableVertexAttribArray(colorHandle);
+		
+	    // Pass in the normal information
+	    vertexBuffer.position(normalOffset);
+	    GLES20.glVertexAttribPointer(normalHandle, normalDataSize, GLES20.GL_FLOAT, false,
+	    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
+	 
+	    GLES20.glEnableVertexAttribArray(normalHandle);
+	    
+        // Pass in the texture coordinate information
+        vertexBuffer.position(uvOffset);
+        GLES20.glVertexAttribPointer(textureCoordinateHandle, uvDataSize, GLES20.GL_FLOAT, false, 
+        		strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
+        
+        GLES20.glEnableVertexAttribArray(textureCoordinateHandle);
+	}
+	
+	private void passTexture(int textureHandle) {
+	    // Set the active texture unit to texture unit 0.
+	    GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+	 
+	    // Bind the texture to this unit.
+	    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle);
+	 
+	    // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
+	    GLES20.glUniform1i(textureUniformHandle, 0);
+	    
+	    program.textureHandle = textureHandle;
 	}
 
 	public Color[] getColors() {

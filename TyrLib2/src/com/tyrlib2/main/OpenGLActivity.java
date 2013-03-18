@@ -40,6 +40,7 @@ public abstract class OpenGLActivity extends Activity {
         
         //Remove title bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.setRequestedOrientation(0);
         
         //Remove notification bar
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);

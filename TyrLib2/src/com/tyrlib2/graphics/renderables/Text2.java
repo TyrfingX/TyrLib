@@ -3,6 +3,7 @@ package com.tyrlib2.graphics.renderables;
 import android.opengl.GLES20;
 
 import com.tyrlib2.graphics.renderer.IRenderable;
+import com.tyrlib2.graphics.renderer.Program;
 import com.tyrlib2.graphics.scene.SceneObject;
 import com.tyrlib2.graphics.text.Font;
 import com.tyrlib2.graphics.text.GLText;
@@ -33,6 +34,8 @@ public class Text2  extends SceneObject implements IRenderable {
 		glText.draw( text, pos.x, pos.y, rotation);              // Draw Test String
 		glText.end();
 		GLES20.glDisable(GLES20.GL_BLEND);
+		
+		Program.resetCache();
 	}
 
 	public Color getColor() {

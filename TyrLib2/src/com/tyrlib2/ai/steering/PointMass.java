@@ -64,6 +64,10 @@ public class PointMass implements IVehicle {
 	public float getMaxForce() {
 		return maxForce;
 	}
+	
+	public void setMaxForce(float maxForce) {
+		this.maxForce = maxForce;
+	}
 
 	@Override
 	public Quaternion getOrientation() {

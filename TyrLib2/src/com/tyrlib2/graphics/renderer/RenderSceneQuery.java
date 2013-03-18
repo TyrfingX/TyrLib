@@ -18,6 +18,7 @@ public class RenderSceneQuery implements ISceneQuery {
 	@Override
 	public boolean intersects(AABB aabb) {
 		if (aabb == null) return true;
+		if (!frustum.getAABB().intersectsAABB(aabb)) return false;
 		return frustum.aabbInFrustum(aabb);
 	}
 

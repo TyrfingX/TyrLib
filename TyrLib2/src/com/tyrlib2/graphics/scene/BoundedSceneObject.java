@@ -10,6 +10,7 @@ public abstract class BoundedSceneObject extends SceneObject {
 
 	private boolean dirty;
 	protected OctreeNode octree;
+	protected int query = -1;
 	
 	@Override
 	public void onTransformed() {

@@ -11,6 +11,7 @@ public class FrustumG {
 	
 	public Plane[] planes = new Plane[6];
 	private Vector3 p = new Vector3();
+	private AABB aabb;
 	
 	public FrustumG(Vector3 camPos, Vector3 lookDirection, Vector3 up, int nearClip, int farClip, float nearWidth, float nearHeight) {
 		
@@ -45,6 +46,40 @@ public class FrustumG {
 		planes[LEFT_CLIP_PLANE] = new Plane(leftNormal, ncl);
 		planes[RIGHT_CLIP_PLANE] = new Plane(rightNormal, ncr);
 		
+		Vector3 nctl = nct.add(right.multiply(-nearWidth/2));
+		Vector3 nctr = nct.add(right.multiply(nearWidth/2));
+		Vector3 ncbl = ncb.add(right.multiply(-nearWidth/2));
+		Vector3 ncbr = ncb.add(right.multiply(nearWidth/2));
+		
+		Vector3 fctlD = nctl.sub(camPos);
+		Vector3 fctrD = nctr.sub(camPos);
+		Vector3 fcblD = ncbl.sub(camPos);
+		Vector3 fcbrD = ncbr.sub(camPos);
+		
+		fctlD.normalize();
+		fctrD.normalize();
+		fcblD.normalize();
+		fcbrD.normalize();
+		
+		Vector3 fctl = nctl.add(fctlD.multiply(farClip));
+		Vector3 fctr = nctr.add(fctrD.multiply(farClip));
+		Vector3 fcbl = ncbl.add(fcblD.multiply(farClip));
+		Vector3 fcbr = ncbr.add(fcbrD.multiply(farClip));
+		
+		float[] points = {	nctl.x, nctl.y, nctl.z,
+							nctr.x, nctr.y, nctr.z,
+							ncbl.x, ncbl.y, ncbl.z,
+							ncbr.x, ncbr.y, ncbr.z, 
+							fctl.x, fctl.y, fctl.z,
+							fctr.x, fctr.y, fctr.z,
+							fcbl.x, fcbl.y, fcbl.z,
+							fcbr.x, fcbr.y, fcbr.z};
+		
+		aabb = AABB.createFromPoints(points, 3);
+	}
+	
+	public AABB getAABB() {
+		return aabb;
 	}
 	
 	public boolean pointInFrustum(Vector3 point) {

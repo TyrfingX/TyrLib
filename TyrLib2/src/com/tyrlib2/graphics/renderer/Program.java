@@ -35,6 +35,12 @@ public class Program {
 	 */
 	public void use() {
 		if (inUse != this) {
+			
+			if (inUse != null) {
+				inUse.mesh = null;
+				inUse.textureHandle = 0;
+			}
+			
 			GLES20.glUseProgram(handle);
 			inUse = this;
 			
@@ -49,5 +55,13 @@ public class Program {
 	
 	public void link() {
 		GLES20.glLinkProgram(handle);  
+	}
+	
+	public static void resetCache() {
+		if (inUse != null) {
+			inUse.mesh = null;
+			inUse.textureHandle = 0;
+			inUse = null;
+		}
 	}
 }
