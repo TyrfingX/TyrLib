@@ -91,7 +91,7 @@ public class FrameListener implements IFrameListener {
 			Vector2 lastPoint = null;
 			
 			@Override
-			public boolean onTouchMove(Vector2 point, MotionEvent event) {
+			public boolean onTouchMove(Vector2 point, MotionEvent event, int fingerId) {
 				Vector2 movement = lastPoint.vectorTo(point).multiply(30);
 				movement.y *= -1;
 				
@@ -103,7 +103,7 @@ public class FrameListener implements IFrameListener {
 			}
 			
 			@Override
-			public boolean onTouchDown(Vector2 point, MotionEvent event) {
+			public boolean onTouchDown(Vector2 point, MotionEvent event, int fingerId) {
 				lastPoint = new Vector2(point);
 				return true;
 			}

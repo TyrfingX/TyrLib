@@ -39,6 +39,9 @@ public class Emitter extends SceneObject implements IUpdateable {
 	// Random position added to the particle on creation
 	private Vector3 randomPos = new Vector3();
 	
+	// The velocity with which this emitter is being moved. Not affected by parent node rotation
+	private Vector3 movementVelocity = new Vector3();
+	
 	// The emitter is pausing
 	private boolean pause;
 	
@@ -79,7 +82,7 @@ public class Emitter extends SceneObject implements IUpdateable {
 	
 	public void emit() {
 		
-		Vector3 rotatedVelocity = parent.getCachedAbsoluteRot().multiply(velocity);
+		Vector3 rotatedVelocity = parent.getCachedAbsoluteRot().multiply(velocity).add(movementVelocity);
 		Vector3 rotatedRandomVelocity = parent.getCachedAbsoluteRot().multiply(randomVelocity);
 		
 		for (int i = 0; i < amount; ++i) {
@@ -130,6 +133,10 @@ public class Emitter extends SceneObject implements IUpdateable {
 
 	public void setRandomPos(Vector3 randomPos) { this.randomPos = randomPos; };
 	public Vector3 getRandomPos() { return randomPos; };
+	
+	public void setMovementVelocity(Vector3 movementVelocity) {
+		this.movementVelocity = movementVelocity;
+	}
 	
 	public void pause() {
 		pause = true;

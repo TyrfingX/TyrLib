@@ -406,9 +406,12 @@ public class OctreeNode extends BoundedSceneObject {
 	}
 	
 	private void queryObjects(ISceneQuery query) {
-		for (int i = 0; i < objects.size(); ++i) {
-			if (query.intersects(objects.get(i).getBoundingBox())) {
-				query.callback(objects.get(i));
+		int countObjects = objects.size();
+		BoundedSceneObject object;
+		for (int i = 0; i < countObjects; ++i)  {
+			object = objects.get(i);
+			if (query.intersects(object.getBoundingBox())) {
+				query.callback(object);
 			}
 		}
 	}

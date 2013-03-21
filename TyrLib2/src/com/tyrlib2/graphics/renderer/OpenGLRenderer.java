@@ -229,7 +229,14 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     	
     	Matrix.orthoM(proj, 0, -viewport.getWidth()*0.2f, viewport.getWidth()*1.2f, -viewport.getHeight()*0.2f, viewport.getHeight()*1.2f, -1, 1);
     	
-    	drawChannel(renderChannels.get(OVERLAY_CHANNEL), proj);
+    	RenderChannel channel = renderChannels.get(OVERLAY_CHANNEL);
+    	
+		// Draw all unbounded objects
+		if (channel.renderables != null) {
+		    for (int i = 0; i < channel.renderables.size(); ++i) {
+		    	channel.renderables.get(i).render(proj);
+		    }
+		}
     	
     }
 
@@ -254,12 +261,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	    
 	    if (lastTime != 0) {
 	    	
-	    	try {
-				Thread.sleep(5);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+
 	    	
 	    	long time = System.nanoTime();
 	    	long diff = time - lastTime;
@@ -283,6 +285,12 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
        for (int i = 0; i < frameListeners.size(); ++i) {
        	frameListeners.get(i).onSurfaceChanged();
        }
+       
+		if (init) {
+			ProgramManager.getInstance().recreateAll();
+			TextureManager.getInstance().reloadAll(context);
+			SceneManager.getInstance().recreateFonts(context);
+		}
     }
     
     /**
@@ -349,7 +357,11 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     public void addRenderable(BoundedRenderable renderable, int channel) {
     	RenderChannel renderChannel = renderChannels.get(channel);
     	if (renderChannel != null) {
-    		renderChannel.octree.addObject(renderable);
+    		if (channel != OVERLAY_CHANNEL) {
+    			renderChannel.octree.addObject(renderable);
+    		} else {
+    			renderChannel.renderables.add(renderable);
+    		}
     	} else {
     		renderChannel = new RenderChannel();
     		renderChannels.put(channel, renderChannel);

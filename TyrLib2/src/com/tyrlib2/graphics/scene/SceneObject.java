@@ -1,5 +1,6 @@
 package com.tyrlib2.graphics.scene;
 
+import com.tyrlib2.math.Quaternion;
 import com.tyrlib2.math.Vector3;
 
 /**
@@ -61,6 +62,19 @@ public abstract class SceneObject {
 		} 
 		
 		return new Vector3();
+	}
+	
+	public Quaternion getAbsoluteRotation() {
+		if (parent != null) {
+			Quaternion cached = parent.getCachedAbsoluteRot();
+			if (cached == null) {
+				cached = new Quaternion();
+			}
+			
+			return cached;
+		} 
+		
+		return new Quaternion();
 	}
 	
 	/**

@@ -31,6 +31,9 @@ public class Stats {
 	
 	
 	public void changeStat(String name, Float value) {
+		if (!stats.containsKey(name)) {
+			stats.put(name, 0f);
+		}
 		stats.put(name, stats.get(name) + value);
 	}
 	

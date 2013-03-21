@@ -1,16 +1,38 @@
 package com.tyrlib2.graphics.scene;
 
+import com.tyrlib2.graphics.renderables.BoundingBox;
 import com.tyrlib2.math.AABB;
 
 public abstract class BoundedSceneObject extends SceneObject {
 	
+	private boolean boundingBoxVisible;
+	private BoundingBox boundingBox;
+	
 	public abstract AABB getBoundingBox();
-	public abstract void setBoundingBoxVisible(boolean visible);
+	public void setBoundingBoxVisible(boolean visible) {
+		
+		if (!boundingBoxVisible && visible) {
+			AABB aabb = getBoundingBox();
+			boundingBox = new BoundingBox(aabb);
+			SceneManager.getInstance().getRootSceneNode().attachSceneObject(boundingBox);
+			SceneManager.getInstance().getRenderer().addRenderable(boundingBox);
+		} else if (boundingBoxVisible && !visible) {
+			SceneManager.getInstance().getRootSceneNode().detachSceneObject(boundingBox);
+			SceneManager.getInstance().getRenderer().removeRenderable(boundingBox);
+			boundingBox = null;
+		}
+		
+		boundingBoxVisible = visible;
+	}
+	
+	public boolean isBoundingBoxVisible() {
+		return boundingBoxVisible;
+	}
+	
 	protected void calcBoundingBox() {}
 
 	private boolean dirty;
 	protected OctreeNode octree;
-	protected int query = -1;
 	
 	@Override
 	public void onTransformed() {
@@ -19,6 +41,14 @@ public abstract class BoundedSceneObject extends SceneObject {
 		if (octree != null) {
 			octree.setDirty();
 		}
+		
+		if (boundingBoxVisible) {
+			updateBoundingBox();
+		}
+	}
+	
+	public void updateBoundingBox() {
+		boundingBox.setBoundingBox(getBoundingBox());
 	}
 	
 	@Override

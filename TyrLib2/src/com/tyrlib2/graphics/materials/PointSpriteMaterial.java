@@ -100,4 +100,8 @@ public class PointSpriteMaterial extends Material implements IBlendable {
 	public Texture getTexture() {
 		return texture;
 	}
+	
+	public float getSize() {
+		return size;
+	}
 }

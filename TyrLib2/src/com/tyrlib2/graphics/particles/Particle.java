@@ -62,4 +62,31 @@ public class Particle implements IUpdateable {
 	
 	public float getAge() { return passedTime; }
 	
+	public Particle copy() {
+		Particle particle = new Particle();
+		
+		particle.setMaterial(material);
+		particle.setLifeTime(lifeTime);
+		
+		return particle;
+	}
+
+	public Vector3 getPos() {
+		return pos;
+	}
+
+	public void setPos(Vector3 pos) {
+		this.pos = pos;
+	}
+
+	public Vector3 getVelocity() {
+		return velocity;
+	}
+
+	public void setVelocity(Vector3 velocity) {
+		this.velocity = velocity;
+	}
+	
+	
+	
 }

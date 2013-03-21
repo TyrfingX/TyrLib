@@ -11,17 +11,17 @@ public abstract class TouchListener implements ITouchListener {
 	}
 
 	@Override
-	public boolean onTouchDown(Vector2 point, MotionEvent event) {
+	public boolean onTouchDown(Vector2 point, MotionEvent event, int fingerId) {
 		return false;
 	}
 
 	@Override
-	public boolean onTouchUp(Vector2 point, MotionEvent event) {
+	public boolean onTouchUp(Vector2 point, MotionEvent event, int fingerId) {
 		return false;
 	}
 
 	@Override
-	public boolean onTouchMove(Vector2 point, MotionEvent event) {
+	public boolean onTouchMove(Vector2 point, MotionEvent event, int fingerId) {
 		return false;
 	}
 

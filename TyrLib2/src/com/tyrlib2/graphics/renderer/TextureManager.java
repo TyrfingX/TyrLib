@@ -38,9 +38,15 @@ public class TextureManager {
 	
 	public void destroy() {
 		instance = null;
+		textures.clear();
 	}
 	
 	public Texture createTexture(String name, Context context, int resourceId) {
+		
+		if (textures.get(name) != null) {
+			return textures.get(name);
+		}
+		
 	    final int[] textureHandle = new int[1];
 	    
 	    GLES20.glGenTextures(1, textureHandle, 0);
@@ -85,6 +91,15 @@ public class TextureManager {
 	    texture.resId = resourceId;
 	 
 	    return texture;
+	}
+	
+	public Texture createTexture(String name, Context context, String source) {
+		if (textures.get(name) != null) {
+			return textures.get(name);
+		}
+			
+		int id = context.getResources().getIdentifier(source, "drawable", context.getPackageName());
+		return createTexture(name, context, id);
 	}
 	
 	public void addUnnamedTexture(Texture texture) {

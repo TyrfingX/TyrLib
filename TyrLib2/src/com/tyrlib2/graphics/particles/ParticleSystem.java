@@ -16,9 +16,10 @@ import com.tyrlib2.game.IUpdateable;
 import com.tyrlib2.graphics.materials.PointSpriteMaterial;
 import com.tyrlib2.graphics.renderer.IRenderable;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
+import com.tyrlib2.graphics.scene.BoundedSceneObject;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.graphics.scene.SceneNode;
-import com.tyrlib2.graphics.scene.SceneObject;
+import com.tyrlib2.math.AABB;
 import com.tyrlib2.util.Color;
 import com.tyrlib2.util.FloatArray;
 
@@ -29,7 +30,7 @@ import com.tyrlib2.util.FloatArray;
  *
  */
 
-public class ParticleSystem extends SceneObject implements IUpdateable, IRenderable {
+public class ParticleSystem extends BoundedSceneObject implements IUpdateable, IRenderable {
 	
 	private float[] mvpMatrix = new float[16];
 	private float[] modelMatrix;
@@ -58,6 +59,7 @@ public class ParticleSystem extends SceneObject implements IUpdateable, IRendera
 	
 	private FloatBuffer buffer;
 	
+	private AABB boundingBox;
 	
 	public ParticleSystem() {
 		affectors = new ArrayList<Affector>();
@@ -67,6 +69,7 @@ public class ParticleSystem extends SceneObject implements IUpdateable, IRendera
 		materials = new ArrayList<PointSpriteMaterial>();
 		modelMatrix = SceneManager.getInstance().getRootSceneNode().getModelMatrix();
 		deadParticles = new Stack<Particle>();
+		boundingBox = new AABB();
 	}
 	
 	public ParticleSystem(int maxParticles) {
@@ -84,6 +87,14 @@ public class ParticleSystem extends SceneObject implements IUpdateable, IRendera
 	public void onUpdate(float time) {
 		
 		time /= steps;
+		
+		boundingBox.min.x = Float.MAX_VALUE;
+		boundingBox.min.y = Float.MAX_VALUE;
+		boundingBox.min.z = Float.MAX_VALUE;
+		
+		boundingBox.max.x = -Float.MAX_VALUE;
+		boundingBox.max.y = -Float.MAX_VALUE;
+		boundingBox.max.z = -Float.MAX_VALUE;
 		
 		// Update everything
 		
@@ -108,6 +119,16 @@ public class ParticleSystem extends SceneObject implements IUpdateable, IRendera
 						particleData.buffer[particle.dataIndex + 1] = particle.pos.y;
 						particleData.buffer[particle.dataIndex + 2] = particle.pos.z;
 						
+						float size = 0;
+						
+						if (particle.pos.x + size > boundingBox.max.x) boundingBox.max.x = particle.pos.x + size;
+						if (particle.pos.y + size > boundingBox.max.y) boundingBox.max.y = particle.pos.y + size;
+						if (particle.pos.z + size > boundingBox.max.z) boundingBox.max.z = particle.pos.z + size;
+						
+						if (particle.pos.x + size < boundingBox.min.x) boundingBox.min.x = particle.pos.x + size;
+						if (particle.pos.y + size < boundingBox.min.y) boundingBox.min.y = particle.pos.y + size;
+						if (particle.pos.z + size < boundingBox.min.z) boundingBox.min.z = particle.pos.z + size;
+						
 						Color color = particle.color;
 						particleData.buffer[particle.dataIndex + 3] = color.r;
 						particleData.buffer[particle.dataIndex + 4] = color.g;
@@ -130,7 +151,9 @@ public class ParticleSystem extends SceneObject implements IUpdateable, IRendera
 			}
 		
 		}
-		
+		if (isBoundingBoxVisible()) {
+			updateBoundingBox();
+		}
 	}
 	
 	public void addParticle(Particle particle) {
@@ -196,6 +219,10 @@ public class ParticleSystem extends SceneObject implements IUpdateable, IRendera
 	
 	public Emitter getEmitter(int index) {
 		return emitters.get(index);
+	}
+	
+	public int getCountEmitters() {
+		return emitters.size();
 	}
 	
 	public void addAffector(Affector affector) {
@@ -328,7 +355,10 @@ public class ParticleSystem extends SceneObject implements IUpdateable, IRendera
 	public void setSteps(int steps) {
 		this.steps = steps;
 	}
-	
-	
 
+	@Override
+	public AABB getBoundingBox() {
+		return boundingBox;
+	}
+	
 }

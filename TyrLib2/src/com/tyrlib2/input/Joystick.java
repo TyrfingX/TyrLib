@@ -52,31 +52,39 @@ public class Joystick implements ITouchListener {
 	 * 	the touched position as base state
 	 */
 	@Override
-	public boolean onTouchDown(Vector2 point, MotionEvent event) {
+	public boolean onTouchDown(Vector2 point, MotionEvent event, int fingerId) {
 		if (!active) {
 			active = true;
 			basePoint = point;
-			fingerId = event.getActionIndex();
+			
+			this.fingerId = fingerId;
 			
 			for (int i = 0; i < listeners.size(); ++i) {
 				listeners.get(i).onJoystickActivated();
 			}
+			
+			return true;
 		}
-		return true;
+		
+		return false;
+		
 	}
 
 	/**	The user stopped using the joystick, assuming this is the 
 	 * 	right touch stopping (considering multi touch)
 	 */
 	@Override
-	public boolean onTouchUp(Vector2 point, MotionEvent event) {
-		if (active && event.getActionIndex() == fingerId) {
+	public boolean onTouchUp(Vector2 point, MotionEvent event, int fingerId) {
+		if (active && fingerId == this.fingerId) {
 			active = false;
 			for (int i = 0; i < listeners.size(); ++i) {
 				listeners.get(i).onJoystickDeactivated();
 			}
+			
+			return false;
 		}
-		return true;
+		
+		return false;
 	}
 
 	
@@ -84,8 +92,8 @@ public class Joystick implements ITouchListener {
 	 * 	if its currently active
 	 */
 	@Override
-	public boolean onTouchMove(Vector2 point, MotionEvent event) {
-		if (active && event.getActionIndex() == fingerId) {
+	public boolean onTouchMove(Vector2 point, MotionEvent event, int fingerId) {
+		if (active && fingerId == this.fingerId) {
 			
 			Vector2 movement = basePoint.vectorTo(point);
 			float distance = movement.normalize();
@@ -95,8 +103,11 @@ public class Joystick implements ITouchListener {
 			for (int i = 0; i < listeners.size(); ++i) {
 				listeners.get(i).onJoystickMoved(movement);
 			}
+			
+			return true;
 		}
-		return true;
+		
+		return false;
 	}
 	
 	@Override

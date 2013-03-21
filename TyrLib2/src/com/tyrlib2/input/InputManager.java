@@ -38,39 +38,75 @@ public class InputManager {
 	}
 	
 	public boolean onTouch(View v, MotionEvent event) {
-		Vector2 point = new Vector2(event.getX() / v.getWidth(), event.getY() / v.getHeight());
+		int action = event.getAction();
+		int actionCode = action & MotionEvent.ACTION_MASK;
+	
+		if (actionCode != MotionEvent.ACTION_MOVE) {
 		
-		if (event.getActionMasked() == MotionEvent.ACTION_DOWN || event.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN)
-			touching = true;
-		else if (event.getActionMasked() == MotionEvent.ACTION_UP || event.getActionMasked() == MotionEvent.ACTION_POINTER_UP)
-			touching = false;
-		
-		lastTouch = new Vector2(point.x, point.y);
-		
-		PriorityQueue<ITouchListener> queue = new PriorityQueue<ITouchListener>(100, new ReversePriorityComparator());
-		for (ITouchListener listener : touchListeners)
-		{
-			if (listener.isEnabled())
+			PriorityQueue<ITouchListener> queue = new PriorityQueue<ITouchListener>(100, new ReversePriorityComparator());
+			for (ITouchListener listener : touchListeners)
 			{
-				queue.add(listener);
+				if (listener.isEnabled())
+				{
+					queue.add(listener);
+				}
 			}
-		}
-		
-		while (!queue.isEmpty())
-		{
-			ITouchListener listener = queue.poll();
-			if (event.getActionMasked() == MotionEvent.ACTION_DOWN || event.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN)
+			
+			
+			int pid = action >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+			int id = event.getPointerId(pid);
+			
+			Vector2 point = new Vector2(event.getX(pid) / v.getWidth(), event.getY(pid) / v.getHeight());
+			
+			if (actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_POINTER_DOWN)
+				touching = true;
+			else if (actionCode == MotionEvent.ACTION_UP || actionCode == MotionEvent.ACTION_POINTER_UP)
+				touching = false;
+			
+			lastTouch = new Vector2(point.x, point.y);
+			
+			while (!queue.isEmpty())
 			{
-				if (listener.onTouchDown(point, event)) break;
+				ITouchListener listener = queue.poll();
+				if (actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_POINTER_DOWN)
+				{
+					if (listener.onTouchDown(point, event, id)) break;
+				}
+				else if (actionCode == MotionEvent.ACTION_UP || actionCode == MotionEvent.ACTION_POINTER_UP)
+				{	
+					if (listener.onTouchUp(point, event, id)) break;
+				}
 			}
-			else if (event.getActionMasked() == MotionEvent.ACTION_UP || event.getActionMasked() == MotionEvent.ACTION_POINTER_UP)
-			{	
-				if (listener.onTouchUp(point, event)) break;
+		
+		} else {
+			
+			int countPointers = event.getPointerCount();
+			for (int i = 0; i < countPointers; ++i) {
+				
+				PriorityQueue<ITouchListener> queue = new PriorityQueue<ITouchListener>(100, new ReversePriorityComparator());
+				for (ITouchListener listener : touchListeners)
+				{
+					if (listener.isEnabled())
+					{
+						queue.add(listener);
+					}
+				}
+				
+				
+				int id = event.getPointerId(i);
+				
+				Vector2 point = new Vector2(event.getX(i) / v.getWidth(), event.getY(i) / v.getHeight());
+				
+				lastTouch = new Vector2(point.x, point.y);
+				
+				while (!queue.isEmpty())
+				{
+					ITouchListener listener = queue.poll();	
+			        if (listener.onTouchMove(point, event, id)) break;
+				}
+			
 			}
-			else if (event.getActionMasked() == MotionEvent.ACTION_MOVE)
-			{	
-				if (listener.onTouchMove(point, event)) break;
-			}
+			
 		}
 		
 		return true;

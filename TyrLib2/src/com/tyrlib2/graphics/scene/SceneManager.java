@@ -12,12 +12,16 @@ import com.tyrlib2.graphics.lighting.Light;
 import com.tyrlib2.graphics.lighting.LightingType;
 import com.tyrlib2.graphics.lighting.PointLight;
 import com.tyrlib2.graphics.materials.DefaultMaterial3;
+import com.tyrlib2.graphics.particles.IParticleSystemFactory;
+import com.tyrlib2.graphics.particles.ParticleSystem;
+import com.tyrlib2.graphics.particles.XMLParticleSystemFactory;
 import com.tyrlib2.graphics.renderables.Box;
 import com.tyrlib2.graphics.renderables.Entity;
 import com.tyrlib2.graphics.renderables.FormattedText2;
 import com.tyrlib2.graphics.renderables.Image2;
 import com.tyrlib2.graphics.renderables.Line2;
 import com.tyrlib2.graphics.renderables.Rectangle2;
+import com.tyrlib2.graphics.renderables.Skybox;
 import com.tyrlib2.graphics.renderables.Text2;
 import com.tyrlib2.graphics.renderer.Camera;
 import com.tyrlib2.graphics.renderer.IFrameListener;
@@ -28,6 +32,7 @@ import com.tyrlib2.graphics.renderer.TextureAtlas;
 import com.tyrlib2.graphics.renderer.Viewport;
 import com.tyrlib2.graphics.text.Font;
 import com.tyrlib2.graphics.text.GLText;
+import com.tyrlib2.main.OpenGLActivity;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.util.Color;
@@ -52,6 +57,9 @@ public class SceneManager {
 	/** Factories for creating entities **/
 	private Map<String, IEntityFactory> entityFactories;
 	
+	/** Factories for creating particle systems **/
+	private Map<String, IParticleSystemFactory> particleSystemFactories;
+	
 	/** Loaded fonts **/
 	private Map<String, Font> fonts;
 	
@@ -70,6 +78,7 @@ public class SceneManager {
 		ambientLight = new Color(0.5f,0.5f,0.5f,0);
 		
 		entityFactories = new HashMap<String, IEntityFactory>();
+		particleSystemFactories = new HashMap<String, IParticleSystemFactory>();
 		
 		fonts = new HashMap<String, Font>();
 		
@@ -242,6 +251,28 @@ public class SceneManager {
 		return entity;
 	}
 	
+	public ParticleSystem createParticleSystem(Context context, String path) {
+		if (particleSystemFactories.containsKey(path)) {
+			ParticleSystem particleSystem = particleSystemFactories.get(path).create();
+			renderer.addRenderable(particleSystem);
+			return particleSystem;
+		}
+		
+		IParticleSystemFactory factory = null;
+		
+		if (path.endsWith("xml")) {
+			factory = new XMLParticleSystemFactory(path, context);
+			particleSystemFactories.put(path, factory);
+		} else {
+			throw new RuntimeException("Format for loading particle system " +  path + " not supported!");
+		}
+		
+		ParticleSystem particleSystem = factory.create();
+		renderer.addRenderable(particleSystem);
+		
+		return particleSystem;
+	}
+	
 	public Rectangle2 createRectangle2(Vector2 size, Color color) {
 		Rectangle2 rect = new Rectangle2(size, color);
 		renderer.addRenderable(rect, OpenGLRenderer.OVERLAY_CHANNEL);
@@ -331,5 +362,13 @@ public class SceneManager {
 	
 	public TextureAtlas getTextureAtlas(String name) {
 		return atlases.get(name);
+	}
+	
+	public Skybox createSkybox(Context context, String texture, Vector3 extents) {
+		Skybox.enableSkyboxes(OpenGLActivity.CONTEXT);
+		Skybox skybox = new Skybox(texture, extents.multiply(-1), extents);
+		SceneManager.getInstance().getRenderer().addRenderable(skybox, OpenGLRenderer.BACKGROUND_CHANNEL);
+		
+		return skybox;
 	}
 }

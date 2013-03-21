@@ -29,13 +29,13 @@ public class SceneNode {
 	protected Vector3 pos = new Vector3();
 	
 	/** Absolute Position of this node in the world **/
-	protected Vector3 absolutePos;
+	protected Vector3 absolutePos = new Vector3();
 	
 	/** Rotation of this node relative to its parent **/
 	protected Quaternion rot;
 	
 	/** Absolute rotation in the world **/
-	protected Quaternion absoluteRot;
+	protected Quaternion absoluteRot = new Quaternion();
 	
 	/** relative scaling of this node to the parent node **/
 	protected Vector3 scale = new Vector3(1,1,1);

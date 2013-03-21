@@ -9,7 +9,9 @@ public class FrustumG {
 	public static final int RIGHT_CLIP_PLANE = 4;
 	public static final int TOP_CLIP_PLANE = 5;
 	
-	public Plane[] planes = new Plane[6];
+	public static final int COUNT_PLANES = 6;
+	
+	public Plane[] planes = new Plane[COUNT_PLANES];
 	private Vector3 p = new Vector3();
 	private AABB aabb;
 	
@@ -95,7 +97,7 @@ public class FrustumG {
 	
 	public boolean aabbInFrustum(AABB aabb) {
 		
-		for (int i = 0; i < planes.length; ++i) {
+		for (int i = 1; i < COUNT_PLANES; ++i) {
 			
 			if (planes[i].normal.x >= 0) {
 				p.x = aabb.max.x;
@@ -117,8 +119,9 @@ public class FrustumG {
 			
 			
 			// is the positive vertex outside?
-			if (planes[i].distance(p) < 0)
+			if (planes[i].distance(p) < 0) {
 				return false;
+			}
 		}
 		
 		return true;

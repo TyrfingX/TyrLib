@@ -386,7 +386,7 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	}
 	
 	@Override
-	public boolean onTouchDown(Vector2 point, MotionEvent event) {
+	public boolean onTouchDown(Vector2 point, MotionEvent event, int fingerId) {
 		point = new Vector2(point.x, 1-point.y);
 		Vector2 pos = getAbsolutePos();
 		if (Rectangle.pointInRectangle(pos, size, point)) {
@@ -414,7 +414,7 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	}
 	
 	@Override
-	public boolean onTouchUp(Vector2 point, MotionEvent event) {
+	public boolean onTouchUp(Vector2 point, MotionEvent event, int fingerId) {
 		point = new Vector2(point.x, 1-point.y);
 		Vector2 pos = getAbsolutePos();
 		if (Rectangle.pointInRectangle(pos, size, point)) {
@@ -448,7 +448,7 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	 */
 	
 	@Override
-	public boolean onTouchMove(Vector2 point, MotionEvent event) {
+	public boolean onTouchMove(Vector2 point, MotionEvent event, int fingerId) {
 		point = new Vector2(point.x, 1-point.y);
 		Vector2 pos = getAbsolutePos();
 		if (Rectangle.pointInRectangle(pos, size, point)) {

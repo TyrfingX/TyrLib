@@ -4,6 +4,8 @@ import android.opengl.GLES20;
 import android.opengl.Matrix;
 
 import com.tyrlib2.graphics.materials.ColoredMaterial;
+import com.tyrlib2.graphics.renderer.Material;
+import com.tyrlib2.graphics.renderer.Mesh;
 import com.tyrlib2.graphics.renderer.Renderable;
 import com.tyrlib2.math.AABB;
 import com.tyrlib2.math.Vector3;
@@ -41,7 +43,7 @@ public class BoundingBox extends Renderable {
 		};
 		
 		ColoredMaterial mat = new ColoredMaterial(new Color[] { Color.getRandomColor() });
-		mat.setAlpha(0.05f);
+		mat.setAlpha(0.3f);
 		this.material = mat;
 		
 		Matrix.setIdentityM(unitMatrix, 0);
@@ -69,5 +71,29 @@ public class BoundingBox extends Renderable {
 	
 	public void setBoundingBox(AABB boundingBox) {
 		this.boundingBox = boundingBox;
+		
+		// Get the new vertex positions of the bounding box
+		
+		Vector3 min = boundingBox.min;
+		Vector3 max = boundingBox.max;
+		
+		float[] pointsTransformed = {	
+				min.x, min.y, min.z,1,
+				max.x, min.y, min.z,1,
+				min.x, max.y, min.z,1,
+				max.x, max.y, min.z,1,
+				min.x, min.y, max.z,1,
+				max.x, min.y, max.z,1,
+				min.x, max.y, max.z,1,
+				max.x, max.y, max.z,1,
+		};
+		
+		Mesh mesh = this.getMesh();
+		Material mat = this.getMaterial();
+		for (int i = 0; i < 8; ++i) {
+			mesh.setVertexInfo(i*mat.getByteStride() + 0, pointsTransformed[i*4 + 0]);
+			mesh.setVertexInfo(i*mat.getByteStride() + 1, pointsTransformed[i*4 + 1]);
+			mesh.setVertexInfo(i*mat.getByteStride() + 2, pointsTransformed[i*4 + 2]);
+		}
 	}
 }
