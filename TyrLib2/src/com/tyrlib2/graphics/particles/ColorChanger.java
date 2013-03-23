@@ -23,13 +23,13 @@ public class ColorChanger extends Affector {
 	
 	@Override
 	public void onUpdate(Particle particle, float time) {
-		Color color = particle.color;
-		color.r += colorChange.r * time;
-		color.g += colorChange.g * time;
-		color.b += colorChange.b * time;
-		color.a += colorChange.a * time;
 		
-		color.clamp();
+		particle.floatArray.buffer[particle.dataIndex + 3] += colorChange.r * time;
+		particle.floatArray.buffer[particle.dataIndex + 4] += colorChange.g * time;
+		particle.floatArray.buffer[particle.dataIndex + 5] += colorChange.b * time;
+		particle.floatArray.buffer[particle.dataIndex + 6] += colorChange.a * time;
+		
+		//color.clamp();
 	}
 
 	@Override

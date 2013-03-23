@@ -35,7 +35,10 @@ public class ForceAffector extends Affector {
 		
 		if (radialDependency != 0) {
 			float factor = 1;
-			Vector3 vectorTo = this.getAbsolutePos().vectorTo(particle.pos);
+			Vector3 absolutePos = this.getAbsolutePos();
+			Vector3 vectorTo = new Vector3(	particle.floatArray.buffer[particle.dataIndex] - absolutePos.x,
+											particle.floatArray.buffer[particle.dataIndex+1] - absolutePos.y,
+											particle.floatArray.buffer[particle.dataIndex+2] - absolutePos.z);
 			float distance = vectorTo.normalize();
 			factor /= (float) (Math.pow(distance, radialDependency));
 			

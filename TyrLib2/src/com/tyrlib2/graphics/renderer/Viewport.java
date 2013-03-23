@@ -18,7 +18,7 @@ public class Viewport {
 	private float ratio;
 	
 	private int nearClip = 3;
-	private int farClip = 800;
+	private int farClip = 700;
 	
 	/**
 	 * Creates a blank view port

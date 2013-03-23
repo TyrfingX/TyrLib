@@ -4,6 +4,7 @@ import com.tyrlib2.game.IUpdateable;
 import com.tyrlib2.graphics.materials.PointSpriteMaterial;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.util.Color;
+import com.tyrlib2.util.FloatArray;
 
 /**
  * This represents a single particle
@@ -14,7 +15,7 @@ import com.tyrlib2.util.Color;
 public class Particle implements IUpdateable {
 	
 	protected PointSpriteMaterial material;
-	protected Vector3 pos;
+	protected Vector3 pos = new Vector3();
 	protected Vector3 velocity;
 	protected Vector3 acceleration = new Vector3();
 	protected Color color = Color.WHITE;
@@ -23,8 +24,8 @@ public class Particle implements IUpdateable {
 	protected float passedTime;
 	
 	protected int dataIndex;
+	protected FloatArray floatArray;
 	protected ParticleSystem system;
-	
 	
 	public Particle() {
 	}
@@ -37,10 +38,10 @@ public class Particle implements IUpdateable {
 		velocity.y += time * acceleration.y;
 		velocity.z += time * acceleration.z;
 		
-		pos.x += time * velocity.x;
-		pos.y += time * velocity.y;
-		pos.z += time * velocity.z;
-		
+		floatArray.buffer[dataIndex] += time * velocity.x;
+		floatArray.buffer[dataIndex + 1] += time * velocity.y;
+		floatArray.buffer[dataIndex + 2] +=  time * velocity.z;
+
 	}
 	
 	@Override
@@ -72,11 +73,20 @@ public class Particle implements IUpdateable {
 	}
 
 	public Vector3 getPos() {
+		pos.x = floatArray.buffer[dataIndex];
+		pos.y = floatArray.buffer[dataIndex + 1];
+		pos.z = floatArray.buffer[dataIndex + 2];
 		return pos;
 	}
 
 	public void setPos(Vector3 pos) {
 		this.pos = pos;
+		
+		if (floatArray != null) {
+			floatArray.buffer[dataIndex] = pos.x;
+			floatArray.buffer[dataIndex + 1] = pos.y;
+			floatArray.buffer[dataIndex + 2] =  pos.z;
+		}
 	}
 
 	public Vector3 getVelocity() {

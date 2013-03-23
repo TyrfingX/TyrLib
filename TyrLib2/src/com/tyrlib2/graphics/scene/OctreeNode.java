@@ -83,24 +83,30 @@ public class OctreeNode extends BoundedSceneObject {
 			return;
 		}
 		
+		if (objects.size() <= maximumObjectsPerNode && parentOctree == null && children == null) {
+			sceneObject.octree = this;
+			objects.add(sceneObject);
+			
+			if (children == null && parentOctree == null) {
+				Vector3 pos = sceneObject.getAbsolutePos();
+				if (pos != null) {
+					float distance = sceneObject.getAbsolutePos().vectorTo(center).length();
+					if (dimension/2 < distance ) {
+						dimension = 3 * distance;
+						
+						boundingBox = new AABB(	new Vector3(-dimension/2+center.x, -dimension/2+center.y, -dimension/2+center.z),
+												new Vector3(dimension/2+center.x, dimension/2+center.y, dimension/2+center.z));
+					}
+				}
+			}
+			return;
+		}
+		
 		if (boundingBox.containsAABB(aabb)) {
 		
 			if (objects.size() <= maximumObjectsPerNode) {
 				sceneObject.octree = this;
 				objects.add(sceneObject);
-				
-				if (children == null && parentOctree == null) {
-					Vector3 pos = sceneObject.getAbsolutePos();
-					if (pos != null) {
-						float distance = sceneObject.getAbsolutePos().vectorTo(center).length();
-						if (dimension/2 < distance ) {
-							dimension = 3 * distance;
-							
-							boundingBox = new AABB(	new Vector3(-dimension/2+center.x, -dimension/2+center.y, -dimension/2+center.z),
-													new Vector3(dimension/2+center.x, dimension/2+center.y, dimension/2+center.z));
-						}
-					}
-				}
 			} else {
 				
 				if (children == null) {

@@ -21,9 +21,6 @@ public class Emitter extends SceneObject implements IUpdateable {
 	// The amount of particles emitted in each step
 	protected int amount;
 	
-	// Accumulated time
-	private float passedTime;
-	
 	// A factory to create the particles
 	private IParticleFactory particleFactory;
 	
@@ -65,15 +62,11 @@ public class Emitter extends SceneObject implements IUpdateable {
 	
 	@Override
 	public void onUpdate(float time) {
-		passedTime += time;
-		
-		while (passedTime >= interval) {
-			passedTime -= interval;
-			
-			if (!pause && system.allowsMoreParticles()) {
-				emit();
-			}
+
+		if (!pause && system.allowsMoreParticles()) {
+			emit();
 		}
+
 	}
 	
 	/**
@@ -85,13 +78,15 @@ public class Emitter extends SceneObject implements IUpdateable {
 		Vector3 rotatedVelocity = parent.getCachedAbsoluteRot().multiply(velocity).add(movementVelocity);
 		Vector3 rotatedRandomVelocity = parent.getCachedAbsoluteRot().multiply(randomVelocity);
 		
-		for (int i = 0; i < amount; ++i) {
+		for (int i = 0; i < amount && system.allowsMoreParticles(); ++i) {
 			Particle particle = particleFactory.create(system.requestDeadParticle());
-			particle.pos = new Vector3(parent.getCachedAbsolutePos());
+			Vector3 particlePos = new Vector3(parent.getCachedAbsolutePos());
+
+			particlePos.x += (0.5f-random.nextFloat()) * randomPos.x;
+			particlePos.y += (0.5f-random.nextFloat()) * randomPos.y;
+			particlePos.z += (0.5f-random.nextFloat()) * randomPos.z;
 			
-			particle.pos.x += (0.5f-random.nextFloat()) * randomPos.x;
-			particle.pos.y += (0.5f-random.nextFloat()) * randomPos.y;
-			particle.pos.z += (0.5f-random.nextFloat()) * randomPos.z;
+			particle.setPos(particlePos);
 			
 			Vector3 v = new Vector3(rotatedVelocity.x + (0.5f-random.nextFloat()) * rotatedRandomVelocity.x,
 									rotatedVelocity.y + (0.5f-random.nextFloat()) * rotatedRandomVelocity.y,

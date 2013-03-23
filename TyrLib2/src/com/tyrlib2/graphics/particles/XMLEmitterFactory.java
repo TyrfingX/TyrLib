@@ -124,7 +124,7 @@ public class XMLEmitterFactory implements IEmitterFactory {
 							} 
 						}
 						
-						prototype.setRandomVelocity(rndPosition);
+						prototype.setRandomPos(rndPosition);
 					}
 				} else if (eventType == XmlPullParser.END_TAG) {
 					String elementName = parser.getName();

@@ -20,7 +20,6 @@ import com.tyrlib2.graphics.scene.BoundedSceneObject;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.graphics.scene.SceneNode;
 import com.tyrlib2.math.AABB;
-import com.tyrlib2.util.Color;
 import com.tyrlib2.util.FloatArray;
 
 /**
@@ -35,7 +34,10 @@ public class ParticleSystem extends BoundedSceneObject implements IUpdateable, I
 	private float[] mvpMatrix = new float[16];
 	private float[] modelMatrix;
 	
-	private List<Affector> affectors;
+	public static final int MIN_AFFECTORS_SIZE = 5;
+	private Affector[] affectors;
+	private int countAffectors;
+	
 	private List<Emitter> emitters;
 	private List<PointSpriteMaterial> materials;
 	private Stack<Particle> deadParticles;
@@ -62,7 +64,7 @@ public class ParticleSystem extends BoundedSceneObject implements IUpdateable, I
 	private AABB boundingBox;
 	
 	public ParticleSystem() {
-		affectors = new ArrayList<Affector>();
+		affectors = new Affector[MIN_AFFECTORS_SIZE];
 		emitters = new ArrayList<Emitter>();
 		particleMap = new HashMap<PointSpriteMaterial, List<Particle>>();
 		particleDataMap = new HashMap<PointSpriteMaterial, FloatArray>();
@@ -100,48 +102,28 @@ public class ParticleSystem extends BoundedSceneObject implements IUpdateable, I
 		
 		for (int l = 0; l < steps; ++l) {
 		
-			for (int j = 0; j < materials.size(); ++j) {
+			int countMaterials = materials.size();
+			for (int j = 0; j < countMaterials; ++j) {
 				
 				PointSpriteMaterial material = materials.get(j);
 				List<Particle> particles = particleMap.get(material);
-				for (int i = 0; i < particles.size(); ++i) {
+				int countParticles = particles.size();
+				for (int i = 0; i < countParticles; ++i) {
+					
 					Particle particle = particles.get(i);
 					particle.onUpdate(time);
+					
 					particle.acceleration.x = 0;
 					particle.acceleration.y = 0;
 					particle.acceleration.z = 0;
+					
 					if (particle.isFinished()) {
 						removeParticle(i, material);
 						--i;
+						--countParticles;
 					} else {
-						FloatArray particleData = particleDataMap.get(material);
-						particleData.buffer[particle.dataIndex + 0] = particle.pos.x;
-						particleData.buffer[particle.dataIndex + 1] = particle.pos.y;
-						particleData.buffer[particle.dataIndex + 2] = particle.pos.z;
-						
-						float size = 0;
-						
-						if (particle.pos.x + size > boundingBox.max.x) boundingBox.max.x = particle.pos.x + size;
-						if (particle.pos.y + size > boundingBox.max.y) boundingBox.max.y = particle.pos.y + size;
-						if (particle.pos.z + size > boundingBox.max.z) boundingBox.max.z = particle.pos.z + size;
-						
-						if (particle.pos.x + size < boundingBox.min.x) boundingBox.min.x = particle.pos.x + size;
-						if (particle.pos.y + size < boundingBox.min.y) boundingBox.min.y = particle.pos.y + size;
-						if (particle.pos.z + size < boundingBox.min.z) boundingBox.min.z = particle.pos.z + size;
-						
-						Color color = particle.color;
-						particleData.buffer[particle.dataIndex + 3] = color.r;
-						particleData.buffer[particle.dataIndex + 4] = color.g;
-						particleData.buffer[particle.dataIndex + 5] = color.b;
-						particleData.buffer[particle.dataIndex + 6] = color.a;
-					
-						for (int k = 0; k < affectors.size(); ++k) {
-							Affector affector = affectors.get(k);
-							if (affector.isApplicable(particle, time)) {
-								affector.onUpdate(particle, time);
-							}
-						}
-					
+						checkBoundingBox(particle);
+						useAffectors(particle, time);
 					}
 				}
 			}
@@ -151,8 +133,28 @@ public class ParticleSystem extends BoundedSceneObject implements IUpdateable, I
 			}
 		
 		}
+		
 		if (isBoundingBoxVisible()) {
 			updateBoundingBox();
+		}
+	}
+	
+	
+	private void checkBoundingBox(Particle particle) {
+		if (particle.pos.x > boundingBox.max.x) boundingBox.max.x = particle.pos.x;
+		if (particle.pos.y > boundingBox.max.y) boundingBox.max.y = particle.pos.y;
+		if (particle.pos.z > boundingBox.max.z) boundingBox.max.z = particle.pos.z;
+		
+		if (particle.pos.x < boundingBox.min.x) boundingBox.min.x = particle.pos.x;
+		if (particle.pos.y < boundingBox.min.y) boundingBox.min.y = particle.pos.y;
+		if (particle.pos.z < boundingBox.min.z) boundingBox.min.z = particle.pos.z;
+	}
+	
+	private void useAffectors(Particle particle, float time) {
+		for (int k = 0; k < countAffectors; ++k) {
+			if (affectors[k].isApplicable(particle, time)) {
+				affectors[k].onUpdate(particle, time);
+			}
 		}
 	}
 	
@@ -170,6 +172,7 @@ public class ParticleSystem extends BoundedSceneObject implements IUpdateable, I
 	
 		FloatArray particleData = particleDataMap.get(material);
 		particle.dataIndex = particleData.getSize();
+		particle.floatArray = particleData;
 		
 		particleData.pushBack(particle.pos.x);
 		particleData.pushBack(particle.pos.y);
@@ -226,7 +229,14 @@ public class ParticleSystem extends BoundedSceneObject implements IUpdateable, I
 	}
 	
 	public void addAffector(Affector affector) {
-		affectors.add(affector);
+		if (countAffectors == affectors.length) {
+			Affector[] newAffectors = new Affector[countAffectors * 2];
+			System.arraycopy(affectors, 0, newAffectors, 0, countAffectors);
+			affectors = newAffectors;
+		}
+		
+		affectors[countAffectors++] = affector;
+		
 		affector.setParticleSystem(this);
 	}
 	
@@ -236,8 +246,8 @@ public class ParticleSystem extends BoundedSceneObject implements IUpdateable, I
 		for (Emitter emitter : emitters) {
 			parent.attachChild(emitter.getParent());
 		}
-		for (Affector affector : affectors) {
-			affector.attachTo(node);
+		for (int i = 0; i < countAffectors; ++i) {
+			affectors[i].attachTo(node);
 		}
 	}
 	
@@ -247,8 +257,8 @@ public class ParticleSystem extends BoundedSceneObject implements IUpdateable, I
 		for (Emitter emitter : emitters) {
 			emitter.detach();
 		}
-		for (Affector affector : affectors) {
-			affector.detach();
+		for (int i = 0; i < countAffectors; ++i) {
+			affectors[i].detach();
 		}
 		return super.detach();	
 	}
@@ -274,10 +284,12 @@ public class ParticleSystem extends BoundedSceneObject implements IUpdateable, I
 			PointSpriteMaterial material = materials.get(i);
 			FloatArray particleData = particleDataMap.get(material);
 			
-			if (particleData.getSize() > 0) {
+			int size = particleData.getSize();
+			
+			if (size > 0) {
 
 		        buffer.clear();
-		        buffer.put(particleData.buffer, 0, particleData.getSize());
+		        buffer.put(particleData.buffer, 0, size);
 		        buffer.position(0);
 		        				
 				material.getProgram().use();
@@ -337,8 +349,11 @@ public class ParticleSystem extends BoundedSceneObject implements IUpdateable, I
 	public ParticleSystem copy() {
 		ParticleSystem other = new ParticleSystem(maxParticles);
 		
-		for (int i = 0; i < affectors.size(); ++i) {
-			other.addAffector(affectors.get(i).copy());
+		other.affectors = new Affector[countAffectors];
+		other.countAffectors = countAffectors;
+		
+		for (int i = 0; i < countAffectors; ++i) {
+			other.affectors[i] = affectors[i].copy();
 		}
 
 		for (int i = 0; i < emitters.size(); ++i) {

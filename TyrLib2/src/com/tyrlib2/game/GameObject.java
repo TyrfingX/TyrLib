@@ -1,8 +1,8 @@
 package com.tyrlib2.game;
 
-import com.tyrlib2.graphics.scene.SceneObject;
+import com.tyrlib2.graphics.scene.BoundedSceneObject;
 
-public abstract class GameObject extends SceneObject implements IUpdateable {
+public abstract class GameObject extends BoundedSceneObject implements IUpdateable {
 	
 	protected Stats stats;
 	
@@ -14,6 +14,9 @@ public abstract class GameObject extends SceneObject implements IUpdateable {
 	public void onUpdate(float time) {
 	}
 
+	public void onCollide(GameObject object) {
+	}
+	
 	@Override
 	public boolean isFinished() {
 		return false;
