@@ -69,5 +69,14 @@ public class ProgressBar extends Window {
 	public Color getBarColor() {
 		return bar.getColor();
 	}
+	
+	public Overlay getBar() {
+		return bar;
+	}
+	
+	@Override
+	public float getAlpha() {
+		return bar.getAlpha();
+	}
 
 }

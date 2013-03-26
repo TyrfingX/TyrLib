@@ -37,4 +37,8 @@ public abstract class GameObject extends BoundedSceneObject implements IUpdateab
 	public void changeStat(String name, float value) {
 		stats.changeStat(name, value);
 	}
+	
+	public void changeStats(Stats stats) {
+		stats.changeStats(stats);
+	}
 }

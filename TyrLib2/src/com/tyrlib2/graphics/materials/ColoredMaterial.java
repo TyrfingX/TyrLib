@@ -24,7 +24,7 @@ public class ColoredMaterial extends Material implements IBlendable {
 	private int colorHandle;
 	private Color[] colors;
 
-	private float alpha = 1;
+	private Color color = Color.WHITE.copy();
 	
 	public ColoredMaterial(Color[] colors) {
 		
@@ -46,8 +46,8 @@ public class ColoredMaterial extends Material implements IBlendable {
 	 
 	    GLES20.glEnableVertexAttribArray(colorHandle);
 	    
-	    int alphaHandle = GLES20.glGetUniformLocation(program.handle, "u_Alpha");
-	    GLES20.glUniform1f(alphaHandle, alpha);
+	    int alphaHandle = GLES20.glGetUniformLocation(program.handle, "u_Color");
+	    GLES20.glUniform4f(alphaHandle, color.r, color.g, color.b, color.a);
 	    
 	    GLES20.glEnable( GLES20.GL_BLEND );
 	    GLES20.glBlendFunc( GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA );
@@ -58,11 +58,23 @@ public class ColoredMaterial extends Material implements IBlendable {
 	}
 	
 	public void setAlpha(float alpha) {
-		this.alpha = alpha;
+		color.a = alpha;
 	}
 	
 	public float getAlpha() {
-		return alpha;
+		return color.a;
+	}
+	
+	public void setColor(Color color) {
+		this.color = color;
+	}
+	
+	public Color getColor() {
+		return color;
+	}
+	
+	public int getColorOffset() {
+		return colorOffset;
 	}
 	
 	/**

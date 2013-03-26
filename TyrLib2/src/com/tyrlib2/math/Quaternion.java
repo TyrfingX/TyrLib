@@ -112,6 +112,25 @@ public class Quaternion {
 	/**
 	 * Multiply this quaternion with another
 	 * @param other
+	 * @param result
+	 */
+	public void multiply(Quaternion other, Quaternion result) {
+
+		float angle = (w * other.w) - (x * other.x + y * other.y + z * other.z);
+		
+		float crossX = y * other.z - z * other.y;
+		float crossY = -(x * other.z - z * other.x);
+		float crossZ = x * other.y - y * other.x;
+
+		result.x = x * other.w + other.x * w + crossX;
+		result.y = y * other.w + other.y * w + crossY;
+		result.z = z * other.w + other.z * w + crossZ;
+		result.w = angle;
+	}
+	
+	/**
+	 * Multiply this quaternion with another
+	 * @param other
 	 */
 	public void multiplyNoTmp(Quaternion other) {
 
@@ -243,12 +262,12 @@ public class Quaternion {
 		  this.invert();
 		  vectorQuaternion.multiplyNoTmp(this);
 		  this.invert();
-		  Quaternion resultQuaternion = this.multiply(vectorQuaternion);
+		  Quaternion result = this.multiply(vectorQuaternion);
 		  
 		  Vector3 resultVector = new Vector3();
-		  resultVector.x = resultQuaternion.x;
-		  resultVector.y = resultQuaternion.y;
-		  resultVector.z = resultQuaternion.z;
+		  resultVector.x = result.x;
+		  resultVector.y = result.y;
+		  resultVector.z = result.z;
 		  
 		  return resultVector;
 		}

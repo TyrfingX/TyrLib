@@ -50,8 +50,8 @@ public class Rectangle2 extends Renderable2 {
 								new Vector3(0, -size.y, 0),
 								new Vector3(size.x, -size.y, 0) };
 
-		Material material = new ColoredMaterial(new Color[] { color });
-
+		Material material = new ColoredMaterial(new Color[] { Color.WHITE.copy() });
+		
 		init(material, points, DRAW_ORDER_QUAD);
 
 		if (borderDrawOrderBuffer == null) {
@@ -62,6 +62,8 @@ public class Rectangle2 extends Renderable2 {
 			borderDrawOrderBuffer.put(DRAW_ORDER_BORDER);
 			borderDrawOrderBuffer.position(0);
 		}
+		
+		setColor(color);
 	}
 	
 	public Rectangle2(Vector2 size) {
@@ -120,5 +122,6 @@ public class Rectangle2 extends Renderable2 {
 	
 	public void setColor(Color color) {
 		this.color = color;
+		((ColoredMaterial) material).setColor(color);
 	}
 }

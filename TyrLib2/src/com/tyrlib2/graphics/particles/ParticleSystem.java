@@ -4,9 +4,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Stack;
 
 import android.opengl.GLES20;
@@ -39,11 +37,15 @@ public class ParticleSystem extends BoundedSceneObject implements IUpdateable, I
 	private int countAffectors;
 	
 	private List<Emitter> emitters;
-	private List<PointSpriteMaterial> materials;
 	private Stack<Particle> deadParticles;
 	
-	protected Map<PointSpriteMaterial, FloatArray> particleDataMap;
-	protected Map<PointSpriteMaterial, List<Particle>> particleMap;
+	private class ParticleBatch {
+		FloatArray particleData ;
+		List<Particle> particles = new ArrayList<Particle>();
+		PointSpriteMaterial material;
+	}
+	
+	List<ParticleBatch> particleBatches;
 	
 	private int maxParticles;
 	
@@ -63,12 +65,12 @@ public class ParticleSystem extends BoundedSceneObject implements IUpdateable, I
 	
 	private AABB boundingBox;
 	
+	private int colorHandle;
+	
 	public ParticleSystem() {
 		affectors = new Affector[MIN_AFFECTORS_SIZE];
 		emitters = new ArrayList<Emitter>();
-		particleMap = new HashMap<PointSpriteMaterial, List<Particle>>();
-		particleDataMap = new HashMap<PointSpriteMaterial, FloatArray>();
-		materials = new ArrayList<PointSpriteMaterial>();
+		particleBatches = new ArrayList<ParticleBatch>();
 		modelMatrix = SceneManager.getInstance().getRootSceneNode().getModelMatrix();
 		deadParticles = new Stack<Particle>();
 		boundingBox = new AABB();
@@ -102,11 +104,11 @@ public class ParticleSystem extends BoundedSceneObject implements IUpdateable, I
 		
 		for (int l = 0; l < steps; ++l) {
 		
-			int countMaterials = materials.size();
+			int countMaterials = particleBatches.size();
 			for (int j = 0; j < countMaterials; ++j) {
 				
-				PointSpriteMaterial material = materials.get(j);
-				List<Particle> particles = particleMap.get(material);
+				PointSpriteMaterial material = particleBatches.get(j).material;
+				List<Particle> particles = particleBatches.get(j).particles;
 				int countParticles = particles.size();
 				for (int i = 0; i < countParticles; ++i) {
 					
@@ -151,7 +153,7 @@ public class ParticleSystem extends BoundedSceneObject implements IUpdateable, I
 	}
 	
 	private void useAffectors(Particle particle, float time) {
-		for (int k = 0; k < countAffectors; ++k) {
+		for (int k = countAffectors - 1; k >= 0; --k) {
 			if (affectors[k].isApplicable(particle, time)) {
 				affectors[k].onUpdate(particle, time);
 			}
@@ -161,16 +163,28 @@ public class ParticleSystem extends BoundedSceneObject implements IUpdateable, I
 	public void addParticle(Particle particle) {
 		
 		PointSpriteMaterial material = particle.getMaterial();
-		if (!materials.contains(material)) {
-			materials.add(material);
-			particleDataMap.put(material, new FloatArray(DEFAULT_SIZE));
-			particleMap.put(material, new ArrayList<Particle>());
+		
+		ParticleBatch batch = null;
+		
+		for (int i = 0; i < particleBatches.size(); ++i) {
+			if (particleBatches.get(i).material == material) {
+				batch = particleBatches.get(i);
+				break;
+			}
+		}
+		
+		if (batch == null) {
+			batch = new ParticleBatch();
+			batch.material = material;
+			batch.particleData = new FloatArray(DEFAULT_SIZE);
+			particleBatches.add(batch);
 		}
 		
 		particle.system = this;
-		particleMap.get(material).add(particle);
+		
+		batch.particles.add(particle);
 	
-		FloatArray particleData = particleDataMap.get(material);
+		FloatArray particleData = batch.particleData;
 		particle.dataIndex = particleData.getSize();
 		particle.floatArray = particleData;
 		
@@ -186,25 +200,37 @@ public class ParticleSystem extends BoundedSceneObject implements IUpdateable, I
 	}
 	
 	private void removeParticle(int index, PointSpriteMaterial material) {
-		List<Particle> particles = particleMap.get(material);
-		Particle particle = particles.get(index);
-		deadParticles.push(particle);
 		
-		int indexLastParticle = particles.size() - 1;
-		Particle lastParticle = particles.get(indexLastParticle);
+		for (int i = 0; i < particleBatches.size(); ++i) {
 		
-		FloatArray particleData = particleDataMap.get(material);
+			ParticleBatch batch = particleBatches.get(i);
+			
+			if (batch.material == material) {
+				
+				List<Particle> particles = batch.particles;
+				Particle particle = particles.get(index);
+				deadParticles.push(particle);
+				
+				int indexLastParticle = particles.size() - 1;
+				Particle lastParticle = particles.get(indexLastParticle);
+				
+				FloatArray particleData = batch.particleData;
+				
+				System.arraycopy(particleData.buffer, lastParticle.dataIndex, 
+								 particleData.buffer, particle.dataIndex, 
+								 PARTICLE_DATA_SIZE); 
+				particleData.popBack(PARTICLE_DATA_SIZE);
+				
+				lastParticle.dataIndex = particle.dataIndex;
+				particles.set(index, lastParticle);
+				particles.remove(indexLastParticle);
+				
+				countParticles--;
+				
+				break;
+			}
+		}
 		
-		System.arraycopy(particleData.buffer, lastParticle.dataIndex, 
-						 particleData.buffer, particle.dataIndex, 
-						 PARTICLE_DATA_SIZE); 
-		particleData.popBack(PARTICLE_DATA_SIZE);
-		
-		lastParticle.dataIndex = particle.dataIndex;
-		particles.set(index, lastParticle);
-		particles.remove(indexLastParticle);
-		
-		countParticles--;
 	}
 	
 	protected Particle requestDeadParticle() {
@@ -268,10 +294,6 @@ public class ParticleSystem extends BoundedSceneObject implements IUpdateable, I
 		return false;
 	}
 	
-	public Map<PointSpriteMaterial, List<Particle>> getParticles() {
-		return particleMap;
-	}
-
 	public int getCountParticles() {
 		return countParticles;
 	}
@@ -279,10 +301,17 @@ public class ParticleSystem extends BoundedSceneObject implements IUpdateable, I
 	@Override
 	public void render(float[] vpMatrix) {
 		
-		for (int i = 0; i < materials.size(); ++i) {
+		if (parent == null) {
+			return;
+		}
+		
+		int countBatches = particleBatches.size();
+		
+		for (int i = 0; i < countBatches; ++i) {
 			
-			PointSpriteMaterial material = materials.get(i);
-			FloatArray particleData = particleDataMap.get(material);
+			ParticleBatch batch = particleBatches.get(i);
+			PointSpriteMaterial material = batch.material;
+			FloatArray particleData = batch.particleData;
 			
 			int size = particleData.getSize();
 			
@@ -302,7 +331,7 @@ public class ParticleSystem extends BoundedSceneObject implements IUpdateable, I
 				
 		        GLES20.glEnableVertexAttribArray(material.getPositionHandle());  
 				
-		        int colorHandle = GLES20.glGetAttribLocation(material.getProgram().handle, "a_Color");
+		        colorHandle = GLES20.glGetAttribLocation(material.getProgram().handle, "a_Color");
 		        
 				// Pass in the color.
 		        buffer.position(COLOR_OFFSET);

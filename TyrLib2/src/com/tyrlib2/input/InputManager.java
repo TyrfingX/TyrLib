@@ -1,19 +1,19 @@
 package com.tyrlib2.input;
 
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Vector;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import android.view.MotionEvent;
 import android.view.View;
 
 import com.tyrlib2.math.Vector2;
-import com.tyrlib2.util.ReversePriorityComparator;
+import com.tyrlib2.util.PriorityComparator;
 
 public class InputManager {
 
-	private Queue<ITouchListener> touchListeners;
+	private List<ITouchListener> touchListeners;
 	private Vector<IBackListener> backListeners;
 	private boolean touching = false;
 	private Vector2 lastTouch = null;
@@ -21,7 +21,7 @@ public class InputManager {
 	
 	public InputManager()
 	{
-		touchListeners = new LinkedBlockingQueue<ITouchListener>();
+		touchListeners = new ArrayList<ITouchListener>();
 		backListeners = new Vector<IBackListener>();
 	}
 	
@@ -42,16 +42,6 @@ public class InputManager {
 		int actionCode = action & MotionEvent.ACTION_MASK;
 	
 		if (actionCode != MotionEvent.ACTION_MOVE) {
-		
-			PriorityQueue<ITouchListener> queue = new PriorityQueue<ITouchListener>(100, new ReversePriorityComparator());
-			for (ITouchListener listener : touchListeners)
-			{
-				if (listener.isEnabled())
-				{
-					queue.add(listener);
-				}
-			}
-			
 			
 			int pid = action >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
 			int id = event.getPointerId(pid);
@@ -65,9 +55,8 @@ public class InputManager {
 			
 			lastTouch = new Vector2(point.x, point.y);
 			
-			while (!queue.isEmpty())
-			{
-				ITouchListener listener = queue.poll();
+			for (int i = 0; i < touchListeners.size(); ++i) {
+				ITouchListener listener = touchListeners.get(i);
 				if (actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_POINTER_DOWN)
 				{
 					if (listener.onTouchDown(point, event, id)) break;
@@ -83,25 +72,14 @@ public class InputManager {
 			int countPointers = event.getPointerCount();
 			for (int i = 0; i < countPointers; ++i) {
 				
-				PriorityQueue<ITouchListener> queue = new PriorityQueue<ITouchListener>(100, new ReversePriorityComparator());
-				for (ITouchListener listener : touchListeners)
-				{
-					if (listener.isEnabled())
-					{
-						queue.add(listener);
-					}
-				}
-				
-				
 				int id = event.getPointerId(i);
 				
 				Vector2 point = new Vector2(event.getX(i) / v.getWidth(), event.getY(i) / v.getHeight());
 				
 				lastTouch = new Vector2(point.x, point.y);
 				
-				while (!queue.isEmpty())
-				{
-					ITouchListener listener = queue.poll();	
+				for (int j = 0; j < touchListeners.size(); ++j) {
+					ITouchListener listener = touchListeners.get(j);	
 			        if (listener.onTouchMove(point, event, id)) break;
 				}
 			
@@ -125,6 +103,7 @@ public class InputManager {
 	public void addTouchListener(ITouchListener listener)
 	{
 		touchListeners.add(listener);
+		Collections.sort(touchListeners, new PriorityComparator());
 	}
 	
 	public void removeTouchListener(ITouchListener listener)

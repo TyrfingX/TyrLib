@@ -24,7 +24,7 @@ public class RenderSceneQuery implements ISceneQuery {
 
 	@Override
 	public void callback(BoundedSceneObject sceneObject) {
-		BoundedRenderable renderable = (BoundedRenderable) sceneObject;
+		IRenderable renderable = (IRenderable) sceneObject;
 		renderable.render(transformMatrix);
 	}
 }

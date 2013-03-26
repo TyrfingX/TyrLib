@@ -1,6 +1,7 @@
 package com.tyrlib2.graphics.scene;
 
 import com.tyrlib2.graphics.renderables.BoundingBox;
+import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.math.AABB;
 
 public abstract class BoundedSceneObject extends SceneObject {
@@ -15,10 +16,9 @@ public abstract class BoundedSceneObject extends SceneObject {
 			AABB aabb = getBoundingBox();
 			boundingBox = new BoundingBox(aabb);
 			SceneManager.getInstance().getRootSceneNode().attachSceneObject(boundingBox);
-			SceneManager.getInstance().getRenderer().addRenderable(boundingBox);
+			SceneManager.getInstance().getRenderer().addRenderable(boundingBox, OpenGLRenderer.TRANSLUCENT_CHANNEL);
 		} else if (boundingBoxVisible && !visible) {
-			SceneManager.getInstance().getRootSceneNode().detachSceneObject(boundingBox);
-			SceneManager.getInstance().getRenderer().removeRenderable(boundingBox);
+			SceneManager.getInstance().destroyRenderable(boundingBox, OpenGLRenderer.TRANSLUCENT_CHANNEL);
 			boundingBox = null;
 		}
 		

@@ -63,6 +63,8 @@ public class DefaultMaterial3 extends LightedMaterial {
 	public static final String PER_VERTEX_PROGRAM_NAME = "TEXTURED_PVL";
 	public static final String PER_PIXEL_PROGRAM_NAME = "TEXTURED_PPL";
 
+	private boolean transparent;
+	
 	public DefaultMaterial3() {
 		
 	}
@@ -175,7 +177,11 @@ public class DefaultMaterial3 extends LightedMaterial {
 	    	GLES20.glDisableVertexAttribArray(indexHandle);
 	    	GLES20.glVertexAttrib4f(indexHandle, -1, -1, -1, -1);
 	    }
-
+	    
+	    if (transparent) {
+	    	GLES20.glEnable( GLES20.GL_BLEND );
+	    	GLES20.glBlendFunc( GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA );
+	    }
 	}
 	
 	private void passModelViewMatrix(float[] modelMatrix) {
@@ -226,6 +232,10 @@ public class DefaultMaterial3 extends LightedMaterial {
 
 	public Color[] getColors() {
 		return colors;
+	}
+	
+	public void setTransparent(boolean transparent) {
+		this.transparent = true;
 	}
 	
 	

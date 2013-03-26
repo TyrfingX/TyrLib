@@ -18,7 +18,7 @@ public class Particle implements IUpdateable {
 	protected Vector3 pos = new Vector3();
 	protected Vector3 velocity;
 	protected Vector3 acceleration = new Vector3();
-	protected Color color = Color.WHITE;
+	protected Color color = null;
 	protected float inertia = 1;
 	protected float lifeTime;
 	protected float passedTime;
@@ -51,7 +51,14 @@ public class Particle implements IUpdateable {
 	
 	public void setMaterial(PointSpriteMaterial material) {
 		this.material = material;
-		color = material.getColor().copy();
+		if (color == null) {
+			color = material.getColor().copy();
+		} else {
+			color.r = material.getColor().r;
+			color.g = material.getColor().g;
+			color.b = material.getColor().b;
+			color.a = material.getColor().a;
+		}
 	}
 	
 	public PointSpriteMaterial getMaterial() {

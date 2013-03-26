@@ -99,4 +99,11 @@ public class Stats {
 		return copyStats;
 	}
 	
+	public void changeStats(Stats stats) {
+		for (String key : stats.stats.keySet())
+		{
+			float value = stats.stats.get(key);
+			changeStat(key, value);
+		}
+	}
 }

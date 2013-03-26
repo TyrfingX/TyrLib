@@ -304,7 +304,8 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	
 	public void setAlpha(float alpha) {
 		for (int i = 0; i < children.size(); ++i) {
-			children.get(i).setAlpha(alpha);
+			float childAlpha = Math.min(children.get(i).maxAlpha, alpha);
+			children.get(i).setAlpha(childAlpha);
 		}
 	}
 	
@@ -600,9 +601,9 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	 */
 	
 	public void moveBy(Vector2 point, float time) {
-		Vector3 target = node.getRelativePos();
+		Vector3 pos = node.getRelativePos();
 		Viewport viewport = SceneManager.getInstance().getViewport();
-		Vector2 target2 = new Vector2(target.x/viewport.getWidth()+point.x, target.y/viewport.getHeight()+point.y);
+		Vector2 target2 = new Vector2(pos.x/viewport.getWidth()+point.x, -pos.y/viewport.getHeight()+point.y);
 		moveTo(target2, time);
 	}
 	

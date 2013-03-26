@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.tyrlib2.graphics.renderables.BoundingBox;
+import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.scene.BoundedSceneObject;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.graphics.scene.SceneNode;
@@ -86,11 +87,11 @@ public class CollisionSphere extends BoundedSceneObject {
 								 new Vector3(radius,  radius, radius)); 
 			
 			boundingBoxRenderable = new BoundingBox(aabb);
-			SceneManager.getInstance().getRenderer().addRenderable(boundingBoxRenderable);
+			SceneManager.getInstance().getRenderer().addRenderable(boundingBoxRenderable, OpenGLRenderer.TRANSLUCENT_CHANNEL);
 			parent.attachSceneObject(boundingBoxRenderable);
 		} else if (boundingBoxRenderable != null && !visible) {
 			parent.detachSceneObject(boundingBoxRenderable);
-			SceneManager.getInstance().destroyRenderable(boundingBoxRenderable);
+			SceneManager.getInstance().destroyRenderable(boundingBoxRenderable, OpenGLRenderer.TRANSLUCENT_CHANNEL);
 			boundingBoxRenderable = null;
 		}
 	}

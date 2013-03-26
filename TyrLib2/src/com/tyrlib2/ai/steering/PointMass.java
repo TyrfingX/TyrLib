@@ -40,6 +40,19 @@ public class PointMass implements IVehicle {
 		orientation = new Quaternion();
 	}
 	
+	public PointMass(PointMass mass, SceneNode node) {
+		this.mass = mass.mass;
+		this.inertia = mass.inertia;
+		this.node = node;
+		this.maxVelocity = mass.maxVelocity;
+		this.maxForce = mass.maxForce;
+		this.steering = mass.steering;
+		this.initForward = mass.steering;
+		this.up = mass.up;
+		this.initUp = mass.up;
+		orientation = mass.orientation;
+	}
+	
 	@Override
 	public float getMass() {
 		return mass;

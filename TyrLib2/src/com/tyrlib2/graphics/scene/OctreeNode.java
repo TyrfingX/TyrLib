@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.tyrlib2.graphics.renderables.BoundingBox;
+import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.math.AABB;
 import com.tyrlib2.math.Vector3;
 
@@ -104,17 +105,22 @@ public class OctreeNode extends BoundedSceneObject {
 		
 		if (boundingBox.containsAABB(aabb)) {
 		
-			if (objects.size() <= maximumObjectsPerNode) {
+			if (children != null) {
+				// Now try adding the object into a child node
+				if (!addObjectIntoChild(sceneObject)) {
+					
+					// If this doesnt work out, then add the object to this node
+					sceneObject.octree = this;
+					objects.add(sceneObject);
+				}
+			} else if (objects.size() <= maximumObjectsPerNode) {
 				sceneObject.octree = this;
 				objects.add(sceneObject);
 			} else {
-				
-				if (children == null) {
 	
-					// This node contains the maximum amount of objects, and has not been split yet
-					// So before inserting, split it
-					split();
-				}
+				// This node contains the maximum amount of objects, and has not been split yet
+				// So before inserting, split it
+				split();
 				
 				// Now try adding the object into a child node
 				if (!addObjectIntoChild(sceneObject)) {
@@ -228,33 +234,17 @@ public class OctreeNode extends BoundedSceneObject {
 	 */
 	
 	public boolean removeObject(BoundedSceneObject sceneObject) {
-		AABB aabb = sceneObject.getBoundingBox();
 		
-		if (aabb == null) {
-			return objects.remove(sceneObject);
-		}
-		
-		if (boundingBox.containsAABB(aabb)) {
-			for (int i = 0; i < objects.size(); ++i) {
-				if (objects.get(i) == sceneObject) {
-					removeLocalObject(i);
-					
-					if (children != null && objects.size() < minimumObjectsPerNode) {
-						merge();
-					}
-					
-					return true;
+		for (int i = 0; i < objects.size(); ++i) {
+			if (objects.get(i) == sceneObject) {
+				removeLocalObject(i);
+				
+				if (children != null && objects.size() < minimumObjectsPerNode) {
+					merge();
 				}
+				
+				return true;
 			}
-			
-			if (children != null) {
-				for (int i = 0; i < CHILDREN_PER_NODE; ++i) {
-					if (children[i].removeObject(sceneObject)) {
-						return true;
-					}
-				}
-			}
-			
 		}
 		
 		return false;
@@ -271,6 +261,13 @@ public class OctreeNode extends BoundedSceneObject {
 
 	public void update() {
 		if (dirty) {
+			
+			if (children != null) {
+				for (int i = 0; i < CHILDREN_PER_NODE; ++i) {
+					children[i].update();
+				}
+			}
+			
 			for (int i = 0; i < objects.size(); ++i) {
 				BoundedSceneObject object = objects.get(i);
 				if (object.isDity() && object.getBoundingBox() != null) {
@@ -300,12 +297,6 @@ public class OctreeNode extends BoundedSceneObject {
 					object.setClean();
 				}
 			}
-	
-			if (children != null) {
-				for (int i = 0; i < CHILDREN_PER_NODE; ++i) {
-					children[i].update();
-				}
-			}
 			
 			dirty = false;
 		
@@ -322,10 +313,9 @@ public class OctreeNode extends BoundedSceneObject {
 	public void setBoundingBoxVisible(boolean visible) {
 		if (boundingBoxRenderable == null && visible) {
 			boundingBoxRenderable = new BoundingBox(boundingBox);
-			SceneManager.getInstance().getRenderer().addRenderable(boundingBoxRenderable);
+			SceneManager.getInstance().getRenderer().addRenderable(boundingBoxRenderable, OpenGLRenderer.TRANSLUCENT_CHANNEL);
 			parent.attachSceneObject(boundingBoxRenderable);
 		} else if (boundingBoxRenderable != null && !visible) {
-			parent.detachSceneObject(boundingBoxRenderable);
 			SceneManager.getInstance().destroyRenderable(boundingBoxRenderable);
 			boundingBoxRenderable = null;
 		}
@@ -351,7 +341,7 @@ public class OctreeNode extends BoundedSceneObject {
 												center.y + childCenterOffsets[i*3+1] * dimension/4,
 												center.z + childCenterOffsets[i*3+2] * dimension/4);
 			
-			children[i] = new OctreeNode(minimumObjectsPerNode, maximumObjectsPerNode, childCenter, childDimension);
+			children[i] = new OctreeNode(minimumObjectsPerNode, maximumObjectsPerNode*2, childCenter, childDimension);
 			children[i].parentOctree = this;
 			
 			if (parent != null) {

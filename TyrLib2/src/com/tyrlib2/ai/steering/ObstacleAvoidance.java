@@ -3,7 +3,7 @@ package com.tyrlib2.ai.steering;
 import com.tyrlib2.collision.CollisionSphere;
 import com.tyrlib2.graphics.scene.BoundedSceneObject;
 import com.tyrlib2.graphics.scene.ISceneQuery;
-import com.tyrlib2.graphics.scene.SceneManager;
+import com.tyrlib2.graphics.scene.Octree;
 import com.tyrlib2.math.AABB;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.movement.TargetSceneObject;
@@ -37,8 +37,7 @@ public class ObstacleAvoidance implements IPattern {
 				if (sceneObject != self) {
 					AABB aabb = sceneObject.getBoundingBox();
 					float radius = aabb.getExtends()/2;
-					Flee flee = new Flee(new TargetSceneObject(sceneObject), radius);
-					Vector3 fleeVector = flee.apply(vehicle);
+					Vector3 fleeVector = Flee.apply(new TargetSceneObject(sceneObject), radius, vehicle);
 					steering.x += fleeVector.x;
 					steering.y += fleeVector.y;
 					steering.z += fleeVector.z;
@@ -54,8 +53,13 @@ public class ObstacleAvoidance implements IPattern {
 	/** Collision of the vision with the actual object is ignored **/
 	private BoundedSceneObject self;
 	
-	public ObstacleAvoidance(CollisionSphere vision, BoundedSceneObject self) {
+	/** The octree where the collision will be tested **/
+	private Octree octree;
+	
+	public ObstacleAvoidance(CollisionSphere vision, BoundedSceneObject self, Octree octree) {
 		this.vision = vision;
+		this.octree = octree;
+		this.self = self;
 	}
 	
 	@Override
@@ -66,7 +70,7 @@ public class ObstacleAvoidance implements IPattern {
 		steering.z = 0;
 		
 		ObstacleQuery query = new ObstacleQuery(vehicle, steering);
-		SceneManager.getInstance().performSceneQuery(query);
+		octree.query(query);
 		
 		return steering;
 	}

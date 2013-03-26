@@ -1,5 +1,7 @@
 package com.tyrlib2.graphics.particles;
 
+import android.util.FloatMath;
+
 import com.tyrlib2.math.Vector3;
 
 public class ForceAffector extends Affector {
@@ -34,17 +36,19 @@ public class ForceAffector extends Affector {
 	public void onUpdate(Particle particle, float time) {
 		
 		if (radialDependency != 0) {
-			float factor = 1;
-			Vector3 absolutePos = this.getAbsolutePos();
-			Vector3 vectorTo = new Vector3(	particle.floatArray.buffer[particle.dataIndex] - absolutePos.x,
-											particle.floatArray.buffer[particle.dataIndex+1] - absolutePos.y,
-											particle.floatArray.buffer[particle.dataIndex+2] - absolutePos.z);
-			float distance = vectorTo.normalize();
-			factor /= (float) (Math.pow(distance, radialDependency));
 			
-			particle.acceleration.x += factor * power * vectorTo.x / particle.inertia;
-			particle.acceleration.y += factor * power * vectorTo.y / particle.inertia;
-			particle.acceleration.z += factor * power * vectorTo.z / particle.inertia;
+			Vector3 absolutePos = this.getAbsolutePos();
+			float x = particle.floatArray.buffer[particle.dataIndex] - absolutePos.x;
+			float y = particle.floatArray.buffer[particle.dataIndex+1] - absolutePos.y;
+			float z = particle.floatArray.buffer[particle.dataIndex+2] - absolutePos.z;
+			float distance = FloatMath.sqrt(x*x+y*y+z*z);
+			
+			float factor = (float) (1/(particle.inertia * distance*Math.pow(distance, radialDependency)));
+			
+			
+			particle.acceleration.x += factor * power * x;
+			particle.acceleration.y += factor * power * y;
+			particle.acceleration.z += factor * power * z;
 		} else {
 			particle.acceleration.x += force.x / particle.inertia;
 			particle.acceleration.y += force.y / particle.inertia;

@@ -15,6 +15,11 @@ public class FrustumG {
 	private Vector3 p = new Vector3();
 	private AABB aabb;
 	
+	public final Vector3 fctl;
+	public final Vector3 fctr;
+	public final Vector3 fcbl;
+	public final Vector3 fcbr;
+	
 	public FrustumG(Vector3 camPos, Vector3 lookDirection, Vector3 up, int nearClip, int farClip, float nearWidth, float nearHeight) {
 		
 		lookDirection.normalize();
@@ -63,10 +68,10 @@ public class FrustumG {
 		fcblD.normalize();
 		fcbrD.normalize();
 		
-		Vector3 fctl = nctl.add(fctlD.multiply(farClip));
-		Vector3 fctr = nctr.add(fctrD.multiply(farClip));
-		Vector3 fcbl = ncbl.add(fcblD.multiply(farClip));
-		Vector3 fcbr = ncbr.add(fcbrD.multiply(farClip));
+		fctl = nctl.add(fctlD.multiply(farClip));
+		fctr = nctr.add(fctrD.multiply(farClip));
+		fcbl = ncbl.add(fcblD.multiply(farClip));
+		fcbr = ncbr.add(fcbrD.multiply(farClip));
 		
 		float[] points = {	nctl.x, nctl.y, nctl.z,
 							nctr.x, nctr.y, nctr.z,

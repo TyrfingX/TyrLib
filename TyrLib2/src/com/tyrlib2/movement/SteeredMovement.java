@@ -28,7 +28,7 @@ public class SteeredMovement extends Movement {
 		}
 		
 		seek = new Seek(currentTargetProvider);
-		steerer.addPattern(seek);
+		steerer.addPattern(seek, 1);
 	}
 
 	@Override

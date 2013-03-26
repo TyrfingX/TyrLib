@@ -21,8 +21,10 @@ public class Octree extends SceneObject {
 	}
 	
 	public void removeObject(BoundedSceneObject sceneObject) {
-		root.removeObject(sceneObject);
-		getCurrentRoot();
+		if (sceneObject.octree != null) {
+			sceneObject.octree.removeObject(sceneObject);
+			getCurrentRoot();
+		}
 	}
 	
 	public void setBoundingBoxVisible(boolean visible) {
@@ -49,6 +51,10 @@ public class Octree extends SceneObject {
 	
 	public void query(ISceneQuery query) {
 		root.query(query);
+	}
+	
+	public void query(ISceneQuery query, BoundedSceneObject startNode) {
+		startNode.octree.query(query);
 	}
 	
 	private void getCurrentRoot() {

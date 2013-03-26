@@ -1,5 +1,6 @@
 package com.tyrlib2.graphics.renderer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -14,6 +15,7 @@ import android.util.SparseArray;
 
 import com.tyrlib2.graphics.lighting.Light;
 import com.tyrlib2.graphics.materials.DefaultMaterial3;
+import com.tyrlib2.graphics.scene.BoundedSceneObject;
 import com.tyrlib2.graphics.scene.Octree;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.graphics.scene.SceneNode;
@@ -33,8 +35,8 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 		List<IRenderable> renderables;
 		
 		public RenderChannel() {
-			octree = new Octree(5, 40, new Vector3(), 200);
-			renderables = new Vector<IRenderable>();
+			octree = new Octree(5, 2000, new Vector3(), 200);
+			renderables = new ArrayList<IRenderable>();
 			octree.attachTo(rootSceneNode);
 		}
 	}
@@ -45,6 +47,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	
 	public static final int BACKGROUND_CHANNEL = 0;
 	public static final int DEFAULT_CHANNEL = 100;
+	public static final int TRANSLUCENT_CHANNEL = 200;
 	public static final int OVERLAY_CHANNEL = 1000;
 	
 	public static final int BYTES_PER_FLOAT = 4;
@@ -78,6 +81,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 
 		renderChannels.put(BACKGROUND_CHANNEL, new RenderChannel());
 		renderChannels.put(DEFAULT_CHANNEL, new RenderChannel());
+		renderChannels.put(TRANSLUCENT_CHANNEL, new RenderChannel());
 		renderChannels.put(OVERLAY_CHANNEL, new RenderChannel());
 		
 		this.context = context;
@@ -225,6 +229,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     	
     	GLES20.glEnable(GLES20.GL_DEPTH_TEST);
     	drawChannel(renderChannels.get(DEFAULT_CHANNEL), vpMatrix);
+    	drawChannel(renderChannels.get(TRANSLUCENT_CHANNEL), vpMatrix);
     	GLES20.glDisable(GLES20.GL_DEPTH_TEST);
     	
     	Matrix.orthoM(proj, 0, -viewport.getWidth()*0.2f, viewport.getWidth()*1.2f, -viewport.getHeight()*0.2f, viewport.getHeight()*1.2f, -1, 1);
@@ -250,7 +255,8 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 		
 		// Draw all unbounded objects
 		if (channel.renderables != null) {
-		    for (int i = 0; i < channel.renderables.size(); ++i) {
+		    int countRenderables = channel.renderables.size();
+			for (int i = 0; i < countRenderables; ++i) {
 		    	channel.renderables.get(i).render(transformMatrix);
 		    }
 		}
@@ -326,6 +332,10 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     public SceneNode getRootSceneNode() {
     	return rootSceneNode;
     }
+    
+    public FrustumG getFrustum() {
+    	return frustum;
+    }
 
     public void addRenderable(IRenderable renderable) {
     	this.addRenderable(renderable, DEFAULT_CHANNEL);
@@ -335,11 +345,19 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     	this.addRenderable(renderable, DEFAULT_CHANNEL);
     }
     
+    public void addRenderable(BoundedSceneObject renderable) {
+    	this.addRenderable(renderable, DEFAULT_CHANNEL);
+    }
+    
     public void removeRenderable(IRenderable renderable) {
     	this.removeRenderable(renderable, DEFAULT_CHANNEL);
     }
     
     public void removeRenderable(BoundedRenderable renderable) {
+    	this.removeRenderable(renderable, DEFAULT_CHANNEL);
+    }
+    
+    public void removeRenderable(BoundedSceneObject renderable) {
     	this.removeRenderable(renderable, DEFAULT_CHANNEL);
     }
     
@@ -369,11 +387,37 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     	}
     }
     
+    public void addRenderable(BoundedSceneObject renderable, int channel) {
+    	if (renderable instanceof IRenderable) {
+	    	RenderChannel renderChannel = renderChannels.get(channel);
+	    	if (renderChannel != null) {
+	    		if (channel != OVERLAY_CHANNEL) {
+	    			renderChannel.octree.addObject(renderable);
+	    		} else {
+	    			renderChannel.renderables.add((IRenderable) renderable);
+	    		}
+	    	} else {
+	    		renderChannel = new RenderChannel();
+	    		renderChannels.put(channel, renderChannel);
+	    		renderChannel.octree.addObject(renderable);
+	    	}
+    	}
+    }
+    
     public void removeRenderable(IRenderable renderable, int channel) {
     	RenderChannel renderChannel = renderChannels.get(channel);
     	if (renderChannel != null) {
     		renderChannel.renderables.remove(renderable);
     	} 
+    }
+
+    public void removeRenderable(BoundedSceneObject renderable, int channel) {
+    	if (renderable instanceof IRenderable) {
+	    	RenderChannel renderChannel = renderChannels.get(channel);
+	    	if (renderChannel != null) {
+	    		renderChannel.octree.removeObject(renderable);
+	    	} 
+    	}
     }
     
     public void removeRenderable(BoundedRenderable renderable, int channel) {

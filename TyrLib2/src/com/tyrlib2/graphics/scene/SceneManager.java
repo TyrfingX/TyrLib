@@ -218,6 +218,13 @@ public class SceneManager {
 		renderer.removeRenderable(renderable);
 	}
 	
+	public void destroyRenderable(IRenderable renderable, int channel) {
+		if (renderable instanceof SceneObject) {
+			((SceneObject) renderable).detach();
+		}
+		renderer.removeRenderable(renderable, channel);
+	}
+	
 	/**
 	 * Create an entity from a file source
 	 * @param context	The context for loading the file
@@ -254,7 +261,7 @@ public class SceneManager {
 	public ParticleSystem createParticleSystem(Context context, String path) {
 		if (particleSystemFactories.containsKey(path)) {
 			ParticleSystem particleSystem = particleSystemFactories.get(path).create();
-			renderer.addRenderable(particleSystem);
+			renderer.addRenderable((BoundedSceneObject)particleSystem, OpenGLRenderer.TRANSLUCENT_CHANNEL);
 			return particleSystem;
 		}
 		
@@ -268,7 +275,7 @@ public class SceneManager {
 		}
 		
 		ParticleSystem particleSystem = factory.create();
-		renderer.addRenderable(particleSystem);
+		renderer.addRenderable((BoundedSceneObject)particleSystem, OpenGLRenderer.TRANSLUCENT_CHANNEL);
 		
 		return particleSystem;
 	}
