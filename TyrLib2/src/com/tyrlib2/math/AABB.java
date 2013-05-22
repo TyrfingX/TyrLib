@@ -73,6 +73,37 @@ public class AABB {
 		
 	}
 	
+	public static AABB createFromPoints(Vector3[] points, int start, int end) {
+		AABB box = new AABB();
+		
+		box.updateWithPoints(points, start, end);
+		
+		return box;
+		
+	}
+	
+	public void updateWithPoints(Vector3[] points, int start, int end) {
+		if (points.length > 0) {
+			min.x = points[start].x;
+			min.y = points[start].y;
+			min.z = points[start].z;
+			
+			max.x = points[start].x;
+			max.y = points[start].y;
+			max.z = points[start].z;
+		}
+		
+		for (int i = start; i <= end; ++i) {
+			if (points[i].x > max.x) max.x = points[i].x;
+			if (points[i].y > max.y) max.y = points[i].y;
+			if (points[i].z > max.z) max.z = points[i].z;
+			
+			if (points[i].x < min.x) min.x = points[i].x;
+			if (points[i].y < min.y) min.y = points[i].y;
+			if (points[i].z < min.z) min.z = points[i].z;
+		}
+	}
+	
 	public void updateWithPoints(float[] points, int stride) {
 		if (points.length > 0) {
 			min.x = points[0];
@@ -175,6 +206,18 @@ public class AABB {
 		if (max.x < other.max.x) return false;
 		if (max.y < other.max.y) return false;
 		if (max.z < other.max.z) return false;
+		
+		return true;
+	}
+	
+	public boolean containsPoint(Vector3 point) {
+		if (min.x > point.x) return false;
+		if (min.y > point.y) return false;
+		if (min.z > point.z) return false;
+		
+		if (max.x < point.x) return false;
+		if (max.y < point.y) return false;
+		if (max.z < point.z) return false;
 		
 		return true;
 	}

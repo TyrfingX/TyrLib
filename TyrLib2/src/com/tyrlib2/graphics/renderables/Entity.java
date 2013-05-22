@@ -26,9 +26,12 @@ public class Entity extends BoundedRenderable implements IUpdateable {
 	protected Skeleton skeleton;
 	protected int countSubEntities;
 	
+	private boolean visible;
+	
 	public Entity() {
 		subEntities = new HashMap<String, SubEntity>();
 		subEntityList = new ArrayList<SubEntity>();
+		visible = true;
 	}
 	
 	/**
@@ -66,10 +69,12 @@ public class Entity extends BoundedRenderable implements IUpdateable {
 	@Override
 	public void render(float[] vpMatrix) {
 		
-		float[] boneData = skeleton.getBoneData();
-		
-		for (SubEntity subEntity : subEntityList) {
-			subEntity.render(vpMatrix, boneData, skeleton.getCountBones());
+		if (visible) {
+			float[] boneData = skeleton.getBoneData();
+			
+			for (int i = 0; i < subEntityList.size(); ++i) {
+				subEntityList.get(i).render(vpMatrix, boneData, skeleton.getCountBones());
+			}
 		}
 	}
 	
@@ -141,7 +146,13 @@ public class Entity extends BoundedRenderable implements IUpdateable {
 		return AABB.createFromPoints(points, 3); 
 	}
 	
-
+	public boolean isVisible() {
+		return visible;
+	}
+	
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
 	
 	
 

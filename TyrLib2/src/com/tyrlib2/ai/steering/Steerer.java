@@ -36,6 +36,10 @@ public class Steerer implements IUpdateable {
 		priorities.remove(pattern);
 	}
 
+	public boolean hasPattern(IPattern pattern) {
+		return patterns.contains(pattern);
+	}
+	
 	@Override
 	public void onUpdate(float time) {
 		vehicle.resetSteeringForces();

@@ -103,6 +103,10 @@ public class PointMass implements IVehicle {
 		steeringForces.y = 0;
 		steeringForces.z = 0;
 	}
+	
+	public void setVelocity(float velocity) {
+		this.velocity = velocity;
+	}
 
 	@Override
 	public void addSteeringForce(Vector3 steering) {
@@ -116,33 +120,44 @@ public class PointMass implements IVehicle {
 		float totalForce = steeringForces.normalize();
 		totalForce = Math.min(totalForce, maxForce);
 		
-		steeringForces = steeringForces.multiply(totalForce);
+		if (totalForce > 0) {
 		
-		float align = steeringForces.dot(steering) / (steeringForces.length() * steering.length());
-		if (Math.abs(align) < EPSILON) {
-			align = EPSILON;
+			float align = steeringForces.dot(steering) / (steeringForces.length() * steering.length());
+			if (Math.abs(align) < EPSILON) {
+				align = EPSILON;
+			}
+			
+			Vector3 left = steering.cross(up);
+			steeringForces.projectOnNormalized(left, up);
+			
+			steeringForces.x *= totalForce;
+			steeringForces.y *= totalForce;
+			steeringForces.z *= totalForce;
+			
+			float rotVelocity =  Math.signum(-align)*time*totalForce/inertia;
+			
+			if (align < -1 + EPSILON) {
+				Vector3 axis = new Vector3((float)Math.random(), (float)Math.random(), (float)Math.random());
+				axis.normalize();
+				Quaternion rotation = Quaternion.fromAxisAngle(axis,rotVelocity);
+				orientation = rotation.multiply(orientation);
+				node.setRelativeRot(orientation);
+				steering = orientation.multiply(initForward);
+				up = orientation.multiply(initUp);
+			} else if (align < 1 - EPSILON) {
+				Vector3 rotAxis = steeringForces.cross(steering);
+				rotAxis.normalize();
+				Quaternion rotation = Quaternion.fromAxisAngle(rotAxis, rotVelocity);
+				orientation = rotation.multiply(orientation);
+				node.setRelativeRot(orientation);
+				steering = orientation.multiply(initForward);
+				up = orientation.multiply(initUp);
+			}
+			
+			velocity += time * totalForce / mass;
+			velocity = Math.min(velocity, maxVelocity);
+			
 		}
-		
-		if (align < -1 + EPSILON) {
-			Vector3 axis = new Vector3((float)Math.random(), (float)Math.random(), (float)Math.random());
-			axis.normalize();
-			Quaternion rotation = Quaternion.fromAxisAngle(axis, Math.signum(-align)*time*totalForce/inertia);
-			orientation = rotation.multiply(orientation);
-			node.setRelativeRot(orientation);
-			steering = orientation.multiply(initForward);
-			up = orientation.multiply(initUp);
-		} else if (align < 1 - EPSILON) {
-			Vector3 rotAxis = steeringForces.cross(steering);
-			rotAxis.normalize();
-			Quaternion rotation = Quaternion.fromAxisAngle(rotAxis, Math.signum(-align)*time*totalForce/inertia);
-			orientation = rotation.multiply(orientation);
-			node.setRelativeRot(orientation);
-			steering = orientation.multiply(initForward);
-			up = orientation.multiply(initUp);
-		}
-		
-		velocity += time * totalForce / mass;
-		velocity = Math.min(velocity, maxVelocity);
 		
 		steering.normalize();
 		up.normalize();

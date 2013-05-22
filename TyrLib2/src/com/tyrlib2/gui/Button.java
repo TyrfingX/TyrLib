@@ -156,7 +156,7 @@ public class Button extends Window {
 
 	public void setHighlightBgImage(String highlightBgImage, ButtonImagePosition position) {
 		highlightBgImages.put(position, highlightBgImage);
-		if (!this.isBeingTouched()) {
+		if (this.isBeingTouched()) {
 			bgImageBoxes.get(position).setAtlasRegion(highlightBgImage);
 		}
 	}

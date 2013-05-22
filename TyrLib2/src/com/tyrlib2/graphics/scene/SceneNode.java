@@ -125,7 +125,7 @@ public class SceneNode {
 	 */
 	
 	public Vector3 getCachedAbsolutePos() {
-		return absolutePos;
+		return new Vector3(absolutePos);
 	}
 	
 	/**
@@ -350,7 +350,10 @@ public class SceneNode {
 	 */
 	
 	public void detach() {
-		parent.detachChild(this);
+		if (parent != null) {
+			parent.detachChild(this);
+			parent = null;
+		}
 	}
 	
 	/**
@@ -417,6 +420,28 @@ public class SceneNode {
 		dirty = false;
 	}
 	
+	private void setIdentityMatrix(float[] matrix) {
+		matrix[0] = 1;
+		matrix[1] = 0;
+		matrix[2] = 0;
+		matrix[3] = 0;
+		
+		matrix[4] = 0;
+		matrix[5] = 1;
+		matrix[6] = 0;
+		matrix[7] = 0;
+		
+		matrix[8] = 0;
+		matrix[9] = 0;
+		matrix[10] = 1;
+		matrix[11] = 0;
+		
+		matrix[12] = 0;
+		matrix[13] = 0;
+		matrix[14] = 0;
+		matrix[15] = 1;
+	}
+	
 	/**
 	 * Updates the model matrix. There was an update in a parent node, therefore all children need to
 	 * be informed and update their matrices accordingly.
@@ -424,19 +449,21 @@ public class SceneNode {
 	
 	public void updateAll(Vector3 parentPos, Quaternion parentRot, Vector3 parentScale, float[] parentTransform) {
 		
-		Matrix.setIdentityM(modelMatrix, 0);
+		setIdentityMatrix(modelMatrix);
 		parentRot.multiply(rot, absoluteRot);
-		absoluteScale = new Vector3(scale.x * parentScale.x, scale.y * parentScale.y, scale.z * parentScale.z);
+		absoluteScale.x = scale.x * parentScale.x;
+		absoluteScale.x = scale.y * parentScale.y;
+		absoluteScale.x = scale.z * parentScale.z;
 		
 		rot.toMatrix(rotation);
-		Matrix.setIdentityM(translation, 0);
-		Matrix.setIdentityM(scaling, 0);
+		setIdentityMatrix(translation);
+		setIdentityMatrix(scaling);
 		
 		Matrix.scaleM(scaling, 0, scale.x, scale.y, scale.z);
 		Matrix.multiplyMM(modelMatrix, 0, scaling, 0, modelMatrix, 0);
 		
 		Matrix.multiplyMM(modelMatrix, 0, rotation, 0, modelMatrix, 0);
-		Matrix.translateM(translation, 0, pos.x / parentScale.x, pos.y / parentScale.y, pos.z / parentScale.z);
+		Matrix.translateM(translation, 0, pos.x, pos.y, pos.z);
 		Matrix.multiplyMM(modelMatrix, 0, translation, 0, modelMatrix, 0);
 		Matrix.multiplyMM(modelMatrix, 0, parentTransform, 0, modelMatrix, 0);
 		
@@ -446,7 +473,8 @@ public class SceneNode {
 		absolutePos.y = transPos[1];
 		absolutePos.z = transPos[2];
 	
-		for (int i = 0; i < attachedObjects.size(); ++i) {
+		int countAttachedObjects = attachedObjects.size();
+		for (int i = 0; i < countAttachedObjects; ++i) {
 			SceneObject so = attachedObjects.get(i);
 			so.onTransformed();
 		}

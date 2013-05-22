@@ -141,4 +141,13 @@ public class Vector3 {
 		return new Vector3(x,y,z);
 	}
 	
+	public void projectOnNormalized(Vector3 u, Vector3 v) {
+		float dotThisU = this.dot(u);
+		float dotThisV = this.dot(v);
+		
+		x = dotThisU * u.x + dotThisV * v.x;
+		y = dotThisU * u.y + dotThisV * v.y;
+		z = dotThisU * u.z + dotThisV * v.z;
+	}
+	
 }

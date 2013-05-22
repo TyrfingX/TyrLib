@@ -18,6 +18,8 @@ public abstract class Movement implements IUpdateable {
 	protected List<ITargetProvider> targetProviders;
 	protected ITargetProvider currentTargetProvider;
 	
+	protected List<IMovementListener> movementListeners = new ArrayList<IMovementListener>();
+	
 	public Movement() {
 		targetProviders = new ArrayList<ITargetProvider>();
 	}
@@ -49,8 +51,11 @@ public abstract class Movement implements IUpdateable {
 			// Actually move and get the remaining time
 			time = moveTowardsTarget(time);
 			
-			if (!targetProviders.isEmpty() && currentTargetProvider == null) {
-				nextTargetProvider();
+			if (currentTargetProvider == null) {
+				targetReached();
+				if (!targetProviders.isEmpty()) {
+					nextTargetProvider();
+				}
 			}
 		}
 	}
@@ -66,6 +71,20 @@ public abstract class Movement implements IUpdateable {
 	
 	@Override
 	public boolean isFinished() {
-		return targetProviders.isEmpty();
+		return currentTargetProvider == null;
+	}
+	
+	private void targetReached() {
+		for (int i = 0; i < movementListeners.size(); ++i) {
+			movementListeners.get(i).onTargetReached();
+		}
+	}
+	
+	public void addMovementListener(IMovementListener listener) {
+		movementListeners.add(listener);
+	}
+	
+	public void removeMovementListener(IMovementListener listener) {
+		movementListeners.remove(listener);
 	}
 }

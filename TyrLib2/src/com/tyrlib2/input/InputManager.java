@@ -9,7 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.tyrlib2.math.Vector2;
-import com.tyrlib2.util.PriorityComparator;
+import com.tyrlib2.util.ReversePriorityComparator;
 
 public class InputManager {
 
@@ -40,7 +40,7 @@ public class InputManager {
 	public boolean onTouch(View v, MotionEvent event) {
 		int action = event.getAction();
 		int actionCode = action & MotionEvent.ACTION_MASK;
-	
+		
 		if (actionCode != MotionEvent.ACTION_MOVE) {
 			
 			int pid = action >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
@@ -57,11 +57,11 @@ public class InputManager {
 			
 			for (int i = 0; i < touchListeners.size(); ++i) {
 				ITouchListener listener = touchListeners.get(i);
-				if (actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_POINTER_DOWN)
+				if (listener.isEnabled() && (actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_POINTER_DOWN))
 				{
 					if (listener.onTouchDown(point, event, id)) break;
 				}
-				else if (actionCode == MotionEvent.ACTION_UP || actionCode == MotionEvent.ACTION_POINTER_UP)
+				else if (listener.isEnabled() && (actionCode == MotionEvent.ACTION_UP || actionCode == MotionEvent.ACTION_POINTER_UP))
 				{	
 					if (listener.onTouchUp(point, event, id)) break;
 				}
@@ -80,7 +80,9 @@ public class InputManager {
 				
 				for (int j = 0; j < touchListeners.size(); ++j) {
 					ITouchListener listener = touchListeners.get(j);	
-			        if (listener.onTouchMove(point, event, id)) break;
+			        if (listener.isEnabled()) {
+			        	if (listener.onTouchMove(point, event, id)) break;
+			        }
 				}
 			
 			}
@@ -102,8 +104,15 @@ public class InputManager {
 	
 	public void addTouchListener(ITouchListener listener)
 	{
+		for (int i = 0; i < touchListeners.size(); ++i) {
+			ITouchListener other = touchListeners.get(i);
+			if (other.getPriority() <= listener.getPriority()) {
+				touchListeners.add(i, listener);
+				return;
+			}
+		}
+		
 		touchListeners.add(listener);
-		Collections.sort(touchListeners, new PriorityComparator());
 	}
 	
 	public void removeTouchListener(ITouchListener listener)
@@ -119,6 +128,10 @@ public class InputManager {
 		}
 	}
 	
+	public boolean isAdded(ITouchListener touchListener) {
+		return touchListeners.contains(touchListener);
+	}
+	
 	public void removeBackListener(IBackListener listener)
 	{
 		backListeners.remove(listener);
@@ -132,6 +145,10 @@ public class InputManager {
 	public Vector2 getLastTouch()
 	{
 		return lastTouch;
+	}
+	
+	public void sort() {
+		Collections.sort(touchListeners, new ReversePriorityComparator());
 	}
 	
 	

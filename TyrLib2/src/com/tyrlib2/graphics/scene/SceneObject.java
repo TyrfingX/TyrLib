@@ -15,6 +15,9 @@ public abstract class SceneObject {
 	/** Parent node of this SceneObject **/
 	protected SceneNode parent;
 	
+	/** Mask for performing queries **/
+	protected int mask = 1;
+	
 	/**
 	 * Attaches this object to a SceneNode
 	 * @param node The node onto which this SceneObject will be attached
@@ -32,8 +35,10 @@ public abstract class SceneObject {
 	
 	public SceneNode detach() {
 		SceneNode oldParent = parent;
-		parent.attachedObjects.remove(this);
-		parent = null;
+		if (parent != null) {
+			parent.attachedObjects.remove(this);
+			parent = null;
+		}
 		return oldParent;
 	}
 	
@@ -111,5 +116,15 @@ public abstract class SceneObject {
 	
 	public void onTransformed() {
 	}
+
+	public int getMask() {
+		return mask;
+	}
+
+	public void setMask(int mask) {
+		this.mask = mask;
+	}
+	
+	
 	
 }

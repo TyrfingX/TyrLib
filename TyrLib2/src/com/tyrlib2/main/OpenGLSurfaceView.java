@@ -44,17 +44,7 @@ public class OpenGLSurfaceView extends GLSurfaceView {
 	
 	@Override
 	public void onDetachedFromWindow() {
-
-        InputManager.getInstance().destroy();
-        ProgramManager.getInstance().destroy();
-        ShaderManager.getInstance().destroy();
-        SceneManager.getInstance().destroy();
-        WindowManager.getInstance().destroy();
-        OpenGLActivity.RUNNING = false;
-
-		
 		super.onDetachedFromWindow();
-
     }
 	
     @Override

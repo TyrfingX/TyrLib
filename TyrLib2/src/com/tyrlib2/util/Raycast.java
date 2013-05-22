@@ -26,6 +26,7 @@ public class Raycast {
 	
 	private Ray ray;
 	private float maxDist;
+	private int mask = 1;
 	
 	private class RaySceneQuery implements ISceneQuery {
 		
@@ -48,11 +49,13 @@ public class Raycast {
 
 		@Override
 		public void callback(BoundedSceneObject sceneObject) {
-			RaycastResult result = new RaycastResult();
-			result.sceneObject = sceneObject;
-			result.intersection = intersect;
-			result.distance = ray.origin.sub(intersect).length();
-			results.add(result);
+			if ((sceneObject.getMask() & mask) != 0) {
+				RaycastResult result = new RaycastResult();
+				result.sceneObject = sceneObject;
+				result.intersection = intersect;
+				result.distance = ray.origin.sub(intersect).length();
+				results.add(result);
+			}
 		}
 		
 	}
@@ -78,6 +81,11 @@ public class Raycast {
 		direction.normalize();
 		this.ray = new Ray(direction, startPoint);	
 		this.maxDist = maxDist;
+	}
+	
+	public Raycast(Vector3 startPoint, Vector3 direction, float maxDist, int mask) {
+		this(startPoint, direction, maxDist);
+		this.mask = mask;
 	}
 	
 	public Ray getRay() {

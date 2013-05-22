@@ -86,6 +86,13 @@ public class Joystick implements ITouchListener {
 		
 		return false;
 	}
+	
+	public void deactivate() {
+		active = false;
+		for (int i = 0; i < listeners.size(); ++i) {
+			listeners.get(i).onJoystickDeactivated();
+		}
+	}
 
 	
 	/**	Use the joystick

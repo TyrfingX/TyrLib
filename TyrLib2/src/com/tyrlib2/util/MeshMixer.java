@@ -6,6 +6,8 @@ import java.util.List;
 import com.tyrlib2.graphics.renderer.Material;
 import com.tyrlib2.graphics.renderer.Mesh;
 import com.tyrlib2.graphics.renderer.Renderable;
+import com.tyrlib2.graphics.renderer.Renderable2;
+import com.tyrlib2.math.Vector3;
 
 
 /**
@@ -21,7 +23,7 @@ public class MeshMixer {
 	private int countVertices;
 	private int countIndices;
 	private Material material;
-	/*
+
 	public MeshMixer(Material material) {
 		inputRenderables = new ArrayList<Renderable>();
 		this.material = material;
@@ -39,7 +41,7 @@ public class MeshMixer {
 	 * Create the renderable
 	 * @return
 	 */
-	/*
+	
 	public Renderable create() {
 		float[] vertexData = new float[countVertices];
 		short[] drawOrder = new short[countIndices];
@@ -51,29 +53,41 @@ public class MeshMixer {
 			Renderable inputRenderable = inputRenderables.get(i);
 			Mesh inputMesh = inputRenderable.getMesh();
 			
-			//float[] vertexDataMesh = inputMesh.getVertexData();
-			//short[] drawOrderMesh = inputMesh.getDrawOrder();
+			Vector3 pos = inputRenderable.getParent().getCachedAbsolutePos();
+			
+			int vertexAdd = 0;
+			int drawOrderAdd = 0;
+			
+			float[] vertexDataMesh = inputMesh.getVertexData();
+			short[] drawOrderMesh = inputMesh.getDrawOrder();
 			for (int j = 0; j < vertexDataMesh.length; ++j) {
-				
-				// TODO: Transform the vertex data using the parent scene node of the renderable
-				
-				
-				
 				vertexData[vertexStart + j] = vertexDataMesh[j];
+				
+				if (j % material.getByteStride() == material.getPositionOffset()) {
+					vertexData[vertexStart + j] += pos.x;
+				} else if (j % material.getByteStride() == material.getPositionOffset() + 1) {
+					vertexData[vertexStart + j] += pos.y;
+				} else if (j % material.getByteStride() == material.getPositionOffset() + 2) {
+					vertexData[vertexStart + j] += pos.z;
+				}
+				
+				vertexAdd++;
 			}
 			
 			for (int j = 0; j < drawOrderMesh.length; ++j) {
 				drawOrder[drawOrderStart + j] = drawOrderMesh[j];
+				drawOrderAdd++;
 			}
 			
-			vertexStart += vertexDataMesh.length;
-			drawOrderStart += drawOrderMesh.length;
+			vertexStart += vertexAdd;
+			drawOrderStart += drawOrderAdd;
 		}
 		
-		Mesh mesh = new Mesh(vertexData, drawOrder);
+		Mesh mesh = new Mesh(vertexData, drawOrder, countVertices);
 		Renderable renderable = new Renderable(mesh, material);
 		
 		return renderable;
 	}
-	*/
+	
+	
 }

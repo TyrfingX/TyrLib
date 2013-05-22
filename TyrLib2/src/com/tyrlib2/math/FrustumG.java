@@ -68,10 +68,10 @@ public class FrustumG {
 		fcblD.normalize();
 		fcbrD.normalize();
 		
-		fctl = nctl.add(fctlD.multiply(farClip));
-		fctr = nctr.add(fctrD.multiply(farClip));
-		fcbl = ncbl.add(fcblD.multiply(farClip));
-		fcbr = ncbr.add(fcbrD.multiply(farClip));
+		fctl = new Vector3(nctl.x + fctlD.x * farClip, nctl.y + fctlD.y * farClip, nctl.z + fctlD.z * farClip );
+		fctr = new Vector3(nctr.x + fctrD.x * farClip, nctr.y + fctrD.y * farClip, nctr.z + fctrD.z * farClip );
+		fcbl = new Vector3(ncbl.x + fcblD.x * farClip, ncbl.y + fcblD.y * farClip, ncbl.z + fcblD.z * farClip );
+		fcbr = new Vector3(ncbr.x + fcbrD.x * farClip, ncbr.y + fcbrD.y * farClip, ncbr.z + fcbrD.z * farClip );
 		
 		float[] points = {	nctl.x, nctl.y, nctl.z,
 							nctr.x, nctr.y, nctr.z,

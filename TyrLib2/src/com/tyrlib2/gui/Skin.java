@@ -72,4 +72,9 @@ public class Skin {
 	public String PROGRESS_BAR_BG = "TRANSPARENT";
 	public Color PROGRESS_BAR_COLOR = Color.RED;
 	
+	/** TOOLTIP SETTINGS **/
+	
+	public float TOOLTIP_MAX_ALPHA = 0.7f;
+	public float TOOLTIP_FADE_TIME = 1;
+	
 }

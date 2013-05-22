@@ -42,16 +42,22 @@ public class SteeredMovement extends Movement {
 			
 			float distance = pos.vectorTo(target).length();
 			
-			if (distance <= velocity.length() * time) {
+			if (distance <= velocity.length()) {
 				currentTargetProvider = null;
 			} 
-			
-			steerer.onUpdate(time);
 			
 			time = 0;
 		}
 		
 		return time;
+	}
+	
+	@Override
+	public void clear() {
+		super.clear();
+		if (seek != null) {
+			steerer.removePattern(seek);
+		}
 	}
 
 }

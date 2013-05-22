@@ -1,22 +1,21 @@
 package com.tyrlib2.game;
 
-import java.util.Iterator;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.tyrlib2.graphics.renderer.IFrameListener;
 
 public class Updater implements IFrameListener {
 	
 	private boolean pause;
-	private BlockingQueue<IUpdateable> queue;
+	private List<IUpdateable> queue;
 	
-	public Updater(BlockingQueue<IUpdateable> queue) {
+	public Updater(List<IUpdateable> queue) {
 		this.queue = queue;
 	}
 	
 	public Updater() {
-		this.queue = new LinkedBlockingQueue<IUpdateable>();
+		this.queue = new ArrayList<IUpdateable>();
 	}
 
 	public void addItem(IUpdateable item)
@@ -78,17 +77,22 @@ public class Updater implements IFrameListener {
 
 	@Override
 	public void onFrameRendered(float time) {
-		Iterator<IUpdateable> itr = queue.iterator();
-		while (itr.hasNext() && !pause)
-		{
-			IUpdateable item = itr.next();
+		for (int i = 0; i < queue.size() && !pause; ++i) {
+			IUpdateable item = queue.get(i);
 			if (item != null) {
 				item.onUpdate(time);
-				if (item.isFinished())
-					itr.remove();
+				if (item.isFinished()) {
+					removeItem(i);
+					--i;
+				}
 			} else {
-				itr.remove();
+				removeItem(i);
 			}
 		}
+	}
+	
+	private void removeItem(int i) {
+		queue.set(i, queue.get(queue.size() - 1));
+		queue.remove(queue.size() - 1);
 	}
 }

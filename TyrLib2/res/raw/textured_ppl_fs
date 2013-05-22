@@ -37,6 +37,8 @@ void main()
 	    // pointing in the same direction then it will get max illumination.
 	    diffuse = max(dot(v_Normal, u_LightPos), 0.0);
 	}
+
+
 	
 	// Multiply the color by the diffuse illumination level and texture value to get final output color.
 	gl_FragColor = (diffuse + u_Ambient) * texture2D(u_Texture, v_TexCoordinate) * v_Color;

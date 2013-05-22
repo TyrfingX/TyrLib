@@ -36,7 +36,7 @@ public class FrameListener implements IFrameListener {
 		
 		
 		SceneManager.getInstance().addFrameListener(updater);
-		SceneManager.getInstance().getRenderer().addRenderable(system);
+		SceneManager.getInstance().getRenderer().addRenderable((ParticleSystem)system);
 	}
 
 	@Override

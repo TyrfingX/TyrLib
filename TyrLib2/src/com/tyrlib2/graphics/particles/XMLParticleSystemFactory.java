@@ -82,15 +82,25 @@ public class XMLParticleSystemFactory implements IParticleSystemFactory {
 	}
 	
 	private void parseParticleSystem() {
-		prototype = new ParticleSystem();
+		
+		int maxParticles = 0;
+		boolean simple = false;
 
 		int countAttributes = parser.getAttributeCount();
 		for (int i = 0; i < countAttributes; ++i) {
 			if (parser.getAttributeName(i).equals("maxParticles")) {
-				int maxParticles = Integer.valueOf(parser.getAttributeValue(i));
-				prototype.setMaxParticles(maxParticles);
+				maxParticles = Integer.valueOf(parser.getAttributeValue(i));
+			} else if (parser.getAttributeName(i).equals("simple")) {
+				simple = Boolean.valueOf(parser.getAttributeValue(i));
 			}
 		}
+		
+		if (!simple) {
+			prototype = new ComplexParticleSystem();
+		} else {
+			prototype = new SimpleParticleSystem();
+		}
+		prototype.setMaxParticles(maxParticles);
 	}
 	
 	private void parseFactories() throws XmlPullParserException, IOException {

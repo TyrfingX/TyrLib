@@ -144,29 +144,27 @@ public class DefaultMaterial3 extends LightedMaterial {
 		
 		init(12,posOffset,3, "u_MVPMatrix", "a_Position");
 		
-		normalHandle = GLES20.glGetAttribLocation(program.handle, "a_Normal");
-		lightPosHandle = GLES20.glGetUniformLocation(program.handle, "u_LightPos");
-		lightTypeHandle = GLES20.glGetUniformLocation(program.handle, "u_LightType");
-		mvMatrixHandle = GLES20.glGetUniformLocation(program.handle, "u_MVMatrix"); 
-		ambientHandle = GLES20.glGetUniformLocation(program.handle, "u_Ambient");
-	    textureUniformHandle = GLES20.glGetUniformLocation(program.handle, "u_Texture");
-	    textureCoordinateHandle = GLES20.glGetAttribLocation(program.handle, "a_TexCoordinate");
-	    colorHandle = GLES20.glGetAttribLocation(program.handle, "a_Color");
+
 
 	}
 	
 	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
 	    super.render(vertexBuffer, modelMatrix);
-	    
-		int textureHandle = texture.getHandle();
+		
+		ambientHandle = GLES20.glGetUniformLocation(program.handle, "u_Ambient");
 		
 		if (program.meshChange) {
+			colorHandle = GLES20.glGetAttribLocation(program.handle, "a_Color");
+			normalHandle = GLES20.glGetAttribLocation(program.handle, "a_Normal");
+			textureCoordinateHandle = GLES20.glGetAttribLocation(program.handle, "a_TexCoordinate");
 			passMesh(vertexBuffer);
 		}
 	    
 		passModelViewMatrix(modelMatrix);
 	    
+		int textureHandle = texture.getHandle();
         if (program.textureHandle != textureHandle) {
+        	textureUniformHandle = GLES20.glGetUniformLocation(program.handle, "u_Texture");
         	passTexture(textureHandle);
         }
 	    
@@ -189,6 +187,7 @@ public class DefaultMaterial3 extends LightedMaterial {
 	    float[] viewMatrix = sceneManager.getRenderer().getCamera().getViewMatrix();
 	    Matrix.multiplyMM(mvMatrix, 0, viewMatrix, 0, modelMatrix, 0);  
 	    
+	    mvMatrixHandle = GLES20.glGetUniformLocation(program.handle, "u_MVMatrix"); 
         // Pass in the modelview matrix.
         GLES20.glUniformMatrix4fv(mvMatrixHandle, 1, false, mvMatrix, 0);
 	}

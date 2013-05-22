@@ -76,11 +76,12 @@ public class Rectangle2 extends Renderable2 {
 	
 	public void setSize(Vector2 size) {
 		this.size = size;
-		Vector3[] points = { 	new Vector3(0, 0, 0),
-								new Vector3(size.x, 0, 0),
-								new Vector3(0, -size.y, 0),
-								new Vector3(size.x, -size.y, 0) };
-		init(material, points, DRAW_ORDER_QUAD);
+		
+		mesh.setVertexInfo(1 * material.getByteStride() + material.getPositionOffset() + 0, size.x);
+		mesh.setVertexInfo(2 * material.getByteStride() + material.getPositionOffset() + 1, -size.y);
+		mesh.setVertexInfo(3 * material.getByteStride() + material.getPositionOffset() + 0, size.x);
+		mesh.setVertexInfo(3 * material.getByteStride() + material.getPositionOffset() + 1, -size.y);
+		
 	}
 	
 	public void setFilled(boolean filled) {

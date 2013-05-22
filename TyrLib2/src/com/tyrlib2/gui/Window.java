@@ -15,6 +15,7 @@ import com.tyrlib2.graphics.scene.SceneNode;
 import com.tyrlib2.graphics.scene.SceneObject;
 import com.tyrlib2.gui.WindowEvent.WindowEventType;
 import com.tyrlib2.input.ITouchListener;
+import com.tyrlib2.input.InputManager;
 import com.tyrlib2.math.Rectangle;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.math.Vector3;
@@ -70,6 +71,8 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	/** How "High" is this window in the display hirachy? **/
 	protected long priority;
 	
+	protected long tmpPrio;
+	
 	private Map<WindowEventType, List<IEventListener>> eventListeners;
 	
 	public enum BLEND_STATE {
@@ -93,7 +96,14 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	/** The parent window **/
 	private Window parent;
 	
+	/** Maximum alpha this window will receive when blending **/
 	private float maxAlpha = 1;
+	
+	/** if this window is moving **/
+	private boolean moving;
+	
+	/** if this window is being dragged by the user **/
+	private boolean drag;
 	
 	private Window() {
 		node = new SceneNode();
@@ -211,6 +221,8 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	public void removeChild(Window window) {
 		children.remove(window);
 		node.detachChild(window.node);
+		
+		WindowManager.getInstance().getRootNode().attachChild(window.node);
 	}
 	
 	/**
@@ -244,6 +256,20 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 		}
 		
 		movement.onUpdate(time);
+		
+		if (movement.isFinished()) {
+			if (moving) {
+				moving = false;
+				fireEvent(new WindowEvent(this, WindowEventType.MOVEMENT_FINISHED));
+			}
+		} else {
+			moving = true;
+		}
+		
+		if (drag) {
+			setRelativePos(InputManager.getInstance().getLastTouch());
+		}
+		
 	}
 	
 	private void updateBlending(float time) {
@@ -264,11 +290,14 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	
 	protected void destroy() {
 		if (!destroyed) {
+			
+			destroyed = true;
+			
 			for (int i = 0; i < children.size(); ++i) {
-				WindowManager.getInstance().removeWindow(this);
-				destroyed = true;
 				children.get(i).destroy();
 			}
+			
+			WindowManager.getInstance().removeWindow(this);
 			
 			if (parent != null && !parent.destroyed) {
 				parent.removeChild(this);
@@ -418,7 +447,7 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	public boolean onTouchUp(Vector2 point, MotionEvent event, int fingerId) {
 		point = new Vector2(point.x, 1-point.y);
 		Vector2 pos = getAbsolutePos();
-		if (Rectangle.pointInRectangle(pos, size, point)) {
+		if (drag || Rectangle.pointInRectangle(pos, size, point)) {
 			if (touchInWindow) {
 				onTouchLeavesWindow();
 			}
@@ -532,6 +561,14 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	
 	public void setReceiveTouchEvents(boolean receiveTouchEvents) {
 		this.receiveTouchEvents = receiveTouchEvents;
+		
+		if (receiveTouchEvents) {
+			if (!InputManager.getInstance().isAdded(this)) {
+				InputManager.getInstance().addTouchListener(this);
+			}
+		} else {
+			InputManager.getInstance().removeTouchListener(this);
+		}
 	}
 	
 	/**
@@ -680,6 +717,45 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	
 	public void setMaxAlpha(float maxAlpha) {
 		this.maxAlpha = maxAlpha;
+	}
+	
+	public float getMaxAlpha() {
+		return maxAlpha;
+	}
+	
+	public void setDrag(boolean drag) {
+		if (drag) {
+			if (parent != null) {
+				parent.removeChild(this);
+			}
+		} 
+
+		setPriority(WindowManager.GUI_OVERLAY_PRIORITY/2);
+		
+		InputManager.getInstance().sort();
+		
+		this.drag = drag;
+	}
+	
+	public boolean getDrag() {
+		return drag;
+	}
+	
+	public boolean overlaps(Window window) {
+		Vector2 pos1 = getAbsolutePos();
+		pos1.y = 1 - pos1.y;
+		Vector2 pos2 = window.getAbsolutePos();
+		pos2.y = 1 - pos2.y;
+		return Rectangle.overlap(pos1, getSize().add(pos1), pos2, window.getSize().add(pos2));
+	}
+	
+	public void setRecuresiveReceiveTouchEvents(boolean receiveTouchEvents) {
+		InputManager.getInstance().removeTouchListener(this);
+		this.receiveTouchEvents = receiveTouchEvents;
+		
+		for (int i = 0; i < children.size(); ++i) {
+			children.get(i).setRecuresiveReceiveTouchEvents(receiveTouchEvents);
+		}
 	}
 	
 }

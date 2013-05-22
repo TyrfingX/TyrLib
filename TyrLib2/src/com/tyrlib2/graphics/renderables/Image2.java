@@ -79,7 +79,8 @@ public class Image2 extends Renderable2 {
 	}
 	
 	public void setTexture(Texture texture) {
-		
+		TexturedMaterial mat = (TexturedMaterial) material;
+		mat.setTexture(texture);
 	}
 	
 	public void setTextureRegion(TextureRegion textureRegion) {

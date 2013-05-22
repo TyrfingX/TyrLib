@@ -77,11 +77,7 @@ public class WindowManager {
 	}
 	
 	public void destroyWindow(Window window) {
-		renderer.removeWindow(window);
-		windows.remove(window);
-		updater.removeItem(window);
-		window.node.detach();
-		InputManager.getInstance().removeTouchListener(window);
+		window.destroy();
 	}
 	
 	private void addWindow(Window window) {
@@ -95,6 +91,13 @@ public class WindowManager {
 	public Window createWindow(String name, Vector2 size) {
 		Window window = new Window(name, size);
 		addWindow(window);
+		return window;
+	}
+	
+	public Window createWindow(String name, Vector2 pos, Vector2 size) {
+		Window window = new Window(name, size);
+		addWindow(window);
+		window.setRelativePos(pos);
 		return window;
 	}
 	
@@ -122,15 +125,21 @@ public class WindowManager {
 		return imageBox;
 	}
 	
+	public Window createImageBox(String name, Vector2 pos, String textureName, Vector2 size) {
+		ImageBox imageBox = new ImageBox(name, pos, textureName, size);
+		addWindow(imageBox);
+		return imageBox;
+	}
+	
 	public Window createOverlay(String name, Vector2 pos, Vector2 size, Color color) {
 		Overlay overlay = new Overlay(name, pos, size, color);
+		overlay.setPriority(GUI_OVERLAY_PRIORITY);
 		addWindow(overlay);
 		return overlay;
 	}
 	
 	public Window createOverlay(String name, Color color) {
 		Window overlay = createOverlay(name, new Vector2(0,0), new Vector2(1,1), color);
-		overlay.setPriority(GUI_OVERLAY_PRIORITY);
 		return overlay;
 	}
 	
@@ -148,6 +157,7 @@ public class WindowManager {
 		overlay.setVisible(false);
 		overlay.setAlpha(0);
 		overlay.setMaxAlpha(skin.OVERLAY_MAX_ALPHA);
+		InputManager.getInstance().sort();
 		return overlay;
 	}
 	
@@ -176,6 +186,12 @@ public class WindowManager {
 		return popup;
 	}
 	
+	public Window createTooltip(String name, Vector2 size) {
+		Window tooltip = new Tooltip(name, size);
+		tooltip.setPriority(GUI_OVERLAY_PRIORITY);
+		addWindow(tooltip);
+		return tooltip;
+	}
 	
 	public Window createProgressBar(String name, Vector2 pos, Vector2 size, float maxProgress) {
 		Window progressBar = new ProgressBar(name, pos, size, maxProgress);
@@ -184,7 +200,10 @@ public class WindowManager {
 	}
 	
 	protected void removeWindow(Window window) {
+		renderer.removeWindow(window);
 		windows.remove(window);
+		window.node.detach();
+		InputManager.getInstance().removeTouchListener(window);
 	}
 	
 	public Window getWindow(String name) {

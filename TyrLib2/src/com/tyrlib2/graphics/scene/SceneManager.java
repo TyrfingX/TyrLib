@@ -12,6 +12,7 @@ import com.tyrlib2.graphics.lighting.Light;
 import com.tyrlib2.graphics.lighting.LightingType;
 import com.tyrlib2.graphics.lighting.PointLight;
 import com.tyrlib2.graphics.materials.DefaultMaterial3;
+import com.tyrlib2.graphics.particles.ComplexParticleSystem;
 import com.tyrlib2.graphics.particles.IParticleSystemFactory;
 import com.tyrlib2.graphics.particles.ParticleSystem;
 import com.tyrlib2.graphics.particles.XMLParticleSystemFactory;
@@ -277,6 +278,12 @@ public class SceneManager {
 		ParticleSystem particleSystem = factory.create();
 		renderer.addRenderable((BoundedSceneObject)particleSystem, OpenGLRenderer.TRANSLUCENT_CHANNEL);
 		
+		return particleSystem;
+	}
+	
+	public ParticleSystem createParticleSystem(int maxParticles) {
+		ComplexParticleSystem particleSystem = new ComplexParticleSystem(maxParticles);
+		renderer.addRenderable((BoundedSceneObject)particleSystem, OpenGLRenderer.TRANSLUCENT_CHANNEL);
 		return particleSystem;
 	}
 	

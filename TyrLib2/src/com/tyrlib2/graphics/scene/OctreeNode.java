@@ -234,8 +234,8 @@ public class OctreeNode extends BoundedSceneObject {
 	 */
 	
 	public boolean removeObject(BoundedSceneObject sceneObject) {
-		
-		for (int i = 0; i < objects.size(); ++i) {
+		int countObjects = objects.size();
+		for (int i = 0; i < countObjects; ++i) {
 			if (objects.get(i) == sceneObject) {
 				removeLocalObject(i);
 				
@@ -404,10 +404,13 @@ public class OctreeNode extends BoundedSceneObject {
 	private void queryObjects(ISceneQuery query) {
 		int countObjects = objects.size();
 		BoundedSceneObject object;
+		
 		for (int i = 0; i < countObjects; ++i)  {
 			object = objects.get(i);
-			if (query.intersects(object.getBoundingBox())) {
-				query.callback(object);
+			if (object.getBoundingBox() != null) {
+				if (query.intersects(object.getBoundingBox())) {
+					query.callback(object);
+				}
 			}
 		}
 	}

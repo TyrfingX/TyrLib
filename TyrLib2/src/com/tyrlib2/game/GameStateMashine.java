@@ -67,4 +67,8 @@ public class GameStateMashine<T> {
 		newState.enterGameState();
 		currentState = newState;
 	}
+	
+	public GameState getCurrentState() {
+		return currentState;
+	}
 }

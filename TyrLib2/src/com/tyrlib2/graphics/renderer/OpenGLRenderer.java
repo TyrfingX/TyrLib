@@ -33,6 +33,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	private class RenderChannel {
 		Octree octree;
 		List<IRenderable> renderables;
+		boolean enabled = true;
 		
 		public RenderChannel() {
 			octree = new Octree(5, 2000, new Vector3(), 200);
@@ -52,11 +53,11 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	
 	public static final int BYTES_PER_FLOAT = 4;
 	
-	private List<IFrameListener> frameListeners;
-	private SparseArray<RenderChannel> renderChannels;
-	private SceneNode rootSceneNode;
-	private Viewport viewport;
-	private Camera camera;
+	private static List<IFrameListener> frameListeners;
+	private static SparseArray<RenderChannel> renderChannels;
+	private static SceneNode rootSceneNode;
+	private static Viewport viewport;
+	private static Camera camera;
 	private Context context;
 	
 	/** View projection matrix of the camera **/
@@ -69,23 +70,25 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	private static float BILLION = 1000000000;
 	
 	protected boolean rendering = false;
-	private boolean init = false;
+	private static boolean init = false;
 	
 	private FrustumG frustum;
 	
 	public OpenGLRenderer(Context context) {
-		frameListeners = new Vector<IFrameListener>();
-		renderChannels = new SparseArray<RenderChannel>();
+		if (!init) {
+			frameListeners = new Vector<IFrameListener>();
+			renderChannels = new SparseArray<RenderChannel>();
+			
+			rootSceneNode = new SceneNode();
+	
+			renderChannels.put(BACKGROUND_CHANNEL, new RenderChannel());
+			renderChannels.put(DEFAULT_CHANNEL, new RenderChannel());
+			renderChannels.put(TRANSLUCENT_CHANNEL, new RenderChannel());
+			renderChannels.put(OVERLAY_CHANNEL, new RenderChannel());
+		}
 		
-		rootSceneNode = new SceneNode();
-
-		renderChannels.put(BACKGROUND_CHANNEL, new RenderChannel());
-		renderChannels.put(DEFAULT_CHANNEL, new RenderChannel());
-		renderChannels.put(TRANSLUCENT_CHANNEL, new RenderChannel());
-		renderChannels.put(OVERLAY_CHANNEL, new RenderChannel());
-		
-		this.context = context;
 		rendering = false;
+		this.context = context;
 	}
 	
 	public void onSurfaceCreated(GL10 unused, EGLConfig config) {
@@ -101,13 +104,11 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 		// Set the blend function
 		
 		GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE);
-		
-		if (init) {
-			ProgramManager.getInstance().recreateAll();
-			TextureManager.getInstance().reloadAll(context);
-			SceneManager.getInstance().recreateFonts(context);
-			return;
-		}
+
+		ProgramManager.getInstance().recreateAll();
+		TextureManager.getInstance().reloadAll(context);
+		SceneManager.getInstance().recreateFonts(context);
+
 		
         // Setup the SceneManager
         SceneManager.getInstance().setRenderer(this);
@@ -178,7 +179,6 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	
 	public void destroy() {
 		rendering = false;
-		renderChannels.clear();
 	}
 	
     public void onDrawFrame(GL10 unused) {
@@ -223,26 +223,43 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     }
     
     private void drawScene() {
+    	RenderChannel renderChannel = renderChannels.get(BACKGROUND_CHANNEL);
     	
-    	drawChannel(renderChannels.get(BACKGROUND_CHANNEL), vpMatrix);
-    	
+    	if (renderChannel.enabled) {
+    		drawChannel(renderChannel, vpMatrix);
+    	}
     	
     	GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-    	drawChannel(renderChannels.get(DEFAULT_CHANNEL), vpMatrix);
-    	drawChannel(renderChannels.get(TRANSLUCENT_CHANNEL), vpMatrix);
+    	renderChannel = renderChannels.get(DEFAULT_CHANNEL);
+    	if (renderChannel.enabled) {
+    		drawChannel(renderChannel, vpMatrix);
+    	}
+    	
+    	renderChannel = renderChannels.get(TRANSLUCENT_CHANNEL);
+    	if (renderChannel.enabled) {
+    		drawChannel(renderChannel, vpMatrix);
+    	}
     	GLES20.glDisable(GLES20.GL_DEPTH_TEST);
     	
-    	Matrix.orthoM(proj, 0, -viewport.getWidth()*0.2f, viewport.getWidth()*1.2f, -viewport.getHeight()*0.2f, viewport.getHeight()*1.2f, -1, 1);
+
     	
-    	RenderChannel channel = renderChannels.get(OVERLAY_CHANNEL);
+    	renderChannel = renderChannels.get(OVERLAY_CHANNEL);
+    	if (renderChannel.enabled) {
+	    	Matrix.orthoM(proj, 0, -viewport.getWidth()*0.2f, viewport.getWidth()*1.2f, -viewport.getHeight()*0.2f, viewport.getHeight()*1.2f, -1, 1);
+	    	
+			// Draw all unbounded objects
+			if (renderChannel.renderables != null) {
+			    for (int i = 0; i < renderChannel.renderables.size(); ++i) {
+			    	renderChannel.renderables.get(i).render(proj);
+			    }
+			}
+    	}
     	
-		// Draw all unbounded objects
-		if (channel.renderables != null) {
-		    for (int i = 0; i < channel.renderables.size(); ++i) {
-		    	channel.renderables.get(i).render(proj);
-		    }
-		}
-    	
+    }
+    
+    public void setRenderChannelEnabled(boolean enabled, int channel) {
+    	RenderChannel renderChannel = renderChannels.get(channel);
+    	renderChannel.enabled = enabled;
     }
 
 	private void drawChannel(RenderChannel channel, final float[] transformMatrix) {

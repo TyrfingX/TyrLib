@@ -100,9 +100,11 @@ public class Label extends Window{
 			background.setAlpha(alpha);
 		}
 		
-		Color color = text.getBaseColor();
+		Color color = text.getBaseColor().copy();
 		color.a = alpha;
 		text.setBaseColor(color);
+		
+		super.setAlpha(alpha);
 	}
 	
 	

@@ -48,6 +48,9 @@ public abstract class LightedMaterial extends Material{
 		GLES20.glUniform4f(ambientHandle, ambient.r, ambient.g, ambient.b, ambient.a);
 		
 		if (light != null) {
+			
+			lightPosHandle = GLES20.glGetUniformLocation(program.handle, "u_LightPos");
+			lightTypeHandle = GLES20.glGetUniformLocation(program.handle, "u_LightType");
 		
 	    	if (light.getType() == Type.POINT_LIGHT) {
 	    	
