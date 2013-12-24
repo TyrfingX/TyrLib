@@ -35,6 +35,10 @@ public class Animation implements IUpdateable {
 		playing = true;
 	}
 	
+	public void stop() {
+		playing = false;
+	}
+	
 	public void pause() {
 		
 	}

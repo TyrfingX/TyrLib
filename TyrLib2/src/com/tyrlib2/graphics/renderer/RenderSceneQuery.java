@@ -15,10 +15,19 @@ public class RenderSceneQuery implements ISceneQuery {
 		this.transformMatrix = transformMatrix;
 	}
 	
+	public RenderSceneQuery() {
+		
+	}
+	
+	public void init(FrustumG frustum, float[] transformMatrix) {
+		this.frustum = frustum;
+		this.transformMatrix = transformMatrix;
+	}
+	
 	@Override
 	public boolean intersects(AABB aabb) {
 		if (aabb == null) return true;
-		if (!frustum.getAABB().intersectsAABB(aabb)) return false;
+		//if (!frustum.getAABB().intersectsAABB(aabb)) return false;
 		return frustum.aabbInFrustum(aabb);
 	}
 

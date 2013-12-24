@@ -113,7 +113,7 @@ public class SceneNode {
 		
 		if (parent != null) {
 			absolutePos = absolutePos.add(parent.getAbsolutePos());
-		}
+		} 
 		
 		return absolutePos;
 	}
@@ -126,6 +126,10 @@ public class SceneNode {
 	
 	public Vector3 getCachedAbsolutePos() {
 		return new Vector3(absolutePos);
+	}
+	
+	public Vector3 getCachedAbsolutePosVector() {
+		return absolutePos;
 	}
 	
 	/**
@@ -530,6 +534,4 @@ public class SceneNode {
 	public void scale(Vector3 scale) {
 		setRelativeScale(this.scale.add(scale));
 	}
-	
-	
 }

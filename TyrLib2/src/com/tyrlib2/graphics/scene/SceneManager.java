@@ -15,6 +15,7 @@ import com.tyrlib2.graphics.materials.DefaultMaterial3;
 import com.tyrlib2.graphics.particles.ComplexParticleSystem;
 import com.tyrlib2.graphics.particles.IParticleSystemFactory;
 import com.tyrlib2.graphics.particles.ParticleSystem;
+import com.tyrlib2.graphics.particles.SimpleParticleSystem;
 import com.tyrlib2.graphics.particles.XMLParticleSystemFactory;
 import com.tyrlib2.graphics.renderables.Box;
 import com.tyrlib2.graphics.renderables.Entity;
@@ -287,6 +288,12 @@ public class SceneManager {
 		return particleSystem;
 	}
 	
+	public ParticleSystem createSimpleParticleSystem(int maxParticles) {
+		SimpleParticleSystem particleSystem = new SimpleParticleSystem(maxParticles);
+		renderer.addRenderable((BoundedSceneObject)particleSystem, OpenGLRenderer.TRANSLUCENT_CHANNEL);
+		return particleSystem;
+	}
+	
 	public Rectangle2 createRectangle2(Vector2 size, Color color) {
 		Rectangle2 rect = new Rectangle2(size, color);
 		renderer.addRenderable(rect, OpenGLRenderer.OVERLAY_CHANNEL);
@@ -306,10 +313,14 @@ public class SceneManager {
 	}
 	
 	public void loadFont(String name, int size, Context context) {
+		loadFont(name, name, size, context);
+	}
+	
+	public void loadFont(String source, String name, int size, Context context) {
 		GLText glText = new GLText(context.getAssets());
-		glText.load( name, size, 2, 2 );  // Create Font (Height: 14 Pixels / X+Y Padding 2 Pixels)
+		glText.load( source, size, 2, 2 );  // Create Font (Height: 14 Pixels / X+Y Padding 2 Pixels)
 		glText.setScale(1);
-		activeFont = new Font(glText);
+		activeFont = new Font(source, name, glText);
 		fonts.put(name, activeFont);
 	}
 	
@@ -321,7 +332,7 @@ public class SceneManager {
 		for (String fontName : fonts.keySet()) {
 			Font font = fonts.get(fontName);
 			GLText glText = new GLText(context.getAssets());
-			glText.load(fontName, font.glText.getSize(), 2, 2 );
+			glText.load(font.source, font.glText.getSize(), 2, 2 );
 			font.glText = glText;
 		}
 	}

@@ -2,14 +2,21 @@ precision mediump float;
 
 uniform sampler2D u_Texture;
 varying vec2 v_TexCoordinate;
-varying float v_Alpha;
+uniform float u_Alpha;
+uniform vec3 u_Color;
 
 void main() 
 {
     vec4 texColor = texture2D(u_Texture, v_TexCoordinate);
-    texColor.r *= v_Alpha;
-    texColor.g *= v_Alpha;
-    texColor.b *= v_Alpha;
-    texColor.a *= v_Alpha;
+    texColor.a *= u_Alpha;
+    
+    if(texColor.a == 0.0){
+        discard;
+    }
+    
+    texColor.r *= u_Alpha * u_Color.r;
+    texColor.g *= u_Alpha * u_Color.g;
+    texColor.b *= u_Alpha * u_Color.b;
+    
     gl_FragColor = vec4(texColor.rgb, texColor.a);
 }      

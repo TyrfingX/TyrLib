@@ -35,6 +35,8 @@ public class ComplexParticleSystem extends ParticleSystem {
 	
 	private AABB boundingBox;
 	
+	private boolean test = false;
+	
 	private int colorHandle;
 	
 	public ComplexParticleSystem() {
@@ -298,12 +300,12 @@ public class ComplexParticleSystem extends ParticleSystem {
 				// Pass in the transformation matrix.
 				GLES20.glUniformMatrix4fv(material.getMVPMatrixHandle(), 1, false, mvpMatrix, 0);
 				
-				GLES20.glDepthMask(false);
+				//GLES20.glDepthMask(false);
 				
 				// Draw the point.
 				GLES20.glDrawArrays(GLES20.GL_POINTS, 0, particleData.getSize() / PARTICLE_DATA_SIZE);
 			
-				GLES20.glDepthMask(true);
+				//GLES20.glDepthMask(true);
 
 			}
 		}

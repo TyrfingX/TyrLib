@@ -18,13 +18,17 @@ public class Program {
 	protected static Program inUse;
 	
 	/** The currently passed mesh **/
-	protected Mesh mesh;
+	public Mesh mesh;
 	
 	/** Mesh must be changed **/
 	public boolean meshChange;
 	
 	/** The handle to the texture currently passed to the GPU **/
 	public int textureHandle;
+	
+	private static boolean blending = false;
+	private static int ssfactor;
+	private static int sdfactor;
 	
 	public Program(int handle) {
 		this.handle = handle;
@@ -62,6 +66,26 @@ public class Program {
 			inUse.mesh = null;
 			inUse.textureHandle = 0;
 			inUse = null;
+		}
+	}
+	
+	public static void blendEnable(int sfactor, int dfactor) {
+		if (!blending) {
+			GLES20.glEnable( GLES20.GL_BLEND );
+			blending = true;
+		}
+		if (sfactor != ssfactor || dfactor != sdfactor) {
+			GLES20.glBlendFunc( sfactor, dfactor );
+			ssfactor = sfactor;
+			sdfactor = dfactor;
+		}
+    	
+	}
+	
+	public static void blendDisable() {
+		if (blending) {
+			blending = false;
+			GLES20.glDisable(GLES20.GL_BLEND);
 		}
 	}
 }

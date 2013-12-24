@@ -227,10 +227,10 @@ public class Quaternion {
 		
 		if (1.0f - Math.abs(diff) > SLERP_TO_LERP_SWITCH_THRESHOLD) {
 			float theta = (float) Math.acos(Math.abs(diff));
-			float oneOverTheta = 1.0f / FloatMath.sin(theta);
+			float oneOverTheta = 1.0f / (float) Math.sin(theta);
 			
-			startWeight = FloatMath.sin(theta * (1.0f - alpha)) * oneOverTheta;
-			endWeight 	= FloatMath.sin(theta * alpha)			* oneOverTheta;
+			startWeight = (float) Math.sin(theta * (1.0f - alpha)) * oneOverTheta;
+			endWeight 	= (float) Math.sin(theta * alpha)			* oneOverTheta;
 			
 			if (diff < 0.0f) {
 				startWeight = -startWeight;
@@ -270,7 +270,7 @@ public class Quaternion {
 		  resultVector.z = result.z;
 		  
 		  return resultVector;
-		}
+	}
 	
 	public void multiplyNoTmp(Vector3 vector) {
 		  Quaternion vectorQuaternion = new Quaternion();
@@ -287,6 +287,17 @@ public class Quaternion {
 		  vector.x = resultQuaternion.x;
 		  vector.y = resultQuaternion.y;
 		  vector.z = resultQuaternion.z;
+	}
+	
+	public static Quaternion rotateTo(Vector3 src, Vector3 dest) {
+		Quaternion q= new Quaternion();
+		Vector3 a = src.cross(dest);
+		q.x = a.x;
+		q.y = a.y;
+		q.z = a.z;
+		q.w = (float) Math.sqrt((src.length() * src.length()) * (dest.length() * dest.length())) + src.dot(dest);
+		q.normalize();
+		return q;
 	}
 
 }

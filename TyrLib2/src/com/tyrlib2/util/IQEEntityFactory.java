@@ -216,11 +216,6 @@ public class IQEEntityFactory implements IEntityFactory {
 				vertexData[bytePos + baseMaterial.getPositionOffset() + 1] = pos.y;
 				vertexData[bytePos + baseMaterial.getPositionOffset() + 2] = pos.z;
 				
-				vertexData[bytePos + baseMaterial.getColorOffset() + 0] = 1;
-				vertexData[bytePos + baseMaterial.getColorOffset() + 1] = 1;
-				vertexData[bytePos + baseMaterial.getColorOffset() + 2] = 1;
-				vertexData[bytePos + baseMaterial.getColorOffset() + 3] = 1;
-				
 				Vector3 normal = vertex.normal;
 				vertexData[bytePos + baseMaterial.getNormalOffset() + 0] = normal.x;
 				vertexData[bytePos + baseMaterial.getNormalOffset() + 1] = normal.y;

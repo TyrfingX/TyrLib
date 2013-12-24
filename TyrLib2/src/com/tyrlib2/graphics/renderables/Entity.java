@@ -111,6 +111,11 @@ public class Entity extends BoundedRenderable implements IUpdateable {
 		Animation anim = skeleton.getAnimation(animName);
 		anim.play();
 	}
+	
+	public void stopAnimation(String animName) {
+		Animation anim = skeleton.getAnimation(animName);
+		anim.stop();
+	}
 
 	@Override
 	public void onUpdate(float time) {
@@ -152,6 +157,10 @@ public class Entity extends BoundedRenderable implements IUpdateable {
 	
 	public void setVisible(boolean visible) {
 		this.visible = visible;
+	}
+	
+	public boolean hasAnimation(String animName) {
+		return skeleton.hasAnimation(animName);
 	}
 	
 	

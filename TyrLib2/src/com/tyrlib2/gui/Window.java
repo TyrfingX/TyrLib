@@ -54,7 +54,7 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	protected boolean destroyed = false;
 	
 	/** Is this window receiving touch events **/
-	protected boolean receiveTouchEvents = true;
+	protected boolean receiveTouchEvents = false;
 	
 	/** Is this window allowing windows behind it to receive touch events? **/
 	protected boolean passTouchEventsThrough = false;
@@ -74,6 +74,10 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	protected long tmpPrio;
 	
 	private Map<WindowEventType, List<IEventListener>> eventListeners;
+	
+	private int countComponents;
+	
+	protected boolean inheritsAlpha;
 	
 	public enum BLEND_STATE {
 		IDLE,
@@ -326,6 +330,10 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 		return name;
 	}
 	
+	public void setInheritsAlpha(boolean inheritsAlpha) {
+		this.inheritsAlpha = inheritsAlpha;
+	}
+	
 	/**
 	 * Set an alpha value
 	 * @param alpha
@@ -333,8 +341,10 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	
 	public void setAlpha(float alpha) {
 		for (int i = 0; i < children.size(); ++i) {
-			float childAlpha = Math.min(children.get(i).maxAlpha, alpha);
-			children.get(i).setAlpha(childAlpha);
+			if (children.get(i).inheritsAlpha) {
+				float childAlpha = Math.min(children.get(i).maxAlpha, alpha);
+				children.get(i).setAlpha(childAlpha);
+			}
 		}
 	}
 	
@@ -413,6 +423,8 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 		for (int i = 0; i < children.size(); ++i) {
 			children.get(i).setPriority(priority+i+1);
 		}
+		
+		WindowManager.getInstance().notifyResort();
 	}
 	
 	@Override
@@ -629,6 +641,8 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 		
 		float distance = pos.vectorTo(newPos).length();
 		speed.speed = distance / time;
+		
+		moving = true;
 	}
 
 	/**
@@ -646,7 +660,7 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	
 	@Override
 	public void render(float[] vpMatrix) {
-		for (int i = 0; i < components.size(); ++i) {
+		for (int i = 0; i < countComponents; ++i) {
 			components.get(i).render(vpMatrix);
 		}
 	}
@@ -656,6 +670,7 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 		if (renderable instanceof SceneObject) {
 			node.attachSceneObject((SceneObject) renderable);
 		}
+		countComponents++;
 	}
 	
 	public void addComponent(IRenderable renderable, int position) {
@@ -663,6 +678,7 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 		if (renderable instanceof SceneObject) {
 			node.attachSceneObject((SceneObject) renderable);
 		}
+		countComponents++;
 	}
 	
 	public void addEventListener(WindowEventType event, IEventListener listener) {

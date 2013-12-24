@@ -72,7 +72,7 @@ public class Camera extends SceneObject {
 	
 	public void update() {
 		
-		Vector3 pos = parent.getCachedAbsolutePos();
+		Vector3 pos = parent.getCachedAbsolutePosVector();
 		Quaternion rot = parent.getCachedAbsoluteRot();
 		
 		if (pos == null) {

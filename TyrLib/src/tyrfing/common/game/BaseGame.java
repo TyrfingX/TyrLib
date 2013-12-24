@@ -22,7 +22,6 @@ public abstract class BaseGame 	extends SurfaceView
 		CONTEXT = context;
 		this.getHolder().addCallback(this);
 		inputManager = new InputManager();
-		this.setOnTouchListener(inputManager);
 	}
 
 	@Override

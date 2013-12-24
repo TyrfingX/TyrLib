@@ -28,7 +28,8 @@ public class OpenGLSurfaceView extends GLSurfaceView {
         // Create an OpenGL ES 2.0 context
         setEGLContextClientVersion(2);
         setEGLConfigChooser(new MultisampleConfigChooser());
-
+        
+        InputManager.getInstance();
         
         OpenGLRenderer renderer = new OpenGLRenderer(context);
         

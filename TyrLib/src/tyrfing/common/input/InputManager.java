@@ -19,6 +19,14 @@ public class InputManager implements OnTouchListener{
 	private static boolean touching = false;
 	private static Vector2 lastTouch = null;
 	
+	public interface TouchExtend {
+		public void onTouch(View v, MotionEvent event);
+	}
+	
+	public static TouchExtend touchExtend;
+	
+	public static boolean paused = false;
+	
 	public InputManager()
 	{
 		touchListeners = new LinkedBlockingQueue<TouchListener>();
@@ -27,6 +35,13 @@ public class InputManager implements OnTouchListener{
 	
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
+		
+		if (touchExtend != null) {
+			touchExtend.onTouch(v, event);
+		}
+		
+		if (paused) return true;
+		
 		Vector2 point = new Vector2(event.getX() / (TargetMetrics.xdpi / 160), event.getY() / (TargetMetrics.xdpi / 160));
 		
 		if (event.getAction() == MotionEvent.ACTION_DOWN)
@@ -62,6 +77,8 @@ public class InputManager implements OnTouchListener{
 			}
 		}
 		
+		
+
 		return true;
 	}
 	

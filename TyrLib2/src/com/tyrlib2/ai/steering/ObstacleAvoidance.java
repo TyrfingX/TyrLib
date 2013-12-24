@@ -10,7 +10,16 @@ import com.tyrlib2.movement.TargetSceneObject;
 
 public class ObstacleAvoidance implements IPattern {
 
+	/** We assume that the world will not change drastically within 1 frame
+	 *  therefore we will not perform collision queries at each frame
+	 *  instead we will perform a query after a certain amount of requests
+	 *  and otherwise assume that the same objects in our way
+	 */
+	public static int QUERY_STEP = 50;
+	
 	private Vector3 steering = new Vector3();
+	
+	private int queryRequests;
 	
 	private class ObstacleQuery implements ISceneQuery {
 
@@ -69,8 +78,12 @@ public class ObstacleAvoidance implements IPattern {
 		steering.y = 0;
 		steering.z = 0;
 		
-		ObstacleQuery query = new ObstacleQuery(vehicle, steering);
-		octree.query(query);
+		if (queryRequests == 0) {
+			ObstacleQuery query = new ObstacleQuery(vehicle, steering);
+			octree.query(query);
+		} 
+		
+		queryRequests = (queryRequests + 1) % QUERY_STEP;
 		
 		return steering;
 	}

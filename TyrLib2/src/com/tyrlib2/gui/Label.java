@@ -47,8 +47,10 @@ public class Label extends Window{
 	}
 	
 	public void setText(String text) {
-		this.text.setText(text);
-		setSize(new Vector2(this.text.getSize()));
+		if (!this.text.getText().equals(text)) {
+			this.text.setText(text);
+			setSize(new Vector2(this.text.getSize()));
+		}
 	}
 
 	public FormattedText2.ALIGNMENT getAlignment() {
@@ -110,6 +112,10 @@ public class Label extends Window{
 	
 	public Font getFont() {
 		return text.getFont();
+	}
+	
+	public void setFont(Font font) {
+		text.setFont(font);
 	}
 	
 	

@@ -13,7 +13,7 @@ import com.tyrlib2.math.Vector3;
 public class Box extends Renderable {
 	
 	public static final short[] DRAW_ORDER = { 6, 7, 3, 6, 3, 2, 5, 7, 6, 4, 5, 6, 5, 1, 3, 7, 5, 3, 0, 1, 4, 1, 5, 4, 4, 2, 0, 6, 2, 4, 2, 3, 1, 0, 2, 1};
-	
+
 	private Vector3 min;
 	private Vector3 max;
 	

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.opengl.GLES20;
+import android.opengl.Matrix;
 
 import com.tyrlib2.graphics.renderer.IBlendable;
 import com.tyrlib2.graphics.renderer.IRenderable;
@@ -38,14 +39,17 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 	private class TextSection {
 		Color color;
 		String text;
-		int rotation;
+		int rotationValue;
+		float[] rotation = new float[16];
 		float xOffset;
 		float yOffset;
 		
 		public TextSection(Color color, String text, int rotation, float xOffset, float yOffset) {
 			this.color = color;
 			this.text = text;
-			this.rotation = rotation;
+			this.rotationValue = rotation;
+			Matrix.setIdentityM(this.rotation, 0);
+			Matrix.rotateM(this.rotation, 0, rotation, 0, 0, 1);
 			this.xOffset = xOffset;
 			this.yOffset = yOffset;
 		}
@@ -72,10 +76,10 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 
 	@Override
 	public void render(float[] vpMatrix) {
-		GLES20.glEnable(GLES20.GL_BLEND);
-		GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+		
+		Program.blendEnable(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 		GLText glText = font.glText;
-		Vector3 pos = parent.getCachedAbsolutePos();
+		Vector3 pos = parent.getCachedAbsolutePosVector();
 		for (int i = 0; i < textSections.size(); ++i) {
 			TextSection section = textSections.get(i);
 			glText.begin( section.color.r, section.color.g, section.color.b, section.color.a, vpMatrix );
@@ -86,7 +90,7 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 			}
 			glText.end();
 		}
-		GLES20.glDisable(GLES20.GL_BLEND);
+		Program.blendDisable();
 		
 		Program.resetCache();
 	}
@@ -240,8 +244,10 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 	}
 	
 	public void setBaseColor(Color baseColor) {
-		this.baseColor = baseColor;
-		parseText();
+		this.baseColor.r = baseColor.r;
+		this.baseColor.g = baseColor.g;
+		this.baseColor.b = baseColor.b;
+		this.baseColor.a = baseColor.a;
 	}
 	
 	public void setBaseRotation(int baseRotation) {
@@ -270,5 +276,9 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 	public void setAlpha(float alpha) {
 		baseColor.a = alpha;
 		parseText();
+	}
+	
+	public void setFont(Font font) {
+		this.font = font;
 	}
 }

@@ -30,6 +30,15 @@ public class Terrain extends Renderable {
 	private int height;
 	private float maxHeight;
 	
+	public Terrain() {
+		
+	}
+	
+	public Terrain(TerrainMaterial material, Mesh mesh) {
+		this.material = material;
+		this.mesh = mesh;
+	}
+	
 	public float getHeightAt(Vector2 point) {
 		
 		// Get the x,y vertex coordinates
@@ -142,10 +151,6 @@ public class Terrain extends Renderable {
 				vertexData[vertexPos + tileMaterial.getUVOffset() + 0] = uvX * textureRepeat.x;
 				vertexData[vertexPos + tileMaterial.getUVOffset() + 1] = uvY * textureRepeat.y;
 				
-				vertexData[vertexPos + tileMaterial.getColorOffset() + 0] = 1;
-				vertexData[vertexPos + tileMaterial.getColorOffset() + 1] = 1;
-				vertexData[vertexPos + tileMaterial.getColorOffset() + 2] = 1;
-				vertexData[vertexPos + tileMaterial.getColorOffset() + 3] = 1;
 			}
 		}
 		
@@ -186,8 +191,8 @@ public class Terrain extends Renderable {
 				drawOrder[offset++] = (short) (arrPos + 1);
 				
 				drawOrder[offset++] = (short) (arrPos + width);
-				drawOrder[offset++] = (short) (arrPos + 1);
 				drawOrder[offset++] = (short) (arrPos + width + 1);
+				drawOrder[offset++] = (short) (arrPos + 1);
 			}
 		}
 		
@@ -340,8 +345,10 @@ public class Terrain extends Renderable {
 				vertexData[vertexPos + material.getNormalOffset() + 2] += Math.abs(normal.z/3);
 				
 				drawOrder[offset++] = (short) arrPos;
-				drawOrder[offset++] = (short) (arrPos + width);
 				drawOrder[offset++] = (short) (arrPos + 1);
+				
+				drawOrder[offset++] = (short) (arrPos + width);
+				
 				
 				drawOrder[offset++] = (short) (arrPos + width);
 				drawOrder[offset++] = (short) (arrPos + 1);

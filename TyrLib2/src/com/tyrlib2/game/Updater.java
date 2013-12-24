@@ -92,7 +92,9 @@ public class Updater implements IFrameListener {
 	}
 	
 	private void removeItem(int i) {
-		queue.set(i, queue.get(queue.size() - 1));
-		queue.remove(queue.size() - 1);
+		if (i < queue.size()) {
+			queue.set(i, queue.get(queue.size() - 1));
+			queue.remove(queue.size() - 1);
+		}
 	}
 }

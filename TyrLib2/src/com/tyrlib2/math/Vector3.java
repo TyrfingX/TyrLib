@@ -150,4 +150,22 @@ public class Vector3 {
 		z = dotThisU * u.z + dotThisV * v.z;
 	}
 	
+	@Override
+	public String toString() {
+		return x + ", " +  y + ", " + z;
+	}
+	
+	public static Vector3 cross(float x1, float y1, float z1, float x2, float y2, float z2) {
+		return  new Vector3(y1 * z2 - z1 * y2, 
+				 			-(x1 * z2 - z1 * x2),
+				 			x1 * y2 - y1 * x2);
+	}
+	
+	public static void cross(Vector3 target, float x1, float y1, float z1, float x2, float y2, float z2) {
+		target.x = y1 * z2 - z1 * y2; 
+		target.y = -(x1 * z2 - z1 * x2);
+		target.z = x1 * y2 - y1 * x2;
+	}
+
+	
 }

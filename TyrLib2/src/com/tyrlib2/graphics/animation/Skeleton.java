@@ -44,6 +44,10 @@ public class Skeleton implements IUpdateable {
 		return anim;
 	}
 	
+	public boolean hasAnimation(String animationName) {
+		return animations.containsKey(animationName);
+	}
+	
 	/**
 	 * Add a new bone
 	 * @param bone

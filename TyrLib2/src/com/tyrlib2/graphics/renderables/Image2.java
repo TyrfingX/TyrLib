@@ -84,8 +84,10 @@ public class Image2 extends Renderable2 {
 	}
 	
 	public void setTextureRegion(TextureRegion textureRegion) {
-		this.textureRegion = textureRegion;
-		createMesh();
+		if (textureRegion != this.textureRegion) {
+			this.textureRegion = textureRegion;
+			createMesh();
+		}
 	}
 	
 	public void setSize(Vector2 size) {

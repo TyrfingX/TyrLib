@@ -1,5 +1,6 @@
 package com.tyrlib2.gui;
 
+import com.tyrlib2.graphics.materials.TexturedMaterial;
 import com.tyrlib2.graphics.renderables.Image2;
 import com.tyrlib2.graphics.renderer.TextureAtlas;
 import com.tyrlib2.graphics.renderer.TextureRegion;
@@ -57,7 +58,6 @@ public class ImageBox extends Window {
 	@Override
 	public void setAlpha(float alpha) {
 		image.setAlpha(alpha);
-		
 		super.setAlpha(alpha);
 	}
 
@@ -81,5 +81,9 @@ public class ImageBox extends Window {
 		this.atlasName = atlasName;
 		TextureAtlas atlas = SceneManager.getInstance().getTextureAtlas(atlasName);
 		image.setTexture(atlas.getTexture());
+	}
+
+	public TexturedMaterial getMaterial() {
+		return (TexturedMaterial) image.getMaterial();
 	}
 }

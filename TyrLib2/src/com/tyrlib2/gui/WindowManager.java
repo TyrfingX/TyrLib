@@ -80,12 +80,13 @@ public class WindowManager {
 		window.destroy();
 	}
 	
-	private void addWindow(Window window) {
+	public void addWindow(Window window) {
 		rootNode.attachChild(window.node);
 		renderer.addWindow(window);
 		windows.put(window.getName(), window);
 		updater.addItem(window);
-		InputManager.getInstance().addTouchListener(window);
+		
+		notifyResort();
 	}
 	
 	public Window createWindow(String name, Vector2 size) {
@@ -136,6 +137,12 @@ public class WindowManager {
 		overlay.setPriority(GUI_OVERLAY_PRIORITY);
 		addWindow(overlay);
 		return overlay;
+	}
+	
+	public Window createItemList(String name, Vector2 pos, Vector2 size, float padding, int displayItems) {
+		ItemList itemList = new ItemList(name, pos, size, padding, displayItems);
+		addWindow(itemList);
+		return itemList;
 	}
 	
 	public Window createOverlay(String name, Color color) {
@@ -214,5 +221,8 @@ public class WindowManager {
 		return rootNode;
 	}
 
+	protected void notifyResort() {
+		renderer.notifyResort();
+	}
 }
 	

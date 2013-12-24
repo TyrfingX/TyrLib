@@ -34,8 +34,6 @@ public class DefaultMaterial3 extends LightedMaterial {
 	private LightingType type;
 	
 	/** Per vertex color of this object **/
-	public static final int colorOffset = 6;
-	public static final int colorDataSize = 4;
 	private int colorHandle;
 	private Color[] colors;
 	
@@ -45,7 +43,7 @@ public class DefaultMaterial3 extends LightedMaterial {
 	private int normalHandle;
 	
 	/** Texture information of this object **/
-	public static final int uvOffset = 10;
+	public static final int uvOffset = 6;
 	public static final int uvDataSize = 2;
 	private int textureUniformHandle;
 	private int textureCoordinateHandle;
@@ -54,7 +52,7 @@ public class DefaultMaterial3 extends LightedMaterial {
 	private float repeatX;
 	private float repeatY;
 	
-	public static final int dataSize = 12;
+	public static final int dataSize = 8;
 	public static final int posOffset = 0;
 	
 	/** Contains the model*view matrix **/
@@ -64,6 +62,8 @@ public class DefaultMaterial3 extends LightedMaterial {
 	public static final String PER_PIXEL_PROGRAM_NAME = "TEXTURED_PPL";
 
 	private boolean transparent;
+	
+	private static boolean wasAnimated = false;
 	
 	public DefaultMaterial3() {
 		
@@ -129,6 +129,40 @@ public class DefaultMaterial3 extends LightedMaterial {
 
 	}
 	
+	public DefaultMaterial3(String textureName, float repeatX,
+			float repeatY, LightingType type, Color[] colors,
+			boolean animated) {
+		
+		if (colors == null) {
+			colors = new Color[1];
+			colors[0] = new Color(1,1,1,1);
+		}
+		
+		String add = "";
+		
+		if (animated) {
+			add = "_ANIMATED";
+		}
+		
+		switch (type) {
+		case PER_PIXEL:
+			program = ProgramManager.getInstance().getProgram(PER_PIXEL_PROGRAM_NAME + add);
+			break;
+		case PER_VERTEX:
+			program = ProgramManager.getInstance().getProgram(PER_VERTEX_PROGRAM_NAME);
+			break;
+		}
+
+		this.type = type;
+		
+		if (textureName != null) {
+			texture = TextureManager.getInstance().getTexture(textureName);
+		}
+		
+		setup(textureName, repeatX, repeatY, type, colors);
+		
+	}
+
 	protected void setup(String textureName, float repeatX, float repeatY, LightingType type, Color[] colors) {
 		lighted = true;
 		this.type = type;
@@ -142,21 +176,20 @@ public class DefaultMaterial3 extends LightedMaterial {
 		this.repeatX = repeatX;
 		this.repeatY = repeatY;
 		
-		init(12,posOffset,3, "u_MVPMatrix", "a_Position");
+		init(dataSize,posOffset,3, "u_MVPMatrix", "a_Position");
 		
-
-
+		mvMatrixHandle = GLES20.glGetUniformLocation(program.handle, "u_MVMatrix"); 
+		textureUniformHandle = GLES20.glGetUniformLocation(program.handle, "u_Texture");
+		ambientHandle = GLES20.glGetUniformLocation(program.handle, "u_Ambient");
+		textureUniformHandle = GLES20.glGetUniformLocation(program.handle, "u_Texture");
+		colorHandle = GLES20.glGetAttribLocation(program.handle, "a_Color");
+		normalHandle = GLES20.glGetAttribLocation(program.handle, "a_Normal");
+		textureCoordinateHandle = GLES20.glGetAttribLocation(program.handle, "a_TexCoordinate");
 	}
 	
 	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
-	    super.render(vertexBuffer, modelMatrix);
-		
-		ambientHandle = GLES20.glGetUniformLocation(program.handle, "u_Ambient");
 		
 		if (program.meshChange) {
-			colorHandle = GLES20.glGetAttribLocation(program.handle, "a_Color");
-			normalHandle = GLES20.glGetAttribLocation(program.handle, "a_Normal");
-			textureCoordinateHandle = GLES20.glGetAttribLocation(program.handle, "a_TexCoordinate");
 			passMesh(vertexBuffer);
 		}
 	    
@@ -164,21 +197,51 @@ public class DefaultMaterial3 extends LightedMaterial {
 	    
 		int textureHandle = texture.getHandle();
         if (program.textureHandle != textureHandle) {
-        	textureUniformHandle = GLES20.glGetUniformLocation(program.handle, "u_Texture");
         	passTexture(textureHandle);
         }
 	    
+	    if (!animated && wasAnimated) {
+
+	    	// pass some data to make sure skinning is disabled
+	    	int indexHandle = GLES20.glGetAttribLocation(program.handle, boneIndexParam);
+	    	GLES20.glEnableVertexAttribArray(indexHandle);
+	    	GLES20.glVertexAttrib4f(indexHandle, -1, -1, -1, -1);
+	    	wasAnimated = false;
+	    } else {
+	    	wasAnimated = true;
+	    }
+	    
+	    if (transparent) {
+	    	Program.blendEnable(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+	    }
+	}
+	
+	
+	public void render(int vboBuffer, float[] modelMatrix) {
+		ambientHandle = GLES20.glGetUniformLocation(program.handle, "u_Ambient");
+		
+		if (program.meshChange) {
+			passMesh(vboBuffer);
+		}
+	    
+		passModelViewMatrix(modelMatrix);
+	    
+		int textureHandle = texture.getHandle();
+        if (program.textureHandle != textureHandle) {
+        	
+        	passTexture(textureHandle);
+        }
+        
 	    if (!animated) {
 
 	    	// pass some data to make sure skinning is disabled
 	    	int indexHandle = GLES20.glGetAttribLocation(program.handle, boneIndexParam);
-	    	GLES20.glDisableVertexAttribArray(indexHandle);
+	    	GLES20.glEnableVertexAttribArray(indexHandle);
 	    	GLES20.glVertexAttrib4f(indexHandle, -1, -1, -1, -1);
 	    }
 	    
 	    if (transparent) {
-	    	GLES20.glEnable( GLES20.GL_BLEND );
-	    	GLES20.glBlendFunc( GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA );
+	    	Program.blendEnable(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 	    }
 	}
 	
@@ -187,20 +250,13 @@ public class DefaultMaterial3 extends LightedMaterial {
 	    float[] viewMatrix = sceneManager.getRenderer().getCamera().getViewMatrix();
 	    Matrix.multiplyMM(mvMatrix, 0, viewMatrix, 0, modelMatrix, 0);  
 	    
-	    mvMatrixHandle = GLES20.glGetUniformLocation(program.handle, "u_MVMatrix"); 
+	    
         // Pass in the modelview matrix.
         GLES20.glUniformMatrix4fv(mvMatrixHandle, 1, false, mvMatrix, 0);
 	}
 	
 	private void passMesh(FloatBuffer vertexBuffer)
-	{
-	    // Pass in the color information
-	    vertexBuffer.position(colorOffset);
-	    GLES20.glVertexAttribPointer(colorHandle, colorDataSize, GLES20.GL_FLOAT, false,
-	    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
-	 
-	    GLES20.glEnableVertexAttribArray(colorHandle);
-		
+	{	
 	    // Pass in the normal information
 	    vertexBuffer.position(normalOffset);
 	    GLES20.glVertexAttribPointer(normalHandle, normalDataSize, GLES20.GL_FLOAT, false,
@@ -216,6 +272,24 @@ public class DefaultMaterial3 extends LightedMaterial {
         GLES20.glEnableVertexAttribArray(textureCoordinateHandle);
 	}
 	
+	private void passMesh(int vboBufferHandle)
+	{
+		
+	    // Pass in the normal information
+	    GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vboBufferHandle);
+	    GLES20.glEnableVertexAttribArray(normalHandle);
+	    GLES20.glVertexAttribPointer(normalHandle, normalDataSize, GLES20.GL_FLOAT, false,
+	    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, normalOffset * OpenGLRenderer.BYTES_PER_FLOAT);
+	    
+        // Pass in the texture coordinate information
+	    GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vboBufferHandle);
+	    GLES20.glEnableVertexAttribArray(textureCoordinateHandle);
+        GLES20.glVertexAttribPointer(textureCoordinateHandle, uvDataSize, GLES20.GL_FLOAT, false, 
+        		strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, uvOffset * OpenGLRenderer.BYTES_PER_FLOAT);
+        
+        
+	}
+	
 	private void passTexture(int textureHandle) {
 	    // Set the active texture unit to texture unit 0.
 	    GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
@@ -227,6 +301,8 @@ public class DefaultMaterial3 extends LightedMaterial {
 	    GLES20.glUniform1i(textureUniformHandle, 0);
 	    
 	    program.textureHandle = textureHandle;
+	    
+	    OpenGLRenderer.textureFails++;
 	}
 
 	public Color[] getColors() {
@@ -234,7 +310,7 @@ public class DefaultMaterial3 extends LightedMaterial {
 	}
 	
 	public void setTransparent(boolean transparent) {
-		this.transparent = true;
+		this.transparent = transparent;
 	}
 	
 	
@@ -283,11 +359,6 @@ public class DefaultMaterial3 extends LightedMaterial {
 		for (int i = 0; i < vertexCount; i++) {
 			
 			int pos = i * strideBytes;
-			int color = i % colors.length;
-			vertexData[pos + colorOffset + 0] = colors[color].r;
-			vertexData[pos + colorOffset + 1] = colors[color].g;
-			vertexData[pos + colorOffset + 2] = colors[color].b;
-			vertexData[pos + colorOffset + 3] = colors[color].a;
 			
 			vertexData[pos + normalOffset + 0] = normals[i].x;
 			vertexData[pos + normalOffset + 1] = normals[i].y;
@@ -316,10 +387,6 @@ public class DefaultMaterial3 extends LightedMaterial {
 		return textureName;
 	}
 	
-	public int getColorOffset() {
-		return colorOffset;
-	}
-	
 	public int getNormalOffset() {
 		return normalOffset;
 	}
@@ -329,13 +396,23 @@ public class DefaultMaterial3 extends LightedMaterial {
 	}
 	
 	public Material copy() {
-		DefaultMaterial3 material = new DefaultMaterial3(textureName, repeatX, repeatY, type, colors);
+		DefaultMaterial3 material = new DefaultMaterial3(textureName, repeatX, repeatY, type, colors, animated);
+		return material;
+	}
+	
+	public Material copy(boolean animated) {
+		DefaultMaterial3 material = new DefaultMaterial3(textureName, repeatX, repeatY, type, colors, animated);
 		return material;
 	}
 	
 	public void setTexture(Texture texture, String textureName) {
 		this.texture = texture;
 		this.textureName = textureName;
+	}
+	
+	public void setTexture( String textureName) {
+		this.textureName = textureName;
+		this.texture = TextureManager.getInstance().getTexture(textureName);
 	}
 	
 	public Vector2 getRepeat() {

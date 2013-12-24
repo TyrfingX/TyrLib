@@ -6,9 +6,12 @@ import android.opengl.GLES20;
 
 import com.tyrlib2.graphics.renderer.IBlendable;
 import com.tyrlib2.graphics.renderer.Material;
+import com.tyrlib2.graphics.renderer.OpenGLRenderer;
+import com.tyrlib2.graphics.renderer.Program;
 import com.tyrlib2.graphics.renderer.ProgramManager;
 import com.tyrlib2.graphics.renderer.Texture;
 import com.tyrlib2.graphics.renderer.TextureManager;
+import com.tyrlib2.graphics.renderer.TextureRegion;
 import com.tyrlib2.util.Color;
 
 /** 
@@ -23,6 +26,8 @@ public class PointSpriteMaterial extends Material implements IBlendable {
 	private Texture texture;
 	private float size;
 	private Color color;
+	private TextureRegion region;
+	private boolean blending = true;
 	
 	public PointSpriteMaterial(String textureName, float size, Color color) {
 		program = ProgramManager.getInstance().getProgram("POINT_SPRITE");
@@ -38,14 +43,37 @@ public class PointSpriteMaterial extends Material implements IBlendable {
 		init(3,0,3, "u_MVPMatrix", "a_Position");
 	}
 	
+	public PointSpriteMaterial(String textureName, TextureRegion region, float size, Color color) {
+		program = ProgramManager.getInstance().getProgram("POINT_SHEET");
+		
+		this.textureName = textureName;
+		this.size = size;
+		this.color = color;
+		this.region = region;
+				
+		if (textureName != null) {
+			texture = TextureManager.getInstance().getTexture(textureName);
+		}
+		
+		init(3,0,3, "u_MVPMatrix", "a_Position");
+	}
+	
 	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
         super.render(vertexBuffer, modelMatrix);
         
 		int sizeHandle = GLES20.glGetUniformLocation(program.handle, "u_Size");
 		GLES20.glUniform1f(sizeHandle, size);
 		
-		int colorHandle = GLES20.glGetUniformLocation(program.handle, "u_Color");
-		GLES20.glUniform4f(colorHandle, 1, 1, 1,1);
+		if (region != null ){
+			int textureCoordPointSizeX = GLES20.glGetUniformLocation(program.handle, "u_TextureCoordPointSizeX");
+			GLES20.glUniform1f(textureCoordPointSizeX, region.u2 - region.u1);
+			
+			int textureCoordPointSizeY = GLES20.glGetUniformLocation(program.handle, "u_TextureCoordPointSizeY");
+			GLES20.glUniform1f(textureCoordPointSizeY, region.v2 - region.v1);
+			
+			int textureCoordIn = GLES20.glGetUniformLocation(program.handle, "u_TextureCoordIn");
+			GLES20.glUniform2f(textureCoordIn, region.u1,region.v1);
+		}
 		
 		int textureHandle = texture.getHandle();
 	
@@ -65,10 +93,19 @@ public class PointSpriteMaterial extends Material implements IBlendable {
 		    
 		    program.textureHandle = textureHandle;
 		    
+		    OpenGLRenderer.textureFails++;
+		    
 		}
 	    
-	    GLES20.glEnable( GLES20.GL_BLEND );
-	    GLES20.glBlendFunc( GLES20.GL_SRC_ALPHA, GLES20.GL_SRC_ALPHA);
+		if (blending) {
+			Program.blendEnable(GLES20.GL_SRC_ALPHA, GLES20.GL_SRC_ALPHA);
+		} else {
+			Program.blendDisable();
+		}
+	}
+	
+	public void setBlending(boolean blending) {
+		this.blending = blending;
 	}
 	
 	public String getTextureName(){
@@ -103,5 +140,9 @@ public class PointSpriteMaterial extends Material implements IBlendable {
 	
 	public float getSize() {
 		return size;
+	}
+	
+	public TextureRegion getRegion() {
+		return region;
 	}
 }

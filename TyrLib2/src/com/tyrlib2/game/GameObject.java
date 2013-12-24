@@ -22,19 +22,19 @@ public abstract class GameObject extends BoundedSceneObject implements IUpdateab
 		return false;
 	}
 	
-	public float getStat(String name) {
+	public float getStat(Integer name) {
 		return stats.getStat(name);
 	}
 	
-	public void setStat(String name, float value) {
+	public void setStat(Integer name, float value) {
 		stats.setStat(name, value);
 	}
 	
-	public boolean hasStat(String name) {
+	public boolean hasStat(Integer name) {
 		return stats.hasStat(name);
 	}
 	
-	public void changeStat(String name, float value) {
+	public void changeStat(Integer name, float value) {
 		stats.changeStat(name, value);
 	}
 	

@@ -7,6 +7,7 @@ import android.opengl.GLES20;
 import com.tyrlib2.graphics.renderer.IBlendable;
 import com.tyrlib2.graphics.renderer.Material;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
+import com.tyrlib2.graphics.renderer.Program;
 import com.tyrlib2.graphics.renderer.ProgramManager;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.util.Color;
@@ -34,6 +35,15 @@ public class ColoredMaterial extends Material implements IBlendable {
 		init(7,0,3, "u_MVPMatrix", "a_Position");
 	}
 	
+	public ColoredMaterial(Color[] colors, Color color) {
+		
+		this.colors = colors;
+		this.color = color;
+		
+		program = ProgramManager.getInstance().getProgram("BASIC");
+		init(7,0,3, "u_MVPMatrix", "a_Position");
+	}
+	
 	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
 		super.render(vertexBuffer, modelMatrix);
 		
@@ -49,8 +59,7 @@ public class ColoredMaterial extends Material implements IBlendable {
 	    int alphaHandle = GLES20.glGetUniformLocation(program.handle, "u_Color");
 	    GLES20.glUniform4f(alphaHandle, color.r, color.g, color.b, color.a);
 	    
-	    GLES20.glEnable( GLES20.GL_BLEND );
-	    GLES20.glBlendFunc( GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA );
+	    Program.blendEnable(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
 	public Color[] getColors() {

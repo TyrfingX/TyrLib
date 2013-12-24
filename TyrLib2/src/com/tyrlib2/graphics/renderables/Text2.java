@@ -1,6 +1,7 @@
 package com.tyrlib2.graphics.renderables;
 
 import android.opengl.GLES20;
+import android.opengl.Matrix;
 
 import com.tyrlib2.graphics.renderer.IRenderable;
 import com.tyrlib2.graphics.renderer.Program;
@@ -14,26 +15,43 @@ public class Text2  extends SceneObject implements IRenderable {
 	
 	private Color color;
 	private String text;
-	private int rotation;
 	private Font font;
+	private float scale;
+	float [] mvp = new float[16];
+	private float[] rotation = new float[16];
+	private int rotationValue;
+	
+	private boolean noMVP = false;
 	
 	public Text2(String text, int rotation, Color color, Font font) {
 		this.color = color;
 		this.font = font;
 		this.text = text;
-		this.rotation = rotation;
+		this.rotationValue = rotation;
+		Matrix.setIdentityM(this.rotation, 0);
+		Matrix.rotateM(this.rotation, 0, rotation, 0, 0, 1);
 	}
 	
 	@Override
 	public void render(float[] vpMatrix) {
-		GLES20.glEnable(GLES20.GL_BLEND);
-		GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+		Program.blendEnable(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 		GLText glText = font.glText;
-		glText.begin( color.r, color.g, color.b, color.a, vpMatrix );         // Begin Text Rendering (Set Color WHITE)
-		Vector3 pos = parent.getCachedAbsolutePos();
+		float tmpX = glText.getScaleX();
+		float tmpY = glText.getScaleY();
+		if (scale != 0) {
+			glText.setScale(scale);
+		}
+		if (noMVP) {
+			glText.begin( color.r, color.g, color.b, color.a, vpMatrix );
+		} else {
+			Matrix.multiplyMM(mvp, 0, vpMatrix, 0, getParent().getModelMatrix(), 0);
+			glText.begin( color.r, color.g, color.b, color.a, mvp );         // Begin Text Rendering (Set Color WHITE)
+		}
+		Vector3 pos = new Vector3();
 		glText.draw( text, pos.x, pos.y, rotation);              // Draw Test String
 		glText.end();
-		GLES20.glDisable(GLES20.GL_BLEND);
+		glText.setScale(tmpX, tmpY);
+		Program.blendDisable();
 		
 		Program.resetCache();
 	}
@@ -55,11 +73,22 @@ public class Text2  extends SceneObject implements IRenderable {
 	}
 
 	public int getRotation() {
-		return rotation;
+		return rotationValue;
 	}
 
 	public void setRotation(int rotation) {
-		this.rotation = rotation;
+		this.rotationValue = rotation;
+		
+		Matrix.setIdentityM(this.rotation, 0);
+		Matrix.rotateM(this.rotation, 0, rotation, 0, 0, 1);
+	}
+	
+	public void setScale(float scale) {
+		this.scale = scale;
+	}
+	
+	public void noMVP() {
+		noMVP = true;
 	}
 	
 	

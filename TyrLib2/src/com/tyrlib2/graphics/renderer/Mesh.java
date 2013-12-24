@@ -29,14 +29,21 @@ public class Mesh {
 	public static final int BONE_WEIGHT_OFFSET = MAX_BONES_PER_VERTEX;
 	
 	private int vertexCount;
+	private int indexCount;
 	
 	/** A bounding box enclosing this mesh **/
 	protected AABB boundingBox;
+	
+	/** Dummy Mesh constructor **/
+	public Mesh() {
+		
+	}
 	
 	public Mesh(float[] vertexData, short[] drawOrder, int vertexCount) {
 		this.vertexData = vertexData;
 		this.drawOrder = drawOrder;
 		this.vertexCount = vertexCount;
+		this.indexCount = drawOrder.length;
 		
 	    // initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(vertexData.length * OpenGLRenderer.BYTES_PER_FLOAT);
@@ -63,6 +70,21 @@ public class Mesh {
         int stride = vertexData.length / vertexCount;
         
         boundingBox = AABB.createFromPoints(vertexData, stride);
+	}
+
+	public Mesh(FloatBuffer vertexBuffer, ShortBuffer drawListBuffer, int vertexCount, int indexCount, int stride, AABB boundingBox) {
+
+		this.vertexBuffer = vertexBuffer;
+		this.drawListBuffer = drawListBuffer;
+		
+		this.vertexCount = vertexCount;
+
+        vertexBuffer.position(0);
+        drawListBuffer.position(0);
+        
+        this.boundingBox = boundingBox;
+        
+        this.indexCount = indexCount;
 	}
 
 	
@@ -114,6 +136,10 @@ public class Mesh {
 	
 	public int getVertexCount() {
 		return vertexCount;
+	}
+	
+	public int getIndexCount() {
+		return indexCount;
 	}
 	
 	public AABB getBoundingBox() {

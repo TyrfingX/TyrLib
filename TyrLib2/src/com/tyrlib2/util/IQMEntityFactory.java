@@ -214,7 +214,7 @@ public class IQMEntityFactory implements IEntityFactory {
 			
 			p.mesh = new Mesh(data.vertexData, data.triangleData, data.countVertices);
 			p.mesh.setVertexBones(data.boneData);
-			p.material = (DefaultMaterial3) baseMaterial.copy();
+			p.material = (DefaultMaterial3) baseMaterial.copy(entityData.skeletonData.bones.size() > 0);
 			Texture texture = TextureManager.getInstance().getTexture(data.material);
 			p.material.setTexture(texture, data.material);
 			
@@ -238,8 +238,6 @@ public class IQMEntityFactory implements IEntityFactory {
 		// Now create a new skeleton
 		Skeleton skeleton = new Skeleton();
 		entity.setSkeleton(skeleton);
-		
-
 		
 		for (int i = 0; i < entityData.skeletonData.bones.size(); ++i) {
 			BoneData boneData = entityData.skeletonData.bones.get(i);
@@ -400,32 +398,11 @@ public class IQMEntityFactory implements IEntityFactory {
 					break;
 				case 6: // This i a color
 					noColor = false;
-					offset = baseMaterial.getColorOffset();
-					for (int k = 0; k < subEntity.countVertices; ++k) {
-						subEntity.vertexData[k*byteStride + offset + 0] = toFloat(buffer, (pos++)*4);
-						subEntity.vertexData[k*byteStride + offset + 1] = toFloat(buffer, (pos++)*4);
-						subEntity.vertexData[k*byteStride + offset + 2] = toFloat(buffer, (pos++)*4);
-						subEntity.vertexData[k*byteStride + offset + 3] = toFloat(buffer, (pos++)*4);
-					}
 					break;
 				default: //None of the above, we dont care about this data;
 					break;
 				} 						
 			
-			}
-		}
-		
-		if (noColor) {
-			int offset = baseMaterial.getColorOffset();
-			for (int j = 0; j < entityData.subEntities.length; ++j) {
-				SubEntityData subEntity = entityData.subEntities[j];
-				int byteStride = baseMaterial.getByteStride();
-				for (int k = 0; k < subEntity.countVertices; ++k) {
-					subEntity.vertexData[k*byteStride + offset + 0] = 1;
-					subEntity.vertexData[k*byteStride + offset + 1] = 1;
-					subEntity.vertexData[k*byteStride + offset + 2] = 1;
-					subEntity.vertexData[k*byteStride + offset + 3] = 1;
-				}
 			}
 		}
 	}

@@ -21,6 +21,13 @@ public class TextureRegion {
       this.v2 = this.v1 + ( height / texHeight );     // Calculate V2
    }
    
+   public TextureRegion(TextureRegion other) {
+	   this.u1 = other.u1;
+	   this.v1 = other.v1;
+	   this.u2 = other.u2;
+	   this.v2 = other.v2;
+   }
+   
    public TextureRegion(Vector2 texSize, Vector2 min, Vector2 size) {
 	   this(texSize.x, texSize.y, min.x, min.y, size.x, size.y);
    }

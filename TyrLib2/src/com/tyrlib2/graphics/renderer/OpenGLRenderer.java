@@ -74,6 +74,10 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	
 	private FrustumG frustum;
 	
+	public static int textureFails = 0;
+	
+	private RenderSceneQuery query = new RenderSceneQuery();
+	
 	public OpenGLRenderer(Context context) {
 		if (!init) {
 			frameListeners = new Vector<IFrameListener>();
@@ -135,6 +139,14 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 									 com.tyrlib2.R.raw.textured_ppl_fs, 
 									 new String[]{"a_Position", "a_Normal", "a_Color", "a_TexCoordinate", "a_BoneIndex", "a_BoneWeight"});
 		
+		// Default program for 3D objects
+		ProgramManager.getInstance()
+					  .createProgram(DefaultMaterial3.PER_PIXEL_PROGRAM_NAME + "_ANIMATED", 
+									 context, 
+									 com.tyrlib2.R.raw.animated_textured_ppl_vs, 
+									 com.tyrlib2.R.raw.animated_textured_ppl_fs, 
+									 new String[]{"a_Position", "a_Normal", "a_Color", "a_TexCoordinate", "a_BoneIndex", "a_BoneWeight"});
+		
 		// Create a material for point lights
 		ProgramManager.getInstance().createProgram(	"POINT_LIGHT", 
 													context, 
@@ -154,6 +166,13 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 													context, 
 													com.tyrlib2.R.raw.point_sprite_vs, 
 													com.tyrlib2.R.raw.point_sprite_fs, 
+													new String[]{"a_Position, a_Color"});
+		
+		// Create a material to render point sprites from texture sheets
+		ProgramManager.getInstance().createProgram(	"POINT_SHEET", 
+													context, 
+													com.tyrlib2.R.raw.point_sheet_vs, 
+													com.tyrlib2.R.raw.point_sheet_fs, 
 													new String[]{"a_Position, a_Color"});
 		
 		// Create a program for rendering shadow depth maps
@@ -193,13 +212,17 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 		    // Update the view matrix of the camera
 		    camera.update();
 		    
-		    frustum = new FrustumG(	camera.getAbsolutePos(), 
-		    						camera.getWorldLookDirection(), 
-		    						camera.getWorldUpVector(), 
-		    						viewport.getNearClip(), 
-		    						viewport.getFarClip(),
-		    						viewport.getNearClipWidth(),
-		    						viewport.getNearClipHeight());
+		    if (frustum == null) {
+			    frustum = new FrustumG();
+		    }
+		    
+		    frustum.update(	camera.getAbsolutePos(), 
+							camera.getWorldLookDirection(), 
+							camera.getWorldUpVector(), 
+							viewport.getNearClip(), 
+							viewport.getFarClip(),
+							viewport.getNearClipWidth(),
+							viewport.getNearClipHeight());
 		    
 		    // Update the eye space matrices of all lights
 		    SceneManager sceneManager = SceneManager.getInstance();
@@ -217,6 +240,8 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 		    
 		    drawScene();
 		    updateListeners();
+		    
+		    textureFails = 0;
 
     	}
         
@@ -267,7 +292,8 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 		// Now draw all bounded objects
 		if (channel.octree != null) {
 			channel.octree.update();
-			channel.octree.query(new RenderSceneQuery(frustum, transformMatrix));    
+			query.init(frustum, transformMatrix);
+			channel.octree.query(query);   
 		}
 		
 		// Draw all unbounded objects
@@ -291,8 +317,8 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	    	
 	    	lastTime = System.nanoTime();
 	    	
-	        for (IFrameListener listener : frameListeners) {
-	        	listener.onFrameRendered(diff / BILLION);
+	        for (int i = 0; i < frameListeners.size(); ++i) {
+	        	frameListeners.get(i).onFrameRendered(diff / BILLION);
 	        }
         
 	    } else {

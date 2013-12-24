@@ -20,7 +20,9 @@ public class Bone extends SceneNode {
 	protected float[] bindPos = new float[16];
 	protected float[] localBindPos = new float[16];
 	protected float[] inverseBindPos = new float[16];
-
+	
+	private static final float[] animMatrix = new float[16];
+	private static final float[] translation = new float[16];
 	
 	public Bone(String name) {
 		this.name = name;
@@ -61,11 +63,9 @@ public class Bone extends SceneNode {
 		if (initRot != null && initPos != null) {
 		
 			float[] rotation = initRot.multiply(rot).toMatrix();
-			float[] translation = new float[16];
 			Matrix.setIdentityM(translation, 0);
 			
-			Matrix.setIdentityM(modelMatrix, 0);
-			Matrix.multiplyMM(modelMatrix, 0, rotation, 0, modelMatrix, 0);
+			Matrix.multiplyMM(modelMatrix, 0, rotation, 0, translation, 0);
 			Matrix.translateM(translation, 0, initPos.x + pos.x, initPos.y + pos.y, initPos.z + pos.z);
 			Matrix.multiplyMM(modelMatrix, 0, translation, 0, modelMatrix, 0);
 	
@@ -75,12 +75,11 @@ public class Bone extends SceneNode {
 			for (int i = 0; i < children.size(); ++i) {	
 				children.get(i).updateAll(absolutePos, absoluteRot, absoluteScale, modelMatrix);
 			}
-			
-			float[] animMatrix = new float[16];
-			Matrix.setIdentityM(animMatrix, 0);
-			Matrix.multiplyMM(animMatrix, 0,  inverseBindPos, 0, animMatrix, 0);
-			Matrix.multiplyMM(animMatrix, 0,  modelMatrix, 0, animMatrix, 0);
-			modelMatrix = animMatrix;
+
+			Matrix.multiplyMM(animMatrix, 0,  modelMatrix, 0, inverseBindPos, 0);
+			for (int i = 0; i < 16; ++i) {
+				modelMatrix[i] = animMatrix[i];
+			}
 		
 		}
 		

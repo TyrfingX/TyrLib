@@ -13,6 +13,7 @@ import tyrfing.common.struct.PriorityComparator;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.os.Handler;
 import android.view.SurfaceHolder;
 
 public class RenderThread extends GameThread {
@@ -22,6 +23,8 @@ public class RenderThread extends GameThread {
 	private BlockingQueue<IFrameListener> listeners;
 	private boolean pause;
 	private static final PriorityComparator comparator = new PriorityComparator();
+	
+	public Handler handler = new Handler();
 	
 	public RenderThread(SurfaceHolder surface)
 	{

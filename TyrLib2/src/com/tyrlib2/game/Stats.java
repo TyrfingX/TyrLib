@@ -9,14 +9,14 @@ import java.util.Map;
  *
  */
 
-public class Stats {
+public class Stats<T> {
 	
 	/** Collection of the stats **/
-	private Map<String, Float> stats;
+	private Map<T, Float> stats;
 	
 	public Stats()
 	{
-		stats = new HashMap<String, Float>();
+		stats = new HashMap<T, Float>();
 	}
 	
 	/**
@@ -24,13 +24,13 @@ public class Stats {
 	 * @param name	Name of the stat
 	 * @param value	New Value
 	 */
-	public void setStat(String name, Float value)
+	public void setStat(T name, Float value)
 	{
 		stats.put(name, value);
 	}
 	
 	
-	public void changeStat(String name, Float value) {
+	public void changeStat(T name, Float value) {
 		if (!stats.containsKey(name)) {
 			stats.put(name, 0f);
 		}
@@ -43,7 +43,7 @@ public class Stats {
 	 * @return		The value of the stat
 	 */
 	
-	public Float getStat(String name)
+	public Float getStat(Integer name)
 	{
 		if (stats.containsKey(name))
 		{
@@ -55,7 +55,7 @@ public class Stats {
 		}
 	}
 	
-	public boolean hasStat(String name) {
+	public boolean hasStat(Integer name) {
 		return stats.containsKey(name);
 	}
 	
@@ -79,10 +79,10 @@ public class Stats {
 	public String toString(char delimiterKeyValue, char delimiterKeys)
 	{
 		String res = "";
-		for (String key : stats.keySet())
+		for (T key : stats.keySet())
 		{
 			float value = stats.get(key);
-			res += key + delimiterKeyValue + value + delimiterKeys;
+			res += key.toString() + delimiterKeyValue + value + delimiterKeys;
 		}
 		return res;
 	}
@@ -99,8 +99,8 @@ public class Stats {
 		return copyStats;
 	}
 	
-	public void changeStats(Stats stats) {
-		for (String key : stats.stats.keySet())
+	public void changeStats(Stats<T> stats) {
+		for (T key : stats.stats.keySet())
 		{
 			float value = stats.stats.get(key);
 			changeStat(key, value);

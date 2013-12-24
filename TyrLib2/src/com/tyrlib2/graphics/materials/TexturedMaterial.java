@@ -11,6 +11,7 @@ import com.tyrlib2.graphics.renderer.Program;
 import com.tyrlib2.graphics.renderer.ProgramManager;
 import com.tyrlib2.graphics.renderer.Texture;
 import com.tyrlib2.graphics.renderer.TextureManager;
+import com.tyrlib2.util.Color;
 
 /**
  * A material which only supports texturing
@@ -25,6 +26,12 @@ public class TexturedMaterial extends Material implements IBlendable  {
 	private Texture texture;
 	private int uvDataSize = 2;
 	private int uvOffset = 3;
+	private Color color = Color.WHITE.copy();
+	
+	int alphaHandle;
+	int textureCoordinateHandle;
+	int colorHandle;
+	int textureUniformHandle;
 	
 	public TexturedMaterial() {
 		
@@ -34,6 +41,11 @@ public class TexturedMaterial extends Material implements IBlendable  {
 		this.texture = texture;
 		this.program = program;
 		init(5,0,3, "u_MVPMatrix", "a_Position");
+		
+		alphaHandle = GLES20.glGetUniformLocation(program.handle, "u_Alpha");
+		textureCoordinateHandle = GLES20.glGetAttribLocation(program.handle, "a_TexCoordinate");
+		colorHandle = GLES20.glGetUniformLocation(program.handle, "u_Color");
+		textureUniformHandle = GLES20.glGetUniformLocation(program.handle, "u_Texture");
 	}
 	
 	public TexturedMaterial(Texture texture) {
@@ -61,12 +73,9 @@ public class TexturedMaterial extends Material implements IBlendable  {
 	}
 	
 	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
-        super.render(vertexBuffer, modelMatrix);
         
-		int alphaHandle = GLES20.glGetUniformLocation(program.handle, "u_Alpha");
 		GLES20.glUniform1f(alphaHandle, alpha);
-		
-		int textureCoordinateHandle = GLES20.glGetAttribLocation(program.handle, "a_TexCoordinate");
+		GLES20.glUniform3f(colorHandle, color.r, color.g, color.b);
 		
         // Pass in the texture coordinate information
         vertexBuffer.position(uvOffset);
@@ -78,8 +87,6 @@ public class TexturedMaterial extends Material implements IBlendable  {
 		int textureHandle = texture.getHandle();
 		
 		if (program.textureHandle != textureHandle) {
-		
-			int textureUniformHandle = GLES20.glGetUniformLocation(program.handle, "u_Texture");
 			
 		    // Set the active texture unit to texture unit 0.
 		    GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
@@ -91,11 +98,11 @@ public class TexturedMaterial extends Material implements IBlendable  {
 		    GLES20.glUniform1i(textureUniformHandle, 0);
 		    
 		    program.textureHandle = textureHandle;
+		    
+		    OpenGLRenderer.textureFails++;
 		}
 	    
-
-	    GLES20.glEnable( GLES20.GL_BLEND );
-	   	GLES20.glBlendFunc( GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA );
+		Program.blendEnable(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
 	public void setProgram(Program program) {
@@ -104,6 +111,10 @@ public class TexturedMaterial extends Material implements IBlendable  {
 	
 	public void setTexture(Texture texture) {
 		this.texture = texture;
+	}
+	
+	public void setColor(Color color) {
+		this.color = color;
 	}
 
 }

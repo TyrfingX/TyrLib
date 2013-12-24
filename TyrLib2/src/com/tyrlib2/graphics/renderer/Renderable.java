@@ -79,11 +79,9 @@ public class Renderable extends BoundedRenderable {
 
 		if (parent != null && modelMatrix != null) {
 	        
-			GLES20.glDisable(GLES20.GL_BLEND);
+			Program.blendDisable();
 			
 			material.program.use();
-			
-			mesh.vertexBuffer.position(material.positionOffest);
 
 	        // Apply the projection and view transformation
 			Matrix.multiplyMM(mvpMatrix, 0, vpMatrix, 0, modelMatrix, 0);
@@ -91,18 +89,23 @@ public class Renderable extends BoundedRenderable {
 	        // Combine the rotation matrix with the projection and camera view
 	        GLES20.glUniformMatrix4fv(material.mvpMatrixHandle, 1, false, mvpMatrix, 0);
 	        
-	        // Enable a handle to the triangle vertices
-	        GLES20.glEnableVertexAttribArray(material.positionHandle);
+
 	
 	        if (material.program.mesh != mesh) {
-	        
+	        	
+		        // Enable a handle to the triangle vertices
+		        GLES20.glEnableVertexAttribArray(material.positionHandle);
+	        	
+	        	mesh.vertexBuffer.position(material.positionOffest);
+	        	
 		        // Prepare the coordinate data
 		        GLES20.glVertexAttribPointer(material.positionHandle, material.positionDataSize,
 		                                     GLES20.GL_FLOAT, false,
 		                                     material.strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, 
 		                                     mesh.vertexBuffer);
-		        
+
 		        material.program.meshChange = true;
+		        
 	        
 	        }
 	        
@@ -115,29 +118,32 @@ public class Renderable extends BoundedRenderable {
 	        	
 	        	// First draw using depth buffer and no blending
         		lightedMaterial.renderLight(0);
-        		GLES20.glDrawElements(GLES20.GL_TRIANGLES, mesh.drawOrder.length, GLES20.GL_UNSIGNED_SHORT, mesh.drawListBuffer);	
+        		
+        		GLES20.glDrawElements(GLES20.GL_TRIANGLES, mesh.getIndexCount(), GLES20.GL_UNSIGNED_SHORT, mesh.drawListBuffer);	
         	
 	        	
 	        	// Enable blending
 	    		//GLES20.glDisable(GLES20.GL_DEPTH_TEST);
-	    		GLES20.glEnable(GLES20.GL_BLEND);
-	    		
-	        	for(int i = 1; i < SceneManager.getInstance().getLightCount(); ++i) {
-	        		lightedMaterial.renderLight(i);
-	        		GLES20.glDrawElements(GLES20.GL_TRIANGLES, mesh.drawOrder.length, GLES20.GL_UNSIGNED_SHORT, mesh.drawListBuffer);	
-	        	}
-	        	
-	    		// Enable blending
-	    		GLES20.glDisable(GLES20.GL_BLEND);
+        		if (SceneManager.getInstance().getLightCount() > 1) {
+		    		GLES20.glEnable(GLES20.GL_BLEND);
+		    		
+		        	for(int i = 1; i < SceneManager.getInstance().getLightCount(); ++i) {
+		        		lightedMaterial.renderLight(i);
+		        		GLES20.glDrawElements(GLES20.GL_TRIANGLES, mesh.getIndexCount(), GLES20.GL_UNSIGNED_SHORT, mesh.drawListBuffer);	
+		        	}
+		        	
+		    		// Enable blending
+		    		GLES20.glDisable(GLES20.GL_BLEND);
+        		}
 	    		//GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 	        } else {
 	        	// Draw the triangle
-		        GLES20.glDrawElements(GLES20.GL_TRIANGLES, mesh.drawOrder.length, GLES20.GL_UNSIGNED_SHORT, mesh.drawListBuffer);	
+		        GLES20.glDrawElements(GLES20.GL_TRIANGLES, mesh.getIndexCount(), GLES20.GL_UNSIGNED_SHORT, mesh.drawListBuffer);	
 	        }
 	
 	        
 	        // Disable vertex array
-	        GLES20.glDisableVertexAttribArray(material.positionHandle);
+	        //GLES20.glDisableVertexAttribArray(material.positionHandle);
 	        
 	        material.program.mesh = mesh;
 	        material.program.meshChange = false;

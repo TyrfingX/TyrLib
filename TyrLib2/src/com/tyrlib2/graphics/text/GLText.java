@@ -38,6 +38,8 @@ public class GLText {
 													  // must be the same as the size of u_MVPMatrix 
 													  // in BatchTextProgram
 	private static final String TAG = "GLTEXT";
+	
+	public static float[] modelMatrix = new float[16];
 
 	//--Members--//
 	AssetManager assets;                               // Asset Manager
@@ -260,8 +262,7 @@ public class GLText {
 		GLES20.glUseProgram(mProgram.getHandle()); // specify the program to use
 		
 		// set color TODO: only alpha component works, text is always black #BUG
-		float[] color = {red, green, blue, alpha}; 
-		GLES20.glUniform4fv(mColorHandle, 1, color , 0); 
+		GLES20.glUniform4f(mColorHandle, red,green,blue,alpha); 
 		GLES20.glEnableVertexAttribArray(mColorHandle);
 		
 		GLES20.glActiveTexture(GLES20.GL_TEXTURE0);  // Set the active texture unit to texture unit 0
@@ -283,7 +284,7 @@ public class GLText {
 	//    x, y - the x,y position to draw text at (bottom left of text; including descent)
 	//    angleDeg - angle to rotate the text
 	// R: [none]
-	public void draw(String text, float x, float y, float angleDeg)  {
+	public void draw(String text, float x, float y, float[] rotMatrix)  {
 		float chrHeight = cellHeight * scaleY;          // Calculate Scaled Character Height
 		float chrWidth = cellWidth * scaleX;            // Calculate Scaled Character Width
 		int len = text.length();                        // Get String Length
@@ -291,10 +292,35 @@ public class GLText {
 		y += ( chrHeight / 2.0f ) - ( fontPadY * scaleY );  // Adjust Start Y
 		
 		// create a model matrix based on x, y and angleDeg
-		float[] modelMatrix = new float[16];
-		Matrix.setIdentityM(modelMatrix, 0);
-		Matrix.translateM(modelMatrix, 0, x, y, 0);
-		Matrix.rotateM(modelMatrix, 0, angleDeg, 0, 0, 1);
+		modelMatrix[0] = 1;
+		modelMatrix[1] = 0;
+		modelMatrix[2] = 0;
+		modelMatrix[3] = 0;
+		modelMatrix[4] = 0;
+		modelMatrix[5] = 1;
+		modelMatrix[6] = 0;
+		modelMatrix[7] = 0;
+		modelMatrix[8] = 0;
+		modelMatrix[9] = 0;
+		modelMatrix[10] = 1;
+		modelMatrix[11] = 0;
+		modelMatrix[12] = 0;
+		modelMatrix[13] = 0;
+		modelMatrix[14] = 0;
+		modelMatrix[15] = 1;
+		
+		//Matrix.setIdentityM(modelMatrix, 0);
+		
+		if (rotMatrix != null) {
+			Matrix.multiplyMM(modelMatrix, 0, rotMatrix, 0, modelMatrix, 0);
+		}
+		
+		modelMatrix[12] = x;
+		modelMatrix[13] = y;
+		
+
+		
+
 		
 		float letterX, letterY; 
 		letterX = letterY = 0;
@@ -309,7 +335,7 @@ public class GLText {
 		}
 	}
 	public void draw(String text, float x, float y) {
-		draw(text, x, y, 0);
+		draw(text, x, y, null);
 	}
 
 	//--Draw Text Centered--//
@@ -318,13 +344,13 @@ public class GLText {
 	//    x, y - the x,y position to draw text at (bottom left of text)
 	//    angleDeg - angle to rotate the text
 	// R: the total width of the text that was drawn
-	public float drawC(String text, float x, float y, float angleDeg)  {
+	public float drawC(String text, float x, float y, float[] rotMatrix)  {
 		float len = getLength( text );                  // Get Text Length
-		draw( text, x - ( len / 2.0f ), y - ( getCharHeight() / 2.0f ), angleDeg );  // Draw Text Centered
+		draw( text, x - ( len / 2.0f ), y - ( getCharHeight() / 2.0f ), rotMatrix );  // Draw Text Centered
 		return len;                                     // Return Length
 	}
 	public float drawC(String text, float x, float y) {
-		return drawC(text, x, y, 0);
+		return drawC(text, x, y, null);
 		
 	}
 	public float drawCX(String text, float x, float y)  {

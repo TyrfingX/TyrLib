@@ -1,15 +1,12 @@
 uniform mat4 u_MVPMatrix;
-uniform float u_Alpha;
 
 attribute vec4 a_Position;
 attribute vec2 a_TexCoordinate;
  
 varying vec2 v_TexCoordinate;
-varying float v_Alpha;
  
 void main()
 {	
-	v_Alpha = u_Alpha;
 	v_TexCoordinate = a_TexCoordinate;
 	
 	gl_Position = u_MVPMatrix * a_Position;

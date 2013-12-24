@@ -16,6 +16,7 @@ import com.tyrlib2.util.PriorityComparator;
 public class GUIRenderer implements IRenderable {
 	
 	private List<Window> windows; 
+	private boolean resort = false;
 	
 	public GUIRenderer() {
 		windows = new ArrayList<Window>();
@@ -23,9 +24,14 @@ public class GUIRenderer implements IRenderable {
 	
 	@Override
 	public void render(float[] vpMatrix) {
-		Collections.sort(windows, new PriorityComparator());
-
-		for (Window window : windows) {
+		
+		if (resort) {
+			resort = false;
+			Collections.sort(windows, new PriorityComparator());
+		}
+		
+		for (int i = 0; i < windows.size(); ++i) {
+			Window window = windows.get(i);
 			if (window.isVisible()) {
 				window.render(vpMatrix);
 			}
@@ -39,6 +45,10 @@ public class GUIRenderer implements IRenderable {
 	
 	public void removeWindow(Window window) {
 		windows.remove(window);
+	}
+	
+	public void notifyResort() {
+		resort = true;
 	}
 
 }
