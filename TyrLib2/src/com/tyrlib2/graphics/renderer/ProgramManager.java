@@ -3,7 +3,6 @@ package com.tyrlib2.graphics.renderer;
 import java.util.HashMap;
 import java.util.Map;
 
-import android.content.Context;
 import android.opengl.GLES20;
 
 import com.tyrlib2.files.FileReader;
@@ -96,9 +95,9 @@ public class ProgramManager {
 	 * @return						The compiled program
 	 */
 	
-	public Program createProgram(String programName, Context context, int vertexShaderResId, int fragmentShaderResId, String[] bindAttributes) {
-		String vertexShader = FileReader.readRawFile(context, vertexShaderResId);
-		String fragmentShader = FileReader.readRawFile(context, fragmentShaderResId);
+	public Program createProgram(String programName, int vertexShaderResId, int fragmentShaderResId, String[] bindAttributes) {
+		String vertexShader = FileReader.readRawFile(vertexShaderResId);
+		String fragmentShader = FileReader.readRawFile(fragmentShaderResId);
 		ShaderManager.getInstance().loadShader(programName + "_VS", GLES20.GL_VERTEX_SHADER, vertexShader);
 		ShaderManager.getInstance().loadShader(programName + "_FS", GLES20.GL_FRAGMENT_SHADER, fragmentShader);
 		Program program = ProgramManager.getInstance()

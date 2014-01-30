@@ -145,13 +145,13 @@ public class FrustumG {
 		float nctrY = nctY + rightNearWidthHalfY;
 		float nctrZ = nctZ + rightNearWidthHalfZ;
 		
-		float ncblX = nctX - rightNearWidthHalfX;
-		float ncblY = nctY - rightNearWidthHalfY;
-		float ncblZ = nctZ - rightNearWidthHalfZ;
+		float ncblX = ncbX - rightNearWidthHalfX;
+		float ncblY = ncbY - rightNearWidthHalfY;
+		float ncblZ = ncbZ - rightNearWidthHalfZ;
 		
-		float ncbrX = nctX + rightNearWidthHalfX;
-		float ncbrY = nctY + rightNearWidthHalfY;
-		float ncbrZ = nctZ + rightNearWidthHalfZ;
+		float ncbrX = ncbX + rightNearWidthHalfX;
+		float ncbrY = ncbY + rightNearWidthHalfY;
+		float ncbrZ = ncbZ + rightNearWidthHalfZ;
 		
 		/*
 		Vector3 nctl = nct.add(right.multiply(-nearWidth/2));
@@ -253,6 +253,14 @@ public class FrustumG {
 		points[23] = fcbr.z;
 		
 		aabb.updateWithPoints(points, 3);
+	}
+	
+	public float getFarClipWidth() {
+		return (float) Math.sqrt((points[12]-points[15]) * (points[12]-points[15]) + (points[13]-points[16]) * (points[13]-points[16]) + (points[14]-points[17]) * (points[14]-points[17]));
+	}
+	
+	public float getFarClipHeight() {
+		return (float) Math.sqrt((points[15]-points[21]) * (points[15]-points[21]) + (points[16]-points[22]) * (points[16]-points[22]) + (points[17]-points[23]) * (points[17]-points[23]));
 	}
 	
 	public AABB getAABB() {

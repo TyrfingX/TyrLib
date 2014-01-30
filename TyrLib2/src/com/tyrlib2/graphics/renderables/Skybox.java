@@ -1,6 +1,5 @@
 package com.tyrlib2.graphics.renderables;
 
-import android.content.Context;
 import android.opengl.GLES20;
 
 import com.tyrlib2.graphics.materials.DefaultMaterial3;
@@ -37,10 +36,9 @@ public class Skybox extends SceneObject implements IRenderable {
 		GLES20.glCullFace(GLES20.GL_BACK);
 	}
 	
-	public static void enableSkyboxes(Context context) {
+	public static void enableSkyboxes() {
 		if (!ProgramManager.getInstance().isProgramLoaded("SKYBOX")) {
 			ProgramManager.getInstance().createProgram("SKYBOX", 
-														context, 
 														com.tyrlib2.R.raw.skybox_vs,
 														com.tyrlib2.R.raw.skybox_fs, 
 														new String[] { "a_Position", "a_TexCoordinate"});

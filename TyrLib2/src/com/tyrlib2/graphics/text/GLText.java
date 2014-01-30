@@ -21,7 +21,7 @@ import com.tyrlib2.graphics.renderer.TextureRegion;
 import com.tyrlib2.graphics.text.programs.BatchTextProgram;
 import com.tyrlib2.graphics.text.programs.Program;
 
-public class GLText {
+public class GLText implements TextRenderer {
 
 	//--Constants--//
 	public final static int CHAR_START = 32;           // First Character (ASCII Code)
@@ -37,7 +37,6 @@ public class GLText {
 	public final static int CHAR_BATCH_SIZE = 24;     // Number of Characters to Render Per Batch
 													  // must be the same as the size of u_MVPMatrix 
 													  // in BatchTextProgram
-	private static final String TAG = "GLTEXT";
 	
 	public static float[] modelMatrix = new float[16];
 
@@ -128,6 +127,10 @@ public class GLText {
 	//    file - Filename of the font (.ttf, .otf) to use. In 'Assets' folder.
 	//    size - Requested pixel size of font (height)
 	//    padX, padY - Extra padding per character (X+Y Axis); to prevent overlapping characters.
+	/* (non-Javadoc)
+	 * @see com.tyrlib2.graphics.text.TextRenderer#load(java.lang.String, int, int, int)
+	 */
+	@Override
 	public boolean load(String file, int size, int padX, int padY) {
 
 		this.size = size;
@@ -247,12 +250,24 @@ public class GLText {
 	//    alpha - optional alpha value for font (default = 1.0)
 	// 	  vpMatrix - View and projection matrix to use
 	// R: [none]
+	/* (non-Javadoc)
+	 * @see com.tyrlib2.graphics.text.TextRenderer#begin(float[])
+	 */
+	@Override
 	public void begin(float[] vpMatrix)  {
 		begin( 1.0f, 1.0f, 1.0f, 1.0f, vpMatrix );                // Begin with White Opaque
 	}
+	/* (non-Javadoc)
+	 * @see com.tyrlib2.graphics.text.TextRenderer#begin(float, float[])
+	 */
+	@Override
 	public void begin(float alpha, float[] vpMatrix)  {
 		begin( 1.0f, 1.0f, 1.0f, alpha, vpMatrix );               // Begin with White (Explicit Alpha)
 	}
+	/* (non-Javadoc)
+	 * @see com.tyrlib2.graphics.text.TextRenderer#begin(float, float, float, float, float[])
+	 */
+	@Override
 	public void begin(float red, float green, float blue, float alpha, float[] vpMatrix)  {
 		initDraw(red, green, blue, alpha);
 		batch.beginBatch(vpMatrix);                             // Begin Batch
@@ -273,6 +288,10 @@ public class GLText {
 		GLES20.glUniform1i(mTextureUniformHandle, 0); 
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.tyrlib2.graphics.text.TextRenderer#end()
+	 */
+	@Override
 	public void end()  {
 		batch.endBatch();                               // End Batch
 		GLES20.glDisableVertexAttribArray(mColorHandle);
@@ -284,6 +303,10 @@ public class GLText {
 	//    x, y - the x,y position to draw text at (bottom left of text; including descent)
 	//    angleDeg - angle to rotate the text
 	// R: [none]
+	/* (non-Javadoc)
+	 * @see com.tyrlib2.graphics.text.TextRenderer#draw(java.lang.String, float, float, float[])
+	 */
+	@Override
 	public void draw(String text, float x, float y, float[] rotMatrix)  {
 		float chrHeight = cellHeight * scaleY;          // Calculate Scaled Character Height
 		float chrWidth = cellWidth * scaleX;            // Calculate Scaled Character Width
@@ -334,6 +357,10 @@ public class GLText {
 			letterX += (charWidths[c] + spaceX ) * scaleX;    // Advance X Position by Scaled Character Width
 		}
 	}
+	/* (non-Javadoc)
+	 * @see com.tyrlib2.graphics.text.TextRenderer#draw(java.lang.String, float, float)
+	 */
+	@Override
 	public void draw(String text, float x, float y) {
 		draw(text, x, y, null);
 	}
@@ -344,20 +371,36 @@ public class GLText {
 	//    x, y - the x,y position to draw text at (bottom left of text)
 	//    angleDeg - angle to rotate the text
 	// R: the total width of the text that was drawn
+	/* (non-Javadoc)
+	 * @see com.tyrlib2.graphics.text.TextRenderer#drawC(java.lang.String, float, float, float[])
+	 */
+	@Override
 	public float drawC(String text, float x, float y, float[] rotMatrix)  {
 		float len = getLength( text );                  // Get Text Length
 		draw( text, x - ( len / 2.0f ), y - ( getCharHeight() / 2.0f ), rotMatrix );  // Draw Text Centered
 		return len;                                     // Return Length
 	}
+	/* (non-Javadoc)
+	 * @see com.tyrlib2.graphics.text.TextRenderer#drawC(java.lang.String, float, float)
+	 */
+	@Override
 	public float drawC(String text, float x, float y) {
 		return drawC(text, x, y, null);
 		
 	}
+	/* (non-Javadoc)
+	 * @see com.tyrlib2.graphics.text.TextRenderer#drawCX(java.lang.String, float, float)
+	 */
+	@Override
 	public float drawCX(String text, float x, float y)  {
 		float len = getLength( text );                  // Get Text Length
 		draw( text, x - ( len / 2.0f ), y );            // Draw Text Centered (X-Axis Only)
 		return len;                                     // Return Length
 	}
+	/* (non-Javadoc)
+	 * @see com.tyrlib2.graphics.text.TextRenderer#drawCY(java.lang.String, float, float)
+	 */
+	@Override
 	public void drawCY(String text, float x, float y)  {
 		draw( text, x, y - ( getCharHeight() / 2.0f ) );  // Draw Text Centered (Y-Axis Only)
 	}
@@ -367,9 +410,17 @@ public class GLText {
 	// A: scale - uniform scale for both x and y axis scaling
 	//    sx, sy - separate x and y axis scaling factors
 	// R: [none]
+	/* (non-Javadoc)
+	 * @see com.tyrlib2.graphics.text.TextRenderer#setScale(float)
+	 */
+	@Override
 	public void setScale(float scale)  {
 		scaleX = scaleY = scale;                        // Set Uniform Scale
 	}
+	/* (non-Javadoc)
+	 * @see com.tyrlib2.graphics.text.TextRenderer#setScale(float, float)
+	 */
+	@Override
 	public void setScale(float sx, float sy)  {
 		scaleX = sx;                                    // Set X Scale
 		scaleY = sy;                                    // Set Y Scale
@@ -379,9 +430,17 @@ public class GLText {
 	// D: get the current scaling used for the font
 	// A: [none]
 	// R: the x/y scale currently used for scale
+	/* (non-Javadoc)
+	 * @see com.tyrlib2.graphics.text.TextRenderer#getScaleX()
+	 */
+	@Override
 	public float getScaleX()  {
 		return scaleX;                                  // Return X Scale
 	}
+	/* (non-Javadoc)
+	 * @see com.tyrlib2.graphics.text.TextRenderer#getScaleY()
+	 */
+	@Override
 	public float getScaleY()  {
 		return scaleY;                                  // Return Y Scale
 	}
@@ -390,6 +449,10 @@ public class GLText {
 	// D: set the spacing (unscaled; ie. pixel size) to use for the font
 	// A: space - space for x axis spacing
 	// R: [none]
+	/* (non-Javadoc)
+	 * @see com.tyrlib2.graphics.text.TextRenderer#setSpace(float)
+	 */
+	@Override
 	public void setSpace(float space)  {
 		spaceX = space;                                 // Set Space
 	}
@@ -398,6 +461,10 @@ public class GLText {
 	// D: get the current spacing used for the font
 	// A: [none]
 	// R: the x/y space currently used for scale
+	/* (non-Javadoc)
+	 * @see com.tyrlib2.graphics.text.TextRenderer#getSpace()
+	 */
+	@Override
 	public float getSpace()  {
 		return spaceX;                                  // Return X Space
 	}
@@ -406,6 +473,10 @@ public class GLText {
 	// D: return the length of the specified string if rendered using current settings
 	// A: text - the string to get length for
 	// R: the length of the specified string (pixels)
+	/* (non-Javadoc)
+	 * @see com.tyrlib2.graphics.text.TextRenderer#getLength(java.lang.String)
+	 */
+	@Override
 	public float getLength(String text) {
 		float len = 0.0f;                               // Working Length
 		int strLen = text.length();                     // Get String Length (Characters)
@@ -423,13 +494,25 @@ public class GLText {
 	//    NOTE: excludes spacing!!
 	// A: chr - the character to get width for
 	// R: the requested character size (scaled)
+	/* (non-Javadoc)
+	 * @see com.tyrlib2.graphics.text.TextRenderer#getCharWidth(char)
+	 */
+	@Override
 	public float getCharWidth(char chr)  {
 		int c = chr - CHAR_START;                       // Calculate Character Index (Offset by First Char in Font)
 		return ( charWidths[c] * scaleX );              // Return Scaled Character Width
 	}
+	/* (non-Javadoc)
+	 * @see com.tyrlib2.graphics.text.TextRenderer#getCharWidthMax()
+	 */
+	@Override
 	public float getCharWidthMax()  {
 		return ( charWidthMax * scaleX );               // Return Scaled Max Character Width
 	}
+	/* (non-Javadoc)
+	 * @see com.tyrlib2.graphics.text.TextRenderer#getCharHeight()
+	 */
+	@Override
 	public float getCharHeight() {
 		return ( charHeight * scaleY );                 // Return Scaled Character Height
 	}
@@ -438,12 +521,24 @@ public class GLText {
 	// D: return the specified (scaled) font metric
 	// A: [none]
 	// R: the requested font metric (scaled)
+	/* (non-Javadoc)
+	 * @see com.tyrlib2.graphics.text.TextRenderer#getAscent()
+	 */
+	@Override
 	public float getAscent()  {
 		return ( fontAscent * scaleY );                 // Return Font Ascent
 	}
+	/* (non-Javadoc)
+	 * @see com.tyrlib2.graphics.text.TextRenderer#getDescent()
+	 */
+	@Override
 	public float getDescent()  {
 		return ( fontDescent * scaleY );                // Return Font Descent
 	}
+	/* (non-Javadoc)
+	 * @see com.tyrlib2.graphics.text.TextRenderer#getHeight()
+	 */
+	@Override
 	public float getHeight()  {
 		return ( fontHeight * scaleY );                 // Return Font Height (Actual)
 	}
@@ -453,6 +548,10 @@ public class GLText {
 	// A: width, height - the width and height of the area to draw to. this is used
 	//    to draw the texture to the top-left corner.
 	//    vpMatrix - View and projection matrix to use
+	/* (non-Javadoc)
+	 * @see com.tyrlib2.graphics.text.TextRenderer#drawTexture(float, float, float[])
+	 */
+	@Override
 	public void drawTexture(float width, float height, float[] vpMatrix)  {
 		initDraw(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -464,6 +563,10 @@ public class GLText {
 		batch.endBatch();                               // End Batch
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.tyrlib2.graphics.text.TextRenderer#getSize()
+	 */
+	@Override
 	public int getSize() {
 		return size;
 	}

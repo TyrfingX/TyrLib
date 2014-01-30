@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import com.tyrlib2.main.Media;
+
 import android.content.Context;
 
 /**
@@ -22,11 +24,11 @@ public class FileReader {
 	 * @return			A String representation of the file.
 	 */
 	
-	public static String readFile(Context context, String name)
+	public static String readFile(String name)
 	{
 		FileInputStream fis;
 		try {
-			fis = context.openFileInput(name);
+			fis = Media.CONTEXT.openFileInput(name);
 			int ch;
 			StringBuffer fileContent = new StringBuffer();
 			while( (ch = fis.read()) != -1)
@@ -48,11 +50,11 @@ public class FileReader {
 	
 	}
 	
-	public static String readRawFile(Context context, int id) {
+	public static String readRawFile(int id) {
 		
 		InputStreamReader isr;
 		try {
-			isr = new InputStreamReader(context.getResources().openRawResource(id));
+			isr = new InputStreamReader(Media.CONTEXT.openRawResource(id));
 			char[] ch = new char[50];
 			StringBuffer fileContent = new StringBuffer();
 			int length = 0;

@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import android.content.Context;
-
 import com.tyrlib2.graphics.animation.Animation;
 import com.tyrlib2.graphics.animation.AnimationFrame;
 import com.tyrlib2.graphics.animation.Bone;
@@ -22,6 +20,7 @@ import com.tyrlib2.graphics.renderables.SubEntity;
 import com.tyrlib2.graphics.renderer.Mesh;
 import com.tyrlib2.graphics.renderer.Texture;
 import com.tyrlib2.graphics.renderer.TextureManager;
+import com.tyrlib2.main.Media;
 import com.tyrlib2.math.Quaternion;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.math.Vector3;
@@ -136,7 +135,7 @@ public class IQEEntityFactory implements IEntityFactory {
 	private BufferedReader in;
 
 	
-	public IQEEntityFactory(Context context, String fileName, DefaultMaterial3 baseMaterial) {
+	public IQEEntityFactory(String fileName, DefaultMaterial3 baseMaterial) {
 		
 		this.baseMaterial = baseMaterial;
 		
@@ -147,7 +146,7 @@ public class IQEEntityFactory implements IEntityFactory {
 		
 		// Due to efficiency reasons this class does not employ the file reader but rather parses the file directly
 		try {
-			InputStream inputStream = context.getResources().getAssets().open(fileName);
+			InputStream inputStream = Media.CONTEXT.openAsset(fileName);
 			
 			// setup Bufferedreader
 			in = new BufferedReader(new InputStreamReader(inputStream));

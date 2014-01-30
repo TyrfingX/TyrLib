@@ -39,22 +39,36 @@ public class ItemList extends Window {
 	}
 	
 	public void addItemListEntry(ItemListEntry itemListEntry) {
+		addItemListEntry(itemListEntry, itemListEntries.size());
+	}
+	
+	public void addItemListEntry(ItemListEntry itemListEntry, int position) {
 		WindowManager.getInstance().addWindow(itemListEntry);
 		itemSize = itemListEntry.getSize().y;
-		itemListEntries.add(itemListEntry);
+		itemListEntries.add(position, itemListEntry);
 		displaySize = Math.min(itemListEntries.size(), displayItems);
 		middle = displaySize / 2;
 		addChild(itemListEntry);
 		Vector2 pos = new Vector2(0, (padding + itemSize) * (itemListEntries.size()-1));
 		itemListEntry.setRelativePos(pos);
 		
-		for (int i = 0; i < itemListEntries.size(); ++i) {
-			if (isOutsideDisplay(i)) {
-				itemListEntries.get(i).setAlpha(0);
-			} else if (isInDisplay(i)) {
+		if (itemListEntries.size() > displayItems) {
+		
+			for (int i = 0; i < itemListEntries.size(); ++i) {
+				if (isOutsideDisplay(i)) {
+					itemListEntries.get(i).setAlpha(0);
+				} else if (isInDisplay(i)) {
+					itemListEntries.get(i).setAlpha(1);
+				} else {
+					itemListEntries.get(i).setAlpha(0.8f);
+				}
+				itemListEntries.get(i).position = i+1;
+			}
+		
+		} else {
+			for (int i = 0; i < itemListEntries.size(); ++i) {
 				itemListEntries.get(i).setAlpha(1);
-			} else {
-				itemListEntries.get(i).setAlpha(0.8f);
+				itemListEntries.get(i).position = i+1;
 			}
 		}
 	}
@@ -68,16 +82,18 @@ public class ItemList extends Window {
 	}
 	
 	public void correctOffset() {
-		for (int i = 0; i < itemListEntries.size(); ++i) {
-			Vector2 pos = new Vector2(0, (padding + itemSize) * i);
-			itemListEntries.get(i).moveTo(pos, 0.1f);
-			
-			if (isOutsideDisplay(i)) {
-				itemListEntries.get(i).setAlpha(0);
-			} else if (isInDisplay(i)) {
-				itemListEntries.get(i).setAlpha(1);
-			} else {
-				itemListEntries.get(i).setAlpha(0.8f);
+		if (itemListEntries.size() > displayItems) {
+			for (int i = 0; i < itemListEntries.size(); ++i) {
+				Vector2 pos = new Vector2(0, (padding + itemSize) * i);
+				itemListEntries.get(i).moveTo(pos, 0.1f);
+				
+				if (isOutsideDisplay(i)) {
+					itemListEntries.get(i).setAlpha(0);
+				} else if (isInDisplay(i)) {
+					itemListEntries.get(i).setAlpha(1);
+				} else {
+					itemListEntries.get(i).setAlpha(0.8f);
+				}
 			}
 		}
 	}
@@ -99,7 +115,7 @@ public class ItemList extends Window {
 	@Override
 	protected void onTouchMoveWindow(Vector2 point, MotionEvent event) {
 		offseted = true;
-		if (lastPoint != null) {
+		if (lastPoint != null && itemListEntries.size() > displayItems) {
 			Vector2 move = lastPoint.vectorTo(point);
 			int moveUp = 0;
 			if (touching) {
@@ -174,6 +190,10 @@ public class ItemList extends Window {
 			itemListEntries.remove(itemListEntries.size()-1);
 			itemListEntries.add(0, entry);
 		}
+		
+		for (int i = 0; i < itemListEntries.size(); ++i) {
+			itemListEntries.get(i).position = i+1;
+		}
 	}
 	
 	@Override
@@ -182,6 +202,10 @@ public class ItemList extends Window {
 		if (offseted) {
 			correctOffset();
 		}
+	}
+	
+	public void clear() {
+		itemListEntries.clear();
 	}
 
 

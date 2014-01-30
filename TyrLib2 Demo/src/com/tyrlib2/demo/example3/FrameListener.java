@@ -40,11 +40,11 @@ public class FrameListener implements IFrameListener {
 		 * Next we need to load the necessary resources
 		 */
 		
-		TextureManager.getInstance().createTexture("SNOW", ExampleThreeActivity.CONTEXT,com.tyrlib2.R.drawable.snow);
-		TextureManager.getInstance().createTexture("ROCK", ExampleThreeActivity.CONTEXT,com.tyrlib2.R.drawable.rocky);
-		TextureManager.getInstance().createTexture("GRASS", ExampleThreeActivity.CONTEXT,com.tyrlib2.R.drawable.grass);
-		TextureManager.getInstance().createTexture("SOIL", ExampleThreeActivity.CONTEXT,com.tyrlib2.R.drawable.soil);
-		TextureManager.getInstance().createTexture("MAP", ExampleThreeActivity.CONTEXT,com.tyrlib2.R.drawable.heightmap);
+		TextureManager.getInstance().createTexture("SNOW", com.tyrlib2.demo.R.drawable.snow);
+		TextureManager.getInstance().createTexture("ROCK", com.tyrlib2.demo.R.drawable.rocky);
+		TextureManager.getInstance().createTexture("GRASS", com.tyrlib2.demo.R.drawable.grass);
+		TextureManager.getInstance().createTexture("SOIL", com.tyrlib2.demo.R.drawable.soil);
+		TextureManager.getInstance().createTexture("MAP", com.tyrlib2.demo.R.drawable.heightmap);
 		
 		/*
 		 * Next we create some terrain textures.

@@ -31,6 +31,8 @@ public class Renderable extends BoundedRenderable {
 	/** Allocate storage for the final combined matrix. This will be passed into the shader program. */
 	protected static float[] mvpMatrix = new float[16];
 	
+	protected int renderMode = GLES20.GL_TRIANGLES;
+	
 	public Renderable(Mesh mesh, Material material) {
 		this();
 		this.mesh = mesh;
@@ -119,7 +121,7 @@ public class Renderable extends BoundedRenderable {
 	        	// First draw using depth buffer and no blending
         		lightedMaterial.renderLight(0);
         		
-        		GLES20.glDrawElements(GLES20.GL_TRIANGLES, mesh.getIndexCount(), GLES20.GL_UNSIGNED_SHORT, mesh.drawListBuffer);	
+        		GLES20.glDrawElements(renderMode, mesh.getIndexCount(), GLES20.GL_UNSIGNED_SHORT, mesh.drawListBuffer);	
         	
 	        	
 	        	// Enable blending
@@ -129,7 +131,7 @@ public class Renderable extends BoundedRenderable {
 		    		
 		        	for(int i = 1; i < SceneManager.getInstance().getLightCount(); ++i) {
 		        		lightedMaterial.renderLight(i);
-		        		GLES20.glDrawElements(GLES20.GL_TRIANGLES, mesh.getIndexCount(), GLES20.GL_UNSIGNED_SHORT, mesh.drawListBuffer);	
+		        		GLES20.glDrawElements(renderMode, mesh.getIndexCount(), GLES20.GL_UNSIGNED_SHORT, mesh.drawListBuffer);	
 		        	}
 		        	
 		    		// Enable blending
@@ -138,7 +140,7 @@ public class Renderable extends BoundedRenderable {
 	    		//GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 	        } else {
 	        	// Draw the triangle
-		        GLES20.glDrawElements(GLES20.GL_TRIANGLES, mesh.getIndexCount(), GLES20.GL_UNSIGNED_SHORT, mesh.drawListBuffer);	
+		        GLES20.glDrawElements(renderMode, mesh.getIndexCount(), GLES20.GL_UNSIGNED_SHORT, mesh.drawListBuffer);	
 	        }
 	
 	        

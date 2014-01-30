@@ -28,6 +28,13 @@ public class TextureRegion {
 	   this.v2 = other.v2;
    }
    
+   public TextureRegion(float u1, float v1, float u2, float v2) {
+	   this.u1 = u1;
+	   this.v1 = v1;
+	   this.u2 = u2;
+	   this.v2 = v2;
+   }
+   
    public TextureRegion(Vector2 texSize, Vector2 min, Vector2 size) {
 	   this(texSize.x, texSize.y, min.x, min.y, size.x, size.y);
    }

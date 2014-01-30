@@ -2,6 +2,7 @@ package com.tyrlib2.gui;
 
 import com.tyrlib2.graphics.materials.TexturedMaterial;
 import com.tyrlib2.graphics.renderables.Image2;
+import com.tyrlib2.graphics.renderer.Texture;
 import com.tyrlib2.graphics.renderer.TextureAtlas;
 import com.tyrlib2.graphics.renderer.TextureRegion;
 import com.tyrlib2.graphics.renderer.Viewport;
@@ -75,6 +76,10 @@ public class ImageBox extends Window {
 		TextureAtlas atlas = SceneManager.getInstance().getTextureAtlas(atlasName);
 		TextureRegion region = atlas.getRegion(atlasRegion);
 		image.setTextureRegion(region);
+	}
+	
+	public void setTexture(Texture texture) {
+		image.setTexture(texture);
 	}
 	
 	public void setAtlas(String atlasName) {

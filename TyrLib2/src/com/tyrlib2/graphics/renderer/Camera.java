@@ -39,6 +39,10 @@ public class Camera extends SceneObject {
 	public void setLookDirection(Vector3 lookDirection) {
 		this.lookDirection = lookDirection;
 		this.lookDirection.normalize();
+		
+		Vector3 right = lookDirection.cross(up);
+		up = right.cross(lookDirection);
+		up.normalize();
 	}
 	
 	/**

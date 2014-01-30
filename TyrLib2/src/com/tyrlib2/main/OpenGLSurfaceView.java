@@ -4,11 +4,8 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
 
-import com.tyrlib2.graphics.renderer.OpenGLRenderer;
-import com.tyrlib2.graphics.renderer.ProgramManager;
-import com.tyrlib2.graphics.renderer.ShaderManager;
+import com.tyrlib2.graphics.renderer.AndroidOpenGLRenderer;
 import com.tyrlib2.graphics.scene.SceneManager;
-import com.tyrlib2.gui.WindowManager;
 import com.tyrlib2.input.InputManager;
 
 /**
@@ -31,13 +28,15 @@ public class OpenGLSurfaceView extends GLSurfaceView {
         
         InputManager.getInstance();
         
-        OpenGLRenderer renderer = new OpenGLRenderer(context);
+        AndroidOpenGLRenderer renderer = new AndroidOpenGLRenderer();
         
         // Setup the SceneManager
         SceneManager.getInstance().setRenderer(renderer);
         
         // Set the Renderer for drawing on the GLSurfaceView
         setRenderer(renderer);
+        
+        setKeepScreenOn(true);
         
         // Render the view only when there is a change in the drawing data
         //setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);

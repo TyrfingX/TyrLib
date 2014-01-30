@@ -6,8 +6,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.content.Context;
-
 import com.tyrlib2.graphics.animation.Animation;
 import com.tyrlib2.graphics.animation.AnimationFrame;
 import com.tyrlib2.graphics.animation.Bone;
@@ -18,6 +16,7 @@ import com.tyrlib2.graphics.renderables.SubEntity;
 import com.tyrlib2.graphics.renderer.Mesh;
 import com.tyrlib2.graphics.renderer.Texture;
 import com.tyrlib2.graphics.renderer.TextureManager;
+import com.tyrlib2.main.Media;
 import com.tyrlib2.math.Quaternion;
 import com.tyrlib2.math.Vector3;
 
@@ -179,7 +178,7 @@ public class IQMEntityFactory implements IEntityFactory {
 	private EntityPrototype entityPrototype;
 	
 	
-	public IQMEntityFactory(Context context, String fileName, DefaultMaterial3 baseMaterial) {
+	public IQMEntityFactory(String fileName, DefaultMaterial3 baseMaterial) {
 		
 		this.fileName = fileName;
 		this.baseMaterial = baseMaterial;
@@ -187,7 +186,7 @@ public class IQMEntityFactory implements IEntityFactory {
 		entityData = new EntityData();
 		
 		try {
-			InputStream inputStream = context.getResources().getAssets().open(fileName);
+			InputStream inputStream = Media.CONTEXT.openAsset(fileName);
 			in = new BufferedInputStream(inputStream);
 			
 			readHeader();

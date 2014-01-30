@@ -460,10 +460,10 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 		point = new Vector2(point.x, 1-point.y);
 		Vector2 pos = getAbsolutePos();
 		if (drag || Rectangle.pointInRectangle(pos, size, point)) {
+			onTouchUpWindow(point, event);
 			if (touchInWindow) {
 				onTouchLeavesWindow();
 			}
-			onTouchUpWindow(point, event);
 			return !passTouchEventsThrough;
 		}
 		

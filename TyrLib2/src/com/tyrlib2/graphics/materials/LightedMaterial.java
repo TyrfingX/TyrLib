@@ -68,7 +68,7 @@ public abstract class LightedMaterial extends Material{
 			GLES20.glUniform3f(lightPosHandle, lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
 		} else {
     		// Set the light type to no extra light
-    		GLES20.glUniform1f(lightTypeHandle, 0.0f);			
+    		GLES20.glUniform1f(lightTypeHandle, 0.0f);		
 		}
     	
 		

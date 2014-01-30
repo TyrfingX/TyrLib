@@ -3,7 +3,7 @@ package com.tyrlib2.demo.example2;
 import android.content.Context;
 
 import com.tyrlib2.graphics.scene.SceneManager;
-import com.tyrlib2.main.OpenGLActivity;
+import com.tyrlib2.main.AndroidOpenGLActivity;
 
 /**
  * This demonstrates how to load a model exported by a 3D modelling program
@@ -13,11 +13,11 @@ import com.tyrlib2.main.OpenGLActivity;
  *
  */
 
-public class ExampleTwoActivity extends OpenGLActivity {
+public class ExampleTwoActivity extends AndroidOpenGLActivity {
 	public static Context CONTEXT;
 	
 	@Override
-	protected void go() {
+	public void go() {
 		CONTEXT = this;
 		SceneManager.getInstance().getRenderer().addFrameListener(new FrameListener());
 	}

@@ -33,7 +33,7 @@ public class FrameListener implements IFrameListener {
 		/* This is where you set stuff up **/
 		
 		/* First lets load a texture **/
-		TextureManager.getInstance().createTexture("SOIL", ExampleOneActivity.CONTEXT, R.drawable.soil);
+		TextureManager.getInstance().createTexture("SOIL", R.drawable.soil);
 		
 		/* Textures alone are not enough to draw something. The library does not employ a fixed
 		 * pipeline and therefore needs a shader telling OpenGL how exactly to draw your stuff.
@@ -43,8 +43,7 @@ public class FrameListener implements IFrameListener {
 		 * by using TexturedMaterial
 		 */
 		
-		DefaultMaterial3 mat = new DefaultMaterial3(ExampleOneActivity.CONTEXT, "SOIL", 1, 1, 
-													LightingType.PER_PIXEL, null);
+		DefaultMaterial3 mat = new DefaultMaterial3("SOIL", 1, 1, null);
 		
 		/* Now we need to create the actual object we want to render
 		 * In this example this will be simple, unrotated cube/box.

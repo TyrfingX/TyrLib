@@ -136,4 +136,18 @@ public class Frame extends Window{
 		return borderSize;
 	}
 	
+	@Override
+	public void setReceiveTouchEvents(boolean state) {
+		for (FrameImagePosition position : FrameImagePosition.values()) {
+			bgImageBoxes.get(position).setReceiveTouchEvents(state);
+		}
+	}
+	
+	@Override
+	public void setPassTouchEventsThrough(boolean state) {
+		for (FrameImagePosition position : FrameImagePosition.values()) {
+			bgImageBoxes.get(position).setPassTouchEventsThrough(state);
+		}
+	}
+	
 }

@@ -7,7 +7,7 @@ import com.tyrlib2.graphics.renderer.IRenderable;
 import com.tyrlib2.graphics.renderer.Program;
 import com.tyrlib2.graphics.scene.SceneObject;
 import com.tyrlib2.graphics.text.Font;
-import com.tyrlib2.graphics.text.GLText;
+import com.tyrlib2.graphics.text.TextRenderer;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.util.Color;
 
@@ -35,7 +35,7 @@ public class Text2  extends SceneObject implements IRenderable {
 	@Override
 	public void render(float[] vpMatrix) {
 		Program.blendEnable(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-		GLText glText = font.glText;
+		TextRenderer glText = font.glText;
 		float tmpX = glText.getScaleX();
 		float tmpY = glText.getScaleY();
 		if (scale != 0) {

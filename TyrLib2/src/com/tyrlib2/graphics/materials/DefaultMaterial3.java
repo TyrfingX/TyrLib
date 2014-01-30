@@ -4,7 +4,6 @@ import java.nio.FloatBuffer;
 
 import android.content.Context;
 import android.opengl.GLES20;
-import android.opengl.Matrix;
 
 import com.tyrlib2.graphics.lighting.LightingType;
 import com.tyrlib2.graphics.renderer.Material;
@@ -13,7 +12,6 @@ import com.tyrlib2.graphics.renderer.Program;
 import com.tyrlib2.graphics.renderer.ProgramManager;
 import com.tyrlib2.graphics.renderer.Texture;
 import com.tyrlib2.graphics.renderer.TextureManager;
-import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.util.Color;
@@ -30,8 +28,6 @@ import com.tyrlib2.util.Color;
  */
 
 public class DefaultMaterial3 extends LightedMaterial {
-	
-	private LightingType type;
 	
 	/** Per vertex color of this object **/
 	private int colorHandle;
@@ -58,7 +54,6 @@ public class DefaultMaterial3 extends LightedMaterial {
 	/** Contains the model*view matrix **/
 	private float[] mvMatrix = new float[16];
 	
-	public static final String PER_VERTEX_PROGRAM_NAME = "TEXTURED_PVL";
 	public static final String PER_PIXEL_PROGRAM_NAME = "TEXTURED_PPL";
 
 	private boolean transparent;
@@ -81,10 +76,10 @@ public class DefaultMaterial3 extends LightedMaterial {
 			texture = TextureManager.getInstance().getTexture(textureName);
 		}
 		
-		setup(textureName, repeatX, repeatY, type, colors);
+		setup(textureName, repeatX, repeatY, colors);
 	}
 	
-	public DefaultMaterial3(Context context, String textureName, float repeatX, float repeatY, LightingType type, Color[] colors) {
+	public DefaultMaterial3(String textureName, float repeatX, float repeatY, Color[] colors) {
 
 		program = ProgramManager.getInstance().getProgram(PER_PIXEL_PROGRAM_NAME);
 		
@@ -97,40 +92,12 @@ public class DefaultMaterial3 extends LightedMaterial {
 			texture = TextureManager.getInstance().getTexture(textureName);
 		}
 		
-		setup(textureName, repeatX, repeatY, type, colors);
-
-	}
-	
-	public DefaultMaterial3(String textureName, float repeatX, float repeatY, LightingType type, Color[] colors) {
-		
-
-		if (colors == null) {
-			colors = new Color[1];
-			colors[0] = new Color(1,1,1,1);
-		}
-		
-		switch (type) {
-		case PER_PIXEL:
-			program = ProgramManager.getInstance().getProgram(PER_PIXEL_PROGRAM_NAME);
-			break;
-		case PER_VERTEX:
-			program = ProgramManager.getInstance().getProgram(PER_VERTEX_PROGRAM_NAME);
-			break;
-		}
-
-		this.type = type;
-		
-		if (textureName != null) {
-			texture = TextureManager.getInstance().getTexture(textureName);
-		}
-		
-		setup(textureName, repeatX, repeatY, type, colors);
-
+		setup(textureName, repeatX, repeatY, colors);
 
 	}
 	
 	public DefaultMaterial3(String textureName, float repeatX,
-			float repeatY, LightingType type, Color[] colors,
+			float repeatY, Color[] colors,
 			boolean animated) {
 		
 		if (colors == null) {
@@ -144,28 +111,20 @@ public class DefaultMaterial3 extends LightedMaterial {
 			add = "_ANIMATED";
 		}
 		
-		switch (type) {
-		case PER_PIXEL:
-			program = ProgramManager.getInstance().getProgram(PER_PIXEL_PROGRAM_NAME + add);
-			break;
-		case PER_VERTEX:
-			program = ProgramManager.getInstance().getProgram(PER_VERTEX_PROGRAM_NAME);
-			break;
-		}
+	
+		program = ProgramManager.getInstance().getProgram(PER_PIXEL_PROGRAM_NAME + add);
 
-		this.type = type;
-		
+
 		if (textureName != null) {
 			texture = TextureManager.getInstance().getTexture(textureName);
 		}
 		
-		setup(textureName, repeatX, repeatY, type, colors);
+		setup(textureName, repeatX, repeatY, colors);
 		
 	}
 
-	protected void setup(String textureName, float repeatX, float repeatY, LightingType type, Color[] colors) {
+	protected void setup(String textureName, float repeatX, float repeatY, Color[] colors) {
 		lighted = true;
-		this.type = type;
 		
 		this.boneParam = "u_Bone";
 		this.boneIndexParam = "a_BoneIndex";
@@ -193,7 +152,7 @@ public class DefaultMaterial3 extends LightedMaterial {
 			passMesh(vertexBuffer);
 		}
 	    
-		passModelViewMatrix(modelMatrix);
+		//passModelViewMatrix(modelMatrix);
 	    
 		int textureHandle = texture.getHandle();
         if (program.textureHandle != textureHandle) {
@@ -224,7 +183,7 @@ public class DefaultMaterial3 extends LightedMaterial {
 			passMesh(vboBuffer);
 		}
 	    
-		passModelViewMatrix(modelMatrix);
+		//passModelViewMatrix(modelMatrix);
 	    
 		int textureHandle = texture.getHandle();
         if (program.textureHandle != textureHandle) {
@@ -245,15 +204,15 @@ public class DefaultMaterial3 extends LightedMaterial {
 	    }
 	}
 	
-	private void passModelViewMatrix(float[] modelMatrix) {
-	    SceneManager sceneManager = SceneManager.getInstance();
-	    float[] viewMatrix = sceneManager.getRenderer().getCamera().getViewMatrix();
-	    Matrix.multiplyMM(mvMatrix, 0, viewMatrix, 0, modelMatrix, 0);  
-	    
-	    
-        // Pass in the modelview matrix.
-        GLES20.glUniformMatrix4fv(mvMatrixHandle, 1, false, mvMatrix, 0);
-	}
+//	private void passModelViewMatrix(float[] modelMatrix) {
+//	    SceneManager sceneManager = SceneManager.getInstance();
+//	    float[] viewMatrix = sceneManager.getRenderer().getCamera().getViewMatrix();
+//	    Matrix.multiplyMM(mvMatrix, 0, viewMatrix, 0, modelMatrix, 0);  
+//	    
+//	    
+//        // Pass in the modelview matrix.
+//        GLES20.glUniformMatrix4fv(mvMatrixHandle, 1, false, mvMatrix, 0);
+//	}
 	
 	private void passMesh(FloatBuffer vertexBuffer)
 	{	
@@ -396,12 +355,12 @@ public class DefaultMaterial3 extends LightedMaterial {
 	}
 	
 	public Material copy() {
-		DefaultMaterial3 material = new DefaultMaterial3(textureName, repeatX, repeatY, type, colors, animated);
+		DefaultMaterial3 material = new DefaultMaterial3(textureName, repeatX, repeatY, colors, animated);
 		return material;
 	}
 	
 	public Material copy(boolean animated) {
-		DefaultMaterial3 material = new DefaultMaterial3(textureName, repeatX, repeatY, type, colors, animated);
+		DefaultMaterial3 material = new DefaultMaterial3(textureName, repeatX, repeatY, colors, animated);
 		return material;
 	}
 	

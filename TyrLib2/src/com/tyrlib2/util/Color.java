@@ -55,4 +55,9 @@ public class Color {
 		Random random = new Random();
 		return new Color(random.nextFloat(), random.nextFloat(), random.nextFloat(), random.nextFloat());
 	}
+	
+	public static Color getRandomColor(float min) {
+		Random random = new Random();
+		return new Color(random.nextFloat(), random.nextFloat(), random.nextFloat(), random.nextFloat() + min);
+	}
 }

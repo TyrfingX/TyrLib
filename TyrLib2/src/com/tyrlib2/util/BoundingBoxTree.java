@@ -2,7 +2,6 @@ package com.tyrlib2.util;
 
 import com.tyrlib2.graphics.renderer.Mesh;
 import com.tyrlib2.graphics.scene.BoundedSceneObject;
-import com.tyrlib2.graphics.scene.SceneNode;
 import com.tyrlib2.math.AABB;
 import com.tyrlib2.math.Vector3;
 

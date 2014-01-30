@@ -11,7 +11,7 @@ import com.tyrlib2.graphics.renderer.IRenderable;
 import com.tyrlib2.graphics.renderer.Program;
 import com.tyrlib2.graphics.scene.SceneObject;
 import com.tyrlib2.graphics.text.Font;
-import com.tyrlib2.graphics.text.GLText;
+import com.tyrlib2.graphics.text.TextRenderer;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.util.Color;
@@ -78,7 +78,7 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 	public void render(float[] vpMatrix) {
 		
 		Program.blendEnable(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-		GLText glText = font.glText;
+		TextRenderer glText = font.glText;
 		Vector3 pos = parent.getCachedAbsolutePosVector();
 		for (int i = 0; i < textSections.size(); ++i) {
 			TextSection section = textSections.get(i);
@@ -136,7 +136,7 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 				builder = new StringBuilder();
 				xOffset += font.glText.getLength(sectionText);
 				
-				yOffset -= font.glText.getCharHeight() - font.glText.getDescent() - font.glText.getAscent()*0.2f;
+				yOffset -= font.glText.getCharHeight() - font.glText.getDescent();
 				
 				if (xOffset > maxX) {
 					maxX = xOffset;

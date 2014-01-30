@@ -31,8 +31,8 @@ public class FrameListener implements IFrameListener {
 		 * All entities need to be put into the "assets" folder.
 		 */
 		
-		TextureManager.getInstance().createTexture("knight", ExampleTwoActivity.CONTEXT, R.drawable.knight);
-		ent = SceneManager.getInstance().createEntity(ExampleTwoActivity.CONTEXT, "entities/knight.iqe");
+		TextureManager.getInstance().createTexture("knight", R.drawable.knight);
+		ent = SceneManager.getInstance().createEntity("entities/knight.iqe");
 		
 		entNode = SceneManager.getInstance().getRootSceneNode().createChild(new Vector3());
 		entNode.attachSceneObject(ent);

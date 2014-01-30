@@ -16,7 +16,6 @@ import android.opengl.Matrix;
 
 public abstract class Renderable2 extends Renderable {
 	
-	protected int renderMode = GLES20.GL_TRIANGLES;
 	protected int drawOrderLength;
 	protected ShortBuffer drawOrderBuffer;
 	

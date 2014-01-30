@@ -42,7 +42,7 @@ public class BoundingBox extends Renderable {
 
 		};
 		
-		ColoredMaterial mat = new ColoredMaterial(new Color[] { Color.getRandomColor() });
+		ColoredMaterial mat = new ColoredMaterial(new Color[] { Color.getRandomColor(0.2f) });
 		mat.setAlpha(0.3f);
 		this.material = mat;
 		

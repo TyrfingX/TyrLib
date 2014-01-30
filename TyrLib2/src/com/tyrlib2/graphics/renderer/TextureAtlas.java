@@ -10,8 +10,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import com.tyrlib2.graphics.scene.SceneManager;
-
-import android.content.Context;
+import com.tyrlib2.main.Media;
 
 
 public class TextureAtlas {
@@ -36,7 +35,7 @@ public class TextureAtlas {
 		return texture;
 	}
 	
-	public static TextureAtlas fromXMLFile(Context context, String fileName) {
+	public static TextureAtlas fromXMLFile(String fileName) {
 		
 		TextureAtlas atlas = null;
 		
@@ -45,7 +44,7 @@ public class TextureAtlas {
 	        factory.setValidating(false);
 	        XmlPullParser parser = factory.newPullParser();
 	
-	        InputStream raw = context.getAssets().open(fileName);
+	        InputStream raw = Media.CONTEXT.openAsset(fileName);
 	        parser.setInput(raw, null);
 			
 			int eventType = parser.getEventType();

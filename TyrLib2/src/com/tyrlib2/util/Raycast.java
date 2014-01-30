@@ -107,25 +107,25 @@ public class Raycast {
 		
 		Vector3 camUpDirection = cam.getWorldUpVector();
 		camUpDirection.normalize();
-		camUpDirection = camUpDirection.multiply(viewport.getNearClipHeight());
+		camUpDirection = camUpDirection.multiply(SceneManager.getInstance().getRenderer().getFrustum().getFarClipHeight());
 		
 		Vector3 camRightDirection = camLookDirection.cross(camUpDirection);
 		camRightDirection.normalize();
-		camRightDirection = camRightDirection.multiply(viewport.getNearClipWidth());
+		camRightDirection = camRightDirection.multiply(SceneManager.getInstance().getRenderer().getFrustum().getFarClipWidth());
 		
 		camLookDirection.normalize();
 		
-		float nearClipDistance = viewport.getNearClip();
+		float farClipDistance = viewport.getFarClip();
 		
-		Vector3 nearClipPoint = origin.add(camLookDirection.multiply(nearClipDistance));
+		Vector3 farClipPoint = origin.add(camLookDirection.multiply(farClipDistance));
 		
-		Vector3 raycastPoint = nearClipPoint.add(camUpDirection.multiply(-1*(point.y-0.5f)))
-											.add(camRightDirection.multiply(point.x-0.5f));
+		Vector3 raycastPoint = farClipPoint.add(camUpDirection.multiply(-1*(point.y-0.5f)))
+										   .add(camRightDirection.multiply(point.x-0.5f));
 		
 		Vector3 raycastDirection = raycastPoint.sub(origin);
 		raycastDirection.normalize();
 		
-		Raycast raycast = new Raycast(raycastPoint, raycastDirection, viewport.getFarClip());
+		Raycast raycast = new Raycast(origin, raycastDirection, viewport.getFarClip());
 		return raycast;
 	}
 	

@@ -9,9 +9,8 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import android.content.Context;
-
 import com.tyrlib2.graphics.materials.PointSpriteMaterial;
+import com.tyrlib2.main.Media;
 import com.tyrlib2.util.Color;
 
 public class XMLParticleSystemFactory implements IParticleSystemFactory {
@@ -25,14 +24,14 @@ public class XMLParticleSystemFactory implements IParticleSystemFactory {
 		parse();
 	}
 	
-	public XMLParticleSystemFactory(String fileName, Context context) {
+	public XMLParticleSystemFactory(String fileName) {
 		
 		 try {
 	        XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 	        factory.setValidating(false);
 	        parser = factory.newPullParser();
 
-	        InputStream raw = context.getAssets().open(fileName);
+	        InputStream raw = Media.CONTEXT.openAsset(fileName);
 	        parser.setInput(raw, null);
 			 
 		} catch (IOException e) {

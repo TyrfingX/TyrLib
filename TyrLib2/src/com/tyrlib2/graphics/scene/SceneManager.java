@@ -5,11 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.content.Context;
-
 import com.tyrlib2.graphics.lighting.DirectionalLight;
 import com.tyrlib2.graphics.lighting.Light;
-import com.tyrlib2.graphics.lighting.LightingType;
 import com.tyrlib2.graphics.lighting.PointLight;
 import com.tyrlib2.graphics.materials.DefaultMaterial3;
 import com.tyrlib2.graphics.particles.ComplexParticleSystem;
@@ -33,8 +30,7 @@ import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.renderer.TextureAtlas;
 import com.tyrlib2.graphics.renderer.Viewport;
 import com.tyrlib2.graphics.text.Font;
-import com.tyrlib2.graphics.text.GLText;
-import com.tyrlib2.main.OpenGLActivity;
+import com.tyrlib2.main.Media;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.util.Color;
@@ -233,7 +229,7 @@ public class SceneManager {
 	 * @param path		The path to the file
 	 * @return			The newly created entity
 	 */
-	public Entity createEntity(Context context, String path) {
+	public Entity createEntity(String path) {
 		if (entityFactories.containsKey(path)) {
 			Entity entity = entityFactories.get(path).create();
 			renderer.addRenderable(entity);
@@ -243,12 +239,12 @@ public class SceneManager {
 		IEntityFactory factory = null;
 		
 		if (path.endsWith("iqe")) {
-			DefaultMaterial3 mat = new DefaultMaterial3(context, null, 1, 1, LightingType.PER_PIXEL, null);
-			factory = new IQEEntityFactory(context, path, mat);
+			DefaultMaterial3 mat = new DefaultMaterial3(null, 1, 1, null);
+			factory = new IQEEntityFactory(path, mat);
 			entityFactories.put(path, factory);
 		} else if (path.endsWith("iqm")) {
-			DefaultMaterial3 mat = new DefaultMaterial3(context, null, 1, 1, LightingType.PER_PIXEL, null);
-			factory = new IQMEntityFactory(context, path, mat);
+			DefaultMaterial3 mat = new DefaultMaterial3(null, 1, 1, null);
+			factory = new IQMEntityFactory(path, mat);
 			entityFactories.put(path, factory);
 		} else {
 			throw new RuntimeException("Format for loading entity " +  path + " not supported!");
@@ -260,7 +256,7 @@ public class SceneManager {
 		return entity;
 	}
 	
-	public ParticleSystem createParticleSystem(Context context, String path) {
+	public ParticleSystem createParticleSystem(String path) {
 		if (particleSystemFactories.containsKey(path)) {
 			ParticleSystem particleSystem = particleSystemFactories.get(path).create();
 			renderer.addRenderable((BoundedSceneObject)particleSystem, OpenGLRenderer.TRANSLUCENT_CHANNEL);
@@ -270,7 +266,7 @@ public class SceneManager {
 		IParticleSystemFactory factory = null;
 		
 		if (path.endsWith("xml")) {
-			factory = new XMLParticleSystemFactory(path, context);
+			factory = new XMLParticleSystemFactory(path);
 			particleSystemFactories.put(path, factory);
 		} else {
 			throw new RuntimeException("Format for loading particle system " +  path + " not supported!");
@@ -312,15 +308,12 @@ public class SceneManager {
 		return image;
 	}
 	
-	public void loadFont(String name, int size, Context context) {
-		loadFont(name, name, size, context);
+	public void loadFont(String name, int size) {
+		loadFont(name, name, size);
 	}
 	
-	public void loadFont(String source, String name, int size, Context context) {
-		GLText glText = new GLText(context.getAssets());
-		glText.load( source, size, 2, 2 );  // Create Font (Height: 14 Pixels / X+Y Padding 2 Pixels)
-		glText.setScale(1);
-		activeFont = new Font(source, name, glText);
+	public void loadFont(String source, String name, int size) {
+		activeFont = new Font(source, name, Media.CONTEXT.createTextRenderer(source, size));
 		fonts.put(name, activeFont);
 	}
 	
@@ -328,12 +321,10 @@ public class SceneManager {
 		return fonts.get(name);
 	}
 	
-	public void recreateFonts(Context context) {
+	public void recreateFonts() {
 		for (String fontName : fonts.keySet()) {
 			Font font = fonts.get(fontName);
-			GLText glText = new GLText(context.getAssets());
-			glText.load(font.source, font.glText.getSize(), 2, 2 );
-			font.glText = glText;
+			font.glText = Media.CONTEXT.createTextRenderer(font.source, font.glText.getSize());
 		}
 	}
 	
@@ -389,8 +380,8 @@ public class SceneManager {
 		return atlases.get(name);
 	}
 	
-	public Skybox createSkybox(Context context, String texture, Vector3 extents) {
-		Skybox.enableSkyboxes(OpenGLActivity.CONTEXT);
+	public Skybox createSkybox(String texture, Vector3 extents) {
+		Skybox.enableSkyboxes();
 		Skybox skybox = new Skybox(texture, extents.multiply(-1), extents);
 		SceneManager.getInstance().getRenderer().addRenderable(skybox, OpenGLRenderer.BACKGROUND_CHANNEL);
 		

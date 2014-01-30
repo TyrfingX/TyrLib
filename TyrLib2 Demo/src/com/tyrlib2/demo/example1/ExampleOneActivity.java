@@ -3,7 +3,7 @@ package com.tyrlib2.demo.example1;
 import android.content.Context;
 
 import com.tyrlib2.graphics.scene.SceneManager;
-import com.tyrlib2.main.OpenGLActivity;
+import com.tyrlib2.main.AndroidOpenGLActivity;
 
 /**
  * This activity demonstrates the use of a simple scene setup:
@@ -14,7 +14,7 @@ import com.tyrlib2.main.OpenGLActivity;
  *
  */
 
-public class ExampleOneActivity extends OpenGLActivity {
+public class ExampleOneActivity extends AndroidOpenGLActivity {
 
 	/**
 	 * This method will be called as soon as the project has finished setting up 
@@ -28,7 +28,7 @@ public class ExampleOneActivity extends OpenGLActivity {
 	public static Context CONTEXT;
 	
 	@Override
-	protected void go() {
+	public void go() {
 		CONTEXT = this;
 		SceneManager.getInstance().getRenderer().addFrameListener(new FrameListener());
 	}
