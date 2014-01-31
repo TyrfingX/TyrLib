@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Stack;
 
 import android.opengl.GLES20;
-import android.opengl.Matrix;
 
 import com.tyrlib2.graphics.materials.PointSpriteMaterial;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.graphics.scene.SceneNode;
 import com.tyrlib2.math.AABB;
+import com.tyrlib2.math.Matrix;
 import com.tyrlib2.util.FloatArray;
 
 /**

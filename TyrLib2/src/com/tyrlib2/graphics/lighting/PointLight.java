@@ -1,12 +1,12 @@
 package com.tyrlib2.graphics.lighting;
 
 import android.opengl.GLES20;
-import android.opengl.Matrix;
 
 import com.tyrlib2.graphics.materials.PointLightMaterial;
 import com.tyrlib2.graphics.renderer.IRenderable;
 import com.tyrlib2.graphics.renderer.Material;
 import com.tyrlib2.graphics.scene.SceneNode;
+import com.tyrlib2.math.Matrix;
 
 /**
  * Represents a point light. Emits light from the assigned position.

@@ -1,8 +1,7 @@
 package com.tyrlib2.graphics.animation;
 
-import android.opengl.Matrix;
-
 import com.tyrlib2.graphics.scene.SceneNode;
+import com.tyrlib2.math.Matrix;
 import com.tyrlib2.math.Quaternion;
 import com.tyrlib2.math.Vector3;
 

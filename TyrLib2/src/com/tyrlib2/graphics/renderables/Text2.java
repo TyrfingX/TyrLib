@@ -1,13 +1,14 @@
 package com.tyrlib2.graphics.renderables;
 
 import android.opengl.GLES20;
-import android.opengl.Matrix;
 
 import com.tyrlib2.graphics.renderer.IRenderable;
 import com.tyrlib2.graphics.renderer.Program;
 import com.tyrlib2.graphics.scene.SceneObject;
 import com.tyrlib2.graphics.text.Font;
 import com.tyrlib2.graphics.text.TextRenderer;
+import com.tyrlib2.math.Matrix;
+import com.tyrlib2.math.Quaternion;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.util.Color;
 
@@ -28,8 +29,7 @@ public class Text2  extends SceneObject implements IRenderable {
 		this.font = font;
 		this.text = text;
 		this.rotationValue = rotation;
-		Matrix.setIdentityM(this.rotation, 0);
-		Matrix.rotateM(this.rotation, 0, rotation, 0, 0, 1);
+		Quaternion.fromAxisAngle(new Vector3(0,0,1), rotation).toMatrix(this.rotation);
 	}
 	
 	@Override
@@ -78,9 +78,7 @@ public class Text2  extends SceneObject implements IRenderable {
 
 	public void setRotation(int rotation) {
 		this.rotationValue = rotation;
-		
-		Matrix.setIdentityM(this.rotation, 0);
-		Matrix.rotateM(this.rotation, 0, rotation, 0, 0, 1);
+		Quaternion.fromAxisAngle(new Vector3(0,0,1), rotation).toMatrix(this.rotation);
 	}
 	
 	public void setScale(float scale) {

@@ -5,12 +5,12 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
-import android.opengl.Matrix;
 
 import com.tyrlib2.graphics.lighting.Light;
 import com.tyrlib2.graphics.materials.DefaultMaterial3;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.math.FrustumG;
+import com.tyrlib2.math.Matrix;
 
 /**
  * This class initiates the actual rendering.

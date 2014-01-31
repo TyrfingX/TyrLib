@@ -1,8 +1,7 @@
 package com.tyrlib2.util;
 
-import android.opengl.Matrix;
-
 import com.tyrlib2.math.AABB;
+import com.tyrlib2.math.Matrix;
 import com.tyrlib2.math.Vector3;
 
 public class PointBoundingBoxTreeQuery implements IBoundingBoxTreeQuery {

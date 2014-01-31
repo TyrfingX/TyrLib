@@ -1,10 +1,10 @@
 package com.tyrlib2.graphics.text;
 
 import android.opengl.GLES20;
-import android.opengl.Matrix;
 
 import com.tyrlib2.graphics.renderer.TextureRegion;
 import com.tyrlib2.graphics.text.programs.Program;
+import com.tyrlib2.math.Matrix;
 
 public class SpriteBatch {
 

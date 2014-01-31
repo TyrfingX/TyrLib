@@ -1,13 +1,13 @@
 package com.tyrlib2.graphics.renderables;
 
 import android.opengl.GLES20;
-import android.opengl.Matrix;
 
 import com.tyrlib2.graphics.materials.ColoredMaterial;
 import com.tyrlib2.graphics.renderer.Material;
 import com.tyrlib2.graphics.renderer.Mesh;
 import com.tyrlib2.graphics.renderer.Renderable;
 import com.tyrlib2.math.AABB;
+import com.tyrlib2.math.Matrix;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.util.Color;
 

@@ -166,6 +166,10 @@ public class Vector3 {
 		target.y = -(x1 * z2 - z1 * x2);
 		target.z = x1 * y2 - y1 * x2;
 	}
+	
+	public static float length(float x, float y, float z) {
+		return (float) Math.sqrt(x*x +  y*y + z*z);
+	}
 
 	
 }

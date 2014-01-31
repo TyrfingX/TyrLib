@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.tyrlib2.math.Matrix;
+
 /** 
  * Base activity class 
  * Sets renderer, touch, etc. up. Games customizing these elements should roll their own Activity class.

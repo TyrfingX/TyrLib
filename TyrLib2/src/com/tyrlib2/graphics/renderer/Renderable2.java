@@ -2,11 +2,10 @@ package com.tyrlib2.graphics.renderer;
 
 import java.nio.ShortBuffer;
 
-import com.tyrlib2.math.AABB;
-
-
 import android.opengl.GLES20;
-import android.opengl.Matrix;
+
+import com.tyrlib2.math.AABB;
+import com.tyrlib2.math.Matrix;
 
 /**
  * A basic renderable 2D object

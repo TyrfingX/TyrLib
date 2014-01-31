@@ -1,7 +1,8 @@
 package com.tyrlib2.graphics.renderer;
 
 import android.opengl.GLES20;
-import android.opengl.Matrix;
+
+import com.tyrlib2.math.Matrix;
 
 /**
  * This transforms a 3D scene into a 2D scene

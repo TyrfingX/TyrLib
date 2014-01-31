@@ -1,9 +1,8 @@
 package com.tyrlib2.graphics.renderer;
 
-import android.opengl.Matrix;
-
 import com.tyrlib2.graphics.scene.BoundedSceneObject;
 import com.tyrlib2.math.AABB;
+import com.tyrlib2.math.Matrix;
 import com.tyrlib2.math.Vector3;
 
 /**
