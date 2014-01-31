@@ -3,8 +3,6 @@ package com.tyrlib2.graphics.renderer;
 import java.util.HashMap;
 import java.util.Map;
 
-import android.opengl.GLES20;
-
 import com.tyrlib2.files.FileReader;
 
 /**
@@ -54,14 +52,14 @@ public class ProgramManager {
         int vertexShader = ShaderManager.getInstance().getShader(vertexShaderName);
         int fragmentShader = ShaderManager.getInstance().getShader(fragmentShaderName);
 
-        int programHandle = GLES20.glCreateProgram();             // create empty OpenGL ES Program
+        int programHandle = TyrGL.glCreateProgram();             // create empty OpenGL ES Program
         Program program = new Program(programHandle);
-        GLES20.glAttachShader(programHandle, vertexShader);   	// add the vertex shader to program
-        GLES20.glAttachShader(programHandle, fragmentShader); 	// add the fragment shader to program
+        TyrGL.glAttachShader(programHandle, vertexShader);   	// add the vertex shader to program
+        TyrGL.glAttachShader(programHandle, fragmentShader); 	// add the fragment shader to program
         
         if (bindAttributes != null) {
         	for (int i = 0; i < bindAttributes.length; ++i) {
-        		GLES20.glBindAttribLocation(programHandle, i, bindAttributes[i]);
+        		TyrGL.glBindAttribLocation(programHandle, i, bindAttributes[i]);
         	}
         }
         
@@ -70,12 +68,12 @@ public class ProgramManager {
         
         // Get the link status.
         final int[] linkStatus = new int[1];
-        GLES20.glGetProgramiv(programHandle, GLES20.GL_LINK_STATUS, linkStatus, 0);
+        TyrGL.glGetProgramiv(programHandle, TyrGL.GL_LINK_STATUS, linkStatus, 0);
      
         // If the link failed, delete the program.
         if (linkStatus[0] == 0)
         {
-            GLES20.glDeleteProgram(programHandle);
+        	TyrGL.glDeleteProgram(programHandle);
             programHandle = 0;
             throw new RuntimeException("Error creating program: " + programName + ".");
         }
@@ -98,8 +96,8 @@ public class ProgramManager {
 	public Program createProgram(String programName, int vertexShaderResId, int fragmentShaderResId, String[] bindAttributes) {
 		String vertexShader = FileReader.readRawFile(vertexShaderResId);
 		String fragmentShader = FileReader.readRawFile(fragmentShaderResId);
-		ShaderManager.getInstance().loadShader(programName + "_VS", GLES20.GL_VERTEX_SHADER, vertexShader);
-		ShaderManager.getInstance().loadShader(programName + "_FS", GLES20.GL_FRAGMENT_SHADER, fragmentShader);
+		ShaderManager.getInstance().loadShader(programName + "_VS", TyrGL.GL_VERTEX_SHADER, vertexShader);
+		ShaderManager.getInstance().loadShader(programName + "_FS", TyrGL.GL_FRAGMENT_SHADER, fragmentShader);
 		Program program = ProgramManager.getInstance()
 										.createProgram(programName, programName + "_VS", 
 													   programName + "_FS", bindAttributes);
@@ -130,17 +128,17 @@ public class ProgramManager {
 			
 			Program program = programs.get(programName);
 			
-			int vertexShader = ShaderManager.getInstance().loadShader(programName + "_VS", GLES20.GL_VERTEX_SHADER, program.vertexShader);
-			int fragmentShader = ShaderManager.getInstance().loadShader(programName + "_FS", GLES20.GL_FRAGMENT_SHADER, program.fragmentShader);
+			int vertexShader = ShaderManager.getInstance().loadShader(programName + "_VS", TyrGL.GL_VERTEX_SHADER, program.vertexShader);
+			int fragmentShader = ShaderManager.getInstance().loadShader(programName + "_FS", TyrGL.GL_FRAGMENT_SHADER, program.fragmentShader);
 			
-	        int programHandle = GLES20.glCreateProgram();             // create empty OpenGL ES Program
+	        int programHandle = TyrGL.glCreateProgram();             // create empty OpenGL ES Program
 	        program.handle = programHandle;
-	        GLES20.glAttachShader(programHandle, vertexShader);   	// add the vertex shader to program
-	        GLES20.glAttachShader(programHandle, fragmentShader); 	// add the fragment shader to program
+	        TyrGL.glAttachShader(programHandle, vertexShader);   	// add the vertex shader to program
+	        TyrGL.glAttachShader(programHandle, fragmentShader); 	// add the fragment shader to program
 	        
 	        if (program.bindAttributes != null) {
 	        	for (int i = 0; i < program.bindAttributes.length; ++i) {
-	        		GLES20.glBindAttribLocation(programHandle, i, program.bindAttributes[i]);
+	        		TyrGL.glBindAttribLocation(programHandle, i, program.bindAttributes[i]);
 	        	}
 	        }
 	        
@@ -149,12 +147,12 @@ public class ProgramManager {
 	        
 	        // Get the link status.
 	        final int[] linkStatus = new int[1];
-	        GLES20.glGetProgramiv(programHandle, GLES20.GL_LINK_STATUS, linkStatus, 0);
+	        TyrGL.glGetProgramiv(programHandle, TyrGL.GL_LINK_STATUS, linkStatus, 0);
 	     
 	        // If the link failed, delete the program.
 	        if (linkStatus[0] == 0)
 	        {
-	            GLES20.glDeleteProgram(programHandle);
+	        	TyrGL.glDeleteProgram(programHandle);
 	            programHandle = 0;
 	            throw new RuntimeException("Error creating program: " + programName + ".");
 	        }

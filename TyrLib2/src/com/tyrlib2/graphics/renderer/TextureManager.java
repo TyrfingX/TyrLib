@@ -5,9 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.graphics.BitmapFactory;
-import android.opengl.GLES20;
-
 import com.tyrlib2.files.IBitmap;
 import com.tyrlib2.main.Media;
 import com.tyrlib2.math.Vector2;
@@ -48,7 +45,7 @@ public class TextureManager {
 		
 	    final int[] textureHandle = new int[1];
 	    
-	    GLES20.glGenTextures(1, textureHandle, 0);
+	    TyrGL.glGenTextures(1, textureHandle, 0);
 	 
 	    Vector2 size = null;
 	    
@@ -61,11 +58,11 @@ public class TextureManager {
 	        
 	        
 	        // Bind to the texture in OpenGL
-	        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0]);
+	        TyrGL.glBindTexture(TyrGL.GL_TEXTURE_2D, textureHandle[0]);
 	 
 	        // Set filtering
-	        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
-	        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR_MIPMAP_LINEAR);
+	        TyrGL.glTexParameteri(TyrGL.GL_TEXTURE_2D, TyrGL.GL_TEXTURE_MIN_FILTER, TyrGL.GL_LINEAR);
+	        TyrGL.glTexParameteri(TyrGL.GL_TEXTURE_2D, TyrGL.GL_TEXTURE_MAG_FILTER, TyrGL.GL_LINEAR_MIPMAP_LINEAR);
 	 
 	        // Load the bitmap into the bound texture.
 	        bitmap.bind();
@@ -93,7 +90,7 @@ public class TextureManager {
 	public Texture createTexture(String name, IBitmap bitmap) {
 	    final int[] textureHandle = new int[1];
 	    
-	    GLES20.glGenTextures(1, textureHandle, 0);
+	    TyrGL.glGenTextures(1, textureHandle, 0);
 	 
 	    Vector2 size = null;
 	    
@@ -102,11 +99,11 @@ public class TextureManager {
 	        size = new Vector2(bitmap.getWidth(), bitmap.getHeight());
 	        
 	        // Bind to the texture in OpenGL
-	        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0]);
+	        TyrGL.glBindTexture(TyrGL.GL_TEXTURE_2D, textureHandle[0]);
 	 
 	        // Set filtering
-	        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
-	        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR_MIPMAP_LINEAR);
+	        TyrGL.glTexParameteri(TyrGL.GL_TEXTURE_2D, TyrGL.GL_TEXTURE_MIN_FILTER, TyrGL.GL_LINEAR);
+	        TyrGL.glTexParameteri(TyrGL.GL_TEXTURE_2D, TyrGL.GL_TEXTURE_MAG_FILTER, TyrGL.GL_LINEAR_MIPMAP_LINEAR);
 	 
 	        // Load the bitmap into the bound texture.
 	        bitmap.bind();
@@ -172,7 +169,7 @@ public class TextureManager {
 	private void reloadTexture(Texture texture) {
 	    final int[] textureHandle = new int[1];
 	    
-	    GLES20.glGenTextures(1, textureHandle, 0);
+	    TyrGL.glGenTextures(1, textureHandle, 0);
 	 
 	    if (textureHandle[0] != 0)
 	    {
@@ -181,11 +178,11 @@ public class TextureManager {
 	        final IBitmap bitmap = Media.CONTEXT.loadBitmap(texture.resId, false);
 
 	        // Bind to the texture in OpenGL
-	        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0]);
+	        TyrGL.glBindTexture(TyrGL.GL_TEXTURE_2D, textureHandle[0]);
 	 
 	        // Set filtering
-	        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
-	        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR_MIPMAP_LINEAR);
+	        TyrGL.glTexParameteri(TyrGL.GL_TEXTURE_2D, TyrGL.GL_TEXTURE_MIN_FILTER, TyrGL.GL_LINEAR);
+	        TyrGL.glTexParameteri(TyrGL.GL_TEXTURE_2D, TyrGL.GL_TEXTURE_MAG_FILTER, TyrGL.GL_LINEAR_MIPMAP_LINEAR);
 	        // Load the bitmap into the bound texture.
 	        bitmap.bind();
 	 
@@ -200,7 +197,7 @@ public class TextureManager {
 		unnamedTextures.remove(texture);
 		int[] textureHandles = new int[1];
 		textureHandles[0] = texture.handle;
-		GLES20.glDeleteTextures(1, textureHandles, 0);
+		TyrGL.glDeleteTextures(1, textureHandles, 0);
 	}
 	
 }

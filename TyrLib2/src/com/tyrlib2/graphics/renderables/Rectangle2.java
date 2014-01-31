@@ -9,6 +9,7 @@ import android.opengl.GLES20;
 import com.tyrlib2.graphics.materials.ColoredMaterial;
 import com.tyrlib2.graphics.renderer.Material;
 import com.tyrlib2.graphics.renderer.Renderable2;
+import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.util.Color;
@@ -99,20 +100,20 @@ public class Rectangle2 extends Renderable2 {
 	@Override
 	public void render(float[] vpMatrix) {
 		if (filled) {
-			renderMode = GLES20.GL_TRIANGLES;
+			renderMode = TyrGL.GL_TRIANGLES;
 			drawOrderLength = mesh.getDrawOrder().length;
 			drawOrderBuffer = mesh.getDrawOrderBuffer();
 			super.render(vpMatrix);
 		}
 		
 		if (hasBorder) {
-			renderMode = GLES20.GL_LINE_LOOP;
-			GLES20.glLineWidth(borderWidth);
+			renderMode = TyrGL.GL_LINE_LOOP;
+			TyrGL.glLineWidth(borderWidth);
 			drawOrderLength = DRAW_ORDER_BORDER.length;
 			drawOrderBuffer = borderDrawOrderBuffer;
 			super.render(vpMatrix);
 			
-			renderMode = GLES20.GL_POINTS;
+			renderMode = TyrGL.GL_POINTS;
 			super.render(vpMatrix);
 		}
 	}

@@ -1,6 +1,5 @@
 package com.tyrlib2.graphics.renderer;
 
-import android.opengl.GLES20;
 
 /** 
  * Represents a program
@@ -45,7 +44,7 @@ public class Program {
 				inUse.textureHandle = 0;
 			}
 			
-			GLES20.glUseProgram(handle);
+			TyrGL.glUseProgram(handle);
 			inUse = this;
 			
 			mesh = null;
@@ -58,7 +57,7 @@ public class Program {
 	 */
 	
 	public void link() {
-		GLES20.glLinkProgram(handle);  
+		TyrGL.glLinkProgram(handle);  
 	}
 	
 	public static void resetCache() {
@@ -71,11 +70,11 @@ public class Program {
 	
 	public static void blendEnable(int sfactor, int dfactor) {
 		if (!blending) {
-			GLES20.glEnable( GLES20.GL_BLEND );
+			TyrGL.glEnable( TyrGL.GL_BLEND );
 			blending = true;
 		}
 		if (sfactor != ssfactor || dfactor != sdfactor) {
-			GLES20.glBlendFunc( sfactor, dfactor );
+			TyrGL.glBlendFunc( sfactor, dfactor );
 			ssfactor = sfactor;
 			sdfactor = dfactor;
 		}
@@ -85,7 +84,7 @@ public class Program {
 	public static void blendDisable() {
 		if (blending) {
 			blending = false;
-			GLES20.glDisable(GLES20.GL_BLEND);
+			TyrGL.glDisable(TyrGL.GL_BLEND);
 		}
 	}
 }

@@ -3,8 +3,9 @@ package com.tyrlib2.graphics.text;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.opengl.GLES20;
 import android.opengl.GLUtils;
+
+import com.tyrlib2.graphics.renderer.TyrGL;
 
 public class TextureHelper {
 	public static int loadTexture(final Context context, final int resourceId) {
@@ -18,7 +19,7 @@ public class TextureHelper {
 	{
 	    final int[] textureHandle = new int[1];
 	 
-	    GLES20.glGenTextures(1, textureHandle, 0);
+	    TyrGL.glGenTextures(1, textureHandle, 0);
 	 
 	    if (textureHandle[0] != 0)
 	    {
@@ -29,16 +30,16 @@ public class TextureHelper {
 //	        final Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resourceId, options);
 	 
 	        // Bind to the texture in OpenGL
-	        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0]);
+	    	TyrGL.glBindTexture(TyrGL.GL_TEXTURE_2D, textureHandle[0]);
 	 
 	        // Set filtering
-	        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
-	        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-	        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE );  // Set U Wrapping
-	        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE );  // Set V Wrapping
+	        TyrGL.glTexParameteri(TyrGL.GL_TEXTURE_2D, TyrGL.GL_TEXTURE_MIN_FILTER, TyrGL.GL_NEAREST);
+	        TyrGL.glTexParameteri(TyrGL.GL_TEXTURE_2D, TyrGL.GL_TEXTURE_MAG_FILTER, TyrGL.GL_LINEAR);
+	        TyrGL.glTexParameterf(TyrGL.GL_TEXTURE_2D, TyrGL.GL_TEXTURE_WRAP_S, TyrGL.GL_CLAMP_TO_EDGE );  // Set U Wrapping
+	        TyrGL.glTexParameterf(TyrGL.GL_TEXTURE_2D, TyrGL.GL_TEXTURE_WRAP_T, TyrGL.GL_CLAMP_TO_EDGE );  // Set V Wrapping
 
 	        // Load the bitmap into the bound texture.
-	        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
+	        GLUtils.texImage2D(TyrGL.GL_TEXTURE_2D, 0, bitmap, 0);
 	 
 	        // Recycle the bitmap, since its data has been loaded into OpenGL.
 	        bitmap.recycle();

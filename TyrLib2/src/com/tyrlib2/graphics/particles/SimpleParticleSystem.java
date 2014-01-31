@@ -5,10 +5,9 @@ import java.nio.ByteOrder;
 import java.util.List;
 import java.util.Stack;
 
-import android.opengl.GLES20;
-
 import com.tyrlib2.graphics.materials.PointSpriteMaterial;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
+import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.graphics.scene.SceneNode;
 import com.tyrlib2.math.AABB;
@@ -221,31 +220,31 @@ public class SimpleParticleSystem extends ParticleSystem {
 			material.render(null, vpMatrix);
 			
 			// Pass in the position.
-		    GLES20.glVertexAttribPointer(material.getPositionHandle(), POSITION_SIZE, GLES20.GL_FLOAT, false,
+			TyrGL.glVertexAttribPointer(material.getPositionHandle(), POSITION_SIZE, TyrGL.GL_FLOAT, false,
 		    							 PARTICLE_DATA_SIZE * OpenGLRenderer.BYTES_PER_FLOAT, buffer);
 			
-	        GLES20.glEnableVertexAttribArray(material.getPositionHandle());  
+			TyrGL.glEnableVertexAttribArray(material.getPositionHandle());  
 			
-	        colorHandle = GLES20.glGetAttribLocation(material.getProgram().handle, "a_Color");
+	        colorHandle = TyrGL.glGetAttribLocation(material.getProgram().handle, "a_Color");
 	        
 			// Pass in the color.
 	        buffer.position(COLOR_OFFSET);
-		    GLES20.glVertexAttribPointer(colorHandle, COLOR_SIZE, GLES20.GL_FLOAT, false,
+	        TyrGL.glVertexAttribPointer(colorHandle, COLOR_SIZE, TyrGL.GL_FLOAT, false,
 		    							 PARTICLE_DATA_SIZE * OpenGLRenderer.BYTES_PER_FLOAT, buffer);
-	        GLES20.glEnableVertexAttribArray(colorHandle);  
+	        TyrGL.glEnableVertexAttribArray(colorHandle);  
 	        
 	        // Apply the projection and view transformation
 			Matrix.multiplyMM(mvpMatrix, 0, vpMatrix, 0, modelMatrix, 0);
 	        
 			// Pass in the transformation matrix.
-			GLES20.glUniformMatrix4fv(material.getMVPMatrixHandle(), 1, false, mvpMatrix, 0);
+			TyrGL.glUniformMatrix4fv(material.getMVPMatrixHandle(), 1, false, mvpMatrix, 0);
 			
-			GLES20.glDepthMask(false);
+			TyrGL.glDepthMask(false);
 			
 			// Draw the point.
-			GLES20.glDrawArrays(GLES20.GL_POINTS, 0, particleData.getSize() / PARTICLE_DATA_SIZE);
+			TyrGL.glDrawArrays(TyrGL.GL_POINTS, 0, particleData.getSize() / PARTICLE_DATA_SIZE);
 		
-			GLES20.glDepthMask(true);
+			TyrGL.glDepthMask(true);
 
 		}
 		

@@ -1,8 +1,9 @@
 package com.tyrlib2.files;
 
 import android.graphics.Bitmap;
-import android.opengl.GLES20;
 import android.opengl.GLUtils;
+
+import com.tyrlib2.graphics.renderer.TyrGL;
 
 public class AndroidBitmap implements IBitmap {
 	
@@ -24,7 +25,7 @@ public class AndroidBitmap implements IBitmap {
 
 	@Override
 	public void bind() {
-		GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
+		GLUtils.texImage2D(TyrGL.GL_TEXTURE_2D, 0, bitmap, 0);
 	}
 
 	@Override

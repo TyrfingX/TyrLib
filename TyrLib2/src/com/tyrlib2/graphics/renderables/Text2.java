@@ -1,9 +1,8 @@
 package com.tyrlib2.graphics.renderables;
 
-import android.opengl.GLES20;
-
 import com.tyrlib2.graphics.renderer.IRenderable;
 import com.tyrlib2.graphics.renderer.Program;
+import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.graphics.scene.SceneObject;
 import com.tyrlib2.graphics.text.Font;
 import com.tyrlib2.graphics.text.TextRenderer;
@@ -34,7 +33,7 @@ public class Text2  extends SceneObject implements IRenderable {
 	
 	@Override
 	public void render(float[] vpMatrix) {
-		Program.blendEnable(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+		Program.blendEnable(TyrGL.GL_ONE, TyrGL.GL_ONE_MINUS_SRC_ALPHA);
 		TextRenderer glText = font.glText;
 		float tmpX = glText.getScaleX();
 		float tmpY = glText.getScaleY();

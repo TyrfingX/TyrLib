@@ -9,7 +9,8 @@ import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.tyrlib2.math.Matrix;
+import com.tyrlib2.graphics.renderer.AndroidGLImpl;
+import com.tyrlib2.graphics.renderer.TyrGL;
 
 /** 
  * Base activity class 
@@ -38,6 +39,7 @@ public abstract class AndroidOpenGLActivity extends Activity implements OpenGLAc
 
     	RUNNING = true;
     	AndroidMedia.CONTEXT = new AndroidMedia(this);
+    	TyrGL.IMPL = new AndroidGLImpl();
         
         //Remove title bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);

@@ -2,8 +2,6 @@ package com.tyrlib2.graphics.materials;
 
 import java.nio.FloatBuffer;
 
-import android.opengl.GLES20;
-
 import com.tyrlib2.graphics.renderer.IBlendable;
 import com.tyrlib2.graphics.renderer.Material;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
@@ -11,6 +9,7 @@ import com.tyrlib2.graphics.renderer.Program;
 import com.tyrlib2.graphics.renderer.ProgramManager;
 import com.tyrlib2.graphics.renderer.Texture;
 import com.tyrlib2.graphics.renderer.TextureManager;
+import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.util.Color;
 
 /**
@@ -42,10 +41,10 @@ public class TexturedMaterial extends Material implements IBlendable  {
 		this.program = program;
 		init(5,0,3, "u_MVPMatrix", "a_Position");
 		
-		alphaHandle = GLES20.glGetUniformLocation(program.handle, "u_Alpha");
-		textureCoordinateHandle = GLES20.glGetAttribLocation(program.handle, "a_TexCoordinate");
-		colorHandle = GLES20.glGetUniformLocation(program.handle, "u_Color");
-		textureUniformHandle = GLES20.glGetUniformLocation(program.handle, "u_Texture");
+		alphaHandle = TyrGL.glGetUniformLocation(program.handle, "u_Alpha");
+		textureCoordinateHandle = TyrGL.glGetAttribLocation(program.handle, "a_TexCoordinate");
+		colorHandle = TyrGL.glGetUniformLocation(program.handle, "u_Color");
+		textureUniformHandle = TyrGL.glGetUniformLocation(program.handle, "u_Texture");
 	}
 	
 	public TexturedMaterial(Texture texture) {
@@ -74,35 +73,35 @@ public class TexturedMaterial extends Material implements IBlendable  {
 	
 	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
         
-		GLES20.glUniform1f(alphaHandle, alpha);
-		GLES20.glUniform3f(colorHandle, color.r, color.g, color.b);
+		TyrGL.glUniform1f(alphaHandle, alpha);
+		TyrGL.glUniform3f(colorHandle, color.r, color.g, color.b);
 		
         // Pass in the texture coordinate information
         vertexBuffer.position(uvOffset);
-        GLES20.glVertexAttribPointer(textureCoordinateHandle, uvDataSize, GLES20.GL_FLOAT, false, 
+        TyrGL.glVertexAttribPointer(textureCoordinateHandle, uvDataSize, TyrGL.GL_FLOAT, false, 
         		strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
         
-        GLES20.glEnableVertexAttribArray(textureCoordinateHandle);
+        TyrGL.glEnableVertexAttribArray(textureCoordinateHandle);
 		
 		int textureHandle = texture.getHandle();
 		
 		if (program.textureHandle != textureHandle) {
 			
 		    // Set the active texture unit to texture unit 0.
-		    GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+			TyrGL.glActiveTexture(TyrGL.GL_TEXTURE0);
 		 
 		    // Bind the texture to this unit.
-		    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle);
+			TyrGL.glBindTexture(TyrGL.GL_TEXTURE_2D, textureHandle);
 		 
 		    // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
-		    GLES20.glUniform1i(textureUniformHandle, 0);
+			TyrGL.glUniform1i(textureUniformHandle, 0);
 		    
 		    program.textureHandle = textureHandle;
 		    
 		    OpenGLRenderer.textureFails++;
 		}
 	    
-		Program.blendEnable(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+		Program.blendEnable(TyrGL.GL_SRC_ALPHA, TyrGL.GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
 	public void setProgram(Program program) {

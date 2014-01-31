@@ -2,16 +2,15 @@ package com.tyrlib2.graphics.materials;
 
 import java.nio.FloatBuffer;
 
-import android.content.Context;
 import android.opengl.GLES20;
 
-import com.tyrlib2.graphics.lighting.LightingType;
 import com.tyrlib2.graphics.renderer.Material;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.renderer.Program;
 import com.tyrlib2.graphics.renderer.ProgramManager;
 import com.tyrlib2.graphics.renderer.Texture;
 import com.tyrlib2.graphics.renderer.TextureManager;
+import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.util.Color;
@@ -137,13 +136,13 @@ public class DefaultMaterial3 extends LightedMaterial {
 		
 		init(dataSize,posOffset,3, "u_MVPMatrix", "a_Position");
 		
-		mvMatrixHandle = GLES20.glGetUniformLocation(program.handle, "u_MVMatrix"); 
-		textureUniformHandle = GLES20.glGetUniformLocation(program.handle, "u_Texture");
-		ambientHandle = GLES20.glGetUniformLocation(program.handle, "u_Ambient");
-		textureUniformHandle = GLES20.glGetUniformLocation(program.handle, "u_Texture");
-		colorHandle = GLES20.glGetAttribLocation(program.handle, "a_Color");
-		normalHandle = GLES20.glGetAttribLocation(program.handle, "a_Normal");
-		textureCoordinateHandle = GLES20.glGetAttribLocation(program.handle, "a_TexCoordinate");
+		mvMatrixHandle = TyrGL.glGetUniformLocation(program.handle, "u_MVMatrix"); 
+		textureUniformHandle = TyrGL.glGetUniformLocation(program.handle, "u_Texture");
+		ambientHandle = TyrGL.glGetUniformLocation(program.handle, "u_Ambient");
+		textureUniformHandle = TyrGL.glGetUniformLocation(program.handle, "u_Texture");
+		colorHandle = TyrGL.glGetAttribLocation(program.handle, "a_Color");
+		normalHandle = TyrGL.glGetAttribLocation(program.handle, "a_Normal");
+		textureCoordinateHandle = TyrGL.glGetAttribLocation(program.handle, "a_TexCoordinate");
 	}
 	
 	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
@@ -162,22 +161,22 @@ public class DefaultMaterial3 extends LightedMaterial {
 	    if (!animated && wasAnimated) {
 
 	    	// pass some data to make sure skinning is disabled
-	    	int indexHandle = GLES20.glGetAttribLocation(program.handle, boneIndexParam);
-	    	GLES20.glEnableVertexAttribArray(indexHandle);
-	    	GLES20.glVertexAttrib4f(indexHandle, -1, -1, -1, -1);
+	    	int indexHandle = TyrGL.glGetAttribLocation(program.handle, boneIndexParam);
+	    	TyrGL.glEnableVertexAttribArray(indexHandle);
+	    	TyrGL.glVertexAttrib4f(indexHandle, -1, -1, -1, -1);
 	    	wasAnimated = false;
 	    } else {
 	    	wasAnimated = true;
 	    }
 	    
 	    if (transparent) {
-	    	Program.blendEnable(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+	    	Program.blendEnable(TyrGL.GL_SRC_ALPHA, TyrGL.GL_ONE_MINUS_SRC_ALPHA);
 	    }
 	}
 	
 	
 	public void render(int vboBuffer, float[] modelMatrix) {
-		ambientHandle = GLES20.glGetUniformLocation(program.handle, "u_Ambient");
+		ambientHandle = TyrGL.glGetUniformLocation(program.handle, "u_Ambient");
 		
 		if (program.meshChange) {
 			passMesh(vboBuffer);
@@ -194,13 +193,13 @@ public class DefaultMaterial3 extends LightedMaterial {
 	    if (!animated) {
 
 	    	// pass some data to make sure skinning is disabled
-	    	int indexHandle = GLES20.glGetAttribLocation(program.handle, boneIndexParam);
-	    	GLES20.glEnableVertexAttribArray(indexHandle);
-	    	GLES20.glVertexAttrib4f(indexHandle, -1, -1, -1, -1);
+	    	int indexHandle = TyrGL.glGetAttribLocation(program.handle, boneIndexParam);
+	    	TyrGL.glEnableVertexAttribArray(indexHandle);
+	    	TyrGL.glVertexAttrib4f(indexHandle, -1, -1, -1, -1);
 	    }
 	    
 	    if (transparent) {
-	    	Program.blendEnable(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+	    	Program.blendEnable(TyrGL.GL_SRC_ALPHA, TyrGL.GL_ONE_MINUS_SRC_ALPHA);
 	    }
 	}
 	
@@ -211,39 +210,39 @@ public class DefaultMaterial3 extends LightedMaterial {
 //	    
 //	    
 //        // Pass in the modelview matrix.
-//        GLES20.glUniformMatrix4fv(mvMatrixHandle, 1, false, mvMatrix, 0);
+//        TyrGL.glUniformMatrix4fv(mvMatrixHandle, 1, false, mvMatrix, 0);
 //	}
 	
 	private void passMesh(FloatBuffer vertexBuffer)
 	{	
 	    // Pass in the normal information
 	    vertexBuffer.position(normalOffset);
-	    GLES20.glVertexAttribPointer(normalHandle, normalDataSize, GLES20.GL_FLOAT, false,
+	    TyrGL.glVertexAttribPointer(normalHandle, normalDataSize, TyrGL.GL_FLOAT, false,
 	    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
 	 
-	    GLES20.glEnableVertexAttribArray(normalHandle);
+	    TyrGL.glEnableVertexAttribArray(normalHandle);
 	    
         // Pass in the texture coordinate information
         vertexBuffer.position(uvOffset);
-        GLES20.glVertexAttribPointer(textureCoordinateHandle, uvDataSize, GLES20.GL_FLOAT, false, 
+        TyrGL.glVertexAttribPointer(textureCoordinateHandle, uvDataSize, TyrGL.GL_FLOAT, false, 
         		strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
         
-        GLES20.glEnableVertexAttribArray(textureCoordinateHandle);
+        TyrGL.glEnableVertexAttribArray(textureCoordinateHandle);
 	}
 	
 	private void passMesh(int vboBufferHandle)
 	{
 		
 	    // Pass in the normal information
-	    GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vboBufferHandle);
-	    GLES20.glEnableVertexAttribArray(normalHandle);
-	    GLES20.glVertexAttribPointer(normalHandle, normalDataSize, GLES20.GL_FLOAT, false,
+		TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, vboBufferHandle);
+		TyrGL.glEnableVertexAttribArray(normalHandle);
+	    TyrGL.glVertexAttribPointer(normalHandle, normalDataSize, TyrGL.GL_FLOAT, false,
 	    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, normalOffset * OpenGLRenderer.BYTES_PER_FLOAT);
 	    
         // Pass in the texture coordinate information
-	    GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vboBufferHandle);
-	    GLES20.glEnableVertexAttribArray(textureCoordinateHandle);
-        GLES20.glVertexAttribPointer(textureCoordinateHandle, uvDataSize, GLES20.GL_FLOAT, false, 
+	    TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, vboBufferHandle);
+	    TyrGL.glEnableVertexAttribArray(textureCoordinateHandle);
+	    TyrGL.glVertexAttribPointer(textureCoordinateHandle, uvDataSize, TyrGL.GL_FLOAT, false, 
         		strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, uvOffset * OpenGLRenderer.BYTES_PER_FLOAT);
         
         
@@ -251,13 +250,13 @@ public class DefaultMaterial3 extends LightedMaterial {
 	
 	private void passTexture(int textureHandle) {
 	    // Set the active texture unit to texture unit 0.
-	    GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+		TyrGL.glActiveTexture(TyrGL.GL_TEXTURE0);
 	 
 	    // Bind the texture to this unit.
-	    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle);
+		TyrGL.glBindTexture(TyrGL.GL_TEXTURE_2D, textureHandle);
 	 
 	    // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
-	    GLES20.glUniform1i(textureUniformHandle, 0);
+		TyrGL.glUniform1i(textureUniformHandle, 0);
 	    
 	    program.textureHandle = textureHandle;
 	    

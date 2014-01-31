@@ -3,8 +3,6 @@ package com.tyrlib2.graphics.renderer;
 import java.util.HashMap;
 import java.util.Map;
 
-import android.opengl.GLES20;
-
 /** 
  * Takes care of loading vertex and fragment shaders and cashing them
  * @author Sascha
@@ -46,24 +44,24 @@ public class ShaderManager {
 	
     public int loadShader(String name, int type, String shaderCode){
 
-        // create a vertex shader type (GLES20.GL_VERTEX_SHADER)
-        // or a fragment shader type (GLES20.GL_FRAGMENT_SHADER)
-        int shader = GLES20.glCreateShader(type);
+        // create a vertex shader type (TyrGL.GL_VERTEX_SHADER)
+        // or a fragment shader type (TyrGL.GL_FRAGMENT_SHADER)
+        int shader = TyrGL.glCreateShader(type);
 
         // add the source code to the shader and compile it
-        GLES20.glShaderSource(shader, shaderCode);
-        GLES20.glCompileShader(shader);
+        TyrGL.glShaderSource(shader, shaderCode);
+        TyrGL.glCompileShader(shader);
 
         // Get the compilation status.
         final int[] compileStatus = new int[1];
-        GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compileStatus, 0);
+        TyrGL.glGetShaderiv(shader, TyrGL.GL_COMPILE_STATUS, compileStatus, 0);
      
         // If the compilation failed, delete the shader.
         if (compileStatus[0] == 0)
         {
-            GLES20.glDeleteShader(shader);
+        	TyrGL.glDeleteShader(shader);
             shader = 0;
-            if (type == GLES20.GL_VERTEX_SHADER) {
+            if (type == TyrGL.GL_VERTEX_SHADER) {
             	throw new RuntimeException("Error creating vertex shader: " + name + ".");
             } else {
             	throw new RuntimeException("Error creating fragment shader: " + name + ".");

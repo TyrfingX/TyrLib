@@ -1,12 +1,11 @@
 package com.tyrlib2.graphics.renderables;
 
-import android.opengl.GLES20;
-
 import com.tyrlib2.graphics.materials.TexturedMaterial;
 import com.tyrlib2.graphics.renderer.Mesh;
 import com.tyrlib2.graphics.renderer.Renderable2;
 import com.tyrlib2.graphics.renderer.Texture;
 import com.tyrlib2.graphics.renderer.TextureRegion;
+import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.math.Vector2;
 
 /**
@@ -62,7 +61,7 @@ public class Image2 extends Renderable2 {
 	
 	@Override
 	public void render(float[] vpMatrix) {
-		renderMode = GLES20.GL_TRIANGLES;
+		renderMode = TyrGL.GL_TRIANGLES;
 		drawOrderLength = mesh.getDrawOrder().length;
 		drawOrderBuffer = mesh.getDrawOrderBuffer();
 		super.render(vpMatrix);

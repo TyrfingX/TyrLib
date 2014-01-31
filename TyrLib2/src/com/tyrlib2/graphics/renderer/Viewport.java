@@ -1,7 +1,5 @@
 package com.tyrlib2.graphics.renderer;
 
-import android.opengl.GLES20;
-
 import com.tyrlib2.math.Matrix;
 
 /**
@@ -35,7 +33,7 @@ public class Viewport {
 	 */
 	public Viewport(int width, int height) {
 	    // Set the OpenGL viewport
-	    GLES20.glViewport(0, 0, width, height);
+		TyrGL.glViewport(0, 0, width, height);
 	    
 	    // Create a full screen view port
 	    setFullscreen(width, height);

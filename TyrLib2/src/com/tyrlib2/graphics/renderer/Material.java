@@ -2,8 +2,6 @@ package com.tyrlib2.graphics.renderer;
 
 import java.nio.FloatBuffer;
 
-import android.opengl.GLES20;
-
 import com.tyrlib2.math.Vector3;
 
 /**
@@ -76,8 +74,8 @@ public class Material {
 		this.mvpParamName = mvpParamName;
 		this.positionParamName = positionParamName;
 		
-		mvpMatrixHandle = GLES20.glGetUniformLocation(program.handle, mvpParamName);
-		positionHandle = GLES20.glGetAttribLocation(program.handle, positionParamName);
+		mvpMatrixHandle = TyrGL.glGetUniformLocation(program.handle, mvpParamName);
+		positionHandle = TyrGL.glGetAttribLocation(program.handle, positionParamName);
 		
 
 	}

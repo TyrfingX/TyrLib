@@ -17,6 +17,7 @@ import android.graphics.Typeface;
 import android.opengl.GLES20;
 
 import com.tyrlib2.graphics.renderer.TextureRegion;
+import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.graphics.text.programs.BatchTextProgram;
 import com.tyrlib2.graphics.text.programs.Program;
 import com.tyrlib2.math.Matrix;
@@ -110,8 +111,8 @@ public class GLText implements TextRenderer {
 
 		// Initialize the color and texture handles
 		mProgram = program; 
-		mColorHandle = GLES20.glGetUniformLocation(mProgram.getHandle(), "u_Color");
-        mTextureUniformHandle = GLES20.glGetUniformLocation(mProgram.getHandle(), "u_Texture");
+		mColorHandle = TyrGL.glGetUniformLocation(mProgram.getHandle(), "u_Color");
+        mTextureUniformHandle = TyrGL.glGetUniformLocation(mProgram.getHandle(), "u_Texture");
 	}
 	
 	// Constructor using the default program (BatchTextProgram)
@@ -274,18 +275,18 @@ public class GLText implements TextRenderer {
 	}
 	
 	void initDraw(float red, float green, float blue, float alpha) {
-		GLES20.glUseProgram(mProgram.getHandle()); // specify the program to use
+		TyrGL.glUseProgram(mProgram.getHandle()); // specify the program to use
 		
 		// set color TODO: only alpha component works, text is always black #BUG
-		GLES20.glUniform4f(mColorHandle, red,green,blue,alpha); 
-		GLES20.glEnableVertexAttribArray(mColorHandle);
+		TyrGL.glUniform4f(mColorHandle, red,green,blue,alpha); 
+		TyrGL.glEnableVertexAttribArray(mColorHandle);
 		
-		GLES20.glActiveTexture(GLES20.GL_TEXTURE0);  // Set the active texture unit to texture unit 0
+		TyrGL.glActiveTexture(TyrGL.GL_TEXTURE0);  // Set the active texture unit to texture unit 0
 		
-		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId); // Bind the texture to this unit
+		TyrGL.glBindTexture(TyrGL.GL_TEXTURE_2D, textureId); // Bind the texture to this unit
 		
 		// Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0
-		GLES20.glUniform1i(mTextureUniformHandle, 0); 
+		TyrGL.glUniform1i(mTextureUniformHandle, 0); 
 	}
 	
 	/* (non-Javadoc)
@@ -294,7 +295,7 @@ public class GLText implements TextRenderer {
 	@Override
 	public void end()  {
 		batch.endBatch();                               // End Batch
-		GLES20.glDisableVertexAttribArray(mColorHandle);
+		TyrGL.glDisableVertexAttribArray(mColorHandle);
 	}
 
 	//--Draw Text--//

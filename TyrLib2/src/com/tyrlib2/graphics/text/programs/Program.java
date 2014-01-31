@@ -1,7 +1,6 @@
 package com.tyrlib2.graphics.text.programs;
 
-import android.opengl.GLES20;
-
+import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.graphics.text.AttribVariable;
 import com.tyrlib2.graphics.text.Utilities;
 
@@ -22,8 +21,8 @@ public abstract class Program {
 	}
 	
 	public void init(String vertexShaderCode, String fragmentShaderCode, AttribVariable[] programVariables) {
-		vertexShaderHandle = Utilities.loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
-		fragmentShaderHandle = Utilities.loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
+		vertexShaderHandle = Utilities.loadShader(TyrGL.GL_VERTEX_SHADER, vertexShaderCode);
+		fragmentShaderHandle = Utilities.loadShader(TyrGL.GL_FRAGMENT_SHADER, fragmentShaderCode);
 		
 		programHandle = Utilities.createProgram(
 					vertexShaderHandle, fragmentShaderHandle, programVariables);
@@ -36,9 +35,9 @@ public abstract class Program {
 	}
 	
 	public void delete() {
-		GLES20.glDeleteShader(vertexShaderHandle);
-		GLES20.glDeleteShader(fragmentShaderHandle);
-		GLES20.glDeleteProgram(programHandle);
+		TyrGL.glDeleteShader(vertexShaderHandle);
+		TyrGL.glDeleteShader(fragmentShaderHandle);
+		TyrGL.glDeleteProgram(programHandle);
 		mInitialized = false;
 	}
 	

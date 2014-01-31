@@ -7,6 +7,7 @@ import android.opengl.GLES20;
 import com.tyrlib2.graphics.lighting.LightingType;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.renderer.ProgramManager;
+import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.math.Matrix;
 import com.tyrlib2.math.Vector3;
@@ -44,33 +45,33 @@ public class ColoredLightedMaterial extends LightedMaterial {
 		
 		
 		init(10,0,3, "u_MVPMatrix", "a_Position");
-		colorHandle = GLES20.glGetAttribLocation(program.handle, "a_Color");
-		normalHandle = GLES20.glGetAttribLocation(program.handle, "a_Normal");
-		lightPosHandle = GLES20.glGetUniformLocation(program.handle, "u_LightPos");
-		mvMatrixHandle = GLES20.glGetUniformLocation(program.handle, "u_MVMatrix"); 
+		colorHandle = TyrGL.glGetAttribLocation(program.handle, "a_Color");
+		normalHandle = TyrGL.glGetAttribLocation(program.handle, "a_Normal");
+		lightPosHandle = TyrGL.glGetUniformLocation(program.handle, "u_LightPos");
+		mvMatrixHandle = TyrGL.glGetUniformLocation(program.handle, "u_MVMatrix"); 
 	}
 	
 	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
 	    // Pass in the color information
 	    vertexBuffer.position(colorOffset);
-	    GLES20.glVertexAttribPointer(colorHandle, colorDataSize, GLES20.GL_FLOAT, false,
+	    TyrGL.glVertexAttribPointer(colorHandle, colorDataSize, TyrGL.GL_FLOAT, false,
 	    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
 	 
-	    GLES20.glEnableVertexAttribArray(colorHandle);
+	    TyrGL.glEnableVertexAttribArray(colorHandle);
 	    
 	    // Pass in the normal information
 	    vertexBuffer.position(normalOffset);
-	    GLES20.glVertexAttribPointer(normalHandle, normalDataSize, GLES20.GL_FLOAT, false,
+	    TyrGL.glVertexAttribPointer(normalHandle, normalDataSize, TyrGL.GL_FLOAT, false,
 	    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
 	 
-	    GLES20.glEnableVertexAttribArray(normalHandle);
+	    TyrGL.glEnableVertexAttribArray(normalHandle);
 	    
 	    SceneManager sceneManager = SceneManager.getInstance();
 	    float[] viewMatrix = sceneManager.getRenderer().getCamera().getViewMatrix();
 	    Matrix.multiplyMM(mvMatrix, 0, viewMatrix, 0, modelMatrix, 0);  
 	    
         // Pass in the modelview matrix.
-        GLES20.glUniformMatrix4fv(mvMatrixHandle, 1, false, mvMatrix, 0);
+	    TyrGL.glUniformMatrix4fv(mvMatrixHandle, 1, false, mvMatrix, 0);
 
 	}
 	

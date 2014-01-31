@@ -1,10 +1,9 @@
 package com.tyrlib2.graphics.renderables;
 
-import android.opengl.GLES20;
-
 import com.tyrlib2.graphics.materials.ColoredMaterial;
 import com.tyrlib2.graphics.renderer.Material;
 import com.tyrlib2.graphics.renderer.Renderable2;
+import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.util.Color;
@@ -44,8 +43,8 @@ public class Line2 extends Renderable2 {
 	@Override
 	public void render(float[] vpMatrix) {
 
-		renderMode = GLES20.GL_LINES;
-		GLES20.glLineWidth(thickness);
+		renderMode = TyrGL.GL_LINES;
+		TyrGL.glLineWidth(thickness);
 		drawOrderLength = mesh.getDrawOrder().length;
 		drawOrderBuffer = mesh.getDrawOrderBuffer();
 		super.render(vpMatrix);

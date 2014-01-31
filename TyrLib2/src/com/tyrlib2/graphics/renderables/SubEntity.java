@@ -9,6 +9,7 @@ import com.tyrlib2.graphics.renderer.Mesh;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.renderer.Program;
 import com.tyrlib2.graphics.renderer.Renderable;
+import com.tyrlib2.graphics.renderer.TyrGL;
 
 /**
  * This class represents a SubEntitiy, a part of an Entity. A SubEntity is bascially a named
@@ -34,26 +35,26 @@ public class SubEntity extends Renderable {
 			Program program = material.getProgram();
 			program.use();
 			
-			int boneHandle = GLES20.glGetUniformLocation(program.handle, material.getBoneParam());
-			int boneIndexHandle = GLES20.glGetAttribLocation(program.handle, material.getBoneIndexParam());
-			int boneWeightHandle = GLES20.glGetAttribLocation(program.handle, material.getBoneWeightParam());
+			int boneHandle = TyrGL.glGetUniformLocation(program.handle, material.getBoneParam());
+			int boneIndexHandle = TyrGL.glGetAttribLocation(program.handle, material.getBoneIndexParam());
+			int boneWeightHandle = TyrGL.glGetAttribLocation(program.handle, material.getBoneWeightParam());
 			
 	        // Prepare the skeleton data
-	        GLES20.glUniformMatrix4fv(boneHandle, bones, false, skeletonBuffer, 0);
+			TyrGL.glUniformMatrix4fv(boneHandle, bones, false, skeletonBuffer, 0);
 	        
 	        FloatBuffer boneBuffer = mesh.getBoneBuffer();
-	        GLES20.glEnableVertexAttribArray(boneIndexHandle);
+	        TyrGL.glEnableVertexAttribArray(boneIndexHandle);
 	        boneBuffer.position(Mesh.BONE_INDEX_OFFSET);
-	        GLES20.glVertexAttribPointer(boneIndexHandle, Mesh.MAX_BONES_PER_VERTEX,
-						                GLES20.GL_FLOAT, false,
+	        TyrGL.glVertexAttribPointer(boneIndexHandle, Mesh.MAX_BONES_PER_VERTEX,
+	        		TyrGL.GL_FLOAT, false,
 						                Mesh.BONE_BYTE_STRIDE * OpenGLRenderer.BYTES_PER_FLOAT, 
 						                mesh.getBoneBuffer());
 	        
 	        
 	        boneBuffer.position(Mesh.BONE_WEIGHT_OFFSET);
-	        GLES20.glEnableVertexAttribArray(boneWeightHandle);
-	        GLES20.glVertexAttribPointer(boneWeightHandle, Mesh.MAX_BONES_PER_VERTEX,
-	        							GLES20.GL_FLOAT, false,
+	        TyrGL.glEnableVertexAttribArray(boneWeightHandle);
+	        TyrGL.glVertexAttribPointer(boneWeightHandle, Mesh.MAX_BONES_PER_VERTEX,
+	        		TyrGL.GL_FLOAT, false,
 						                Mesh.BONE_BYTE_STRIDE * OpenGLRenderer.BYTES_PER_FLOAT, 
 						                mesh.getBoneBuffer());
 	        

@@ -11,6 +11,7 @@ import com.tyrlib2.graphics.renderer.Mesh;
 import com.tyrlib2.graphics.renderer.Renderable;
 import com.tyrlib2.graphics.renderer.Texture;
 import com.tyrlib2.graphics.renderer.TextureManager;
+import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.graphics.renderer.Viewport;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.math.Vector2;
@@ -106,25 +107,25 @@ public class Terrain extends Renderable {
 		
 		//Generate a new FBO. It will contain your texture.
 		int[] fb = new int[1];
-		GLES20.glGenFramebuffers(1, fb, 0);
-		GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, fb[0]);
+		TyrGL.glGenFramebuffers(1, fb, 0);
+		TyrGL.glBindFramebuffer(TyrGL.GL_FRAMEBUFFER, fb[0]);
 		
 		//Create the texture 
-		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture.getHandle());
+		TyrGL.glBindTexture(TyrGL.GL_TEXTURE_2D, texture.getHandle());
 
 		//Bind the texture to your FBO
-		GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, texture.getHandle(), 0);
+		TyrGL.glFramebufferTexture2D(TyrGL.GL_FRAMEBUFFER, TyrGL.GL_COLOR_ATTACHMENT0, TyrGL.GL_TEXTURE_2D, texture.getHandle(), 0);
 		
 		// set the viewport as the FBO won't be the same dimension as the screen
-		GLES20.glViewport(0, 0, width, height);
+		TyrGL.glViewport(0, 0, width, height);
 		
-		GLES20.glReadPixels(0, 0, width, height, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, pixelBuffer);
+		TyrGL.glReadPixels(0, 0, width, height, TyrGL.GL_RGBA, TyrGL.GL_UNSIGNED_BYTE, pixelBuffer);
 		
 		//Bind your main FBO again
-		GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
+		TyrGL.glBindFramebuffer(TyrGL.GL_FRAMEBUFFER, 0);
 		// set the viewport as the FBO won't be the same dimension as the screen
 		Viewport viewport = SceneManager.getInstance().getViewport();
-		GLES20.glViewport(0, 0, viewport.getWidth(), viewport.getHeight());
+		TyrGL.glViewport(0, 0, viewport.getWidth(), viewport.getHeight());
 		
 		
 		float[] vertexData = new float[tileMaterial.getByteStride()*width*height];
@@ -227,25 +228,25 @@ public class Terrain extends Renderable {
 		
 		//Generate a new FBO. It will contain your texture.
 		int[] fb = new int[1];
-		GLES20.glGenFramebuffers(1, fb, 0);
-		GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, fb[0]);
+		TyrGL.glGenFramebuffers(1, fb, 0);
+		TyrGL.glBindFramebuffer(TyrGL.GL_FRAMEBUFFER, fb[0]);
 		
 		//Create the texture 
-		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture.getHandle());
+		TyrGL.glBindTexture(TyrGL.GL_TEXTURE_2D, texture.getHandle());
 
 		//Bind the texture to your FBO
-		GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, texture.getHandle(), 0);
+		TyrGL.glFramebufferTexture2D(TyrGL.GL_FRAMEBUFFER, TyrGL.GL_COLOR_ATTACHMENT0, TyrGL.GL_TEXTURE_2D, texture.getHandle(), 0);
 		
 		// set the viewport as the FBO won't be the same dimension as the screen
-		GLES20.glViewport(0, 0, width, height);
+		TyrGL.glViewport(0, 0, width, height);
 		
-		GLES20.glReadPixels(0, 0, width, height, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, pixelBuffer);
+		TyrGL.glReadPixels(0, 0, width, height, TyrGL.GL_RGBA, TyrGL.GL_UNSIGNED_BYTE, pixelBuffer);
 		
 		//Bind your main FBO again
-		GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
+		TyrGL.glBindFramebuffer(TyrGL.GL_FRAMEBUFFER, 0);
 		// set the viewport as the FBO won't be the same dimension as the screen
 		Viewport viewport = SceneManager.getInstance().getViewport();
-		GLES20.glViewport(0, 0, viewport.getWidth(), viewport.getHeight());
+		TyrGL.glViewport(0, 0, viewport.getWidth(), viewport.getHeight());
 		
 		
 		float[] vertexData = new float[material.getByteStride()*width*height];

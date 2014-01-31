@@ -2,13 +2,12 @@ package com.tyrlib2.graphics.materials;
 
 import java.nio.FloatBuffer;
 
-import android.opengl.GLES20;
-
 import com.tyrlib2.graphics.renderer.IBlendable;
 import com.tyrlib2.graphics.renderer.Material;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.renderer.Program;
 import com.tyrlib2.graphics.renderer.ProgramManager;
+import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.util.Color;
 
@@ -47,19 +46,19 @@ public class ColoredMaterial extends Material implements IBlendable {
 	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
 		super.render(vertexBuffer, modelMatrix);
 		
-		colorHandle = GLES20.glGetAttribLocation(program.handle, "a_Color");
+		colorHandle = TyrGL.glGetAttribLocation(program.handle, "a_Color");
 		
 	    // Pass in the color information
 	    vertexBuffer.position(colorOffset);
-	    GLES20.glVertexAttribPointer(colorHandle, colorDataSize, GLES20.GL_FLOAT, false,
+	    TyrGL.glVertexAttribPointer(colorHandle, colorDataSize, TyrGL.GL_FLOAT, false,
 	    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
 	 
-	    GLES20.glEnableVertexAttribArray(colorHandle);
+	    TyrGL.glEnableVertexAttribArray(colorHandle);
 	    
-	    int alphaHandle = GLES20.glGetUniformLocation(program.handle, "u_Color");
-	    GLES20.glUniform4f(alphaHandle, color.r, color.g, color.b, color.a);
+	    int alphaHandle = TyrGL.glGetUniformLocation(program.handle, "u_Color");
+	    TyrGL.glUniform4f(alphaHandle, color.r, color.g, color.b, color.a);
 	    
-	    Program.blendEnable(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+	    Program.blendEnable(TyrGL.GL_SRC_ALPHA, TyrGL.GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
 	public Color[] getColors() {

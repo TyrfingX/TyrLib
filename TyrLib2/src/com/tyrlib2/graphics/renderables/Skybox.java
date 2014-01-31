@@ -7,6 +7,7 @@ import com.tyrlib2.graphics.renderer.IRenderable;
 import com.tyrlib2.graphics.renderer.Program;
 import com.tyrlib2.graphics.renderer.ProgramManager;
 import com.tyrlib2.graphics.renderer.Renderable;
+import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.graphics.scene.SceneNode;
 import com.tyrlib2.graphics.scene.SceneObject;
 import com.tyrlib2.math.Vector3;
@@ -31,9 +32,9 @@ public class Skybox extends SceneObject implements IRenderable {
 
 	@Override
 	public void render(float[] vpMatrix) {
-		GLES20.glCullFace(GLES20.GL_FRONT);
+		TyrGL.glCullFace(TyrGL.GL_FRONT);
 		r.render(vpMatrix);
-		GLES20.glCullFace(GLES20.GL_BACK);
+		TyrGL.glCullFace(TyrGL.GL_BACK);
 	}
 	
 	public static void enableSkyboxes() {

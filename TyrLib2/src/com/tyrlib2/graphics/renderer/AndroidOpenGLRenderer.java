@@ -27,16 +27,16 @@ public class AndroidOpenGLRenderer extends OpenGLRenderer implements GLSurfaceVi
 	public void onSurfaceCreated(GL10 unused, EGLConfig config) {
 		
         // Enable depth testing
-        GLES20.glDepthFunc( GLES20.GL_LEQUAL );
-        GLES20.glDepthMask( true );
+		TyrGL.glDepthFunc( TyrGL.GL_LEQUAL );
+		TyrGL.glDepthMask( true );
         
 		// Use culling to remove back faces.
-		GLES20.glEnable(GLES20.GL_CULL_FACE);
-		GLES20.glCullFace(GLES20.GL_BACK);
+		TyrGL.glEnable(TyrGL.GL_CULL_FACE);
+		TyrGL.glCullFace(TyrGL.GL_BACK);
 		
 		// Set the blend function
 		
-		GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE);
+		TyrGL.glBlendFunc(TyrGL.GL_ONE, TyrGL.GL_ONE);
 
 		ProgramManager.getInstance().recreateAll();
 		TextureManager.getInstance().reloadAll();
@@ -102,7 +102,7 @@ public class AndroidOpenGLRenderer extends OpenGLRenderer implements GLSurfaceVi
 													new String[]{"aPosition" });
 
         // Set the background frame color
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		TyrGL.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         viewport = new Viewport();
         
         lastTime = 0;
@@ -120,7 +120,7 @@ public class AndroidOpenGLRenderer extends OpenGLRenderer implements GLSurfaceVi
     	if (rendering) {
     	
 	        // Redraw background color
-	    	GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
+    		TyrGL.glClear(TyrGL.GL_DEPTH_BUFFER_BIT | TyrGL.GL_COLOR_BUFFER_BIT);
 		    
 		    rootSceneNode.update();
 		    
@@ -146,10 +146,10 @@ public class AndroidOpenGLRenderer extends OpenGLRenderer implements GLSurfaceVi
 		    	light.update(camera.viewMatrix);
 		    }
 
-		    GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-			GLES20.glClear( GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
+		    TyrGL.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		    TyrGL.glClear( TyrGL.GL_DEPTH_BUFFER_BIT | TyrGL.GL_COLOR_BUFFER_BIT);
 		    
-			GLES20.glViewport(-(int)(viewport.getWidth()*0.2f), -(int)(viewport.getHeight()*0.2f), (int)(viewport.getWidth()*1.4f), (int)(viewport.getHeight()*1.4f));
+		    TyrGL.glViewport(-(int)(viewport.getWidth()*0.2f), -(int)(viewport.getHeight()*0.2f), (int)(viewport.getWidth()*1.4f), (int)(viewport.getHeight()*1.4f));
 		    
 		    Matrix.multiplyMM(vpMatrix, 0, viewport.projectionMatrix, 0, camera.viewMatrix, 0);
 		    

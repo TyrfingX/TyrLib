@@ -8,6 +8,7 @@ import com.tyrlib2.graphics.renderer.Material;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.renderer.Program;
 import com.tyrlib2.graphics.renderer.ProgramManager;
+import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.util.Color;
 
 /**
@@ -45,8 +46,8 @@ public class OutlineMaterial extends Material {
 		
 		init(dataSize,posOffset,3, "u_MVPMatrix", "a_Position");
 		
-		normalHandle = GLES20.glGetAttribLocation(program.handle, "a_Normal");
-	    colorHandle = GLES20.glGetUniformLocation(program.handle, "u_Color");
+		normalHandle = TyrGL.glGetAttribLocation(program.handle, "a_Normal");
+	    colorHandle = TyrGL.glGetUniformLocation(program.handle, "u_Color");
 	}
 	
 	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
@@ -56,22 +57,22 @@ public class OutlineMaterial extends Material {
 			passMesh(vertexBuffer);
 		}
 		
-		Program.blendEnable(GLES20.GL_SRC_ALPHA, GLES20.GL_SRC_ALPHA);
+		Program.blendEnable(TyrGL.GL_SRC_ALPHA, TyrGL.GL_SRC_ALPHA);
 	}
 	
 	private void passMesh(FloatBuffer vertexBuffer)
 	{
 		
 		// Pass in the color information
-		GLES20.glUniform4f(colorHandle, color.r, color.g, color.b, color.a);
+		TyrGL.glUniform4f(colorHandle, color.r, color.g, color.b, color.a);
 	    
 		
 	    // Pass in the normal information
 	    vertexBuffer.position(normalOffset);
-	    GLES20.glVertexAttribPointer(normalHandle, normalDataSize, GLES20.GL_FLOAT, false,
+	    TyrGL.glVertexAttribPointer(normalHandle, normalDataSize, TyrGL.GL_FLOAT, false,
 	    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
 	 
-	    GLES20.glEnableVertexAttribArray(normalHandle);
+	    TyrGL.glEnableVertexAttribArray(normalHandle);
 	}
 	
 	public Color getColors() {

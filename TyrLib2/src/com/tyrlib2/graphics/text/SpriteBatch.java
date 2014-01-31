@@ -3,6 +3,7 @@ package com.tyrlib2.graphics.text;
 import android.opengl.GLES20;
 
 import com.tyrlib2.graphics.renderer.TextureRegion;
+import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.graphics.text.programs.Program;
 import com.tyrlib2.math.Matrix;
 
@@ -48,7 +49,7 @@ public class SpriteBatch {
 			indices[i + 5] = (short)( j + 0 );           // Calculate Index 5
 		}
 		vertices.setIndices( indices, 0, len );         // Set Index Buffer for Rendering
-        mMVPMatricesHandle = GLES20.glGetUniformLocation(program.getHandle(), "u_MVPMatrix");
+        mMVPMatricesHandle = TyrGL.glGetUniformLocation(program.getHandle(), "u_MVPMatrix");
 	}
 	
 	public void beginBatch(float[] vpMatrix)  {
@@ -64,12 +65,12 @@ public class SpriteBatch {
 	public void endBatch()  {
 		if ( numSprites > 0 )  {                        // IF Any Sprites to Render
 			// bind MVP matrices array to shader
-			GLES20.glUniformMatrix4fv(mMVPMatricesHandle, numSprites, false, uMVPMatrices, 0); 
-			GLES20.glEnableVertexAttribArray(mMVPMatricesHandle);
+			TyrGL.glUniformMatrix4fv(mMVPMatricesHandle, numSprites, false, uMVPMatrices, 0); 
+			TyrGL.glEnableVertexAttribArray(mMVPMatricesHandle);
 			
 			vertices.setVertices( vertexBuffer, 0, bufferIndex);  // Set Vertices from Buffer
 			vertices.bind();                             // Bind Vertices
-			vertices.draw( GLES20.GL_TRIANGLES, 0, numSprites * INDICES_PER_SPRITE );  // Render Batched Sprites
+			vertices.draw( TyrGL.GL_TRIANGLES, 0, numSprites * INDICES_PER_SPRITE );  // Render Batched Sprites
 			vertices.unbind();                           // Unbind Vertices
 		}
 	}

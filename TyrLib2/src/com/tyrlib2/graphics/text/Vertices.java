@@ -5,7 +5,7 @@ import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
-import android.opengl.GLES20;
+import com.tyrlib2.graphics.renderer.TyrGL;
 
 public class Vertices {
 
@@ -107,21 +107,21 @@ public class Vertices {
 	public void bind()  {
 		// bind vertex position pointer
 		vertices.position( 0 );                         // Set Vertex Buffer to Position
-		GLES20.glVertexAttribPointer(mPositionHandle, positionCnt, 
-				GLES20.GL_FLOAT, false, vertexSize, vertices);
-		GLES20.glEnableVertexAttribArray(mPositionHandle);
+		TyrGL.glVertexAttribPointer(mPositionHandle, positionCnt, 
+				TyrGL.GL_FLOAT, false, vertexSize, vertices);
+		TyrGL.glEnableVertexAttribArray(mPositionHandle);
 
 		// bind texture position pointer
 		vertices.position(positionCnt);  // Set Vertex Buffer to Texture Coords (NOTE: position based on whether color is also specified)
-		GLES20.glVertexAttribPointer(mTextureCoordinateHandle, TEXCOORD_CNT, 
-				GLES20.GL_FLOAT, false, vertexSize, vertices);
-		GLES20.glEnableVertexAttribArray(mTextureCoordinateHandle);
+		TyrGL.glVertexAttribPointer(mTextureCoordinateHandle, TEXCOORD_CNT, 
+				TyrGL.GL_FLOAT, false, vertexSize, vertices);
+		TyrGL.glEnableVertexAttribArray(mTextureCoordinateHandle);
 		
 		// bind MVP Matrix index position handle
 		vertices.position(positionCnt + TEXCOORD_CNT);
-		GLES20.glVertexAttribPointer(mMVPIndexHandle, MVP_MATRIX_INDEX_CNT, 
-				GLES20.GL_FLOAT, false, vertexSize, vertices);
-		GLES20.glEnableVertexAttribArray(mMVPIndexHandle);
+		TyrGL.glVertexAttribPointer(mMVPIndexHandle, MVP_MATRIX_INDEX_CNT, 
+				TyrGL.GL_FLOAT, false, vertexSize, vertices);
+		TyrGL.glEnableVertexAttribArray(mMVPIndexHandle);
 	}
 
 	//--Draw--//
@@ -135,12 +135,12 @@ public class Vertices {
 		if (indices != null)  {                       // IF Indices Exist
 			indices.position(offset);                  // Set Index Buffer to Specified Offset
 			//draw indexed
-			GLES20.glDrawElements(primitiveType, numVertices,
-					GLES20.GL_UNSIGNED_SHORT, indices);
+			TyrGL.glDrawElements(primitiveType, numVertices,
+					TyrGL.GL_UNSIGNED_SHORT, indices);
 		}
 		else  {                                         // ELSE No Indices Exist
 			//draw direct
-			GLES20.glDrawArrays(primitiveType, offset, numVertices);
+			TyrGL.glDrawArrays(primitiveType, offset, numVertices);
 		}
 	}
 
@@ -150,6 +150,6 @@ public class Vertices {
 	// A: [none]
 	// R: [none]
 	public void unbind()  {
-		GLES20.glDisableVertexAttribArray(mTextureCoordinateHandle);
+		TyrGL.glDisableVertexAttribArray(mTextureCoordinateHandle);
 	}
 }

@@ -1,11 +1,10 @@
 package com.tyrlib2.graphics.renderables;
 
-import android.opengl.GLES20;
-
 import com.tyrlib2.graphics.materials.ColoredMaterial;
 import com.tyrlib2.graphics.renderer.Material;
 import com.tyrlib2.graphics.renderer.Mesh;
 import com.tyrlib2.graphics.renderer.Renderable;
+import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.math.AABB;
 import com.tyrlib2.math.Matrix;
 import com.tyrlib2.math.Vector3;
@@ -54,14 +53,14 @@ public class BoundingBox extends Renderable {
 	
 	@Override
 	public void render(float[] vpMatrix) {
-		GLES20.glDepthMask(false);
-		GLES20.glDisable(GLES20.GL_CULL_FACE);
+		TyrGL.glDepthMask(false);
+		TyrGL.glDisable(TyrGL.GL_CULL_FACE);
 		if (modelMatrix == null) {
 			modelMatrix = unitMatrix;
 		}
 		super.render(vpMatrix);
-		GLES20.glEnable(GLES20.GL_CULL_FACE);
-		GLES20.glDepthMask(true);
+		TyrGL.glEnable(TyrGL.GL_CULL_FACE);
+		TyrGL.glDepthMask(true);
 	}
 	
 	@Override

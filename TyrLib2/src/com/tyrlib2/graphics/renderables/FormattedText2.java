@@ -3,15 +3,13 @@ package com.tyrlib2.graphics.renderables;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.opengl.GLES20;
-
 import com.tyrlib2.graphics.renderer.IBlendable;
 import com.tyrlib2.graphics.renderer.IRenderable;
 import com.tyrlib2.graphics.renderer.Program;
+import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.graphics.scene.SceneObject;
 import com.tyrlib2.graphics.text.Font;
 import com.tyrlib2.graphics.text.TextRenderer;
-import com.tyrlib2.math.Matrix;
 import com.tyrlib2.math.Quaternion;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.math.Vector3;
@@ -77,7 +75,7 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 	@Override
 	public void render(float[] vpMatrix) {
 		
-		Program.blendEnable(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+		Program.blendEnable(TyrGL.GL_SRC_ALPHA, TyrGL.GL_ONE_MINUS_SRC_ALPHA);
 		TextRenderer glText = font.glText;
 		Vector3 pos = parent.getCachedAbsolutePosVector();
 		for (int i = 0; i < textSections.size(); ++i) {

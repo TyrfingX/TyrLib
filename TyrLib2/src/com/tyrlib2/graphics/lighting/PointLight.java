@@ -5,6 +5,7 @@ import android.opengl.GLES20;
 import com.tyrlib2.graphics.materials.PointLightMaterial;
 import com.tyrlib2.graphics.renderer.IRenderable;
 import com.tyrlib2.graphics.renderer.Material;
+import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.graphics.scene.SceneNode;
 import com.tyrlib2.math.Matrix;
 
@@ -43,19 +44,19 @@ public class PointLight extends Light implements IRenderable {
 		material.getProgram().use();
 		
 		// Pass in the position.
-		GLES20.glVertexAttrib3f(material.getPositionHandle(), modelSpaceVector[0], modelSpaceVector[1], modelSpaceVector[2]);
+		TyrGL.glVertexAttrib3f(material.getPositionHandle(), modelSpaceVector[0], modelSpaceVector[1], modelSpaceVector[2]);
 
 		// Since we are not using a buffer object, disable vertex arrays for this attribute.
-        GLES20.glDisableVertexAttribArray(material.getPositionHandle());  
+		TyrGL.glDisableVertexAttribArray(material.getPositionHandle());  
 		
         // Apply the projection and view transformation
 		Matrix.multiplyMM(mvpMatrix, 0, vpMatrix, 0, modelMatrix, 0);
         
 		// Pass in the transformation matrix.
-		GLES20.glUniformMatrix4fv(material.getMVPMatrixHandle(), 1, false, mvpMatrix, 0);
+		TyrGL.glUniformMatrix4fv(material.getMVPMatrixHandle(), 1, false, mvpMatrix, 0);
 		
 		// Draw the point.
-		GLES20.glDrawArrays(GLES20.GL_POINTS, 0, 1);
+		TyrGL.glDrawArrays(TyrGL.GL_POINTS, 0, 1);
 	}
 
 	public void attachTo(SceneNode node)  {

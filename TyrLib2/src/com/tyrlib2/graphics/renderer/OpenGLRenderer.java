@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import android.opengl.GLES20;
-
 import com.tyrlib2.graphics.scene.BoundedSceneObject;
 import com.tyrlib2.graphics.scene.Octree;
 import com.tyrlib2.graphics.scene.SceneNode;
@@ -83,7 +81,7 @@ public class OpenGLRenderer {
 			drawChannel(renderChannel, vpMatrix);
 		}
 		
-		GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+		TyrGL.glEnable(TyrGL.GL_DEPTH_TEST);
 		renderChannel = renderChannels.get(DEFAULT_CHANNEL);
 		if (renderChannel.enabled) {
 			drawChannel(renderChannel, vpMatrix);
@@ -93,7 +91,7 @@ public class OpenGLRenderer {
 		if (renderChannel.enabled) {
 			drawChannel(renderChannel, vpMatrix);
 		}
-		GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+		TyrGL.glDisable(TyrGL.GL_DEPTH_TEST);
 		
 	
 		

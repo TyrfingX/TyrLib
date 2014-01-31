@@ -6,6 +6,7 @@ import com.tyrlib2.graphics.materials.OutlineMaterial;
 import com.tyrlib2.graphics.renderer.BoundedRenderable;
 import com.tyrlib2.graphics.renderer.Mesh;
 import com.tyrlib2.graphics.renderer.Renderable;
+import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.graphics.scene.SceneNode;
 import com.tyrlib2.math.AABB;
 
@@ -19,9 +20,9 @@ public class Outline extends BoundedRenderable {
 	
 	@Override
 	public void render(float[] vpMatrix) {
-    	GLES20.glCullFace(GLES20.GL_FRONT);
+		TyrGL.glCullFace(TyrGL.GL_FRONT);
     	outline.render(vpMatrix);
-    	GLES20.glCullFace(GLES20.GL_BACK);
+    	TyrGL.glCullFace(TyrGL.GL_BACK);
 	}
 
 	@Override
