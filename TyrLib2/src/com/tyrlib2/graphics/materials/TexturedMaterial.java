@@ -76,12 +76,17 @@ public class TexturedMaterial extends Material implements IBlendable  {
 		TyrGL.glUniform1f(alphaHandle, alpha);
 		TyrGL.glUniform3f(colorHandle, color.r, color.g, color.b);
 		
-        // Pass in the texture coordinate information
-        vertexBuffer.position(uvOffset);
-        TyrGL.glVertexAttribPointer(textureCoordinateHandle, uvDataSize, TyrGL.GL_FLOAT, false, 
-        		strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
-        
-        TyrGL.glEnableVertexAttribArray(textureCoordinateHandle);
+		if (TyrGL.GL_USE_VBO == 1) {
+	        // Pass in the texture coordinate information
+	        TyrGL.glVertexAttribPointer(textureCoordinateHandle, uvDataSize, TyrGL.GL_FLOAT, false, 
+	        		strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, uvOffset * OpenGLRenderer.BYTES_PER_FLOAT);
+		} else {
+	        // Pass in the texture coordinate information
+	        vertexBuffer.position(uvOffset);
+	        TyrGL.glVertexAttribPointer(textureCoordinateHandle, uvDataSize, TyrGL.GL_FLOAT, false, 
+	        		strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
+	        TyrGL.glEnableVertexAttribArray(textureCoordinateHandle);
+		}
 		
 		int textureHandle = texture.getHandle();
 		

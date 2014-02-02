@@ -5,4 +5,5 @@ public interface IBitmap {
 	public int getHeight();
 	public void bind();
 	public void recycle();
+	public int getHandle();
 }

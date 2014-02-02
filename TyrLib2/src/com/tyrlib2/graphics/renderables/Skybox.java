@@ -10,6 +10,7 @@ import com.tyrlib2.graphics.renderer.Renderable;
 import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.graphics.scene.SceneNode;
 import com.tyrlib2.graphics.scene.SceneObject;
+import com.tyrlib2.main.Media;
 import com.tyrlib2.math.Vector3;
 
 /**
@@ -40,8 +41,8 @@ public class Skybox extends SceneObject implements IRenderable {
 	public static void enableSkyboxes() {
 		if (!ProgramManager.getInstance().isProgramLoaded("SKYBOX")) {
 			ProgramManager.getInstance().createProgram("SKYBOX", 
-														com.tyrlib2.R.raw.skybox_vs,
-														com.tyrlib2.R.raw.skybox_fs, 
+														Media.CONTEXT.getResourceID("skybox_vs", "raw"),
+														Media.CONTEXT.getResourceID("skybox_fs", "raw"), 
 														new String[] { "a_Position", "a_TexCoordinate"});
 		}
 	}

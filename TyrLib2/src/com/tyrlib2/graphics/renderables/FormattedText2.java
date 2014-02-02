@@ -9,7 +9,7 @@ import com.tyrlib2.graphics.renderer.Program;
 import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.graphics.scene.SceneObject;
 import com.tyrlib2.graphics.text.Font;
-import com.tyrlib2.graphics.text.TextRenderer;
+import com.tyrlib2.graphics.text.IGLText;
 import com.tyrlib2.math.Quaternion;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.math.Vector3;
@@ -74,9 +74,8 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 
 	@Override
 	public void render(float[] vpMatrix) {
-		
 		Program.blendEnable(TyrGL.GL_SRC_ALPHA, TyrGL.GL_ONE_MINUS_SRC_ALPHA);
-		TextRenderer glText = font.glText;
+		IGLText glText = font.glText;
 		Vector3 pos = parent.getCachedAbsolutePosVector();
 		for (int i = 0; i < textSections.size(); ++i) {
 			TextSection section = textSections.get(i);
@@ -94,7 +93,6 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 	}
 	
 	private void parseText() {
-		
 		textSections = new ArrayList<TextSection>();
 		float xOffset = 0;
 		float yOffset = 0;

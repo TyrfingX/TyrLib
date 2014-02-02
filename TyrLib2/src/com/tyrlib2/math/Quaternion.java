@@ -54,7 +54,7 @@ public class Quaternion {
 	 * @return
 	 */
 	public float length() {
-		return FloatMath.sqrt(x*x + y*y + z*z + w*w);
+		return (float) Math.sqrt(x*x + y*y + z*z + w*w);
 	}
 	
 	/**
@@ -201,12 +201,12 @@ public class Quaternion {
 		Quaternion q = new Quaternion();
 		
 		float radiantAngle = 0.5f * angle * (float)Math.PI / 180;
-		float sinAngle = FloatMath.sin(radiantAngle);
+		float sinAngle = (float) Math.sin(radiantAngle);
 		
 		q.x = newAxis.x * sinAngle;
 		q.y = newAxis.y * sinAngle;
 		q.z = newAxis.z * sinAngle;
-		q.w = FloatMath.cos(radiantAngle);
+		q.w = (float) Math.cos(radiantAngle);
 		
 		return q;
 	}

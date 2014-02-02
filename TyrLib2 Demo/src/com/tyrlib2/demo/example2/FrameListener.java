@@ -1,12 +1,15 @@
 package com.tyrlib2.demo.example2;
 
 import com.tyrlib2.demo.R;
+import com.tyrlib2.graphics.lighting.DirectionalLight;
+import com.tyrlib2.graphics.lighting.Light.Type;
 import com.tyrlib2.graphics.renderables.Entity;
 import com.tyrlib2.graphics.renderer.Camera;
 import com.tyrlib2.graphics.renderer.IFrameListener;
 import com.tyrlib2.graphics.renderer.TextureManager;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.graphics.scene.SceneNode;
+import com.tyrlib2.main.Media;
 import com.tyrlib2.math.Quaternion;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.util.Color;
@@ -31,14 +34,19 @@ public class FrameListener implements IFrameListener {
 		 * All entities need to be put into the "assets" folder.
 		 */
 		
-		TextureManager.getInstance().createTexture("knight", R.drawable.knight);
-		ent = SceneManager.getInstance().createEntity("entities/knight.iqe");
+		TextureManager.getInstance().createTexture("knight", Media.CONTEXT.getResourceID("knight", "drawable"));
+		ent = SceneManager.getInstance().createEntity("entities/knight.iqm");
 		
 		entNode = SceneManager.getInstance().getRootSceneNode().createChild(new Vector3());
 		entNode.attachSceneObject(ent);
 		
 		/* Play the animation */
 		ent.playAnimation("Walk");
+		
+		/* Next we setup some directional lighting to make the scene a bit better looking*/
+		DirectionalLight light = (DirectionalLight) SceneManager.getInstance().createLight(Type.DIRECTIONAL_LIGHT);
+		light.setLightDirection(new Vector3(0,-1,-1));
+		SceneManager.getInstance().getRootSceneNode().createChild(new Vector3(0,0,0)).attachSceneObject(light);
 
 	}
 

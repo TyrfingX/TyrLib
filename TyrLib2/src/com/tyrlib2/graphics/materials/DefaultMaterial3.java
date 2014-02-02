@@ -159,43 +159,9 @@ public class DefaultMaterial3 extends LightedMaterial {
         }
 	    
 	    if (!animated && wasAnimated) {
-
-	    	// pass some data to make sure skinning is disabled
-	    	int indexHandle = TyrGL.glGetAttribLocation(program.handle, boneIndexParam);
-	    	TyrGL.glEnableVertexAttribArray(indexHandle);
-	    	TyrGL.glVertexAttrib4f(indexHandle, -1, -1, -1, -1);
 	    	wasAnimated = false;
 	    } else {
 	    	wasAnimated = true;
-	    }
-	    
-	    if (transparent) {
-	    	Program.blendEnable(TyrGL.GL_SRC_ALPHA, TyrGL.GL_ONE_MINUS_SRC_ALPHA);
-	    }
-	}
-	
-	
-	public void render(int vboBuffer, float[] modelMatrix) {
-		ambientHandle = TyrGL.glGetUniformLocation(program.handle, "u_Ambient");
-		
-		if (program.meshChange) {
-			passMesh(vboBuffer);
-		}
-	    
-		//passModelViewMatrix(modelMatrix);
-	    
-		int textureHandle = texture.getHandle();
-        if (program.textureHandle != textureHandle) {
-        	
-        	passTexture(textureHandle);
-        }
-        
-	    if (!animated) {
-
-	    	// pass some data to make sure skinning is disabled
-	    	int indexHandle = TyrGL.glGetAttribLocation(program.handle, boneIndexParam);
-	    	TyrGL.glEnableVertexAttribArray(indexHandle);
-	    	TyrGL.glVertexAttrib4f(indexHandle, -1, -1, -1, -1);
 	    }
 	    
 	    if (transparent) {
@@ -215,37 +181,33 @@ public class DefaultMaterial3 extends LightedMaterial {
 	
 	private void passMesh(FloatBuffer vertexBuffer)
 	{	
-	    // Pass in the normal information
-	    vertexBuffer.position(normalOffset);
-	    TyrGL.glVertexAttribPointer(normalHandle, normalDataSize, TyrGL.GL_FLOAT, false,
-	    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
-	 
-	    TyrGL.glEnableVertexAttribArray(normalHandle);
-	    
-        // Pass in the texture coordinate information
-        vertexBuffer.position(uvOffset);
-        TyrGL.glVertexAttribPointer(textureCoordinateHandle, uvDataSize, TyrGL.GL_FLOAT, false, 
-        		strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
-        
-        TyrGL.glEnableVertexAttribArray(textureCoordinateHandle);
-	}
-	
-	private void passMesh(int vboBufferHandle)
-	{
-		
-	    // Pass in the normal information
-		TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, vboBufferHandle);
-		TyrGL.glEnableVertexAttribArray(normalHandle);
-	    TyrGL.glVertexAttribPointer(normalHandle, normalDataSize, TyrGL.GL_FLOAT, false,
-	    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, normalOffset * OpenGLRenderer.BYTES_PER_FLOAT);
-	    
-        // Pass in the texture coordinate information
-	    TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, vboBufferHandle);
-	    TyrGL.glEnableVertexAttribArray(textureCoordinateHandle);
-	    TyrGL.glVertexAttribPointer(textureCoordinateHandle, uvDataSize, TyrGL.GL_FLOAT, false, 
-        		strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, uvOffset * OpenGLRenderer.BYTES_PER_FLOAT);
-        
-        
+		if (TyrGL.GL_USE_VBO == 1) {
+		    // Pass in the normal information
+		    TyrGL.glVertexAttribPointer(normalHandle, normalDataSize, TyrGL.GL_FLOAT, false,
+		    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, normalOffset * OpenGLRenderer.BYTES_PER_FLOAT);
+		 
+		    TyrGL.glEnableVertexAttribArray(normalHandle);
+		    
+	        // Pass in the texture coordinate information
+	        TyrGL.glVertexAttribPointer(textureCoordinateHandle, uvDataSize, TyrGL.GL_FLOAT, false, 
+	        		strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, uvOffset * OpenGLRenderer.BYTES_PER_FLOAT);
+	        
+	        TyrGL.glEnableVertexAttribArray(textureCoordinateHandle);
+		} else {
+		    // Pass in the normal information
+		    vertexBuffer.position(normalOffset);
+		    TyrGL.glVertexAttribPointer(normalHandle, normalDataSize, TyrGL.GL_FLOAT, false,
+		    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
+		 
+		    TyrGL.glEnableVertexAttribArray(normalHandle);
+		    
+	        // Pass in the texture coordinate information
+	        vertexBuffer.position(uvOffset);
+	        TyrGL.glVertexAttribPointer(textureCoordinateHandle, uvDataSize, TyrGL.GL_FLOAT, false, 
+	        		strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
+	        
+	        TyrGL.glEnableVertexAttribArray(textureCoordinateHandle);
+		}
 	}
 	
 	private void passTexture(int textureHandle) {

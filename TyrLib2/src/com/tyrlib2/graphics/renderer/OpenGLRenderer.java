@@ -4,14 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import android.opengl.GLES20;
+
+import com.tyrlib2.graphics.lighting.Light;
 import com.tyrlib2.graphics.scene.BoundedSceneObject;
 import com.tyrlib2.graphics.scene.Octree;
+import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.graphics.scene.SceneNode;
 import com.tyrlib2.math.FrustumG;
 import com.tyrlib2.math.Matrix;
 import com.tyrlib2.math.Vector3;
 
-public class OpenGLRenderer {
+public abstract class OpenGLRenderer {
 
 	/** 
 	 * These are the default rendering channels. They are rendered starting with the lowest number.
@@ -299,6 +303,104 @@ public class OpenGLRenderer {
 
 	public Octree getOctree(int channel) {
 		return renderChannels.get(DEFAULT_CHANNEL).octree;
+	}
+	
+	public abstract void loadShaders();
+	
+	public void defaultSetup() {
+        // Enable depth testing
+		TyrGL.glDepthFunc( TyrGL.GL_LEQUAL );
+		TyrGL.glDepthMask( true );
+        
+		// Use culling to remove back faces.
+		TyrGL.glEnable(TyrGL.GL_CULL_FACE);
+		TyrGL.glCullFace(TyrGL.GL_BACK);
+		
+		// Set the blend function
+		
+		TyrGL.glBlendFunc(TyrGL.GL_ONE, TyrGL.GL_ONE);
+
+		ProgramManager.getInstance().recreateAll();
+		TextureManager.getInstance().reloadAll();
+		SceneManager.getInstance().recreateFonts();
+		
+        // Setup the SceneManager
+        SceneManager.getInstance().setRenderer(this);
+	}
+	
+	public void startRendering() {
+        // Set the background frame color
+		TyrGL.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        viewport = new Viewport();
+        
+        lastTime = 0;
+        
+        rendering = true;
+        init = true;
+        
+        for (int i = 0; i < frameListeners.size(); ++i) {
+           	frameListeners.get(i).onSurfaceCreated();
+        }
+	}
+	
+	public void surfaceChanged(int width, int height) {
+       viewport.setFullscreen(width, height);
+       
+       for (int i = 0; i < frameListeners.size(); ++i) {
+       	frameListeners.get(i).onSurfaceChanged();
+       }
+       
+		if (init) {
+			ProgramManager.getInstance().recreateAll();
+			TextureManager.getInstance().reloadAll();
+			//SceneManager.getInstance().recreateFonts();
+		}
+	}
+	
+	public void render() {
+    	if (rendering) {
+        	
+	        // Redraw background color
+    		TyrGL.glClear(TyrGL.GL_DEPTH_BUFFER_BIT | TyrGL.GL_COLOR_BUFFER_BIT);
+		    
+		    rootSceneNode.update();
+		    
+		    // Update the view matrix of the camera
+		    camera.update();
+		    
+		    if (frustum == null) {
+			    frustum = new FrustumG();
+		    }
+		    
+		    frustum.update(	camera.getAbsolutePos(), 
+							camera.getWorldLookDirection(), 
+							camera.getWorldUpVector(), 
+							viewport.getNearClip(), 
+							viewport.getFarClip(),
+							viewport.getNearClipWidth(),
+							viewport.getNearClipHeight());
+		    
+		    // Update the eye space matrices of all lights
+		    SceneManager sceneManager = SceneManager.getInstance();
+		    for (int i = 0; i < sceneManager.getLightCount(); ++i) {
+		    	Light light = sceneManager.getLight(i);
+		    	light.update(camera.viewMatrix);
+		    }
+
+		    TyrGL.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		    TyrGL.glClear( TyrGL.GL_DEPTH_BUFFER_BIT | TyrGL.GL_COLOR_BUFFER_BIT);
+		    
+		    TyrGL.glViewport(-(int)(viewport.getWidth()*0.2f), -(int)(viewport.getHeight()*0.2f), (int)(viewport.getWidth()*1.4f), (int)(viewport.getHeight()*1.4f));
+		    
+		    Matrix.multiplyMM(vpMatrix, 0, viewport.projectionMatrix, 0, camera.viewMatrix, 0);
+		    
+		    drawScene();
+		    updateListeners();
+		    
+		    textureFails = 0;
+
+    	}
+        
 	}
 
 }

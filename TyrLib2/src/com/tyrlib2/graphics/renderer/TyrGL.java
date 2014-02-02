@@ -41,6 +41,11 @@ public class TyrGL {
 	public static int GL_TEXTURE_WRAP_S;
 	public static int GL_TEXTURE_WRAP_T;
 	public static int GL_CLAMP_TO_EDGE;
+	public static int GL_POINT_SPRITE;
+	public static int GL_STATIC_DRAW;
+	public static int GL_USE_VBO;
+	public static int GL_ELEMENT_ARRAY_BUFFER;
+	public static int GL_STREAM_DRAW;
 	
 	public static void glVertexAttrib3f(int handle, float x, float y, float z) {
 		IMPL.glVertexAttrib3f(handle, x, y, z);
@@ -186,6 +191,10 @@ public class TyrGL {
 		IMPL.glDrawElements(mode, count, type, indices);
 	}
 	
+	public static void glDrawElements(int mode, int count, int type, int offset) {
+		IMPL.glDrawElements(mode, count, type, offset);
+	}
+	
 	public static void glShaderSource(int shader, String shaderCode) {
 		IMPL.glShaderSource(shader, shaderCode);
 	}
@@ -244,5 +253,17 @@ public class TyrGL {
 	
 	public static String glGetShaderInfoLog(int shader) {
 		return IMPL.glGetShaderInfoLog(shader);
+	}
+	
+	public static void glGenBuffers(int count, int[] buffers, int offset) {
+		IMPL.glGenBuffers(count, buffers, offset);
+	}
+	
+	public static void glBufferData(int target, int size, Buffer data, int mode) {
+		IMPL.glBufferData(target, size, data, mode);
+	}
+	
+	public static void glBufferSubData(int target, int offset, int size, Buffer data) {
+		IMPL.glBufferSubData(target, offset, size, data);
 	}
 }

@@ -1,6 +1,6 @@
 package com.tyrlib2.graphics.text;
 
-public interface TextRenderer {
+public interface IGLText {
 
 	//--Load Font--//
 	// description

@@ -8,9 +8,11 @@ import com.tyrlib2.graphics.renderer.TyrGL;
 public class AndroidBitmap implements IBitmap {
 	
 	private Bitmap bitmap;
+	private int handle;
 
-	public AndroidBitmap(Bitmap bitmap) {
+	public AndroidBitmap(Bitmap bitmap, int handle) {
 		this.bitmap = bitmap;
+		this.handle = handle;
 	}
 	
 	@Override
@@ -31,6 +33,11 @@ public class AndroidBitmap implements IBitmap {
 	@Override
 	public void recycle() {
 		bitmap.recycle();
+	}
+
+	@Override
+	public int getHandle() {
+		return handle;
 	}
 	
 }

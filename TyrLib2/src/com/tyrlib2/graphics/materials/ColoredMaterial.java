@@ -48,12 +48,21 @@ public class ColoredMaterial extends Material implements IBlendable {
 		
 		colorHandle = TyrGL.glGetAttribLocation(program.handle, "a_Color");
 		
-	    // Pass in the color information
-	    vertexBuffer.position(colorOffset);
-	    TyrGL.glVertexAttribPointer(colorHandle, colorDataSize, TyrGL.GL_FLOAT, false,
-	    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
-	 
-	    TyrGL.glEnableVertexAttribArray(colorHandle);
+		if (TyrGL.GL_USE_VBO == 1) {		
+		    // Pass in the color information
+		    vertexBuffer.position();
+		    TyrGL.glVertexAttribPointer(colorHandle, colorDataSize, TyrGL.GL_FLOAT, false,
+		    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, colorOffset * OpenGLRenderer.BYTES_PER_FLOAT);
+		 
+		    TyrGL.glEnableVertexAttribArray(colorHandle);
+		} else {
+		    // Pass in the color information
+		    vertexBuffer.position(colorOffset);
+		    TyrGL.glVertexAttribPointer(colorHandle, colorDataSize, TyrGL.GL_FLOAT, false,
+		    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
+		 
+		    TyrGL.glEnableVertexAttribArray(colorHandle);
+		}
 	    
 	    int alphaHandle = TyrGL.glGetUniformLocation(program.handle, "u_Color");
 	    TyrGL.glUniform4f(alphaHandle, color.r, color.g, color.b, color.a);

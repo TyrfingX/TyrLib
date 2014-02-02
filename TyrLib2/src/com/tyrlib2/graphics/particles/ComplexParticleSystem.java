@@ -38,6 +38,8 @@ public class ComplexParticleSystem extends ParticleSystem {
 	
 	private int colorHandle;
 	
+	private int[] buffers = new int[1];
+	
 	public ComplexParticleSystem() {
 		affectors = new Affector[MIN_AFFECTORS_SIZE];
 		emitters = new ArrayList<Emitter>();
@@ -56,6 +58,13 @@ public class ComplexParticleSystem extends ParticleSystem {
         // use the device hardware's native byte order
         bb.order(ByteOrder.nativeOrder());
         buffer = bb.asFloatBuffer();
+        
+        if (TyrGL.GL_USE_VBO == 1) {
+			TyrGL.glGenBuffers(1, buffers, 0); // Get A Valid Name
+			TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, buffers[0]); // Bind The Buffer
+	        // Load The Data
+	        TyrGL.glBufferData(TyrGL.GL_ARRAY_BUFFER,  maxParticles * OpenGLRenderer.BYTES_PER_FLOAT * PARTICLE_DATA_SIZE, buffer, TyrGL.GL_STREAM_DRAW);
+        }
 	}
 	
 	@Override
@@ -279,19 +288,38 @@ public class ComplexParticleSystem extends ParticleSystem {
 				
 				material.render(null, vpMatrix);
 				
-				// Pass in the position.
-				TyrGL.glVertexAttribPointer(material.getPositionHandle(), POSITION_SIZE, TyrGL.GL_FLOAT, false,
-			    							 PARTICLE_DATA_SIZE * OpenGLRenderer.BYTES_PER_FLOAT, buffer);
+				if (TyrGL.GL_USE_VBO == 1) {
 				
-				TyrGL.glEnableVertexAttribArray(material.getPositionHandle());  
-				
-		        colorHandle = TyrGL.glGetAttribLocation(material.getProgram().handle, "a_Color");
+					TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, buffers[0]);
+					TyrGL.glBufferSubData(TyrGL.GL_ARRAY_BUFFER, 0, maxParticles * OpenGLRenderer.BYTES_PER_FLOAT * PARTICLE_DATA_SIZE, buffer);
+					
+					// Pass in the position.
+					TyrGL.glVertexAttribPointer(material.getPositionHandle(), POSITION_SIZE, TyrGL.GL_FLOAT, false,
+				    							 PARTICLE_DATA_SIZE * OpenGLRenderer.BYTES_PER_FLOAT, 0);
+					TyrGL.glEnableVertexAttribArray(material.getPositionHandle());  
+					
+			        colorHandle = TyrGL.glGetAttribLocation(material.getProgram().handle, "a_Color");
+			        
+					// Pass in the color.
+			        TyrGL.glVertexAttribPointer(colorHandle, COLOR_SIZE, TyrGL.GL_FLOAT, false,
+				    							 PARTICLE_DATA_SIZE * OpenGLRenderer.BYTES_PER_FLOAT, COLOR_OFFSET * OpenGLRenderer.BYTES_PER_FLOAT);
+			        TyrGL.glEnableVertexAttribArray(colorHandle);  
 		        
-				// Pass in the color.
-		        buffer.position(COLOR_OFFSET);
-		        TyrGL.glVertexAttribPointer(colorHandle, COLOR_SIZE, TyrGL.GL_FLOAT, false,
-			    							 PARTICLE_DATA_SIZE * OpenGLRenderer.BYTES_PER_FLOAT, buffer);
-		        TyrGL.glEnableVertexAttribArray(colorHandle);  
+				} else {
+					// Pass in the position.
+					TyrGL.glVertexAttribPointer(material.getPositionHandle(), POSITION_SIZE, TyrGL.GL_FLOAT, false,
+				    							 PARTICLE_DATA_SIZE * OpenGLRenderer.BYTES_PER_FLOAT, buffer);
+					
+					TyrGL.glEnableVertexAttribArray(material.getPositionHandle());  
+					
+			        colorHandle = TyrGL.glGetAttribLocation(material.getProgram().handle, "a_Color");
+			        
+					// Pass in the color.
+			        buffer.position(COLOR_OFFSET);
+			        TyrGL.glVertexAttribPointer(colorHandle, COLOR_SIZE, TyrGL.GL_FLOAT, false,
+				    							 PARTICLE_DATA_SIZE * OpenGLRenderer.BYTES_PER_FLOAT, buffer);
+			        TyrGL.glEnableVertexAttribArray(colorHandle);  
+				}
 		        
 		        // Apply the projection and view transformation
 				Matrix.multiplyMM(mvpMatrix, 0, vpMatrix, 0, modelMatrix, 0);

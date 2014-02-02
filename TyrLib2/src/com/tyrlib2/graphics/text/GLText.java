@@ -22,7 +22,7 @@ import com.tyrlib2.graphics.text.programs.BatchTextProgram;
 import com.tyrlib2.graphics.text.programs.Program;
 import com.tyrlib2.math.Matrix;
 
-public class GLText implements TextRenderer {
+public class GLText implements IGLText {
 
 	//--Constants--//
 	public final static int CHAR_START = 32;           // First Character (ASCII Code)

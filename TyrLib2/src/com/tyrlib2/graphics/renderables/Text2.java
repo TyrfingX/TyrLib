@@ -5,7 +5,7 @@ import com.tyrlib2.graphics.renderer.Program;
 import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.graphics.scene.SceneObject;
 import com.tyrlib2.graphics.text.Font;
-import com.tyrlib2.graphics.text.TextRenderer;
+import com.tyrlib2.graphics.text.IGLText;
 import com.tyrlib2.math.Matrix;
 import com.tyrlib2.math.Quaternion;
 import com.tyrlib2.math.Vector3;
@@ -34,7 +34,7 @@ public class Text2  extends SceneObject implements IRenderable {
 	@Override
 	public void render(float[] vpMatrix) {
 		Program.blendEnable(TyrGL.GL_ONE, TyrGL.GL_ONE_MINUS_SRC_ALPHA);
-		TextRenderer glText = font.glText;
+		IGLText glText = font.glText;
 		float tmpX = glText.getScaleX();
 		float tmpY = glText.getScaleY();
 		if (scale != 0) {

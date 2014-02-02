@@ -60,6 +60,8 @@ public class PointSpriteMaterial extends Material implements IBlendable {
 	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
         super.render(vertexBuffer, modelMatrix);
         
+
+        
 		int sizeHandle = TyrGL.glGetUniformLocation(program.handle, "u_Size");
 		TyrGL.glUniform1f(sizeHandle, size);
 		
@@ -78,8 +80,8 @@ public class PointSpriteMaterial extends Material implements IBlendable {
 	
 		if (program.textureHandle != textureHandle) {
 		
-			int textureUniformHandle = TyrGL.glGetUniformLocation(program.handle, "u_Texture");
-			TyrGL.glEnableVertexAttribArray(textureUniformHandle);
+//			
+//			TyrGL.glEnableVertexAttribArray(textureUniformHandle);
 			
 		    // Set the active texture unit to texture unit 0.
 			TyrGL.glActiveTexture(TyrGL.GL_TEXTURE0);
@@ -88,6 +90,7 @@ public class PointSpriteMaterial extends Material implements IBlendable {
 			TyrGL.glBindTexture(TyrGL.GL_TEXTURE_2D, textureHandle);
 		 
 		    // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
+			int textureUniformHandle = TyrGL.glGetUniformLocation(program.handle, "u_Texture");
 			TyrGL.glUniform1i(textureUniformHandle, 0);
 		    
 		    program.textureHandle = textureHandle;

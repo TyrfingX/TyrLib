@@ -34,6 +34,8 @@ public class Mesh {
 	/** A bounding box enclosing this mesh **/
 	protected AABB boundingBox;
 	
+	protected int buffers[] = new int[3];
+	
 	/** Dummy Mesh constructor **/
 	public Mesh() {
 		
@@ -70,6 +72,10 @@ public class Mesh {
         int stride = vertexData.length / vertexCount;
         
         boundingBox = AABB.createFromPoints(vertexData, stride);
+        
+        if (TyrGL.GL_USE_VBO == 1) {
+        	createVBO();
+        }
 	}
 
 	public Mesh(FloatBuffer vertexBuffer, ShortBuffer drawListBuffer, int vertexCount, int indexCount, int stride, AABB boundingBox) {
@@ -85,6 +91,10 @@ public class Mesh {
         this.boundingBox = boundingBox;
         
         this.indexCount = indexCount;
+        
+        if (TyrGL.GL_USE_VBO == 1) {
+        	createVBO();
+        }
 	}
 
 	
@@ -115,6 +125,10 @@ public class Mesh {
         boneBuffer.put(boneData);
         
         boneBuffer.position(0);
+        
+        if (TyrGL.GL_USE_VBO == 1) {
+        	createBoneBuffer();
+        }
       
 	}
 	
@@ -149,6 +163,37 @@ public class Mesh {
 	public void setVertexInfo(int index, float info) {
 		vertexBuffer.put(index, info);
 		vertexData[index] = info;
+	}
+	
+	public int getVBOBuffer() {
+		return buffers[0];
+	}
+	
+	public int getIBOBuffer() {
+		return buffers[1];
+	}
+	
+	public int getBBuffer() {
+		return buffers[2];
+	}
+	
+	private void createVBO() {
+		TyrGL.glGenBuffers(2, buffers, 0); // Get A Valid Name
+		TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, buffers[0]); // Bind The Buffer
+        // Load The Data
+        TyrGL.glBufferData(TyrGL.GL_ARRAY_BUFFER, vertexData.length * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer, TyrGL.GL_STATIC_DRAW);
+        
+		TyrGL.glBindBuffer(TyrGL.GL_ELEMENT_ARRAY_BUFFER, buffers[1]); // Bind The Buffer
+        // Load The Data
+        TyrGL.glBufferData(TyrGL.GL_ELEMENT_ARRAY_BUFFER, indexCount * 2, drawListBuffer, TyrGL.GL_STATIC_DRAW);
+        
+	}
+	
+	private void createBoneBuffer() {
+		TyrGL.glGenBuffers(1, buffers, 2); // Get A Valid Name
+		TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, buffers[2]); // Bind The Buffer
+        // Load The Data
+        TyrGL.glBufferData(TyrGL.GL_ARRAY_BUFFER, boneData.length * OpenGLRenderer.BYTES_PER_FLOAT, boneBuffer, TyrGL.GL_STATIC_DRAW);
 	}
 
 }

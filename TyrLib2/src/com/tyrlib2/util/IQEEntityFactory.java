@@ -269,7 +269,7 @@ public class IQEEntityFactory implements IEntityFactory {
 		for (int i = 0; i < subEntityPrototypes.length; ++i) {
 			// Use the prototypes to create the actual sub entities
 			SubEntityPrototype prototype = subEntityPrototypes[i];
-			SubEntity subEntity = new SubEntity(prototype.name, prototype.mesh, prototype.material);
+			SubEntity subEntity = new SubEntity(prototype.name, prototype.mesh, prototype.material.copy(true));
 			entity.addSubEntity(subEntity);
 		}
 		

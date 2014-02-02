@@ -96,20 +96,37 @@ public class Renderable extends BoundedRenderable {
 		        // Enable a handle to the triangle vertices
 	        	TyrGL.glEnableVertexAttribArray(material.positionHandle);
 	        	
-	        	mesh.vertexBuffer.position(material.positionOffest);
+	        	if (TyrGL.GL_USE_VBO == 1) {
+		        	
+		        	TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, mesh.getVBOBuffer());
+		        	
+		        	//mesh.vertexBuffer.position(material.positionOffest);
+		        	
+			        // Prepare the coordinate data
+		        	TyrGL.glVertexAttribPointer(material.positionHandle, material.positionDataSize,
+		        								 TyrGL.GL_FLOAT, false,
+			                                     material.strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, 
+			                                     material.positionOffest);
+	        	} else {
+		        	mesh.vertexBuffer.position(material.positionOffest);
+		        	
+			        // Prepare the coordinate data
+		        	TyrGL.glVertexAttribPointer(material.positionHandle, material.positionDataSize,
+		        			TyrGL.GL_FLOAT, false,
+			                                     material.strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, 
+			                                     mesh.vertexBuffer);
+	        	}
 	        	
-		        // Prepare the coordinate data
-	        	TyrGL.glVertexAttribPointer(material.positionHandle, material.positionDataSize,
-	        			TyrGL.GL_FLOAT, false,
-		                                     material.strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, 
-		                                     mesh.vertexBuffer);
-
 		        material.program.meshChange = true;
 		        
 	        
 	        }
 	        
 	        material.render(mesh.vertexBuffer, modelMatrix);
+	        
+	        if (TyrGL.GL_USE_VBO == 1) {
+	        	TyrGL.glBindBuffer(TyrGL.GL_ELEMENT_ARRAY_BUFFER, mesh.getIBOBuffer());
+	        }
 	        
 	        if (material.lighted) {
 	    		
@@ -119,7 +136,12 @@ public class Renderable extends BoundedRenderable {
 	        	// First draw using depth buffer and no blending
         		lightedMaterial.renderLight(0);
         		
-        		TyrGL.glDrawElements(renderMode, mesh.getIndexCount(), TyrGL.GL_UNSIGNED_SHORT, mesh.drawListBuffer);	
+    	        if (TyrGL.GL_USE_VBO == 1) {
+    	        	TyrGL.glDrawElements(renderMode, mesh.getIndexCount(), TyrGL.GL_UNSIGNED_SHORT, 0);	
+    	        } else {
+    	        	TyrGL.glDrawElements(renderMode, mesh.getIndexCount(), TyrGL.GL_UNSIGNED_SHORT, mesh.drawListBuffer);	
+    	        }
+        		
         	
 	        	
 	        	// Enable blending
@@ -129,7 +151,11 @@ public class Renderable extends BoundedRenderable {
 		    		
 		        	for(int i = 1; i < SceneManager.getInstance().getLightCount(); ++i) {
 		        		lightedMaterial.renderLight(i);
-		        		TyrGL.glDrawElements(renderMode, mesh.getIndexCount(), TyrGL.GL_UNSIGNED_SHORT, mesh.drawListBuffer);	
+		    	        if (TyrGL.GL_USE_VBO == 1) {
+		    	        	TyrGL.glDrawElements(renderMode, mesh.getIndexCount(), TyrGL.GL_UNSIGNED_SHORT, 0);	
+		    	        } else {
+		    	        	TyrGL.glDrawElements(renderMode, mesh.getIndexCount(), TyrGL.GL_UNSIGNED_SHORT, mesh.drawListBuffer);	
+		    	        }
 		        	}
 		        	
 		    		// Enable blending
@@ -137,8 +163,12 @@ public class Renderable extends BoundedRenderable {
         		}
 	    		//TyrGL.glEnable(TyrGL.GL_DEPTH_TEST);
 	        } else {
-	        	// Draw the triangle
-	        	TyrGL.glDrawElements(renderMode, mesh.getIndexCount(), TyrGL.GL_UNSIGNED_SHORT, mesh.drawListBuffer);	
+	        	// Draw the triangle    	        
+	        	if (TyrGL.GL_USE_VBO == 1) {
+		        	TyrGL.glDrawElements(renderMode, mesh.getIndexCount(), TyrGL.GL_UNSIGNED_SHORT, 0);	
+		        } else {
+		        	TyrGL.glDrawElements(renderMode, mesh.getIndexCount(), TyrGL.GL_UNSIGNED_SHORT, mesh.drawListBuffer);	
+		        }
 	        }
 	
 	        

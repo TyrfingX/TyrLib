@@ -42,21 +42,36 @@ public class SubEntity extends Renderable {
 	        // Prepare the skeleton data
 			TyrGL.glUniformMatrix4fv(boneHandle, bones, false, skeletonBuffer, 0);
 	        
-	        FloatBuffer boneBuffer = mesh.getBoneBuffer();
-	        TyrGL.glEnableVertexAttribArray(boneIndexHandle);
-	        boneBuffer.position(Mesh.BONE_INDEX_OFFSET);
-	        TyrGL.glVertexAttribPointer(boneIndexHandle, Mesh.MAX_BONES_PER_VERTEX,
-	        		TyrGL.GL_FLOAT, false,
-						                Mesh.BONE_BYTE_STRIDE * OpenGLRenderer.BYTES_PER_FLOAT, 
-						                mesh.getBoneBuffer());
-	        
-	        
-	        boneBuffer.position(Mesh.BONE_WEIGHT_OFFSET);
-	        TyrGL.glEnableVertexAttribArray(boneWeightHandle);
-	        TyrGL.glVertexAttribPointer(boneWeightHandle, Mesh.MAX_BONES_PER_VERTEX,
-	        		TyrGL.GL_FLOAT, false,
-						                Mesh.BONE_BYTE_STRIDE * OpenGLRenderer.BYTES_PER_FLOAT, 
-						                mesh.getBoneBuffer());
+			if (TyrGL.GL_USE_VBO == 1) {
+				TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, mesh.getBBuffer());
+		        TyrGL.glEnableVertexAttribArray(boneIndexHandle);
+		        TyrGL.glVertexAttribPointer(boneIndexHandle, Mesh.MAX_BONES_PER_VERTEX,
+		        							TyrGL.GL_FLOAT, false,
+							                Mesh.BONE_BYTE_STRIDE * OpenGLRenderer.BYTES_PER_FLOAT, 
+							                Mesh.BONE_INDEX_OFFSET * OpenGLRenderer.BYTES_PER_FLOAT);
+		        
+		        TyrGL.glEnableVertexAttribArray(boneWeightHandle);
+		        TyrGL.glVertexAttribPointer(boneWeightHandle, Mesh.MAX_BONES_PER_VERTEX,
+		        							TyrGL.GL_FLOAT, false,
+							                Mesh.BONE_BYTE_STRIDE * OpenGLRenderer.BYTES_PER_FLOAT, 
+							                Mesh.BONE_WEIGHT_OFFSET * OpenGLRenderer.BYTES_PER_FLOAT);
+			} else {
+		        FloatBuffer boneBuffer = mesh.getBoneBuffer();
+		        TyrGL.glEnableVertexAttribArray(boneIndexHandle);
+		        boneBuffer.position(Mesh.BONE_INDEX_OFFSET);
+		        TyrGL.glVertexAttribPointer(boneIndexHandle, Mesh.MAX_BONES_PER_VERTEX,
+		        							TyrGL.GL_FLOAT, false,
+							                Mesh.BONE_BYTE_STRIDE * OpenGLRenderer.BYTES_PER_FLOAT, 
+							                mesh.getBoneBuffer());
+		        
+		        
+		        boneBuffer.position(Mesh.BONE_WEIGHT_OFFSET);
+		        TyrGL.glEnableVertexAttribArray(boneWeightHandle);
+		        TyrGL.glVertexAttribPointer(boneWeightHandle, Mesh.MAX_BONES_PER_VERTEX,
+		        							TyrGL.GL_FLOAT, false,
+							                Mesh.BONE_BYTE_STRIDE * OpenGLRenderer.BYTES_PER_FLOAT, 
+							                mesh.getBoneBuffer());
+			}
 	        
 		}
 		super.render(vpMatrix);

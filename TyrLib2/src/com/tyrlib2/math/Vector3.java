@@ -1,6 +1,5 @@
 package com.tyrlib2.math;
 
-import android.util.FloatMath;
 /**
  * Basic vector object implementing 3D vector math.
  * @author Sascha
@@ -33,7 +32,7 @@ public class Vector3 {
 
 	public float length()
 	{
-		return FloatMath.sqrt(this.x * this.x + this.y * this.y + this.z *  this.z);
+		return (float) Math.sqrt(this.x * this.x + this.y * this.y + this.z *  this.z);
 	}
 	
 	/**

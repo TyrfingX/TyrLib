@@ -43,6 +43,9 @@ public class AndroidGLImpl implements GLImpl {
 		TyrGL.GL_TEXTURE_WRAP_S = GLES20.GL_TEXTURE_WRAP_S;
 		TyrGL.GL_TEXTURE_WRAP_T = GLES20.GL_TEXTURE_WRAP_T;
 		TyrGL.GL_CLAMP_TO_EDGE = GLES20.GL_CLAMP_TO_EDGE;
+		TyrGL.GL_POINT_SPRITE = -1;
+		TyrGL.GL_STATIC_DRAW = GLES20.GL_STATIC_DRAW;
+		TyrGL.GL_USE_VBO = -1;
 	}
 	
 	@Override
@@ -297,6 +300,25 @@ public class AndroidGLImpl implements GLImpl {
 	@Override
 	public String glGetShaderInfoLog(int shader) {
 		return GLES20.glGetShaderInfoLog(shader);
+	}
+
+	@Override
+	public void glGenBuffers(int count, int[] buffers, int offset) {
+		GLES20.glGenBuffers(count, buffers, offset);
+	}
+
+	@Override
+	public void glBufferData(int target, int size, Buffer data, int mode) {
+		GLES20.glBufferData(target, size, data, mode);
+	}
+
+	@Override
+	public void glDrawElements(int mode, int count, int type, int offset) {
+
+	}
+
+	@Override
+	public void glBufferSubData(int target, int offset, int size, Buffer data) {
 	}
 
 }

@@ -40,6 +40,7 @@ public interface GLImpl {
 	public String glGetProgramInfoLog(int program);
 	public void glDeleteProgram(int program);
 	public void glDrawElements(int mode, int count, int type, Buffer indices);
+	public void glDrawElements(int mode, int count, int type, int offset);
 	public void glShaderSource(int shader, String shaderCode);
 	public int glCreateShader(int type);
 	public void glCompileShader(int shader);
@@ -54,4 +55,7 @@ public interface GLImpl {
 	public void glFramebufferTexture2D(int target, int attachment, int textarget, int texture, int level);
 	public void glReadPixels(int x, int y, int width, int height, int format, int type, Buffer pixels);
 	public void glTexParameterf(int target, int pname, float param);
+	public void glGenBuffers(int count, int[] buffers, int offset);
+	public void glBufferData(int target, int size, Buffer data, int mode);
+	public void glBufferSubData(int target, int offset, int size, Buffer data);
 }

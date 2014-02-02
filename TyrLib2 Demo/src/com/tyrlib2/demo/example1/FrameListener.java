@@ -1,10 +1,8 @@
 package com.tyrlib2.demo.example1;
 
 
-import com.tyrlib2.demo.R;
 import com.tyrlib2.graphics.lighting.DirectionalLight;
 import com.tyrlib2.graphics.lighting.Light.Type;
-import com.tyrlib2.graphics.lighting.LightingType;
 import com.tyrlib2.graphics.materials.DefaultMaterial3;
 import com.tyrlib2.graphics.renderables.Box;
 import com.tyrlib2.graphics.renderer.Camera;
@@ -12,6 +10,7 @@ import com.tyrlib2.graphics.renderer.IFrameListener;
 import com.tyrlib2.graphics.renderer.TextureManager;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.graphics.scene.SceneNode;
+import com.tyrlib2.main.Media;
 import com.tyrlib2.math.Quaternion;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.util.Color;
@@ -33,7 +32,7 @@ public class FrameListener implements IFrameListener {
 		/* This is where you set stuff up **/
 		
 		/* First lets load a texture **/
-		TextureManager.getInstance().createTexture("SOIL", R.drawable.soil);
+		TextureManager.getInstance().createTexture("SOIL", Media.CONTEXT.getResourceID("soil", "drawable"));
 		
 		/* Textures alone are not enough to draw something. The library does not employ a fixed
 		 * pipeline and therefore needs a shader telling OpenGL how exactly to draw your stuff.
@@ -60,6 +59,8 @@ public class FrameListener implements IFrameListener {
 		
 		boxNode = SceneManager.getInstance().getRootSceneNode().createChild(new Vector3(0,0,0)); 
 		boxNode.attachSceneObject(box);
+		
+		//box.setBoundingBoxVisible(true);
 		
 		/* Next we setup some basic ambient lighting (global illumination) so that we can
 		 * actually see our box.

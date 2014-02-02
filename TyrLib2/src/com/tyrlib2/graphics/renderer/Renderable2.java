@@ -34,13 +34,23 @@ public abstract class Renderable2 extends Renderable {
 		        // Enable a handle to the triangle vertices
 	        	TyrGL.glEnableVertexAttribArray(material.positionHandle);
 	        	
-	        	mesh.vertexBuffer.position(material.positionOffest);
-		
-		        // Prepare the coordinate data
-		        TyrGL.glVertexAttribPointer(material.positionHandle, material.positionDataSize,
-		        		TyrGL.GL_FLOAT, false,
-		                                     material.strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, 
-		                                     mesh.vertexBuffer);
+	        	if (TyrGL.GL_USE_VBO == 1) {
+	        		TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, mesh.getVBOBuffer());
+			        // Prepare the coordinate data
+			        TyrGL.glVertexAttribPointer(material.positionHandle, material.positionDataSize,
+			        		TyrGL.GL_FLOAT, false,
+			                                     material.strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, 
+			                                     material.positionOffest * OpenGLRenderer.BYTES_PER_FLOAT);
+		        
+	        	} else {
+		        	mesh.vertexBuffer.position(material.positionOffest);
+			
+			        // Prepare the coordinate data
+			        TyrGL.glVertexAttribPointer(material.positionHandle, material.positionDataSize,
+			        		TyrGL.GL_FLOAT, false,
+			                                     material.strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, 
+			                                     mesh.vertexBuffer);
+	        	}
 		        
 		        material.program.meshChange = true;
 	        }
@@ -48,8 +58,13 @@ public abstract class Renderable2 extends Renderable {
 	        material.render(mesh.vertexBuffer, modelMatrix);
 
         	// Draw the triangle
-	        TyrGL.glDrawElements(renderMode, drawOrderLength, TyrGL.GL_UNSIGNED_SHORT, drawOrderBuffer);	
-
+	        if (TyrGL.GL_USE_VBO == 1) {
+	        	TyrGL.glBindBuffer(TyrGL.GL_ELEMENT_ARRAY_BUFFER, mesh.getIBOBuffer());
+	        	TyrGL.glDrawElements(renderMode, drawOrderLength, TyrGL.GL_UNSIGNED_SHORT, 0);	
+	        } else {
+	        	TyrGL.glDrawElements(renderMode, drawOrderLength, TyrGL.GL_UNSIGNED_SHORT, drawOrderBuffer);	
+	        }
+	        
 	        material.program.mesh = mesh;
 	        material.program.meshChange = false;
 	        
