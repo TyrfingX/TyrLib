@@ -15,13 +15,16 @@ import com.tyrlib2.math.Vector3;
 public class Bone extends SceneNode {
 	protected String name;
 	protected Quaternion initRot;
+	protected Quaternion initRotInverse;
 	protected Vector3 initPos;
 	protected float[] bindPos = new float[16];
 	protected float[] localBindPos = new float[16];
 	protected float[] inverseBindPos = new float[16];
+	protected float[] tmpMatrix = new float[16];
 	
-	private static final float[] animMatrix = new float[16];
 	private static final float[] translation = new float[16];
+	
+	private Quaternion tmp = new Quaternion();
 	
 	public Bone(String name) {
 		this.name = name;
@@ -36,6 +39,7 @@ public class Bone extends SceneNode {
 	public void setPose(Vector3 pos, Quaternion rot) {
 		this.initPos = pos;
 		this.initRot = rot;
+		this.initRotInverse = rot.inverse();
 		
 		float[] rotation = initRot.toMatrix();
 		float[] translation = new float[16];
@@ -56,29 +60,23 @@ public class Bone extends SceneNode {
 	}
 	
 	@Override
-	public void updateAll(Vector3 parentPos, Quaternion parentRot, Vector3 parentScale, float[] parentTransform) {
+	public void updateAll(Quaternion parentRot, Vector3 parentScale, float[] parentTransform) {
 		
-		Matrix.setIdentityM(modelMatrix, 0);
 		if (initRot != null && initPos != null) {
 		
-			float[] rotation = initRot.multiply(rot).toMatrix();
+			initRot.multiply(rot, tmp);
+			tmp.toMatrix(tmpMatrix);
 			Matrix.setIdentityM(translation, 0);
-			
-			Matrix.multiplyMM(modelMatrix, 0, rotation, 0, translation, 0);
 			Matrix.translateM(translation, 0, initPos.x + pos.x, initPos.y + pos.y, initPos.z + pos.z);
-			Matrix.multiplyMM(modelMatrix, 0, translation, 0, modelMatrix, 0);
-	
-			Matrix.multiplyMM(modelMatrix, 0, parentTransform, 0, modelMatrix, 0);
+			Matrix.multiplyMM(tmpMatrix, 0, translation, 0, tmpMatrix, 0);
+			Matrix.multiplyMM(tmpMatrix, 0, parentTransform, 0, tmpMatrix, 0);
 			
 			
 			for (int i = 0; i < children.size(); ++i) {	
-				children.get(i).updateAll(absolutePos, absoluteRot, absoluteScale, modelMatrix);
+				children.get(i).updateAll(absoluteRot, absoluteScale, tmpMatrix);
 			}
 
-			Matrix.multiplyMM(animMatrix, 0,  modelMatrix, 0, inverseBindPos, 0);
-			for (int i = 0; i < 16; ++i) {
-				modelMatrix[i] = animMatrix[i];
-			}
+			Matrix.multiplyMM(modelMatrix, 0,  tmpMatrix, 0, inverseBindPos, 0);
 		
 		}
 		

@@ -116,6 +116,13 @@ public class TextureManager {
 		TyrGL.glDeleteTextures(1, textureHandles, 0);
 	}
 	
+	public void destroyTexture(Texture texture) {
+		textures.remove(texture);
+		int[] textureHandles = new int[1];
+		textureHandles[0] = texture.handle;
+		TyrGL.glDeleteTextures(1, textureHandles, 0);
+	}
+	
 	public Texture createTexture(String name, IBitmap bitmap) {
 	    final int[] textureHandle = new int[1];
 	    

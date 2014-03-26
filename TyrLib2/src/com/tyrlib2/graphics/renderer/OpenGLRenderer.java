@@ -38,7 +38,7 @@ public abstract class OpenGLRenderer {
 	private float[] proj = new float[16];
 	
 	protected long lastTime;
-	private static float BILLION = 1000000000;
+	public static float BILLION = 1000000000;
 	protected boolean rendering = false;
 	protected static boolean init = false;
 	protected FrustumG frustum;
@@ -101,7 +101,7 @@ public abstract class OpenGLRenderer {
 		
 		renderChannel = renderChannels.get(OVERLAY_CHANNEL);
 		if (renderChannel.enabled) {
-	    	Matrix.orthoM(proj, 0, -viewport.getWidth()*0.2f, viewport.getWidth()*1.2f, -viewport.getHeight()*0.2f, viewport.getHeight()*1.2f, -1, 1);
+	    	Matrix.orthoM(proj, 0, 0, viewport.getWidth(), 0, viewport.getHeight(), -1, 1);
 	    	
 			// Draw all unbounded objects
 			if (renderChannel.renderables != null) {
@@ -390,7 +390,7 @@ public abstract class OpenGLRenderer {
 		    TyrGL.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		    TyrGL.glClear( TyrGL.GL_DEPTH_BUFFER_BIT | TyrGL.GL_COLOR_BUFFER_BIT);
 		    
-		    TyrGL.glViewport(-(int)(viewport.getWidth()*0.2f), -(int)(viewport.getHeight()*0.2f), (int)(viewport.getWidth()*1.4f), (int)(viewport.getHeight()*1.4f));
+		    TyrGL.glViewport(0, 0, viewport.getWidth(), viewport.getHeight());
 		    
 		    Matrix.multiplyMM(vpMatrix, 0, viewport.projectionMatrix, 0, camera.viewMatrix, 0);
 		    

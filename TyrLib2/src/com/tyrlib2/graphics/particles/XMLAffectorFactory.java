@@ -34,6 +34,10 @@ public class XMLAffectorFactory implements IAffectorFactory {
 							prototype = new ColorChanger();
 						} else if (type.equals("ForceAffector")) {
 							prototype = new ForceAffector();
+						} else if (type.equals("SizeChanger")) {
+							prototype = new SizeChanger();
+						} else if (type.equals("RotationChanger")) {
+							prototype = new RotationChanger();
 						}
 						
 					} else if (elementName.equals("HomogenField")) {
@@ -89,14 +93,40 @@ public class XMLAffectorFactory implements IAffectorFactory {
 						}
 						
 						((ColorChanger)prototype).setColorChange(color);
-						
-					} else if (elementName.equals("MaxLifeTime")) {
-						float maxLifeTime = Float.valueOf(parser.getAttributeValue(0));
-						prototype.setLifeTimeMax(maxLifeTime);
-					} else if (elementName.equals("MinLifeTime")) {
-						float minLifeTime = Float.valueOf(parser.getAttributeValue(0));
-						prototype.setLifeTimeMin(minLifeTime);
+				} else if (elementName.equals("SizeChange")) {
+					
+					float sizeChange = 0;
+					
+					int countAttributes = parser.getAttributeCount();
+					for (int i = 0; i < countAttributes; ++i) {
+						String attribute = parser.getAttributeName(i);
+						if (attribute.equals("value")) {
+							sizeChange = Float.valueOf(parser.getAttributeValue(i));
+						} 
 					}
+					
+					((SizeChanger)prototype).setSizeChange(sizeChange);
+				} else if (elementName.equals("RotationChange")) {
+					
+					float rotationChange = 0;
+					
+					int countAttributes = parser.getAttributeCount();
+					for (int i = 0; i < countAttributes; ++i) {
+						String attribute = parser.getAttributeName(i);
+						if (attribute.equals("value")) {
+							rotationChange = Float.valueOf(parser.getAttributeValue(i));
+						} 
+					}
+					
+					((RotationChanger)prototype).setSizeChange(rotationChange);	
+				} else if (elementName.equals("MaxLifeTime")) {
+					float maxLifeTime = Float.valueOf(parser.getAttributeValue(0));
+					prototype.setLifeTimeMax(maxLifeTime);
+				} else if (elementName.equals("MinLifeTime")) {
+					float minLifeTime = Float.valueOf(parser.getAttributeValue(0));
+					prototype.setLifeTimeMin(minLifeTime);
+				}
+					
 				} else if (eventType == XmlPullParser.END_TAG) {
 					String elementName = parser.getName();
 					if (elementName.equals("Affector")) {

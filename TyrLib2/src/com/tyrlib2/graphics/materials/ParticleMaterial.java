@@ -19,7 +19,7 @@ import com.tyrlib2.util.Color;
  *
  */
 
-public class PointSpriteMaterial extends Material implements IBlendable {
+public class ParticleMaterial extends Material implements IBlendable {
 	
 	private String textureName;
 	private Texture texture;
@@ -27,11 +27,12 @@ public class PointSpriteMaterial extends Material implements IBlendable {
 	private TextureRegion region;
 	private boolean blending = true;
 	
-	public PointSpriteMaterial(String textureName, Color color) {
-		program = ProgramManager.getInstance().getProgram("POINT_SPRITE");
+	public ParticleMaterial(String textureName, Color color) {
+		program = ProgramManager.getInstance().getProgram("PARTICLE");
 		
 		this.textureName = textureName;
 		this.color = color;
+		this.region = new TextureRegion();
 				
 		if (textureName != null) {
 			texture = TextureManager.getInstance().getTexture(textureName);
@@ -40,8 +41,8 @@ public class PointSpriteMaterial extends Material implements IBlendable {
 		init(3,0,3, "u_MVPMatrix", "a_Position");
 	}
 	
-	public PointSpriteMaterial(String textureName, TextureRegion region, Color color) {
-		program = ProgramManager.getInstance().getProgram("POINT_SHEET");
+	public ParticleMaterial(String textureName, TextureRegion region, Color color) {
+		program = ProgramManager.getInstance().getProgram("PARTICLE");
 		
 		this.textureName = textureName;
 		this.color = color;
@@ -56,17 +57,6 @@ public class PointSpriteMaterial extends Material implements IBlendable {
 	
 	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
         super.render(vertexBuffer, modelMatrix);
-		
-		if (region != null ){
-			int textureCoordPointSizeX = TyrGL.glGetUniformLocation(program.handle, "u_TextureCoordPointSizeX");
-			TyrGL.glUniform1f(textureCoordPointSizeX, region.u2 - region.u1);
-			
-			int textureCoordPointSizeY = TyrGL.glGetUniformLocation(program.handle, "u_TextureCoordPointSizeY");
-			TyrGL.glUniform1f(textureCoordPointSizeY, region.v2 - region.v1);
-			
-			int textureCoordIn = TyrGL.glGetUniformLocation(program.handle, "u_TextureCoordIn");
-			TyrGL.glUniform2f(textureCoordIn, region.u1,region.v1);
-		}
 		
 		int textureHandle = texture.getHandle();
 	
@@ -125,7 +115,7 @@ public class PointSpriteMaterial extends Material implements IBlendable {
 	}
 	
 	public Material copy() {
-		return new PointSpriteMaterial(textureName, color.copy());
+		return new ParticleMaterial(textureName, color.copy());
 	}
 	
 	public Texture getTexture() {

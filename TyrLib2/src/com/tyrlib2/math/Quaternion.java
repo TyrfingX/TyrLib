@@ -146,6 +146,19 @@ public class Quaternion {
 		w = angle;
 	}
 	
+	public static void multiply(float x1, float y1, float z1, float w1, float x2, float y2, float z2, float w2, Quaternion result) {
+		float angle = (w1 * w2) - (x1 * x2 + y1 * y2 + z1 * z2);
+		
+		float crossX = y1 * z2 - z1 * y2;
+		float crossY = -(x1 * z2 - z1 * x1);
+		float crossZ = x1 * y2 - y1 * x2;
+
+		result.x = x1 * w2 + x2 * w1 + crossX;
+		result.y = y1 * w2 + y2 * w1 + crossY;
+		result.z = z1 * w2 + z2 * w1 + crossZ;
+		result.w = angle;
+	}
+	
 	public Quaternion rotate(Vector3 axis, float angle) {
 		Quaternion rotation = Quaternion.fromAxisAngle(axis, angle);
 		Quaternion result = this.multiply(rotation);
@@ -221,6 +234,12 @@ public class Quaternion {
 	 * @return		A quaternion representing the interpolated rotation
 	 */
 	public static Quaternion slerp(Quaternion start, Quaternion end, float alpha) {
+		Quaternion result = new Quaternion();
+		slerp(result, start, end, alpha);
+		return result;
+	}
+	
+	public static Quaternion slerp(Quaternion result, Quaternion start, Quaternion end, float alpha) {
 		float diff = (start.x * end.x) + (start.y * end.y) + (start.z * end.z) * (start.w * end.w);
 		
 		float startWeight, endWeight;
@@ -241,7 +260,6 @@ public class Quaternion {
 			endWeight = alpha;
 		}
 		
-		Quaternion result = new Quaternion();
 		result.x = start.x * startWeight + end.x * endWeight;
 		result.y = start.y * startWeight + end.y * endWeight;
 		result.z = start.z * startWeight + end.z * endWeight;
@@ -253,23 +271,33 @@ public class Quaternion {
 	}
 	
 	public Vector3 multiply(Vector3 vector) {
-		  Quaternion vectorQuaternion = new Quaternion();
-		  vectorQuaternion.x = vector.x;
-		  vectorQuaternion.y = vector.y;
-		  vectorQuaternion.z = vector.z;
-		  vectorQuaternion.w = 0.0f;
-		  
-		  this.invert();
-		  vectorQuaternion.multiplyNoTmp(this);
-		  this.invert();
-		  Quaternion result = this.multiply(vectorQuaternion);
-		  
-		  Vector3 resultVector = new Vector3();
-		  resultVector.x = result.x;
-		  resultVector.y = result.y;
-		  resultVector.z = result.z;
-		  
-		  return resultVector;
+		this.invert();
+
+		float angle = - (vector.x * x + vector.y * y + vector.z * z);
+
+		float crossX = vector.y * z - vector.z * y;
+		float crossY = -(vector.x * z - vector.z * x);
+		float crossZ = vector.x * y - vector.y * x;
+
+		float resultX = vector.x * w + crossX;
+		float resultY = vector.y * w + crossY;
+		float resultZ = vector.z * w + crossZ;
+		float resultW = angle;
+		
+		this.invert();
+		
+		angle = (w * resultW) - (x * resultX + y * resultY + z * resultZ);
+
+		crossX = y * resultZ - z * resultY;
+		crossY = -(x * resultZ - z * resultX);
+		crossZ = x * resultY - y * resultX;
+		
+		Vector3 resultVector = new Vector3();
+		resultVector.x = x * resultW + resultX * w +  crossX;
+		resultVector.y = y * resultW + resultY * w + crossY;
+		resultVector.z = z * resultW + resultZ * w + crossZ;
+
+		return resultVector;
 	}
 	
 	public void multiplyNoTmp(Vector3 vector) {

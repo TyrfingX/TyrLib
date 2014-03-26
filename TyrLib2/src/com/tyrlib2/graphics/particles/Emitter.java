@@ -47,6 +47,10 @@ public class Emitter extends SceneObject implements IUpdateable {
 	
 	private Vector3 oldParentPos = null;
 	
+	private boolean firstEmit = true;
+	
+	private float passedTime = 0;
+	
 	public Emitter(IParticleFactory particleFactory) {
 		this.particleFactory = particleFactory;
 		velocity = new Vector3();
@@ -65,8 +69,16 @@ public class Emitter extends SceneObject implements IUpdateable {
 	@Override
 	public void onUpdate(float time) {
 
-		if (!pause && system.allowsMoreParticles()) {
-			emit();
+		passedTime += time;
+		
+		while (passedTime >= interval) {
+			if (!pause && system.allowsMoreParticles() && !firstEmit) {
+				emit();
+			}
+			
+			passedTime -= interval;
+			
+			firstEmit = false;
 		}
 
 	}

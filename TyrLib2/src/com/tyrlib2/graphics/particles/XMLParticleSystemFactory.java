@@ -9,7 +9,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import com.tyrlib2.graphics.materials.PointSpriteMaterial;
+import com.tyrlib2.graphics.materials.ParticleMaterial;
 import com.tyrlib2.main.Media;
 import com.tyrlib2.util.Color;
 
@@ -119,6 +119,8 @@ public class XMLParticleSystemFactory implements IParticleSystemFactory {
 					int countAttributes = parser.getAttributeCount();
 					
 					float lifeTime = 0;
+
+					float size = 1;
 					
 					for (int i = 0; i < countAttributes; ++i) {
 						String attributeName = parser.getAttributeName(i);
@@ -127,17 +129,17 @@ public class XMLParticleSystemFactory implements IParticleSystemFactory {
 							name = parser.getAttributeValue(i);
 						} else if (attributeName.equals("lifeTime")) {
 							lifeTime = Float.valueOf(parser.getAttributeValue(i));
-						}
+						} else if (attributeName.equals("size")) {
+							size = Float.valueOf(parser.getAttributeValue(i));
+						}	
 					}
 					
-					factory = new BasicParticleFactory(lifeTime);
+					factory = new BasicParticleFactory(lifeTime, size);
 				} else if (elementName.equals("Material")) {
 					String texture = null;
 					Color color = new Color(1,1,1,1);
 					
 					int countAttributes = parser.getAttributeCount();
-					
-					float size = 1;
 					
 					for (int i = 0; i < countAttributes; ++i) {
 						String attributeName = parser.getAttributeName(i);
@@ -150,14 +152,12 @@ public class XMLParticleSystemFactory implements IParticleSystemFactory {
 							color.b = Float.valueOf(parser.getAttributeValue(i));
 						} else if (attributeName.equals("a")) {
 							color.a = Float.valueOf(parser.getAttributeValue(i));
-						} else if (attributeName.equals("size")) {
-							size = Float.valueOf(parser.getAttributeValue(i));
 						} else if (attributeName.equals("texture")) {
 							texture = parser.getAttributeValue(i);
 						} 
 					}
 					
-					factory.setMaterial(new PointSpriteMaterial(texture, size, color));
+					factory.setMaterial(new ParticleMaterial(texture, color));
 				}
 			} else if (eventType == XmlPullParser.END_TAG) {
 				String elementName = parser.getName();

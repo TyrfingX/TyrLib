@@ -7,8 +7,9 @@ varying vec4 v_Color;
 
 void main () {
     vec4 texColor = texture2D(u_Texture, gl_PointCoord);
-    texColor.r *= u_Color.a * u_Color.r * v_Color.a * v_Color.r;
-    texColor.g *= u_Color.a * u_Color.g * v_Color.a * v_Color.g;
-    texColor.b *= u_Color.a * u_Color.b * v_Color.a * v_Color.b;
-    gl_FragColor = vec4(texColor.rgb, texColor.a);
+    
+    texColor.r *= v_Color.r;
+    texColor.g *= v_Color.g;
+    texColor.b *= v_Color.b;
+    gl_FragColor = vec4(texColor.rgb, texColor.a*v_Color.a);
 }

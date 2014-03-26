@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 
 import com.tyrlib2.graphics.renderer.IRenderable;
+import com.tyrlib2.math.Rectangle;
+import com.tyrlib2.math.Vector2;
 import com.tyrlib2.util.PriorityComparator;
 
 /**
@@ -32,8 +34,13 @@ public class GUIRenderer implements IRenderable {
 		
 		for (int i = 0; i < windows.size(); ++i) {
 			Window window = windows.get(i);
-			if (window.isVisible()) {
-				window.render(vpMatrix);
+			if (window.isVisible() && window.getAlpha() > 0) {
+				float posX = window.getAbsolutePosX();
+				float posY = window.getAbsolutePosY();
+				Vector2 size = window.getSize();
+				if (Rectangle.overlap(posX, posY, posX + size.x, posY + size.y, 0.0f, 0.0f, 1.0f, 1.0f)) {
+					window.render(vpMatrix);
+				}
 			}
 		}
 

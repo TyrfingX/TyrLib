@@ -102,9 +102,8 @@ public class Label extends Window{
 			background.setAlpha(alpha);
 		}
 		
-		Color color = text.getBaseColor().copy();
+		Color color = text.getBaseColor();
 		color.a = alpha;
-		text.setBaseColor(color);
 		
 		super.setAlpha(alpha);
 	}
@@ -116,6 +115,10 @@ public class Label extends Window{
 	
 	public void setFont(Font font) {
 		text.setFont(font);
+	}
+	
+	public FormattedText2 getFormattedText() {
+		return text;
 	}
 	
 	

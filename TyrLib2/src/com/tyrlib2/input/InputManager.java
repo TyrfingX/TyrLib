@@ -13,11 +13,15 @@ import com.tyrlib2.util.ReversePriorityComparator;
 
 public class InputManager {
 
+	public static final long FOCUS_PRIORITY = 2000000;
+	
 	private List<ITouchListener> touchListeners;
 	private Vector<IBackListener> backListeners;
 	private boolean touching = false;
 	private Vector2 lastTouch = null;
 	private static InputManager instance;
+	
+	private boolean sort;
 	
 	public InputManager()
 	{
@@ -40,6 +44,11 @@ public class InputManager {
 	public boolean onTouch(View v, MotionEvent event) {
 		int action = event.getAction();
 		int actionCode = action & MotionEvent.ACTION_MASK;
+		
+		if (sort) {
+			Collections.sort(touchListeners, new ReversePriorityComparator());
+			sort = false;
+		}
 		
 		if (actionCode != MotionEvent.ACTION_MOVE) {
 			
@@ -148,7 +157,7 @@ public class InputManager {
 	}
 	
 	public void sort() {
-		Collections.sort(touchListeners, new ReversePriorityComparator());
+		sort = true;
 	}
 	
 	

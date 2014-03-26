@@ -2,8 +2,6 @@ package com.tyrlib2.graphics.materials;
 
 import java.nio.FloatBuffer;
 
-import android.opengl.GLES20;
-
 import com.tyrlib2.graphics.renderer.Material;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.renderer.Program;
@@ -50,8 +48,8 @@ public class DefaultMaterial3 extends LightedMaterial {
 	public static final int dataSize = 8;
 	public static final int posOffset = 0;
 	
-	/** Contains the model*view matrix **/
-	private float[] mvMatrix = new float[16];
+	/** Contains the normal matrix **/
+	private float[] normalMatrix = new float[16];
 	
 	public static final String PER_PIXEL_PROGRAM_NAME = "TEXTURED_PPL";
 
@@ -136,7 +134,7 @@ public class DefaultMaterial3 extends LightedMaterial {
 		
 		init(dataSize,posOffset,3, "u_MVPMatrix", "a_Position");
 		
-		mvMatrixHandle = TyrGL.glGetUniformLocation(program.handle, "u_MVMatrix"); 
+		normalMatrixHandle = TyrGL.glGetUniformLocation(program.handle, "u_NormalMatrix"); 
 		textureUniformHandle = TyrGL.glGetUniformLocation(program.handle, "u_Texture");
 		ambientHandle = TyrGL.glGetUniformLocation(program.handle, "u_Ambient");
 		textureUniformHandle = TyrGL.glGetUniformLocation(program.handle, "u_Texture");
@@ -153,6 +151,13 @@ public class DefaultMaterial3 extends LightedMaterial {
 	    
 		//passModelViewMatrix(modelMatrix);
 	    
+	   // SceneManager sceneManager = SceneManager.getInstance();
+	   // float[] viewMatrix = sceneManager.getRenderer().getCamera().getViewMatrix();
+	   // Matrix.multiplyMM(normalMatrix, 0, viewMatrix, 0, modelMatrix, 0);  
+	    
+        // Pass in the modelview matrix.
+		//TyrGL.glUniformMatrix4fv(normalMatrixHandle, 1, false, normalMatrix, 0);
+		
 		int textureHandle = texture.getHandle();
         if (program.textureHandle != textureHandle) {
         	passTexture(textureHandle);
@@ -234,12 +239,7 @@ public class DefaultMaterial3 extends LightedMaterial {
 	}
 	
 	
-	/**
-	 * Adds the colors to the vertex data.
-	 * Repeats the colors if there are more vertices than colors
-	 */
-	
-	public float[] createVertexData(Vector3[] points, short[] drawOrder) {
+	public float[] createVertexData(Vector3[] points, float[] uvCoords, short[] drawOrder) {
 		float[] vertexData = super.createVertexData(points, drawOrder);
 		
 		int vertexCount = points.length;
@@ -262,17 +262,6 @@ public class DefaultMaterial3 extends LightedMaterial {
 			}
 			normals[i].normalize();
 		}
-		
-		
-		// Assign some arbitary uvCoordinates for the textures
-		// The default uvCoords assigned by this work for shapes
-		// like planes, meshs, etc
-		float[] uvCoords = {
-			0.0f, 0.0f, 				
-			0.0f, 1.0f,
-			1.0f, 0.0f,
-			1.0f, 1.0f,
-		};
 		
 		int uvCoord = 0;
 		
@@ -301,6 +290,25 @@ public class DefaultMaterial3 extends LightedMaterial {
 		}
 		
 		return vertexData;
+	}
+	
+	/**
+	 * Adds the colors to the vertex data.
+	 * Repeats the colors if there are more vertices than colors
+	 */
+	
+	public float[] createVertexData(Vector3[] points, short[] drawOrder) {
+		// Assign some arbitary uvCoordinates for the textures
+		// The default uvCoords assigned by this work for shapes
+		// like planes, meshs, etc
+		float[] uvCoords = {
+			0.0f, 0.0f, 				
+			0.0f, 1.0f,
+			1.0f, 0.0f,
+			1.0f, 1.0f,
+		};
+		
+		return createVertexData(points, uvCoords, drawOrder);
 	}
 	
 	public String getTextureName() {

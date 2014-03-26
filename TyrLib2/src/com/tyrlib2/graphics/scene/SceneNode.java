@@ -31,7 +31,7 @@ public class SceneNode {
 	protected Vector3 absolutePos = new Vector3();
 	
 	/** Rotation of this node relative to its parent **/
-	protected Quaternion rot;
+	protected Quaternion rot = new Quaternion(0,0,0,1);
 	
 	/** Absolute rotation in the world **/
 	protected Quaternion absoluteRot = new Quaternion();
@@ -63,8 +63,6 @@ public class SceneNode {
 	public SceneNode() {
 		attachedObjects = new ArrayList<SceneObject>();
 		children = new ArrayList<SceneNode>();
-		setRelativePos(new Vector3());
-		setRelativeRot(new Quaternion(0,0,0,1));
 		Matrix.setIdentityM(modelMatrix, 0);
 	}
 	
@@ -167,6 +165,13 @@ public class SceneNode {
 		forceUpdate();
 	}
 	
+	public void setRelativePos(float x, float y, float z) {
+		this.pos.x = x;
+		this.pos.y = y;
+		this.pos.z = z;
+		forceUpdate();
+	}
+	
 	/**
 	 * Gets the absolute rotation of this node in world space
 	 * @return	The absolute rotation of this node in world space
@@ -214,7 +219,18 @@ public class SceneNode {
 	 */
 	
 	public void setRelativeRot(Quaternion rotation) {
-		this.rot = rotation;
+		this.rot.x = rotation.x;
+		this.rot.y = rotation.y;
+		this.rot.z = rotation.z;
+		this.rot.w = rotation.w;
+		forceUpdate();
+	}
+	
+	public void setRelativeRot(float x, float y, float z, float w) {
+		rot.x = x;
+		rot.y = y;
+		rot.z = z;
+		rot.w = w;
 		forceUpdate();
 	}
 	
@@ -393,16 +409,16 @@ public class SceneNode {
 	 * Updates the model matrix
 	 */
 	
-	public void update(Vector3 parentPos, Quaternion parentRot, Vector3 parentScale, float[] parentTransform) {
+	public void update(Quaternion parentRot, Vector3 parentScale, float[] parentTransform) {
 		if (update) {			
 			// there was an update, all children of this tree must be updated
-			updateAll(parentPos, parentRot, parentScale, parentTransform);
+			updateAll(parentRot, parentScale, parentTransform);
 		} else {
 			
 			if (dirty) {
 				// There was no update, but some child node requires an update
 				for (int i = 0; i < children.size(); ++i) {	
-					children.get(i).update(absolutePos, absoluteRot, absoluteScale, modelMatrix);
+					children.get(i).update(absoluteRot, absoluteScale, modelMatrix);
 				}
 				dirty = false;
 			}
@@ -417,7 +433,7 @@ public class SceneNode {
 	
 	public void update() {
 		for (int i = 0; i < children.size(); ++i) {	
-			children.get(i).update(pos, rot, scale, modelMatrix);
+			children.get(i).update(rot, scale, modelMatrix);
 		}
 		
 		dirty = false;
@@ -450,7 +466,7 @@ public class SceneNode {
 	 * be informed and update their matrices accordingly.
 	 */
 	
-	public void updateAll(Vector3 parentPos, Quaternion parentRot, Vector3 parentScale, float[] parentTransform) {
+	public void updateAll(Quaternion parentRot, Vector3 parentScale, float[] parentTransform) {
 		
 		setIdentityMatrix(modelMatrix);
 		parentRot.multiply(rot, absoluteRot);
@@ -487,7 +503,7 @@ public class SceneNode {
 		
 		
 		for (int i = 0; i < children.size(); ++i) {	
-			children.get(i).updateAll(absolutePos, absoluteRot, absoluteScale, modelMatrix);
+			children.get(i).updateAll(absoluteRot, absoluteScale, modelMatrix);
 		}
 		
 		Matrix.scaleM(scaling, 0, absoluteScale.x, absoluteScale.y, absoluteScale.z);

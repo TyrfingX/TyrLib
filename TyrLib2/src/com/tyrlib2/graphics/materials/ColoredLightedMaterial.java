@@ -48,7 +48,6 @@ public class ColoredLightedMaterial extends LightedMaterial {
 		colorHandle = TyrGL.glGetAttribLocation(program.handle, "a_Color");
 		normalHandle = TyrGL.glGetAttribLocation(program.handle, "a_Normal");
 		lightPosHandle = TyrGL.glGetUniformLocation(program.handle, "u_LightPos");
-		mvMatrixHandle = TyrGL.glGetUniformLocation(program.handle, "u_MVMatrix"); 
 	}
 	
 	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
@@ -65,13 +64,6 @@ public class ColoredLightedMaterial extends LightedMaterial {
 	    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
 	 
 	    TyrGL.glEnableVertexAttribArray(normalHandle);
-	    
-	    SceneManager sceneManager = SceneManager.getInstance();
-	    float[] viewMatrix = sceneManager.getRenderer().getCamera().getViewMatrix();
-	    Matrix.multiplyMM(mvMatrix, 0, viewMatrix, 0, modelMatrix, 0);  
-	    
-        // Pass in the modelview matrix.
-	    TyrGL.glUniformMatrix4fv(mvMatrixHandle, 1, false, mvMatrix, 0);
 
 	}
 	

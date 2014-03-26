@@ -22,6 +22,7 @@ import com.tyrlib2.graphics.renderables.Line2;
 import com.tyrlib2.graphics.renderables.Rectangle2;
 import com.tyrlib2.graphics.renderables.Skybox;
 import com.tyrlib2.graphics.renderables.Text2;
+import com.tyrlib2.graphics.renderer.BoundedRenderable;
 import com.tyrlib2.graphics.renderer.Camera;
 import com.tyrlib2.graphics.renderer.IFrameListener;
 import com.tyrlib2.graphics.renderer.IRenderable;
@@ -213,7 +214,11 @@ public class SceneManager {
 		if (renderable instanceof SceneObject) {
 			((SceneObject) renderable).detach();
 		}
-		renderer.removeRenderable(renderable);
+		if (renderable instanceof BoundedRenderable) {
+			renderer.removeRenderable((BoundedRenderable)renderable);
+		} else {
+			renderer.removeRenderable(renderable);
+		}
 	}
 	
 	public void destroyRenderable(IRenderable renderable, int channel) {
@@ -221,6 +226,11 @@ public class SceneManager {
 			((SceneObject) renderable).detach();
 		}
 		renderer.removeRenderable(renderable, channel);
+		if (renderable instanceof BoundedRenderable) {
+			renderer.removeRenderable((BoundedRenderable)renderable, channel);
+		} else {
+			renderer.removeRenderable(renderable, channel);
+		}
 	}
 	
 	/**

@@ -303,9 +303,9 @@ public class FrustumG {
 			}
 			
 			// is the positive vertex outside?
-			if (normal.x * (p.x - p.x) +
-				normal.y * (p.y - p.y) + 
-				normal.z * (p.z - p.z) < 0) {
+			if (normal.x * (p.x - planes[i].x) +
+				normal.y * (p.y - planes[i].y) + 
+				normal.z * (p.z - planes[i].z) < 0) {
 				return false;
 			}
 		}

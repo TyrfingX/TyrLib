@@ -1,28 +1,33 @@
 package com.tyrlib2.graphics.particles;
 
-import com.tyrlib2.graphics.materials.PointSpriteMaterial;
+import com.tyrlib2.graphics.materials.ParticleMaterial;
 
 public class BasicParticleFactory implements IParticleFactory {
 
 	private float lifeTime;
+	private float size;
 	
-	private PointSpriteMaterial material;
+	private ParticleMaterial material;
 
-	public BasicParticleFactory(float lifeTime) {
+	public BasicParticleFactory(float lifeTime, float size) {
 		this.lifeTime = lifeTime;
+		this.size = size;
 	}
 
 	
 	@Override
 	public Particle create(Particle particle) {
 		if (particle == null) {
-			particle = new Particle();
+			particle = new Particle(size);
 		} else {
 			particle.inertia = 1;
 			particle.acceleration.x = 0;
 			particle.acceleration.y = 0;
 			particle.acceleration.z = 0;
 			particle.passedTime = 0;
+			particle.size = size;
+			particle.rotation = 0;
+			particle.floatArray = null;
 		}
 		
 		particle.setMaterial(material);
@@ -38,11 +43,11 @@ public class BasicParticleFactory implements IParticleFactory {
 		this.lifeTime = lifeTime;
 	}
 
-	public PointSpriteMaterial getMaterial() {
+	public ParticleMaterial getMaterial() {
 		return material;
 	}
 
-	public void setMaterial(PointSpriteMaterial material) {
+	public void setMaterial(ParticleMaterial material) {
 		this.material = material;
 	}
 

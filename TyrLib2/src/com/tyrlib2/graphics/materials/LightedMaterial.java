@@ -17,7 +17,7 @@ public abstract class LightedMaterial extends Material{
 	
 	/** Lighting information **/
 	protected int lightPosHandle;
-	protected int mvMatrixHandle;
+	protected int normalMatrixHandle;
 	protected int ambientHandle;
 	protected int lightTypeHandle;
 	

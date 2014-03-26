@@ -5,7 +5,7 @@ import java.nio.ByteOrder;
 import java.util.List;
 import java.util.Stack;
 
-import com.tyrlib2.graphics.materials.PointSpriteMaterial;
+import com.tyrlib2.graphics.materials.ParticleMaterial;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.graphics.scene.SceneManager;
@@ -68,7 +68,7 @@ public class SimpleParticleSystem extends ParticleSystem {
 
 			for (int i = 0; i < countParticles; ++i) {
 				
-				PointSpriteMaterial material = particleBatch.material;
+				ParticleMaterial material = particleBatch.material;
 				List<Particle> particles = particleBatch.particles;
 				
 				Particle particle = particles.get(i);
@@ -109,7 +109,7 @@ public class SimpleParticleSystem extends ParticleSystem {
 	
 	public void addParticle(Particle particle) {
 		
-		PointSpriteMaterial material = particle.getMaterial();
+		ParticleMaterial material = particle.getMaterial();
 		
 		if (particleBatch == null) {
 			particleBatch = new ParticleBatch();
@@ -136,7 +136,7 @@ public class SimpleParticleSystem extends ParticleSystem {
 		countParticles++;
 	}
 	
-	private void removeParticle(int index, PointSpriteMaterial material) {
+	private void removeParticle(int index, ParticleMaterial material) {
 			
 		List<Particle> particles = particleBatch.particles;
 		Particle particle = particles.get(index);
@@ -206,7 +206,7 @@ public class SimpleParticleSystem extends ParticleSystem {
 			
 		if (countParticles > 0) {
 			
-			PointSpriteMaterial material = particleBatch.material;
+			ParticleMaterial material = particleBatch.material;
 			FloatArray particleData = particleBatch.particleData;
 
 			int size = particleData.getSize();

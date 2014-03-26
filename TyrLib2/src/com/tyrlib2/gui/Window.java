@@ -109,6 +109,9 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	/** if this window is being dragged by the user **/
 	private boolean drag;
 	
+	/** does this window inherit fade out/ins from parent? **/
+	private boolean inheritsFade = true;
+	
 	private Window() {
 		node = new SceneNode();
 		children = new ArrayList<Window>();
@@ -139,7 +142,9 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	
 	public void fadeOut(float minAlpha, float time) {
 		for (int i = 0; i < children.size(); ++i) {
-			children.get(i).fadeOut(minAlpha, time);
+			if (children.get(i).inheritsFade) {
+				children.get(i).fadeOut(minAlpha, time);
+			}
 		}
 		blendState = BLEND_STATE.FADE_OUT;
 		blendSpeed = (minAlpha - getAlpha()) / time;
@@ -155,7 +160,9 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	
 	public void fadeIn(float maxAlpha, float time) {
 		for (int i = 0; i < children.size(); ++i) {
-			children.get(i).fadeIn(maxAlpha, time);
+			if (children.get(i).inheritsFade) {
+				children.get(i).fadeIn(maxAlpha, time);
+			}
 		}
 		
 		maxAlpha = Math.min(this.maxAlpha, maxAlpha);
@@ -276,6 +283,10 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 		
 	}
 	
+	public void disableTimeUpdates() {
+		WindowManager.getInstance().updater.removeItem(this);
+	}
+	
 	private void updateBlending(float time) {
 		float newAlpha = getAlpha() + time * blendSpeed;
 		if (		(newAlpha < targetAlpha && blendState == BLEND_STATE.FADE_IN) 
@@ -386,8 +397,20 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	
 	public Vector2 getAbsolutePos() {
 		Viewport viewport = SceneManager.getInstance().getViewport();
-		Vector3 pos = node.getCachedAbsolutePos();
+		Vector3 pos = node.getCachedAbsolutePosVector();
 		return new Vector2(pos.x/viewport.getWidth(), pos.y/viewport.getHeight());
+	}
+	
+	public float getAbsolutePosX() {
+		Viewport viewport = SceneManager.getInstance().getViewport();
+		Vector3 pos = node.getCachedAbsolutePosVector();
+		return pos.x/viewport.getWidth();
+	}
+	
+	public float getAbsolutePosY() {
+		Viewport viewport = SceneManager.getInstance().getViewport();
+		Vector3 pos = node.getCachedAbsolutePosVector();
+		return pos.y/viewport.getHeight();
 	}
 	
 	/**
@@ -554,7 +577,7 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	
 	@Override
 	public boolean isEnabled() {
-		return receiveTouchEvents && visible;
+		return receiveTouchEvents && visible && getAlpha() > 0;
 	}
 	
 	/**
@@ -772,6 +795,10 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 		for (int i = 0; i < children.size(); ++i) {
 			children.get(i).setRecuresiveReceiveTouchEvents(receiveTouchEvents);
 		}
+	}
+	
+	public void setInheritsFade(boolean state) {
+		this.inheritsFade = state;
 	}
 	
 }

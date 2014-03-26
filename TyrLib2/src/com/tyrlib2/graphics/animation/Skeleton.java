@@ -16,22 +16,19 @@ import com.tyrlib2.graphics.scene.SceneNode;
 
 public class Skeleton implements IUpdateable {
 	
-	private Map<String, Animation> animations;
-	protected List<Bone> bones;
+	private List<Animation> animations = new ArrayList<Animation>();;
+	private HashMap<String, Animation> animationsMap = new HashMap<String, Animation>();
+	protected List<Bone> bones = new ArrayList<Bone>();
 	protected float[] boneData = null; 
 	protected SceneNode rootNode = new SceneNode();
-	
-	public Skeleton() {
-		animations = new HashMap<String, Animation>();
-		bones = new ArrayList<Bone>();
-	}
 	
 	/** 
 	 * Add a new animation
 	 * @param animation
 	 */
 	public void addAnimation(Animation animation) {
-		animations.put(animation.name, animation);
+		animations.add(animation);
+		animationsMap.put(animation.name, animation);
 		animation.skeleton = this;
 	}
 	
@@ -40,12 +37,12 @@ public class Skeleton implements IUpdateable {
 	 * @param animationName
 	 */
 	public Animation getAnimation(String animationName) {
-		Animation anim = animations.get(animationName);
+		Animation anim = animationsMap.get(animationName);
 		return anim;
 	}
 	
 	public boolean hasAnimation(String animationName) {
-		return animations.containsKey(animationName);
+		return animationsMap.containsKey(animationName);
 	}
 	
 	/**
@@ -74,9 +71,9 @@ public class Skeleton implements IUpdateable {
 	@Override
 	public void onUpdate(float time) {
 		boolean boneUpdate = false;
-		for (Animation anim : animations.values()) {
-			if (anim.playing) {
-				anim.onUpdate(time);
+		for (int i = 0; i < animations.size(); ++i) {
+			if (animations.get(i).playing) {
+				animations.get(i).onUpdate(time);
 				boneUpdate = true;
 			}
 		}

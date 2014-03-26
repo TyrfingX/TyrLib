@@ -1,10 +1,9 @@
 package tyrfing.common.ui.widgets;
 
-import android.graphics.Color;
 import tyrfing.common.render.SceneManager;
 import tyrfing.common.renderables.Rectangle;
-import tyrfing.common.renderables.Renderable;
 import tyrfing.common.ui.Window;
+import android.graphics.Color;
 
 public class ProgressBar extends Window {
 

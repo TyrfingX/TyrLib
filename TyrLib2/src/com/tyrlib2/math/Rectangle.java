@@ -19,4 +19,13 @@ public class Rectangle {
 	    
 	    return true;
 	}
+	
+	public static boolean overlap(float min1X, float min1Y, float max1X, float max1Y, float min2X, float min2Y, float max2X, float max2Y) {
+	    if (min1X > max2X) return false;
+	    if (min2X > max1X) return false;
+	    if (min1Y > max2Y) return false;
+	    if (min2Y > max1Y) return false;
+	    
+	    return true;
+	}
 }

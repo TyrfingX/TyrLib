@@ -9,6 +9,9 @@ public class TyrGL {
 	public static int GL_FLOAT;
 	public static int GL_SRC_ALPHA;
 	public static int GL_ONE_MINUS_SRC_ALPHA;
+	public static int GL_DST_ALPHA;
+	public static int GL_SRC_COLOR;
+	public static int GL_DST_COLOR;
 	public static int GL_ARRAY_BUFFER;
 	public static int GL_TEXTURE0;
 	public static int GL_TEXTURE_2D;

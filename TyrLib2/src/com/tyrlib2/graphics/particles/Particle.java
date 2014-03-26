@@ -1,7 +1,9 @@
 package com.tyrlib2.graphics.particles;
 
 import com.tyrlib2.game.IUpdateable;
-import com.tyrlib2.graphics.materials.PointSpriteMaterial;
+import com.tyrlib2.graphics.materials.ParticleMaterial;
+import com.tyrlib2.graphics.scene.SceneManager;
+import com.tyrlib2.math.Quaternion;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.util.Color;
 import com.tyrlib2.util.FloatArray;
@@ -14,20 +16,25 @@ import com.tyrlib2.util.FloatArray;
 
 public class Particle implements IUpdateable {
 	
-	protected PointSpriteMaterial material;
+	protected ParticleMaterial material;
 	protected Vector3 pos = new Vector3();
+	protected Vector3 up = new Vector3();
+	protected Vector3 right = new Vector3();
 	protected Vector3 velocity;
 	protected Vector3 acceleration = new Vector3();
 	protected Color color = null;
 	protected float inertia = 1;
+	protected float rotation = 0;
 	protected float lifeTime;
 	protected float passedTime;
+	protected float size;
 	
 	protected int dataIndex;
 	protected FloatArray floatArray;
 	protected ParticleSystem system;
 	
-	public Particle() {
+	public Particle(float size) {
+		this.size = size;
 	}
 	
 	@Override
@@ -38,9 +45,23 @@ public class Particle implements IUpdateable {
 		velocity.y += time * acceleration.y;
 		velocity.z += time * acceleration.z;
 		
-		floatArray.buffer[dataIndex] += time * velocity.x;
-		floatArray.buffer[dataIndex + 1] += time * velocity.y;
-		floatArray.buffer[dataIndex + 2] +=  time * velocity.z;
+		pos.x += time * velocity.x;
+		pos.y += time * velocity.y;
+		pos.z += time * velocity.z;
+		
+		floatArray.buffer[dataIndex + ParticleSystem.UV_OFFSET] = material.getRegion().u2;
+		floatArray.buffer[dataIndex + ParticleSystem.UV_OFFSET + 1] = material.getRegion().v2;
+		
+		floatArray.buffer[dataIndex + ParticleSystem.UV_OFFSET + ParticleSystem.PARTICLE_DATA_SIZE/4] = material.getRegion().u2;
+		floatArray.buffer[dataIndex + ParticleSystem.UV_OFFSET + 1 + ParticleSystem.PARTICLE_DATA_SIZE/4] = material.getRegion().v1;
+		
+		floatArray.buffer[dataIndex + ParticleSystem.UV_OFFSET + 2*ParticleSystem.PARTICLE_DATA_SIZE/4] = material.getRegion().u1;
+		floatArray.buffer[dataIndex + ParticleSystem.UV_OFFSET + 1 + 2*ParticleSystem.PARTICLE_DATA_SIZE/4] = material.getRegion().v2;
+		
+		floatArray.buffer[dataIndex + ParticleSystem.UV_OFFSET + 3*ParticleSystem.PARTICLE_DATA_SIZE/4] = material.getRegion().u1;
+		floatArray.buffer[dataIndex + ParticleSystem.UV_OFFSET + 1 + 3*ParticleSystem.PARTICLE_DATA_SIZE/4] = material.getRegion().v1;
+		
+		updateCorners();
 
 	}
 	
@@ -49,7 +70,7 @@ public class Particle implements IUpdateable {
 		return (lifeTime != 0 && passedTime >= lifeTime);
 	}
 	
-	public void setMaterial(PointSpriteMaterial material) {
+	public void setMaterial(ParticleMaterial material) {
 		this.material = material;
 		if (color == null) {
 			color = material.getColor().copy();
@@ -61,7 +82,7 @@ public class Particle implements IUpdateable {
 		}
 	}
 	
-	public PointSpriteMaterial getMaterial() {
+	public ParticleMaterial getMaterial() {
 		return material;
 	}
 	
@@ -71,7 +92,7 @@ public class Particle implements IUpdateable {
 	public float getAge() { return passedTime; }
 	
 	public Particle copy() {
-		Particle particle = new Particle();
+		Particle particle = new Particle(size);
 		
 		particle.setMaterial(material);
 		particle.setLifeTime(lifeTime);
@@ -80,9 +101,6 @@ public class Particle implements IUpdateable {
 	}
 
 	public Vector3 getPos() {
-		pos.x = floatArray.buffer[dataIndex];
-		pos.y = floatArray.buffer[dataIndex + 1];
-		pos.z = floatArray.buffer[dataIndex + 2];
 		return pos;
 	}
 
@@ -90,10 +108,39 @@ public class Particle implements IUpdateable {
 		this.pos = pos;
 		
 		if (floatArray != null) {
-			floatArray.buffer[dataIndex] = pos.x;
-			floatArray.buffer[dataIndex + 1] = pos.y;
-			floatArray.buffer[dataIndex + 2] =  pos.z;
+			updateCorners();
 		}
+	}
+	
+	protected void updateCorners() {
+		Vector3 camPos = SceneManager.getInstance().getActiveCamera().getAbsolutePos();
+		up = SceneManager.getInstance().getActiveCamera().getWorldUpVector();
+		float deltaX = camPos.x - pos.x;
+		float deltaY = camPos.y - pos.y;
+		float deltaZ = camPos.z - pos.z;
+		
+		if (rotation != 0) {
+			up = Quaternion.fromAxisAngle(new Vector3(deltaX, deltaY, deltaZ), passedTime * rotation).multiply(up);
+		}
+		
+		Vector3.cross(right, deltaX, deltaY, deltaZ, up.x, up.y, up.z);
+		right.normalize();
+		
+		floatArray.buffer[dataIndex] = pos.x - right.x * size/2 - up.x * size/2;
+		floatArray.buffer[dataIndex + 1] = pos.y - right.y * size/2 - up.y * size/2;
+		floatArray.buffer[dataIndex + 2] =  pos.z - right.z * size/2 - up.z * size/2;
+		
+		floatArray.buffer[dataIndex + ParticleSystem.PARTICLE_DATA_SIZE/4] = pos.x - right.x * size/2 + up.x * size/2;
+		floatArray.buffer[dataIndex + 1 + ParticleSystem.PARTICLE_DATA_SIZE/4] = pos.y - right.y * size/2 + up.y * size/2;
+		floatArray.buffer[dataIndex + 2 + ParticleSystem.PARTICLE_DATA_SIZE/4] =  pos.z - right.z * size/2 + up.z * size/2;
+		
+		floatArray.buffer[dataIndex + 2*ParticleSystem.PARTICLE_DATA_SIZE/4] = pos.x + right.x * size/2 - up.x * size/2;
+		floatArray.buffer[dataIndex + 1 + 2*ParticleSystem.PARTICLE_DATA_SIZE/4] = pos.y + right.y * size/2 - up.y * size/2;
+		floatArray.buffer[dataIndex + 2 + 2*ParticleSystem.PARTICLE_DATA_SIZE/4] =  pos.z + right.z * size/2 - up.z * size/2;
+		
+		floatArray.buffer[dataIndex + 3*ParticleSystem.PARTICLE_DATA_SIZE/4] = pos.x + right.x * size/2 + up.x * size/2;
+		floatArray.buffer[dataIndex + 1 + 3*ParticleSystem.PARTICLE_DATA_SIZE/4] = pos.y + right.y * size/2 + up.y * size/2;
+		floatArray.buffer[dataIndex + 2 + 3*ParticleSystem.PARTICLE_DATA_SIZE/4] =  pos.z + right.z * size/2 + up.z * size/2;
 	}
 
 	public Vector3 getVelocity() {

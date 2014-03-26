@@ -81,7 +81,6 @@ public class TerrainMaterial extends LightedMaterial {
 		normalHandle = TyrGL.glGetAttribLocation(program.handle, "a_Normal");
 		lightPosHandle = TyrGL.glGetUniformLocation(program.handle, "u_LightPos");
 		lightTypeHandle = TyrGL.glGetUniformLocation(program.handle, "u_LightType");
-		mvMatrixHandle = TyrGL.glGetUniformLocation(program.handle, "u_MVMatrix"); 
 		ambientHandle = TyrGL.glGetUniformLocation(program.handle, "u_Ambient");
 		
 		textureUniformHandle = new int[TEXTURES_PER_CHUNK];
@@ -123,9 +122,6 @@ public class TerrainMaterial extends LightedMaterial {
 	    SceneManager sceneManager = SceneManager.getInstance();
 	    float[] viewMatrix = sceneManager.getRenderer().getCamera().getViewMatrix();
 	    Matrix.multiplyMM(mvMatrix, 0, viewMatrix, 0, modelMatrix, 0);  
-	    
-        // Pass in the modelview matrix.
-	    TyrGL.glUniformMatrix4fv(mvMatrixHandle, 1, false, mvMatrix, 0);
         
 		for (int i = 0; i < TEXTURES_PER_CHUNK; ++i) {
 			

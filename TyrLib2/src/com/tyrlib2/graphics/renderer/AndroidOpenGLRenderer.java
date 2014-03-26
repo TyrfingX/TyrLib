@@ -23,9 +23,9 @@ public class AndroidOpenGLRenderer extends OpenGLRenderer implements GLSurfaceVi
 	
 	public void onSurfaceCreated(GL10 unused, EGLConfig config) {
 		
-		GLES20.glEnable(GLES20.GL_BLEND);
-		GLES20.glEnable(GLES20.GL_ALPHA_BITS);
-		GLES20.glSampleCoverage(4, false);
+	//	GLES20.glEnable(GLES20.GL_BLEND);
+		//GLES20.glEnable(GLES20.GL_ALPHA_BITS);
+		//GLES20.glSampleCoverage(4, false);
 		
 		defaultSetup();
 		loadShaders();
@@ -85,13 +85,19 @@ public class AndroidOpenGLRenderer extends OpenGLRenderer implements GLSurfaceVi
 		ProgramManager.getInstance().createProgram(	"POINT_SPRITE", 
 													Media.CONTEXT.getResourceID("point_sprite_vs", "raw"), 
 													Media.CONTEXT.getResourceID("point_sprite_fs", "raw"), 
-													new String[]{"a_Position, a_Color"});
+													new String[]{"a_Position, a_Color", "a_Size"});
 		
 		// Create a material to render point sprites from texture sheets
 		ProgramManager.getInstance().createProgram(	"POINT_SHEET", 
 													Media.CONTEXT.getResourceID("point_sheet_vs", "raw"), 
 													Media.CONTEXT.getResourceID("point_sheet_fs", "raw"), 
-													new String[]{"a_Position, a_Color"});
+													new String[]{"a_Position, a_Color", "a_Size"});
+		
+		// Create a material to render point sprites from texture sheets
+		ProgramManager.getInstance().createProgram(	"PARTICLE", 
+													Media.CONTEXT.getResourceID("particle_vs", "raw"), 
+													Media.CONTEXT.getResourceID("particle_fs", "raw"), 
+													new String[]{"a_Position", "a_TexCoordinate", "a_Color"});
 		
 		// Create a program for rendering shadow depth maps
 		ProgramManager.getInstance().createProgram(	"SHADOW_DEPTH", 

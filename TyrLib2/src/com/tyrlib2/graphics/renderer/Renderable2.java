@@ -2,8 +2,10 @@ package com.tyrlib2.graphics.renderer;
 
 import java.nio.ShortBuffer;
 
-import com.tyrlib2.math.AABB;
+import com.tyrlib2.graphics.scene.SceneNode;
+import com.tyrlib2.graphics.scene.SceneObject;
 import com.tyrlib2.math.Matrix;
+import com.tyrlib2.math.Vector3;
 
 /**
  * A basic renderable 2D object
@@ -11,10 +13,67 @@ import com.tyrlib2.math.Matrix;
  *
  */
 
-public abstract class Renderable2 extends Renderable {
+public class Renderable2 extends SceneObject implements IRenderable {
 	
 	protected int drawOrderLength;
 	protected ShortBuffer drawOrderBuffer;
+	
+	/** The Mesh of this renderable **/
+	protected Mesh mesh;
+	
+	/** The material of this renderable **/
+	protected Material material;
+	
+	/** Transforms model space to world space, taken from the parent scene node **/
+	protected float[] modelMatrix;
+	
+	/** Allocate storage for the final combined matrix. This will be passed into the shader program. */
+	protected static float[] mvpMatrix = new float[16];
+	
+	protected int renderMode = TyrGL.GL_TRIANGLES;
+	
+	public Renderable2() {
+	}
+	
+	public Renderable2(Material material, Mesh mesh) {
+		this.material = material;
+		this.mesh = mesh;
+	}
+	
+	public Renderable2(Material material, Vector3[] points, short[] drawOrder) {
+		init(material, points, drawOrder);
+	}
+	
+	public void init(Material material, Vector3[] points, short[] drawOrder) {
+		this.material = material;
+		float[] vertexData = material.createVertexData(points, drawOrder);
+		mesh = new Mesh(vertexData, drawOrder, vertexData.length / material.strideBytes);
+	}
+	
+	public void setMesh(Mesh mesh) {
+		this.mesh = mesh;
+	}
+	
+	public Mesh getMesh() {
+		return mesh;
+	}
+	
+	public void setMaterial(Material material) {
+		this.material = material;
+	}
+	
+	public void attachTo(SceneNode node)  {
+		super.attachTo(node);
+		modelMatrix = node.getModelMatrix();
+	}
+	
+	public Material getMaterial() {
+		return material;
+	}
+	
+	public Renderable2 createShallowCopy() {
+		return new Renderable2(material, mesh);
+	}
 	
 	@Override
 	public void render(float[] vpMatrix) {
@@ -88,10 +147,5 @@ public abstract class Renderable2 extends Renderable {
 		}
 		
 		return 1;
-	}
-	
-	@Override
-	public AABB getBoundingBox() {
-		return null;
 	}
 }

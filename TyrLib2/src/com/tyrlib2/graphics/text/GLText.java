@@ -14,7 +14,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.opengl.GLES20;
 
 import com.tyrlib2.graphics.renderer.TextureRegion;
 import com.tyrlib2.graphics.renderer.TyrGL;
@@ -35,7 +34,7 @@ public class GLText implements IGLText {
 	public final static int FONT_SIZE_MIN = 6;         // Minumum Font Size (Pixels)
 	public final static int FONT_SIZE_MAX = 180;       // Maximum Font Size (Pixels)
 
-	public final static int CHAR_BATCH_SIZE = 24;     // Number of Characters to Render Per Batch
+	public final static int CHAR_BATCH_SIZE = 48;     // Number of Characters to Render Per Batch
 													  // must be the same as the size of u_MVPMatrix 
 													  // in BatchTextProgram
 	

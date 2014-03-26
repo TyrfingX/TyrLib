@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import com.tyrlib2.graphics.materials.PointSpriteMaterial;
+import android.opengl.GLES20;
+
+import com.tyrlib2.graphics.materials.ParticleMaterial;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.graphics.scene.SceneManager;
@@ -34,11 +36,12 @@ public class ComplexParticleSystem extends ParticleSystem {
 	
 	private AABB boundingBox;
 	
-	private boolean test = false;
+	private boolean disableZWriting = true;
 	
 	private int colorHandle;
+	private int texHandle;
 	
-	private int[] buffers = new int[1];
+	private int[] buffers = new int[2];
 	
 	public ComplexParticleSystem() {
 		affectors = new Affector[MIN_AFFECTORS_SIZE];
@@ -47,6 +50,14 @@ public class ComplexParticleSystem extends ParticleSystem {
 		modelMatrix = SceneManager.getInstance().getRootSceneNode().getModelMatrix();
 		deadParticles = new Stack<Particle>();
 		boundingBox = new AABB();
+		
+		boundingBox.min.x = Float.MAX_VALUE;
+		boundingBox.min.y = Float.MAX_VALUE;
+		boundingBox.min.z = Float.MAX_VALUE;
+		
+		boundingBox.max.x = -Float.MAX_VALUE;
+		boundingBox.max.y = -Float.MAX_VALUE;
+		boundingBox.max.z = -Float.MAX_VALUE;
 	}
 	
 	public ComplexParticleSystem(int maxParticles) {
@@ -54,17 +65,42 @@ public class ComplexParticleSystem extends ParticleSystem {
 		this.maxParticles = maxParticles;
 		
         ByteBuffer bb = ByteBuffer.allocateDirect(maxParticles * OpenGLRenderer.BYTES_PER_FLOAT * PARTICLE_DATA_SIZE);
-        
         // use the device hardware's native byte order
         bb.order(ByteOrder.nativeOrder());
         buffer = bb.asFloatBuffer();
         
+        ByteBuffer bb2 = ByteBuffer.allocateDirect(DRAW_ORDER.length * maxParticles * 2);
+        
+        // use the device hardware's native byte order
+        bb2.order(ByteOrder.nativeOrder());
+        buffer2 = bb2.asShortBuffer();
+        
+        for (int i = 0; i < maxParticles; ++i) {
+        	short[] drawOrder = { 	(short) (DRAW_ORDER[0]+4*i), 
+									(short) (DRAW_ORDER[1]+4*i),
+									(short) (DRAW_ORDER[2]+4*i),
+									(short) (DRAW_ORDER[3]+4*i),
+									(short) (DRAW_ORDER[4]+4*i),
+									(short) (DRAW_ORDER[5]+4*i) };
+        	buffer2.put(drawOrder);
+        }
+        
+        buffer2.position(0);
+        
         if (TyrGL.GL_USE_VBO == 1) {
-			TyrGL.glGenBuffers(1, buffers, 0); // Get A Valid Name
+			TyrGL.glGenBuffers(2, buffers, 0); // Get A Valid Name
 			TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, buffers[0]); // Bind The Buffer
 	        // Load The Data
 	        TyrGL.glBufferData(TyrGL.GL_ARRAY_BUFFER,  maxParticles * OpenGLRenderer.BYTES_PER_FLOAT * PARTICLE_DATA_SIZE, buffer, TyrGL.GL_STREAM_DRAW);
+	        
+			TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, buffers[1]); // Bind The Buffer
+	        // Load The Data
+	        TyrGL.glBufferData(TyrGL.GL_ARRAY_BUFFER,  DRAW_ORDER.length * maxParticles * 2, buffer2, TyrGL.GL_STATIC_DRAW);
         }
+	}
+	
+	public void setZWritingDisabled(boolean disabled) {
+		this.disableZWriting = disabled;
 	}
 	
 	@Override
@@ -87,17 +123,12 @@ public class ComplexParticleSystem extends ParticleSystem {
 			int countMaterials = particleBatches.size();
 			for (int j = 0; j < countMaterials; ++j) {
 				
-				PointSpriteMaterial material = particleBatches.get(j).material;
+				ParticleMaterial material = particleBatches.get(j).material;
 				List<Particle> particles = particleBatches.get(j).particles;
 				int countParticles = particles.size();
 				for (int i = 0; i < countParticles; ++i) {
 					
 					Particle particle = particles.get(i);
-					particle.onUpdate(time);
-					
-					particle.acceleration.x = 0;
-					particle.acceleration.y = 0;
-					particle.acceleration.z = 0;
 					
 					if (particle.isFinished()) {
 						removeParticle(i, material);
@@ -106,6 +137,12 @@ public class ComplexParticleSystem extends ParticleSystem {
 					} else {
 						checkBoundingBox(particle);
 						useAffectors(particle, time);
+						
+						particle.onUpdate(time);
+						
+						particle.acceleration.x = 0;
+						particle.acceleration.y = 0;
+						particle.acceleration.z = 0;
 					}
 				}
 			}
@@ -122,14 +159,14 @@ public class ComplexParticleSystem extends ParticleSystem {
 	}
 	
 	
-	private void checkBoundingBox(Particle particle) {
-		if (particle.pos.x > boundingBox.max.x) boundingBox.max.x = particle.pos.x;
-		if (particle.pos.y > boundingBox.max.y) boundingBox.max.y = particle.pos.y;
-		if (particle.pos.z > boundingBox.max.z) boundingBox.max.z = particle.pos.z;
+	public void checkBoundingBox(Particle particle) {
+		if (particle.pos.x > boundingBox.max.x) boundingBox.max.x = particle.pos.x + particle.size;
+		if (particle.pos.y > boundingBox.max.y) boundingBox.max.y = particle.pos.y + particle.size;
+		if (particle.pos.z > boundingBox.max.z) boundingBox.max.z = particle.pos.z + particle.size;
 		
-		if (particle.pos.x < boundingBox.min.x) boundingBox.min.x = particle.pos.x;
-		if (particle.pos.y < boundingBox.min.y) boundingBox.min.y = particle.pos.y;
-		if (particle.pos.z < boundingBox.min.z) boundingBox.min.z = particle.pos.z;
+		if (particle.pos.x < boundingBox.min.x) boundingBox.min.x = particle.pos.x - particle.size;
+		if (particle.pos.y < boundingBox.min.y) boundingBox.min.y = particle.pos.y - particle.size;
+		if (particle.pos.z < boundingBox.min.z) boundingBox.min.z = particle.pos.z - particle.size;
 	}
 	
 	private void useAffectors(Particle particle, float time) {
@@ -142,7 +179,7 @@ public class ComplexParticleSystem extends ParticleSystem {
 	
 	public void addParticle(Particle particle) {
 		
-		PointSpriteMaterial material = particle.getMaterial();
+		ParticleMaterial material = particle.getMaterial();
 		
 		ParticleBatch batch = null;
 		
@@ -168,18 +205,52 @@ public class ComplexParticleSystem extends ParticleSystem {
 		particle.dataIndex = particleData.getSize();
 		particle.floatArray = particleData;
 		
-		particleData.pushBack(particle.pos.x);
-		particleData.pushBack(particle.pos.y);
-		particleData.pushBack(particle.pos.z);
+		particleData.pushBack(0);
+		particleData.pushBack(0);
+		particleData.pushBack(0);
 		particleData.pushBack(particle.color.r);
 		particleData.pushBack(particle.color.g);
 		particleData.pushBack(particle.color.b);
 		particleData.pushBack(particle.color.a);
+		particleData.pushBack(particle.material.getRegion().u2);
+		particleData.pushBack(particle.material.getRegion().v2);
+		
+		particleData.pushBack(0);
+		particleData.pushBack(0);
+		particleData.pushBack(0);
+		particleData.pushBack(particle.color.r);
+		particleData.pushBack(particle.color.g);
+		particleData.pushBack(particle.color.b);
+		particleData.pushBack(particle.color.a);
+		particleData.pushBack(particle.material.getRegion().u2);
+		particleData.pushBack(particle.material.getRegion().v1);
+		
+		particleData.pushBack(0);
+		particleData.pushBack(0);
+		particleData.pushBack(0);
+		particleData.pushBack(particle.color.r);
+		particleData.pushBack(particle.color.g);
+		particleData.pushBack(particle.color.b);
+		particleData.pushBack(particle.color.a);
+		particleData.pushBack(particle.material.getRegion().u1);
+		particleData.pushBack(particle.material.getRegion().v2);
+		
+		particleData.pushBack(0);
+		particleData.pushBack(0);
+		particleData.pushBack(0);
+		particleData.pushBack(particle.color.r);
+		particleData.pushBack(particle.color.g);
+		particleData.pushBack(particle.color.b);
+		particleData.pushBack(particle.color.a);
+		particleData.pushBack(particle.material.getRegion().u1);
+		particleData.pushBack(particle.material.getRegion().v1);
+		
+		particle.updateCorners();
 		
 		countParticles++;
 	}
 	
-	private void removeParticle(int index, PointSpriteMaterial material) {
+	public void removeParticle(int index, ParticleMaterial material) {
 		
 		for (int i = 0; i < particleBatches.size(); ++i) {
 		
@@ -270,10 +341,14 @@ public class ComplexParticleSystem extends ParticleSystem {
 		
 		int countBatches = particleBatches.size();
 		
+		if (disableZWriting) {
+			TyrGL.glDepthMask( false );
+		}		
+		
 		for (int i = 0; i < countBatches; ++i) {
 			
 			ParticleBatch batch = particleBatches.get(i);
-			PointSpriteMaterial material = batch.material;
+			ParticleMaterial material = batch.material;
 			FloatArray particleData = batch.particleData;
 			
 			int size = particleData.getSize();
@@ -295,20 +370,26 @@ public class ComplexParticleSystem extends ParticleSystem {
 					
 					// Pass in the position.
 					TyrGL.glVertexAttribPointer(material.getPositionHandle(), POSITION_SIZE, TyrGL.GL_FLOAT, false,
-				    							 PARTICLE_DATA_SIZE * OpenGLRenderer.BYTES_PER_FLOAT, 0);
+				    							 (PARTICLE_DATA_SIZE/4) * OpenGLRenderer.BYTES_PER_FLOAT, 0);
 					TyrGL.glEnableVertexAttribArray(material.getPositionHandle());  
 					
 			        colorHandle = TyrGL.glGetAttribLocation(material.getProgram().handle, "a_Color");
 			        
 					// Pass in the color.
 			        TyrGL.glVertexAttribPointer(colorHandle, COLOR_SIZE, TyrGL.GL_FLOAT, false,
-				    							 PARTICLE_DATA_SIZE * OpenGLRenderer.BYTES_PER_FLOAT, COLOR_OFFSET * OpenGLRenderer.BYTES_PER_FLOAT);
+				    							 (PARTICLE_DATA_SIZE/4) * OpenGLRenderer.BYTES_PER_FLOAT, COLOR_OFFSET * OpenGLRenderer.BYTES_PER_FLOAT);
 			        TyrGL.glEnableVertexAttribArray(colorHandle);  
-		        
+
+			        texHandle = TyrGL.glGetAttribLocation(material.getProgram().handle, "a_TexCoordinate");
+			        
+			        // Pass in the uv coords.
+			        TyrGL.glVertexAttribPointer(texHandle, UV_SIZE, TyrGL.GL_FLOAT, false,
+			        							(PARTICLE_DATA_SIZE/4) * OpenGLRenderer.BYTES_PER_FLOAT, UV_OFFSET * OpenGLRenderer.BYTES_PER_FLOAT);
+			        TyrGL.glEnableVertexAttribArray(texHandle);  
 				} else {
 					// Pass in the position.
 					TyrGL.glVertexAttribPointer(material.getPositionHandle(), POSITION_SIZE, TyrGL.GL_FLOAT, false,
-				    							 PARTICLE_DATA_SIZE * OpenGLRenderer.BYTES_PER_FLOAT, buffer);
+												(PARTICLE_DATA_SIZE/4) * OpenGLRenderer.BYTES_PER_FLOAT, buffer);
 					
 					TyrGL.glEnableVertexAttribArray(material.getPositionHandle());  
 					
@@ -317,8 +398,16 @@ public class ComplexParticleSystem extends ParticleSystem {
 					// Pass in the color.
 			        buffer.position(COLOR_OFFSET);
 			        TyrGL.glVertexAttribPointer(colorHandle, COLOR_SIZE, TyrGL.GL_FLOAT, false,
-				    							 PARTICLE_DATA_SIZE * OpenGLRenderer.BYTES_PER_FLOAT, buffer);
+			        							(PARTICLE_DATA_SIZE/4) * OpenGLRenderer.BYTES_PER_FLOAT, buffer);
 			        TyrGL.glEnableVertexAttribArray(colorHandle);  
+			        
+			        texHandle = TyrGL.glGetAttribLocation(material.getProgram().handle, "a_TexCoordinate");
+			        
+					// Pass in the uv coords.
+			        buffer.position(UV_OFFSET);
+			        TyrGL.glVertexAttribPointer(texHandle, UV_SIZE, TyrGL.GL_FLOAT, false,
+			        							(PARTICLE_DATA_SIZE/4) * OpenGLRenderer.BYTES_PER_FLOAT, buffer);
+			        TyrGL.glEnableVertexAttribArray(texHandle);  
 				}
 		        
 		        // Apply the projection and view transformation
@@ -330,12 +419,21 @@ public class ComplexParticleSystem extends ParticleSystem {
 				//TyrGL.glDepthMask(false);
 				
 				// Draw the point.
-				TyrGL.glDrawArrays(TyrGL.GL_POINTS, 0, particleData.getSize() / PARTICLE_DATA_SIZE);
+				if (TyrGL.GL_USE_VBO == 1) {
+					TyrGL.glBindBuffer(TyrGL.GL_ELEMENT_ARRAY_BUFFER, buffers[1]);
+					TyrGL.glDrawElements(TyrGL.GL_TRIANGLES, 6*particleData.getSize() / PARTICLE_DATA_SIZE, TyrGL.GL_UNSIGNED_SHORT, 0);
+				} else {
+					TyrGL.glDrawElements(TyrGL.GL_TRIANGLES, 6*particleData.getSize() / PARTICLE_DATA_SIZE, TyrGL.GL_UNSIGNED_SHORT, buffer2);
+				}
 			
 				//TyrGL.glDepthMask(true);
 
 			}
 		}
+		
+		if (disableZWriting) {
+			TyrGL.glDepthMask( true );
+		}		
 		
 	}
 	

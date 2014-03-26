@@ -1,7 +1,5 @@
 package com.tyrlib2.graphics.renderables;
 
-import android.opengl.GLES20;
-
 import com.tyrlib2.graphics.materials.OutlineMaterial;
 import com.tyrlib2.graphics.renderer.BoundedRenderable;
 import com.tyrlib2.graphics.renderer.Mesh;

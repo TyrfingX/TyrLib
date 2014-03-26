@@ -1,4 +1,5 @@
 uniform mat4 u_MVPMatrix;       // A constant representing the combined model/view/projection matrix.
+uniform mat4 u_NormalMatrix;
  
 attribute vec4 a_Position;      // Per-vertex position information we will pass in.
 attribute vec3 a_Normal;        // Per-vertex normal information we will pass in.

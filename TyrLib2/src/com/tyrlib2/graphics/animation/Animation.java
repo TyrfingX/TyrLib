@@ -25,6 +25,8 @@ public class Animation implements IUpdateable {
 	protected int currentFrame;
 	protected Skeleton skeleton;
 	
+	private Quaternion interpolant = new Quaternion();
+	
 	public Animation(String name) {
 		this.name = name;
 		this.playing = false;
@@ -113,16 +115,16 @@ public class Animation implements IUpdateable {
 				
 				if (nextFrame != null) {
 					Quaternion q2 = nextFrame.boneRot[i];
-					q1 = Quaternion.slerp(q1, q2, alpha);
+					Quaternion.slerp(interpolant, q1, q2, alpha);
 					
 					Vector3 v2 = nextFrame.bonePos[i];
 					v1 = Vector3.lerp(v1, v2, alpha);
 				}
 				
-				Quaternion quat = bone.initRot.inverse().multiply(q1);
+				bone.initRotInverse.multiply(interpolant, interpolant);
 				
-				bone.setRelativePos(v1.sub(bone.initPos));
-				bone.setRelativeRot(quat);
+				bone.setRelativePos(v1.x - bone.initPos.x, v1.y - bone.initPos.y, v1.z - bone.initPos.z);
+				bone.setRelativeRot(interpolant);
 				
 			}	
 			

@@ -56,6 +56,10 @@ public class TargetMetrics {
 			fontSize += 4;
 			fontSizeHeadline += 4;
 			fontSizeBigHeadline += 4;
+		} else if (xdpi > 320) {
+			fontSize += 4;
+			fontSizeHeadline += 4;
+			fontSizeBigHeadline += 4;
 		}
 		
 		xdpi = 160;

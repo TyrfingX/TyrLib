@@ -23,7 +23,7 @@ public class WindowManager {
 	private static WindowManager instance;
 	
 	private Map<String, Window> windows;
-	private Updater updater;
+	protected Updater updater;
 	private SceneNode rootNode;
 	private GUIRenderer renderer;
 	
@@ -208,8 +208,9 @@ public class WindowManager {
 	
 	protected void removeWindow(Window window) {
 		renderer.removeWindow(window);
-		windows.remove(window);
+		windows.remove(window.getName());
 		window.node.detach();
+		updater.removeItem(window);
 		InputManager.getInstance().removeTouchListener(window);
 	}
 	

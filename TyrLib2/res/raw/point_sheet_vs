@@ -1,8 +1,8 @@
 uniform mat4 u_MVPMatrix;
-uniform float u_Size;
 
 attribute vec3 a_Position;
 attribute vec4 a_Color;
+attribute float a_Size;
 
 varying vec4 v_Color; 
 
@@ -14,7 +14,7 @@ void main() {
 
       float zDist = 1.0-ndc.z ; // 1 is close (right up in your face,)
 
-	  gl_PointSize = u_Size*zDist;
+	  gl_PointSize = a_Size*zDist;
 	  v_Color = a_Color;
 	  
 }

@@ -35,7 +35,7 @@ public class AABB {
 		float y = max.y  - min.y;
 		float z = max.z  - min.z;
 		
-		return FloatMath.sqrt(x*x+y*y+z*z);
+		return (float) Math.sqrt(x*x+y*y+z*z);
 	}
 	
 	public Vector3[] getPoints() {

@@ -93,6 +93,7 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 	}
 	
 	private void parseText() {
+		
 		textSections = new ArrayList<TextSection>();
 		float xOffset = 0;
 		float yOffset = 0;
@@ -113,11 +114,22 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 						// We want to end any special coloring we currently have
 						String sectionText = builder.toString();
 						TextSection textSection = new TextSection(color, sectionText, rotation, xOffset, yOffset);
+						if (alignment == ALIGNMENT.CENTER) {
+							for (int j = 0; j < textSections.size(); ++j) {
+								if (textSections.get(j).yOffset == yOffset) {
+									textSections.get(j).xOffset -= font.glText.getLength(sectionText) / 2;
+								}
+							}
+						}
 						textSections.add(textSection);
 						builder = new StringBuilder();
 						
 						color = baseColor;
-						xOffset += font.glText.getLength(sectionText);
+						if (alignment == ALIGNMENT.CENTER) {
+							xOffset += font.glText.getLength(sectionText) / 2;
+						} else {
+							xOffset += font.glText.getLength(sectionText);
+						}
 					} else {
 						builder.append(c);
 						builder.append(d);
@@ -128,9 +140,20 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 				// Line break here
 				String sectionText = builder.toString();
 				TextSection textSection = new TextSection(color, sectionText, rotation, xOffset, yOffset);
+				if (alignment == ALIGNMENT.CENTER) {
+					for (int j = 0; j < textSections.size(); ++j) {
+						if (textSections.get(j).yOffset == yOffset) {
+							textSections.get(j).xOffset -= font.glText.getLength(sectionText) / 2;
+						}
+					}
+				}
 				textSections.add(textSection);
 				builder = new StringBuilder();
-				xOffset += font.glText.getLength(sectionText);
+				if (alignment == ALIGNMENT.CENTER) {
+					xOffset += font.glText.getLength(sectionText) / 2;
+				} else {
+					xOffset += font.glText.getLength(sectionText);
+				}
 				
 				yOffset -= font.glText.getCharHeight() - font.glText.getDescent();
 				
@@ -142,6 +165,13 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 				// We want to end any special rotation we currently have
 				String sectionText = builder.toString();
 				TextSection textSection = new TextSection(color, sectionText, rotation, xOffset, yOffset);
+				if (alignment == ALIGNMENT.CENTER) {
+					for (int j = 0; j < textSections.size(); ++j) {
+						if (textSections.get(j).yOffset == yOffset) {
+							textSections.get(j).xOffset -= font.glText.getLength(sectionText) / 2;
+						}
+					}
+				}
 				textSections.add(textSection);
 				builder = new StringBuilder();
 				
@@ -155,9 +185,20 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 						
 						String sectionText = builder.toString();
 						TextSection textSection = new TextSection(color, sectionText, rotation, xOffset, yOffset);
+						if (alignment == ALIGNMENT.CENTER) {
+							for (int j = 0; j < textSections.size(); ++j) {
+								if (textSections.get(j).yOffset == yOffset) {
+									textSections.get(j).xOffset -= font.glText.getLength(sectionText) / 2;
+								}
+							}
+						}
 						textSections.add(textSection);
 						builder = new StringBuilder();
-						xOffset += font.glText.getLength(sectionText);
+						if (alignment == ALIGNMENT.CENTER) {
+							xOffset += font.glText.getLength(sectionText) / 2;
+						} else {
+							xOffset += font.glText.getLength(sectionText);
+						}
 						
 						// We want a different color for our text here
 						String redHex = "" + text.charAt(i+1) + text.charAt(i+2); 
@@ -180,6 +221,13 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 						
 						String sectionText = builder.toString();
 						TextSection textSection = new TextSection(color, sectionText, rotation, xOffset, yOffset);
+						if (alignment == ALIGNMENT.CENTER) {
+							for (int j = 0; j < textSections.size(); ++j) {
+								if (textSections.get(j).yOffset == yOffset) {
+									textSections.get(j).xOffset -= font.glText.getLength(sectionText) / 2;
+								}
+							}
+						}
 						textSections.add(textSection);
 						builder = new StringBuilder();
 						xOffset += font.glText.getLength(sectionText);
@@ -207,6 +255,13 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 		
 		String sectionText = builder.toString();
 		TextSection textSection = new TextSection(color, sectionText, rotation, xOffset, yOffset);
+		if (alignment == ALIGNMENT.CENTER) {
+			for (int i = 0; i < textSections.size(); ++i) {
+				if (textSections.get(i).yOffset == yOffset) {
+					textSections.get(i).xOffset -= font.glText.getLength(sectionText) / 2;
+				}
+			}
+		}
 		textSections.add(textSection);
 		xOffset += font.glText.getLength(sectionText);
 		
@@ -232,7 +287,10 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 	}
 
 	public void setAligment(ALIGNMENT alignment) {
-		this.alignment = alignment;
+		if (alignment != this.alignment) {
+			this.alignment = alignment;
+			parseText();
+		}
 	}
 	
 	public Vector2 getSize() {

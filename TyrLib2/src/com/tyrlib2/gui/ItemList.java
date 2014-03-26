@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.view.MotionEvent;
 
+import com.tyrlib2.input.InputManager;
 import com.tyrlib2.math.Vector2;
 
 public class ItemList extends Window {
@@ -28,6 +29,8 @@ public class ItemList extends Window {
 	private boolean offseted;
 	
 	private float height;
+	
+	private long oldPriority;
 	
 	public ItemList(String name, Vector2 pos, Vector2 size, float padding, int displayItems) {
 		super(name, size);
@@ -110,10 +113,17 @@ public class ItemList extends Window {
 	protected void onTouchDownWindow(Vector2 point, MotionEvent event) {
 		touching = true;
 		lastPoint = new Vector2(point.x, point.y);
+		
+		oldPriority = priority;
+		priority = InputManager.FOCUS_PRIORITY;
+		InputManager.getInstance().sort();
 	}
 	
 	@Override
-	protected void onTouchMoveWindow(Vector2 point, MotionEvent event) {
+	public boolean onTouchMove(Vector2 point, MotionEvent event, int fingerId) {
+		
+		if (!touching) return false;
+		
 		offseted = true;
 		if (lastPoint != null && itemListEntries.size() > displayItems) {
 			Vector2 move = lastPoint.vectorTo(point);
@@ -178,6 +188,8 @@ public class ItemList extends Window {
 		}
 		
 		lastPoint = new Vector2(point.x, point.y);
+		
+		return false;
 	}
 	
 	private void rotate(int direction) {
@@ -197,11 +209,18 @@ public class ItemList extends Window {
 	}
 	
 	@Override
-	protected void onTouchUpWindow(Vector2 point, MotionEvent event) {
-		touching = false;
-		if (offseted) {
-			correctOffset();
+	public boolean onTouchUp(Vector2 point, MotionEvent event, int fingerId) {
+		if (touching) {
+			touching = false;
+			if (offseted) {
+				correctOffset();
+			}
+			
+			priority = oldPriority;
+			InputManager.getInstance().sort();
 		}
+		
+		return false;
 	}
 	
 	public void clear() {

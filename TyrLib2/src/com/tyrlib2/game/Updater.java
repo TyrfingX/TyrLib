@@ -79,14 +79,11 @@ public class Updater implements IFrameListener {
 	public void onFrameRendered(float time) {
 		for (int i = 0; i < queue.size() && !pause; ++i) {
 			IUpdateable item = queue.get(i);
-			if (item != null) {
-				item.onUpdate(time);
-				if (item.isFinished()) {
-					removeItem(i);
-					--i;
-				}
-			} else {
+			if (item.isFinished()) {
 				removeItem(i);
+				--i;
+			} else {
+				item.onUpdate(time);
 			}
 		}
 	}

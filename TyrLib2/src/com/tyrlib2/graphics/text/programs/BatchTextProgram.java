@@ -11,7 +11,7 @@ public class BatchTextProgram extends Program {
 	};
 	
 	private static final String vertexShaderCode =
-			"uniform mat4 u_MVPMatrix[24];      \n"     // An array representing the combined 
+			"uniform mat4 u_MVPMatrix[48];      \n"     // An array representing the combined 
 														// model/view/projection matrices for each sprite
 			
 		  + "attribute float a_MVPMatrixIndex; \n"	// The index of the MVPMatrix of the particular sprite
