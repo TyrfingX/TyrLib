@@ -1,7 +1,5 @@
 package com.tyrlib2.graphics.text;
 
-import android.opengl.GLES20;
-
 import com.tyrlib2.graphics.renderer.TextureRegion;
 import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.graphics.text.programs.Program;
@@ -66,7 +64,6 @@ public class SpriteBatch {
 		if ( numSprites > 0 )  {                        // IF Any Sprites to Render
 			// bind MVP matrices array to shader
 			TyrGL.glUniformMatrix4fv(mMVPMatricesHandle, numSprites, false, uMVPMatrices, 0); 
-			TyrGL.glEnableVertexAttribArray(mMVPMatricesHandle);
 			
 			vertices.setVertices( vertexBuffer, 0, bufferIndex);  // Set Vertices from Buffer
 			vertices.bind();                             // Bind Vertices

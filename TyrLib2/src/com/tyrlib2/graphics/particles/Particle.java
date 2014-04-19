@@ -49,19 +49,21 @@ public class Particle implements IUpdateable {
 		pos.y += time * velocity.y;
 		pos.z += time * velocity.z;
 		
-		floatArray.buffer[dataIndex + ParticleSystem.UV_OFFSET] = material.getRegion().u2;
-		floatArray.buffer[dataIndex + ParticleSystem.UV_OFFSET + 1] = material.getRegion().v2;
-		
-		floatArray.buffer[dataIndex + ParticleSystem.UV_OFFSET + ParticleSystem.PARTICLE_DATA_SIZE/4] = material.getRegion().u2;
-		floatArray.buffer[dataIndex + ParticleSystem.UV_OFFSET + 1 + ParticleSystem.PARTICLE_DATA_SIZE/4] = material.getRegion().v1;
-		
-		floatArray.buffer[dataIndex + ParticleSystem.UV_OFFSET + 2*ParticleSystem.PARTICLE_DATA_SIZE/4] = material.getRegion().u1;
-		floatArray.buffer[dataIndex + ParticleSystem.UV_OFFSET + 1 + 2*ParticleSystem.PARTICLE_DATA_SIZE/4] = material.getRegion().v2;
-		
-		floatArray.buffer[dataIndex + ParticleSystem.UV_OFFSET + 3*ParticleSystem.PARTICLE_DATA_SIZE/4] = material.getRegion().u1;
-		floatArray.buffer[dataIndex + ParticleSystem.UV_OFFSET + 1 + 3*ParticleSystem.PARTICLE_DATA_SIZE/4] = material.getRegion().v1;
-		
-		updateCorners();
+		if (system.visible) {
+			floatArray.buffer[dataIndex + ParticleSystem.UV_OFFSET] = material.getRegion().u2;
+			floatArray.buffer[dataIndex + ParticleSystem.UV_OFFSET + 1] = material.getRegion().v2;
+			
+			floatArray.buffer[dataIndex + ParticleSystem.UV_OFFSET + ParticleSystem.PARTICLE_DATA_SIZE/4] = material.getRegion().u2;
+			floatArray.buffer[dataIndex + ParticleSystem.UV_OFFSET + 1 + ParticleSystem.PARTICLE_DATA_SIZE/4] = material.getRegion().v1;
+			
+			floatArray.buffer[dataIndex + ParticleSystem.UV_OFFSET + 2*ParticleSystem.PARTICLE_DATA_SIZE/4] = material.getRegion().u1;
+			floatArray.buffer[dataIndex + ParticleSystem.UV_OFFSET + 1 + 2*ParticleSystem.PARTICLE_DATA_SIZE/4] = material.getRegion().v2;
+			
+			floatArray.buffer[dataIndex + ParticleSystem.UV_OFFSET + 3*ParticleSystem.PARTICLE_DATA_SIZE/4] = material.getRegion().u1;
+			floatArray.buffer[dataIndex + ParticleSystem.UV_OFFSET + 1 + 3*ParticleSystem.PARTICLE_DATA_SIZE/4] = material.getRegion().v1;
+			
+			updateCorners();
+		}
 
 	}
 	
@@ -120,7 +122,7 @@ public class Particle implements IUpdateable {
 		float deltaZ = camPos.z - pos.z;
 		
 		if (rotation != 0) {
-			up = Quaternion.fromAxisAngle(new Vector3(deltaX, deltaY, deltaZ), passedTime * rotation).multiply(up);
+			up = Quaternion.fromAxisAngle(deltaX, deltaY, deltaZ, passedTime * rotation).multiply(up);
 		}
 		
 		Vector3.cross(right, deltaX, deltaY, deltaZ, up.x, up.y, up.z);

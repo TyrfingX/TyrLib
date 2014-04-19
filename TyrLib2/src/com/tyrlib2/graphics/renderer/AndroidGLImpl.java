@@ -16,6 +16,7 @@ public class AndroidGLImpl implements GLImpl {
 		TyrGL.GL_DST_COLOR = GLES20.GL_DST_COLOR;
 		TyrGL.GL_ARRAY_BUFFER = GLES20.GL_ARRAY_BUFFER;
 		TyrGL.GL_TEXTURE0 = GLES20.GL_TEXTURE0;
+		TyrGL.GL_TEXTURE1 = GLES20.GL_TEXTURE1;
 		TyrGL.GL_TEXTURE_2D = GLES20.GL_TEXTURE_2D;
 		TyrGL.GL_CULL_FACE = GLES20.GL_CULL_FACE;
 		TyrGL.GL_TRIANGLES = GLES20.GL_TRIANGLES;
@@ -322,6 +323,11 @@ public class AndroidGLImpl implements GLImpl {
 
 	@Override
 	public void glBufferSubData(int target, int offset, int size, Buffer data) {
+	}
+
+	@Override
+	public void glGenerateMipmap(int mode) {
+		GLES20.glGenerateMipmap(mode);
 	}
 
 }

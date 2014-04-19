@@ -215,7 +215,7 @@ public class DefaultMaterial3 extends LightedMaterial {
 		}
 	}
 	
-	private void passTexture(int textureHandle) {
+	protected void passTexture(int textureHandle) {
 	    // Set the active texture unit to texture unit 0.
 		TyrGL.glActiveTexture(TyrGL.GL_TEXTURE0);
 	 

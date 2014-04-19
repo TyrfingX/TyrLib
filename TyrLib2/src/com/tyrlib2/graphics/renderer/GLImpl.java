@@ -2,6 +2,8 @@ package com.tyrlib2.graphics.renderer;
 
 import java.nio.Buffer;
 
+import android.opengl.GLES20;
+
 public interface GLImpl {
 	public void glVertexAttrib3f(int handle, float x, float y, float z);
 	public void glDisableVertexAttribArray(int handle);
@@ -58,4 +60,5 @@ public interface GLImpl {
 	public void glGenBuffers(int count, int[] buffers, int offset);
 	public void glBufferData(int target, int size, Buffer data, int mode);
 	public void glBufferSubData(int target, int offset, int size, Buffer data);
+	public void glGenerateMipmap(int mode);
 }

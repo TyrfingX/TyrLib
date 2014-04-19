@@ -9,16 +9,16 @@
 
 package com.tyrlib2.graphics.text;
 
-import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Typeface;
-
+import com.tyrlib2.bitmap.IFontMetrics;
+import com.tyrlib2.bitmap.IDrawableBitmap;
+import com.tyrlib2.bitmap.ICanvas;
+import com.tyrlib2.bitmap.IPaint;
+import com.tyrlib2.bitmap.ITypeface;
 import com.tyrlib2.graphics.renderer.TextureRegion;
 import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.graphics.text.programs.BatchTextProgram;
 import com.tyrlib2.graphics.text.programs.Program;
+import com.tyrlib2.main.Media;
 import com.tyrlib2.math.Matrix;
 
 public class GLText implements IGLText {
@@ -41,7 +41,6 @@ public class GLText implements IGLText {
 	public static float[] modelMatrix = new float[16];
 
 	//--Members--//
-	AssetManager assets;                               // Asset Manager
 	SpriteBatch batch;                                 // Batch Renderer
 
 	int fontPadX, fontPadY;                            // Font Padding (Pixels; On Each Side, ie. Doubled on Both X+Y Axis)
@@ -73,12 +72,11 @@ public class GLText implements IGLText {
 
 	//--Constructor--//
 	// D: save program + asset manager, create arrays, and initialize the members
-	public GLText(Program program, AssetManager assets) {
+	public GLText(Program program) {
 		if (program == null) {
 			program = new BatchTextProgram();
 			program.init();
-		}
-		this.assets = assets;                           // Save the Asset Manager Instance
+		}                       // Save the Asset Manager Instance
 		
 		batch = new SpriteBatch(CHAR_BATCH_SIZE, program );  // Create Sprite Batch (with Defined Size)
 
@@ -115,8 +113,8 @@ public class GLText implements IGLText {
 	}
 	
 	// Constructor using the default program (BatchTextProgram)
-	public GLText(AssetManager assets) {
-		this(null, assets);
+	public GLText() {
+		this(null);
 	}
 
 	//--Load Font--//
@@ -140,15 +138,17 @@ public class GLText implements IGLText {
 		fontPadY = padY;                                // Set Requested Y Axis Padding
 
 		// load the font and setup paint instance for drawing
-		Typeface tf = Typeface.createFromAsset( assets, file );  // Create the Typeface from Font File
-		Paint paint = new Paint();                      // Create Android Paint Instance
+		ICanvas canvas = Media.CONTEXT.createCanvas();           // Create Canvas for Rendering to Bitmap
+		ITypeface tf = Media.CONTEXT.createFromAsset(file);  // Create the Typeface from Font File
+		IPaint paint = Media.CONTEXT.createPaint(canvas);                      // Create Android Paint Instance
 		paint.setAntiAlias( true );                     // Enable Anti Alias
+		paint.setTypeface( tf );                        // Set Typeface
 		paint.setTextSize( size );                      // Set Text Size
 		paint.setColor( 0xffffffff );                   // Set ARGB (White, Opaque)
-		paint.setTypeface( tf );                        // Set Typeface
+		
 
 		// get font metrics
-		Paint.FontMetrics fm = paint.getFontMetrics();  // Get Font Metrics
+		IFontMetrics fm = paint.getFontMetrics();  // Get Font Metrics
 		fontHeight = (float)Math.ceil( Math.abs( fm.bottom ) + Math.abs( fm.top ) );  // Calculate Font Height
 		fontAscent = (float)Math.ceil( Math.abs( fm.ascent ) );  // Save Font Ascent
 		fontDescent = (float)Math.ceil( Math.abs( fm.descent ) );  // Save Font Descent
@@ -197,10 +197,10 @@ public class GLText implements IGLText {
 			textureSize = 2048;                          // Set 2048 Texture Size
 
 		// create an empty bitmap (alpha only)
-		Bitmap bitmap = Bitmap.createBitmap( textureSize, textureSize, Bitmap.Config.ALPHA_8 );  // Create Bitmap
-		Canvas canvas = new Canvas( bitmap );           // Create Canvas for Rendering to Bitmap
+		IDrawableBitmap bitmap = Media.CONTEXT.createAlphaBitmap( textureSize, textureSize );  // Create Bitmap
 		bitmap.eraseColor( 0x00000000 );                // Set Transparent Background (ARGB)
-
+		canvas.setBitmap(bitmap);
+		
 		// calculate rows/columns
 		// NOTE: while not required for anything, these may be useful to have :)
 		colCnt = textureSize / cellWidth;               // Calculate Number of Columns
@@ -222,7 +222,7 @@ public class GLText implements IGLText {
 		canvas.drawText( s, 0, 1, x, y, paint );        // Draw Character
 
 		// save the bitmap in a texture
-		textureId = TextureHelper.loadTexture(bitmap);
+		textureId = bitmap.toTexture();
 
 		// setup the array of character texture regions
 		x = 0;                                          // Initialize X
@@ -278,7 +278,6 @@ public class GLText implements IGLText {
 		
 		// set color TODO: only alpha component works, text is always black #BUG
 		TyrGL.glUniform4f(mColorHandle, red,green,blue,alpha); 
-		TyrGL.glEnableVertexAttribArray(mColorHandle);
 		
 		TyrGL.glActiveTexture(TyrGL.GL_TEXTURE0);  // Set the active texture unit to texture unit 0
 		
@@ -294,7 +293,6 @@ public class GLText implements IGLText {
 	@Override
 	public void end()  {
 		batch.endBatch();                               // End Batch
-		TyrGL.glDisableVertexAttribArray(mColorHandle);
 	}
 
 	//--Draw Text--//

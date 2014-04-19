@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.opengl.GLES20;
+
 import com.tyrlib2.files.IBitmap;
 import com.tyrlib2.main.Media;
 import com.tyrlib2.math.Vector2;
@@ -138,11 +140,12 @@ public class TextureManager {
 	        TyrGL.glBindTexture(TyrGL.GL_TEXTURE_2D, textureHandle[0]);
 	 
 	        // Set filtering
-	        TyrGL.glTexParameteri(TyrGL.GL_TEXTURE_2D, TyrGL.GL_TEXTURE_MIN_FILTER, TyrGL.GL_LINEAR);
-	        //TyrGL.glTexParameteri(TyrGL.GL_TEXTURE_2D, TyrGL.GL_TEXTURE_MAG_FILTER, TyrGL.GL_LINEAR_MIPMAP_LINEAR);
+	        TyrGL.glTexParameteri(TyrGL.GL_TEXTURE_2D, TyrGL.GL_TEXTURE_MIN_FILTER, TyrGL.GL_LINEAR_MIPMAP_LINEAR);
+	        TyrGL.glTexParameteri(TyrGL.GL_TEXTURE_2D, TyrGL.GL_TEXTURE_MAG_FILTER, TyrGL.GL_LINEAR);
 	 
 	        // Load the bitmap into the bound texture.
 	        bitmap.bind();
+	        TyrGL.glGenerateMipmap(TyrGL.GL_TEXTURE_2D);
 	 
 	        // Recycle the bitmap, since its data has been loaded into OpenGL.
 	        bitmap.recycle();

@@ -15,6 +15,10 @@ public class AndroidBitmap implements IBitmap {
 		this.handle = handle;
 	}
 	
+	public AndroidBitmap(Bitmap bitmap) {
+		this.bitmap = bitmap;
+	}
+	
 	@Override
 	public int getWidth() {
 		return bitmap.getWidth();
@@ -38,6 +42,10 @@ public class AndroidBitmap implements IBitmap {
 	@Override
 	public int getHandle() {
 		return handle;
+	}
+	
+	public Bitmap getBitmap() {
+		return bitmap;
 	}
 	
 }

@@ -63,6 +63,14 @@ public class Vector2 {
 		return new Vector2(x*m, y*m);
 	}
 	
+	public Vector2 scale(float x, float y)
+	{
+		this.x *= x;
+		this.y *= y;
+		
+		return this;
+	}
+	
 	/**
 	 * @return The magnitude of the vector.
 	 */

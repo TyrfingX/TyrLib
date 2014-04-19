@@ -5,6 +5,7 @@ import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
+import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.renderer.TyrGL;
 
 public class Vertices {
@@ -34,6 +35,8 @@ public class Vertices {
 	private int mTextureCoordinateHandle;
 	private int mPositionHandle;
 	private int mMVPIndexHandle;
+	
+	private int[] buffers = new int[2];
 
 	//--Constructor--//
 	// D: create the vertices/indices as specified (for 2d/3d)
@@ -66,6 +69,16 @@ public class Vertices {
 		mTextureCoordinateHandle = AttribVariable.A_TexCoordinate.getHandle();
 		mMVPIndexHandle = AttribVariable.A_MVPMatrixIndex.getHandle();
 		mPositionHandle = AttribVariable.A_Position.getHandle();
+		
+        if (TyrGL.GL_USE_VBO == 1) {
+			TyrGL.glGenBuffers(2, buffers, 0); // Get A Valid Name
+			TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, buffers[0]); // Bind The Buffer
+			TyrGL.glBufferData(TyrGL.GL_ARRAY_BUFFER,  maxVertices * vertexStride * OpenGLRenderer.BYTES_PER_FLOAT, vertices, TyrGL.GL_STREAM_DRAW);
+	        
+			TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, buffers[1]); // Bind The Buffer
+	        // Load The Data
+	        TyrGL.glBufferData(TyrGL.GL_ARRAY_BUFFER,  maxIndices * 2, indices, TyrGL.GL_STREAM_DRAW);
+        }
 	}
 
 	//--Set Vertices--//
@@ -84,6 +97,10 @@ public class Vertices {
 		this.vertices.put( tmpBuffer, 0, length );      // Set New Vertices
 		this.vertices.flip();                           // Flip Vertex Buffer
 		this.numVertices = length / this.vertexStride;  // Save Number of Vertices
+		if (TyrGL.GL_USE_VBO == 1) {
+			TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, buffers[0]);
+			TyrGL.glBufferSubData(TyrGL.GL_ARRAY_BUFFER, 0, this.numVertices * OpenGLRenderer.BYTES_PER_FLOAT * this.vertexStride, this.vertices);
+		}
 	}
 
 	//--Set Indices--//
@@ -97,6 +114,11 @@ public class Vertices {
 		this.indices.put( indices, offset, length );    // Set New Indices
 		this.indices.flip();                            // Flip Index Buffer
 		this.numIndices = length;                       // Save Number of Indices
+		
+		if (TyrGL.GL_USE_VBO == 1) {
+			TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, buffers[1]);
+			TyrGL.glBufferSubData(TyrGL.GL_ARRAY_BUFFER, 0, numIndices * 2, this.indices);
+		}
 	}
 
 	//--Bind--//
@@ -105,23 +127,42 @@ public class Vertices {
 	// A: [none]
 	// R: [none]
 	public void bind()  {
-		// bind vertex position pointer
-		vertices.position( 0 );                         // Set Vertex Buffer to Position
-		TyrGL.glVertexAttribPointer(mPositionHandle, positionCnt, 
-				TyrGL.GL_FLOAT, false, vertexSize, vertices);
-		TyrGL.glEnableVertexAttribArray(mPositionHandle);
-
-		// bind texture position pointer
-		vertices.position(positionCnt);  // Set Vertex Buffer to Texture Coords (NOTE: position based on whether color is also specified)
-		TyrGL.glVertexAttribPointer(mTextureCoordinateHandle, TEXCOORD_CNT, 
-				TyrGL.GL_FLOAT, false, vertexSize, vertices);
-		TyrGL.glEnableVertexAttribArray(mTextureCoordinateHandle);
 		
-		// bind MVP Matrix index position handle
-		vertices.position(positionCnt + TEXCOORD_CNT);
-		TyrGL.glVertexAttribPointer(mMVPIndexHandle, MVP_MATRIX_INDEX_CNT, 
-				TyrGL.GL_FLOAT, false, vertexSize, vertices);
-		TyrGL.glEnableVertexAttribArray(mMVPIndexHandle);
+		if (TyrGL.GL_USE_VBO == 1) {
+			TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, buffers[0]);
+			
+			// Pass in the position.
+			TyrGL.glVertexAttribPointer(mPositionHandle, positionCnt, 
+					TyrGL.GL_FLOAT, false, vertexSize, 0);
+			TyrGL.glEnableVertexAttribArray(mPositionHandle);
+			
+			TyrGL.glVertexAttribPointer(mTextureCoordinateHandle, TEXCOORD_CNT, 
+					TyrGL.GL_FLOAT, false, vertexSize, positionCnt * OpenGLRenderer.BYTES_PER_FLOAT);
+			TyrGL.glEnableVertexAttribArray(mTextureCoordinateHandle);
+			
+			TyrGL.glVertexAttribPointer(mMVPIndexHandle, MVP_MATRIX_INDEX_CNT, 
+					TyrGL.GL_FLOAT, false, vertexSize, (positionCnt + TEXCOORD_CNT) * OpenGLRenderer.BYTES_PER_FLOAT);
+			TyrGL.glEnableVertexAttribArray(mMVPIndexHandle);
+		} else {
+			// bind vertex position pointer
+			vertices.position( 0 );                         // Set Vertex Buffer to Position
+			TyrGL.glVertexAttribPointer(mPositionHandle, positionCnt, 
+					TyrGL.GL_FLOAT, false, vertexSize, vertices);
+			TyrGL.glEnableVertexAttribArray(mPositionHandle);
+
+			// bind texture position pointer
+			vertices.position(positionCnt);  // Set Vertex Buffer to Texture Coords (NOTE: position based on whether color is also specified)
+			TyrGL.glVertexAttribPointer(mTextureCoordinateHandle, TEXCOORD_CNT, 
+					TyrGL.GL_FLOAT, false, vertexSize, vertices);
+			TyrGL.glEnableVertexAttribArray(mTextureCoordinateHandle);
+			
+			// bind MVP Matrix index position handle
+			vertices.position(positionCnt + TEXCOORD_CNT);
+			TyrGL.glVertexAttribPointer(mMVPIndexHandle, MVP_MATRIX_INDEX_CNT, 
+					TyrGL.GL_FLOAT, false, vertexSize, vertices);
+			TyrGL.glEnableVertexAttribArray(mMVPIndexHandle);
+		}
+
 	}
 
 	//--Draw--//
@@ -133,10 +174,17 @@ public class Vertices {
 	// R: [none]
 	public void draw(int primitiveType, int offset, int numVertices)  {
 		if (indices != null)  {                       // IF Indices Exist
-			indices.position(offset);                  // Set Index Buffer to Specified Offset
+			
 			//draw indexed
-			TyrGL.glDrawElements(primitiveType, numVertices,
-					TyrGL.GL_UNSIGNED_SHORT, indices);
+			if (TyrGL.GL_USE_VBO == 1) {
+				TyrGL.glBindBuffer(TyrGL.GL_ELEMENT_ARRAY_BUFFER, buffers[1]);
+				TyrGL.glDrawElements(primitiveType, numVertices,
+						TyrGL.GL_UNSIGNED_SHORT, offset);
+			} else {
+				indices.position(offset);                  // Set Index Buffer to Specified Offset
+				TyrGL.glDrawElements(primitiveType, numVertices,
+						TyrGL.GL_UNSIGNED_SHORT, indices);
+			}
 		}
 		else  {                                         // ELSE No Indices Exist
 			//draw direct

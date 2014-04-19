@@ -32,6 +32,8 @@ public class WindowManager {
 	public static final long GUI_BASE_PRIORITY = 10000;
 	public static final long GUI_OVERLAY_PRIORITY = 1000000;
 	
+	protected Vector2 scale = new Vector2(1,1);
+	
 	public WindowManager() {
 
 		windows = new HashMap<String, Window>();
@@ -47,6 +49,18 @@ public class WindowManager {
 			SceneManager.getInstance().getRenderer().addRenderable(renderer, OpenGLRenderer.OVERLAY_CHANNEL);
 		
 		}
+	}
+	
+	public void setXScale(float xScale) {
+		scale.x = xScale;
+	}
+	
+	public void setYScale(float yScale) {
+		scale.y = yScale;
+	}
+	
+	public Vector2 getScale() {
+		return scale;
 	}
 	
 	public void destroy() {
@@ -95,11 +109,23 @@ public class WindowManager {
 		return window;
 	}
 	
+	public Window createWindow(String name, ScaledVector2 size) {
+		return createWindow(name, size.get());
+	}
+	
 	public Window createWindow(String name, Vector2 pos, Vector2 size) {
 		Window window = new Window(name, size);
 		addWindow(window);
 		window.setRelativePos(pos);
 		return window;
+	}
+	
+	public Window createWindow(String name, ScaledVector2 pos, ScaledVector2 size) {
+		return createWindow(name, pos.get(), size.get());
+	}
+	
+	public Window createWindow(String name, Vector2 pos, ScaledVector2 size) {
+		return createWindow(name, pos, size.get());
 	}
 	
 	public Window createLabel(String name, Vector2 pos, String text) {
@@ -108,10 +134,22 @@ public class WindowManager {
 		return label;
 	}
 	
+	public Window createLabel(String name, ScaledVector2 pos, String text) {
+		return createLabel(name, pos.get(), text);
+	}
+	
 	public Button createButton(String name, Vector2 pos, Vector2 size, String text) {
 		Button button = new Button(name, pos, size, text);
 		addWindow(button);
 		return button;
+	}
+	
+	public Button createButton(String name, ScaledVector2 pos, ScaledVector2 size, String text) {
+		return createButton(name, pos.get(), size.get(), text);
+	}
+	
+	public Button createButton(String name, Vector2 pos, ScaledVector2 size, String text) {
+		return createButton(name, pos, size.get(), text);
 	}
 	
 	public Frame createFrame(String name, Vector2 pos, Vector2 size) {
@@ -120,16 +158,40 @@ public class WindowManager {
 		return frame;
 	}
 	
+	public Frame createFrame(String name, ScaledVector2 pos, ScaledVector2 size) {
+		return createFrame(name, pos.get(), size.get());
+	}
+	
+	public Frame createFrame(String name, Vector2 pos, ScaledVector2 size) {
+		return createFrame(name, pos, size.get());
+	}
+	
 	public Window createImageBox(String name, Vector2 pos, String atlasName, String atlasRegion, Vector2 size) {
 		ImageBox imageBox = new ImageBox(name, pos, atlasName, atlasRegion, size);
 		addWindow(imageBox);
 		return imageBox;
 	}
 	
+	public Window createImageBox(String name, ScaledVector2 pos, String atlasName, String atlasRegion, ScaledVector2 size) {
+		return createImageBox(name, pos.get(), atlasName, atlasRegion, size.get());
+	}
+	
+	public Window createImageBox(String name, Vector2 pos, String atlasName, String atlasRegion, ScaledVector2 size) {
+		return createImageBox(name, pos, atlasName, atlasRegion, size.get());
+	}
+	
 	public Window createImageBox(String name, Vector2 pos, String textureName, Vector2 size) {
 		ImageBox imageBox = new ImageBox(name, pos, textureName, size);
 		addWindow(imageBox);
 		return imageBox;
+	}
+	
+	public Window createImageBox(String name, ScaledVector2 pos, String textureName, ScaledVector2 size) {
+		return createImageBox(name, pos.get(), textureName, size.get());
+	}
+	
+	public Window createImageBox(String name, Vector2 pos, String textureName, ScaledVector2 size) {
+		return createImageBox(name, pos, textureName, size.get());
 	}
 	
 	public Window createOverlay(String name, Vector2 pos, Vector2 size, Color color) {
@@ -139,10 +201,26 @@ public class WindowManager {
 		return overlay;
 	}
 	
+	public Window createOverlay(String name, ScaledVector2 pos, ScaledVector2 size, Color color) {
+		return createOverlay(name, pos.get(), size.get(), color);
+	}
+	
+	public Window createOverlay(String name, Vector2 pos, ScaledVector2 size, Color color) {
+		return createOverlay(name, pos, size.get(), color);
+	}
+	
 	public Window createItemList(String name, Vector2 pos, Vector2 size, float padding, int displayItems) {
 		ItemList itemList = new ItemList(name, pos, size, padding, displayItems);
 		addWindow(itemList);
 		return itemList;
+	}
+	
+	public Window createItemList(String name, ScaledVector2 pos, ScaledVector2 size, float padding, int displayItems) {
+		return createItemList(name, pos.get(), size.get(), padding, displayItems);
+	}
+	
+	public Window createItemList(String name, Vector2 pos, ScaledVector2 size, float padding, int displayItems) {
+		return createItemList(name, pos, size.get(), padding, displayItems);
 	}
 	
 	public Window createOverlay(String name, Color color) {
@@ -200,10 +278,22 @@ public class WindowManager {
 		return tooltip;
 	}
 	
+	public Window createTooltip(String name, ScaledVector2 size) {
+		return createTooltip(name, size.get());
+	}
+	
 	public Window createProgressBar(String name, Vector2 pos, Vector2 size, float maxProgress) {
 		Window progressBar = new ProgressBar(name, pos, size, maxProgress);
 		addWindow(progressBar);
 		return progressBar;
+	}
+	
+	public Window createProgressBar(String name, ScaledVector2 pos, ScaledVector2 size, float maxProgress) {
+		return createProgressBar(name, pos.get(), size.get(), maxProgress);
+	}
+	
+	public Window createProgressBar(String name, Vector2 pos, ScaledVector2 size, float maxProgress) {
+		return createProgressBar(name, pos, size.get(), maxProgress);
 	}
 	
 	protected void removeWindow(Window window) {

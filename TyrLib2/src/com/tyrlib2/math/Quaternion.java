@@ -208,17 +208,23 @@ public class Quaternion {
 	 * Create a quaternion from an axis-angle rotation 
 	 **/
 	public static Quaternion fromAxisAngle(Vector3 axis, float angle) {
-		Vector3 newAxis = new Vector3(axis);
-		newAxis.normalize();
+		return fromAxisAngle(axis.x, axis.y, axis.z, angle);
+	}
+	
+	public static Quaternion fromAxisAngle(float x, float y, float z, float angle) {
+		float length = Vector3.length(x, y, z);
+		x /= length;
+		y /= length;
+		z /= length;
 		
 		Quaternion q = new Quaternion();
 		
 		float radiantAngle = 0.5f * angle * (float)Math.PI / 180;
 		float sinAngle = (float) Math.sin(radiantAngle);
 		
-		q.x = newAxis.x * sinAngle;
-		q.y = newAxis.y * sinAngle;
-		q.z = newAxis.z * sinAngle;
+		q.x = x * sinAngle;
+		q.y = y * sinAngle;
+		q.z = z * sinAngle;
 		q.w = (float) Math.cos(radiantAngle);
 		
 		return q;

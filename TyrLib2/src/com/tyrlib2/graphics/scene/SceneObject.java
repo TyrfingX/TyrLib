@@ -95,6 +95,12 @@ public abstract class SceneObject {
 		return null;
 	}
 	
+	public void setRelativePos(Vector3 pos) {
+		if (parent != null) {
+			parent.setRelativePos(pos);
+		}
+	}
+	
 	/**
 	 * Get the model matrix of this scene object
 	 * @return	The model matrix of this scene matrix

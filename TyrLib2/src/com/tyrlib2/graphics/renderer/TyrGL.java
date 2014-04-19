@@ -2,6 +2,8 @@ package com.tyrlib2.graphics.renderer;
 
 import java.nio.Buffer;
 
+import android.opengl.GLES20;
+
 public class TyrGL {
 	public static GLImpl IMPL;
 	
@@ -14,6 +16,7 @@ public class TyrGL {
 	public static int GL_DST_COLOR;
 	public static int GL_ARRAY_BUFFER;
 	public static int GL_TEXTURE0;
+	public static int GL_TEXTURE1;
 	public static int GL_TEXTURE_2D;
 	public static int GL_CULL_FACE;
 	public static int GL_TRIANGLES;
@@ -268,5 +271,9 @@ public class TyrGL {
 	
 	public static void glBufferSubData(int target, int offset, int size, Buffer data) {
 		IMPL.glBufferSubData(target, offset, size, data);
+	}
+	
+	public static void glGenerateMipmap(int mode) {
+		IMPL.glGenerateMipmap(mode);
 	}
 }

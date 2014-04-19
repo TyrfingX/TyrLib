@@ -48,6 +48,8 @@ public abstract class ParticleSystem  extends BoundedSceneObject implements IUpd
 	
 	protected int steps = 1;
 	
+	protected boolean visible;
+	
 	public int getMaxParticles() {
 		return maxParticles;
 	}

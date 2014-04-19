@@ -156,6 +156,8 @@ public class ComplexParticleSystem extends ParticleSystem {
 		if (isBoundingBoxVisible()) {
 			updateBoundingBox();
 		}
+		
+		visible = false;
 	}
 	
 	
@@ -338,6 +340,8 @@ public class ComplexParticleSystem extends ParticleSystem {
 		if (parent == null) {
 			return;
 		}
+		
+		visible = true;
 		
 		int countBatches = particleBatches.size();
 		
