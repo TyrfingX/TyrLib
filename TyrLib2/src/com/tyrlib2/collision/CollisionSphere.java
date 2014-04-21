@@ -71,7 +71,7 @@ public class CollisionSphere extends BoundedSceneObject {
 	@Override
 	public AABB getBoundingBox() {
 		if (boundingBox == null) {
-			Vector3 pos = parent.getCachedAbsolutePos();
+			Vector3 pos = parent.getCachedAbsolutePosVector();
 			if (pos != null) {
 				boundingBox.min = new Vector3(pos.x + -radius, pos.y + -radius, pos.z + -radius);
 				boundingBox.max = new Vector3(pos.x + radius,  pos.y + radius, pos.z + radius);

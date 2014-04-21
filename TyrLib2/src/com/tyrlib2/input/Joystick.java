@@ -3,7 +3,6 @@ package com.tyrlib2.input;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.view.MotionEvent;
 
 import com.tyrlib2.math.Vector2;
 
@@ -52,7 +51,7 @@ public class Joystick implements ITouchListener {
 	 * 	the touched position as base state
 	 */
 	@Override
-	public boolean onTouchDown(Vector2 point, MotionEvent event, int fingerId) {
+	public boolean onTouchDown(Vector2 point, IMotionEvent event, int fingerId) {
 		if (!active) {
 			active = true;
 			basePoint = point;
@@ -74,7 +73,7 @@ public class Joystick implements ITouchListener {
 	 * 	right touch stopping (considering multi touch)
 	 */
 	@Override
-	public boolean onTouchUp(Vector2 point, MotionEvent event, int fingerId) {
+	public boolean onTouchUp(Vector2 point, IMotionEvent event, int fingerId) {
 		if (active && fingerId == this.fingerId) {
 			active = false;
 			for (int i = 0; i < listeners.size(); ++i) {
@@ -99,7 +98,7 @@ public class Joystick implements ITouchListener {
 	 * 	if its currently active
 	 */
 	@Override
-	public boolean onTouchMove(Vector2 point, MotionEvent event, int fingerId) {
+	public boolean onTouchMove(Vector2 point, IMotionEvent event, int fingerId) {
 		if (active && fingerId == this.fingerId) {
 			
 			Vector2 movement = basePoint.vectorTo(point);

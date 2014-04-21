@@ -138,7 +138,7 @@ public class SceneNode {
 	public void setAbsolutePos(Vector3 pos) {
 		Vector3 newPos = pos;
 		if (parent != null) {
-			Vector3 parentPos = parent.getCachedAbsolutePos();
+			Vector3 parentPos = parent.getCachedAbsolutePosVector();
 			newPos = pos.sub(parentPos);
 		}
 		this.setRelativePos(newPos);

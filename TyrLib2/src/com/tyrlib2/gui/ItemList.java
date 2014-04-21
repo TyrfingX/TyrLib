@@ -3,8 +3,8 @@ package com.tyrlib2.gui;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.view.MotionEvent;
 
+import com.tyrlib2.input.IMotionEvent;
 import com.tyrlib2.input.InputManager;
 import com.tyrlib2.math.Vector2;
 
@@ -110,7 +110,7 @@ public class ItemList extends Window {
 	}
 	
 	@Override
-	protected void onTouchDownWindow(Vector2 point, MotionEvent event) {
+	protected void onTouchDownWindow(Vector2 point, IMotionEvent event) {
 		touching = true;
 		lastPoint = new Vector2(point.x, point.y);
 		
@@ -120,7 +120,7 @@ public class ItemList extends Window {
 	}
 	
 	@Override
-	public boolean onTouchMove(Vector2 point, MotionEvent event, int fingerId) {
+	public boolean onTouchMove(Vector2 point, IMotionEvent event, int fingerId) {
 		
 		if (!touching) return false;
 		
@@ -209,7 +209,7 @@ public class ItemList extends Window {
 	}
 	
 	@Override
-	public boolean onTouchUp(Vector2 point, MotionEvent event, int fingerId) {
+	public boolean onTouchUp(Vector2 point, IMotionEvent event, int fingerId) {
 		if (touching) {
 			touching = false;
 			if (offseted) {

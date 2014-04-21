@@ -44,7 +44,7 @@ public class AreaTrigger extends BoundedSceneObject implements IUpdateable {
 	public void calcBoundingBox() {
 		if (areaObject == null) {
 			if (parent != null) {
-				Vector3 pos = parent.getCachedAbsolutePos();
+				Vector3 pos = parent.getCachedAbsolutePosVector();
 				aabb.min.x = -size.x/2 + pos.x;
 				aabb.min.y = -size.y/2 + pos.y;
 				aabb.min.z = -size.y/2 + pos.z;

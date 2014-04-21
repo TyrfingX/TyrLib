@@ -140,6 +140,12 @@ public class Vector3 {
 		return new Vector3(x,y,z);
 	}
 	
+	public static void lerp(Vector3 start, Vector3 end, float alpha, Vector3 result) {
+		result.x = start.x + (end.x - start.x) * alpha;
+		result.y = start.y + (end.y - start.y) * alpha;
+		result.z = start.z + (end.z - start.z) * alpha;
+	}
+	
 	public void projectOnNormalized(Vector3 u, Vector3 v) {
 		float dotThisU = this.dot(u);
 		float dotThisV = this.dot(v);

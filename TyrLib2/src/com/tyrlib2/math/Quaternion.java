@@ -212,12 +212,15 @@ public class Quaternion {
 	}
 	
 	public static Quaternion fromAxisAngle(float x, float y, float z, float angle) {
+		Quaternion q = new Quaternion();
+		return fromAxisAngle(x, y, z, angle, q);
+	}
+	
+	public static Quaternion fromAxisAngle(float x, float y, float z, float angle, Quaternion q) {
 		float length = Vector3.length(x, y, z);
 		x /= length;
 		y /= length;
 		z /= length;
-		
-		Quaternion q = new Quaternion();
 		
 		float radiantAngle = 0.5f * angle * (float)Math.PI / 180;
 		float sinAngle = (float) Math.sin(radiantAngle);
@@ -306,21 +309,61 @@ public class Quaternion {
 		return resultVector;
 	}
 	
+	public Vector3 multiply(Vector3 vector, Vector3 resultVector) {
+		this.invert();
+
+		float angle = - (vector.x * x + vector.y * y + vector.z * z);
+
+		float crossX = vector.y * z - vector.z * y;
+		float crossY = -(vector.x * z - vector.z * x);
+		float crossZ = vector.x * y - vector.y * x;
+
+		float resultX = vector.x * w + crossX;
+		float resultY = vector.y * w + crossY;
+		float resultZ = vector.z * w + crossZ;
+		float resultW = angle;
+		
+		this.invert();
+		
+		angle = (w * resultW) - (x * resultX + y * resultY + z * resultZ);
+
+		crossX = y * resultZ - z * resultY;
+		crossY = -(x * resultZ - z * resultX);
+		crossZ = x * resultY - y * resultX;
+		
+		resultVector.x = x * resultW + resultX * w +  crossX;
+		resultVector.y = y * resultW + resultY * w + crossY;
+		resultVector.z = z * resultW + resultZ * w + crossZ;
+
+		return resultVector;
+	}
+	
 	public void multiplyNoTmp(Vector3 vector) {
-		  Quaternion vectorQuaternion = new Quaternion();
-		  vectorQuaternion.x = vector.x;
-		  vectorQuaternion.y = vector.y;
-		  vectorQuaternion.z = vector.z;
-		  vectorQuaternion.w = 0.0f;
-		  
-		  this.invert();
-		  vectorQuaternion.multiplyNoTmp(this);
-		  this.invert();
-		  Quaternion resultQuaternion = this.multiply(vectorQuaternion);
-		  
-		  vector.x = resultQuaternion.x;
-		  vector.y = resultQuaternion.y;
-		  vector.z = resultQuaternion.z;
+		this.invert();
+
+		float angle = - (vector.x * x + vector.y * y + vector.z * z);
+
+		float crossX = vector.y * z - vector.z * y;
+		float crossY = -(vector.x * z - vector.z * x);
+		float crossZ = vector.x * y - vector.y * x;
+
+		float resultX = vector.x * w + crossX;
+		float resultY = vector.y * w + crossY;
+		float resultZ = vector.z * w + crossZ;
+		float resultW = angle;
+		
+		this.invert();
+		
+		angle = (w * resultW) - (x * resultX + y * resultY + z * resultZ);
+
+		crossX = y * resultZ - z * resultY;
+		crossY = -(x * resultZ - z * resultX);
+		crossZ = x * resultY - y * resultX;
+		
+		vector.x = x * resultW + resultX * w +  crossX;
+		vector.y = y * resultW + resultY * w + crossY;
+		vector.z = z * resultW + resultZ * w + crossZ;
+
 	}
 	
 	public static Quaternion rotateTo(Vector3 src, Vector3 dest) {

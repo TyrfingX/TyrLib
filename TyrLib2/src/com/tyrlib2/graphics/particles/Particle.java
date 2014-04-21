@@ -20,7 +20,8 @@ public class Particle implements IUpdateable {
 	protected Vector3 pos = new Vector3();
 	protected Vector3 up = new Vector3();
 	protected Vector3 right = new Vector3();
-	protected Vector3 velocity;
+	protected Quaternion rotationUp = new Quaternion();
+	protected Vector3 velocity = new Vector3();
 	protected Vector3 acceleration = new Vector3();
 	protected Color color = null;
 	protected float inertia = 1;
@@ -107,7 +108,9 @@ public class Particle implements IUpdateable {
 	}
 
 	public void setPos(Vector3 pos) {
-		this.pos = pos;
+		this.pos.x = pos.x;
+		this.pos.y = pos.y;
+		this.pos.z = pos.z;
 		
 		if (floatArray != null) {
 			updateCorners();
@@ -116,13 +119,18 @@ public class Particle implements IUpdateable {
 	
 	protected void updateCorners() {
 		Vector3 camPos = SceneManager.getInstance().getActiveCamera().getAbsolutePos();
-		up = SceneManager.getInstance().getActiveCamera().getWorldUpVector();
+		Vector3 worldUp = SceneManager.getInstance().getActiveCamera().getWorldUpVector();
+		
+		up.x = worldUp.x;
+		up.y = worldUp.y;
+		up.z = worldUp.z;
+		
 		float deltaX = camPos.x - pos.x;
 		float deltaY = camPos.y - pos.y;
 		float deltaZ = camPos.z - pos.z;
 		
 		if (rotation != 0) {
-			up = Quaternion.fromAxisAngle(deltaX, deltaY, deltaZ, passedTime * rotation).multiply(up);
+			Quaternion.fromAxisAngle(deltaX, deltaY, deltaZ, passedTime * rotation, rotationUp).multiplyNoTmp(up);
 		}
 		
 		Vector3.cross(right, deltaX, deltaY, deltaZ, up.x, up.y, up.z);

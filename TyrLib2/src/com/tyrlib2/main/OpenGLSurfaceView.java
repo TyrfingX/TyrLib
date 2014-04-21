@@ -6,6 +6,8 @@ import android.view.MotionEvent;
 
 import com.tyrlib2.graphics.renderer.AndroidOpenGLRenderer;
 import com.tyrlib2.graphics.scene.SceneManager;
+import com.tyrlib2.input.AndroidMotionEvent;
+import com.tyrlib2.input.AndroidView;
 import com.tyrlib2.input.InputManager;
 
 /**
@@ -18,6 +20,7 @@ import com.tyrlib2.input.InputManager;
 public class OpenGLSurfaceView extends GLSurfaceView {
 	
 	private OpenGLSurfaceView instance = this;
+	private AndroidView view = new AndroidView(this);
 	
 	public OpenGLSurfaceView(Context context){
         super(context);
@@ -54,7 +57,7 @@ public class OpenGLSurfaceView extends GLSurfaceView {
     	queueEvent(new Runnable() {
 			@Override
 			public void run() {
-				InputManager.getInstance().onTouch(instance, eventCopy);
+				InputManager.getInstance().onTouch(view, new AndroidMotionEvent(eventCopy));
 			}
 	    });
     	return true;

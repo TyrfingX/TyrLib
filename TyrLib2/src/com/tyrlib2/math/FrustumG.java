@@ -21,6 +21,9 @@ public class FrustumG {
 	public final Vector3 fcbl = new Vector3();
 	public final Vector3 fcbr = new Vector3();
 	
+	private Vector3 nearClipPoint = new Vector3();
+	private Vector3 farClipPoint = new Vector3();
+	
 	public FrustumG() {
 		for (int i = 0; i < COUNT_PLANES; ++i) {
 			planes[i] = new Plane(new Vector3(), 0, 0, 0);
@@ -36,8 +39,13 @@ public class FrustumG {
 		lookDirection.normalize();
 		up.normalize();
 		
-		Vector3 nearClipPoint = camPos.add(lookDirection.multiply(nearClip));
-		Vector3 farClipPoint = camPos.add(lookDirection.multiply(farClip));
+		nearClipPoint.x = camPos.x + lookDirection.x * nearClip;
+		nearClipPoint.y = camPos.y + lookDirection.y * nearClip;
+		nearClipPoint.z = camPos.z + lookDirection.z * nearClip;
+		
+		farClipPoint.x = camPos.x + lookDirection.x * farClip;
+		farClipPoint.y = camPos.y + lookDirection.y * farClip;
+		farClipPoint.z = camPos.z + lookDirection.z * farClip;
 		
 		planes[NEAR_CLIP_PLANE].normal.x = lookDirection.x;
 		planes[NEAR_CLIP_PLANE].normal.y = lookDirection.y;

@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.view.MotionEvent;
 
 import com.tyrlib2.game.IUpdateable;
 import com.tyrlib2.graphics.renderer.IRenderable;
@@ -14,6 +13,7 @@ import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.graphics.scene.SceneNode;
 import com.tyrlib2.graphics.scene.SceneObject;
 import com.tyrlib2.gui.WindowEvent.WindowEventType;
+import com.tyrlib2.input.IMotionEvent;
 import com.tyrlib2.input.ITouchListener;
 import com.tyrlib2.input.InputManager;
 import com.tyrlib2.math.Rectangle;
@@ -451,7 +451,7 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	}
 	
 	@Override
-	public boolean onTouchDown(Vector2 point, MotionEvent event, int fingerId) {
+	public boolean onTouchDown(Vector2 point, IMotionEvent event, int fingerId) {
 		point = new Vector2(point.x, 1-point.y);
 		Vector2 pos = getAbsolutePos();
 		if (Rectangle.pointInRectangle(pos, size, point)) {
@@ -471,7 +471,7 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	 * @param event
 	 */
 	
-	protected void onTouchDownWindow(Vector2 point, MotionEvent event) {
+	protected void onTouchDownWindow(Vector2 point, IMotionEvent event) {
 		WindowEvent windowEvent = new WindowEvent(this, WindowEventType.TOUCH_DOWN);
 		windowEvent.setParam("POINT", point);
 		windowEvent.setParam("MOTIONEVENT", event);
@@ -479,7 +479,7 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	}
 	
 	@Override
-	public boolean onTouchUp(Vector2 point, MotionEvent event, int fingerId) {
+	public boolean onTouchUp(Vector2 point, IMotionEvent event, int fingerId) {
 		point = new Vector2(point.x, 1-point.y);
 		Vector2 pos = getAbsolutePos();
 		if (drag || Rectangle.pointInRectangle(pos, size, point)) {
@@ -499,7 +499,7 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	 * @param event
 	 */
 	
-	protected void onTouchUpWindow(Vector2 point, MotionEvent event) {
+	protected void onTouchUpWindow(Vector2 point, IMotionEvent event) {
 		WindowEvent windowEvent = new WindowEvent(this, WindowEventType.TOUCH_UP);
 		windowEvent.setParam("POINT", point);
 		windowEvent.setParam("MOTIONEVENT", event);
@@ -513,7 +513,7 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	 */
 	
 	@Override
-	public boolean onTouchMove(Vector2 point, MotionEvent event, int fingerId) {
+	public boolean onTouchMove(Vector2 point, IMotionEvent event, int fingerId) {
 		point = new Vector2(point.x, 1-point.y);
 		Vector2 pos = getAbsolutePos();
 		if (Rectangle.pointInRectangle(pos, size, point)) {
@@ -537,7 +537,7 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	 * @param event
 	 */
 	
-	protected void onTouchMoveWindow(Vector2 point, MotionEvent event) {
+	protected void onTouchMoveWindow(Vector2 point, IMotionEvent event) {
 		WindowEvent windowEvent = new WindowEvent(this, WindowEventType.TOUCH_MOVES);
 		windowEvent.setParam("POINT", point);
 		windowEvent.setParam("MOTIONEVENT", event);

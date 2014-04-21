@@ -58,7 +58,7 @@ public abstract class SceneObject {
 	
 	public Vector3 getAbsolutePos() {
 		if (parent != null) {
-			Vector3 cached = parent.getCachedAbsolutePos();
+			Vector3 cached = parent.getCachedAbsolutePosVector();
 			if (cached == null) {
 				cached = new Vector3();
 			}

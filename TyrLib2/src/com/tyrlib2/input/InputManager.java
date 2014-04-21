@@ -5,9 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
-import android.view.MotionEvent;
-import android.view.View;
-
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.util.ReversePriorityComparator;
 
@@ -41,36 +38,36 @@ public class InputManager {
 		instance = null;
 	}
 	
-	public boolean onTouch(View v, MotionEvent event) {
+	public boolean onTouch(IView v, IMotionEvent event) {
 		int action = event.getAction();
-		int actionCode = action & MotionEvent.ACTION_MASK;
+		int actionCode = action & IMotionEvent.ACTION_MASK;
 		
 		if (sort) {
 			Collections.sort(touchListeners, new ReversePriorityComparator());
 			sort = false;
 		}
 		
-		if (actionCode != MotionEvent.ACTION_MOVE) {
+		if (actionCode != IMotionEvent.ACTION_MOVE) {
 			
-			int pid = action >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+			int pid = action >> IMotionEvent.ACTION_POINTER_INDEX_SHIFT;
 			int id = event.getPointerId(pid);
 			
 			Vector2 point = new Vector2(event.getX(pid) / v.getWidth(), event.getY(pid) / v.getHeight());
 			
-			if (actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_POINTER_DOWN)
+			if (actionCode == IMotionEvent.ACTION_DOWN || actionCode == IMotionEvent.ACTION_POINTER_DOWN)
 				touching = true;
-			else if (actionCode == MotionEvent.ACTION_UP || actionCode == MotionEvent.ACTION_POINTER_UP)
+			else if (actionCode == IMotionEvent.ACTION_UP || actionCode == IMotionEvent.ACTION_POINTER_UP)
 				touching = false;
 			
 			lastTouch = new Vector2(point.x, point.y);
 			
 			for (int i = 0; i < touchListeners.size(); ++i) {
 				ITouchListener listener = touchListeners.get(i);
-				if (listener.isEnabled() && (actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_POINTER_DOWN))
+				if (listener.isEnabled() && (actionCode == IMotionEvent.ACTION_DOWN || actionCode == IMotionEvent.ACTION_POINTER_DOWN))
 				{
 					if (listener.onTouchDown(point, event, id)) break;
 				}
-				else if (listener.isEnabled() && (actionCode == MotionEvent.ACTION_UP || actionCode == MotionEvent.ACTION_POINTER_UP))
+				else if (listener.isEnabled() && (actionCode == IMotionEvent.ACTION_UP || actionCode == IMotionEvent.ACTION_POINTER_UP))
 				{	
 					if (listener.onTouchUp(point, event, id)) break;
 				}
