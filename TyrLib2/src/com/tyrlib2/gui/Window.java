@@ -79,6 +79,9 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	
 	protected boolean inheritsAlpha;
 	
+	private Viewport viewport;
+	private Vector3 absolutePosVector;
+	
 	public enum BLEND_STATE {
 		IDLE,
 		FADE_IN,
@@ -122,6 +125,9 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 		priority = WindowManager.GUI_BASE_PRIORITY;
 		eventListeners = new HashMap<WindowEventType, List<IEventListener>>();
 		data = new HashMap<String, Object>();
+		
+		viewport = SceneManager.getInstance().getViewport();
+		absolutePosVector = node.getCachedAbsolutePosVector();
 	}
 	
 	protected Window(String name) {
@@ -402,15 +408,11 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	}
 	
 	public float getAbsolutePosX() {
-		Viewport viewport = SceneManager.getInstance().getViewport();
-		Vector3 pos = node.getCachedAbsolutePosVector();
-		return pos.x/viewport.getWidth();
+		return absolutePosVector.x/viewport.getWidth();
 	}
 	
 	public float getAbsolutePosY() {
-		Viewport viewport = SceneManager.getInstance().getViewport();
-		Vector3 pos = node.getCachedAbsolutePosVector();
-		return pos.y/viewport.getHeight();
+		return absolutePosVector.y/viewport.getHeight();
 	}
 	
 	/**

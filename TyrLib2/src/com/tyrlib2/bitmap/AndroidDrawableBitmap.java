@@ -1,9 +1,11 @@
 package com.tyrlib2.bitmap;
 
-import com.tyrlib2.graphics.renderer.TyrGL;
-
 import android.graphics.Bitmap;
 import android.opengl.GLUtils;
+
+import com.tyrlib2.files.AndroidBitmap;
+import com.tyrlib2.files.IBitmap;
+import com.tyrlib2.graphics.renderer.TyrGL;
 
 public class AndroidDrawableBitmap implements IDrawableBitmap {
 	private Bitmap bitmap;
@@ -67,5 +69,10 @@ public class AndroidDrawableBitmap implements IDrawableBitmap {
 	    }
 	 
 	    return textureHandle[0];
+	}
+
+	@Override
+	public IBitmap toBitmap() {
+		return new AndroidBitmap(bitmap);
 	}
 }

@@ -19,11 +19,14 @@ public abstract class Media {
 	public abstract FileInputStream openFileInput(String fileName) throws IOException;
 	public abstract InputStream openRawResource(int id) throws IOException;
 	public abstract IBitmap loadBitmap(int resID, boolean prescaling);
+	public abstract void loadBitmap(IBitmap bitmap);
 	public abstract IDrawableBitmap createAlphaBitmap(int width, int height );
+	public abstract IDrawableBitmap createBitmap(int width, int height );
 	public abstract int getResourceID(String source, String resType);
 	public abstract IGLText createTextRenderer(String fontSource, int size);
 	public abstract ITypeface createFromAsset(String file);
 	public abstract IPaint createPaint(ICanvas canvas);
 	public abstract ICanvas createCanvas();
+	public abstract ICanvas createCanvas(IDrawableBitmap bitmap);
 	public abstract Vector2 getScreenSize();
 }

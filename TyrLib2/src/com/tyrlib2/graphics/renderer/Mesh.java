@@ -163,6 +163,11 @@ public class Mesh {
 	public void setVertexInfo(int index, float info) {
 		vertexBuffer.put(index, info);
 		vertexData[index] = info;
+		
+		if (TyrGL.GL_USE_VBO == 1) {
+			TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, buffers[0]);
+			TyrGL.glBufferSubData(TyrGL.GL_ARRAY_BUFFER, 0, vertexData.length * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
+		}
 	}
 	
 	public int getVBOBuffer() {

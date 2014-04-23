@@ -130,6 +130,50 @@ public class AndroidMedia extends Media {
 		Display d = context.getWindowManager().getDefaultDisplay();
 		return new Vector2(d.getWidth(), d.getHeight());
 	}
+
+	@Override
+	public IDrawableBitmap createBitmap(int width, int height) {
+		return new AndroidDrawableBitmap(Bitmap.createBitmap( width, height, Bitmap.Config.ARGB_8888 ));
+	}
+
+	@Override
+	public ICanvas createCanvas(IDrawableBitmap bitmap) {
+		AndroidDrawableBitmap b = (AndroidDrawableBitmap) bitmap;
+		return new AndroidCanvas(new Canvas(b.getBitmap()));
+	}
+
+	@Override
+	public void loadBitmap(IBitmap bitmap) {
+	    final int[] textureHandle = new int[1];
+	    
+	    TyrGL.glGenTextures(1, textureHandle, 0);
+	 
+	    if (textureHandle[0] != 0)
+	    {
+	        // Bind to the texture in OpenGL
+	        TyrGL.glBindTexture(TyrGL.GL_TEXTURE_2D, textureHandle[0]);
+	        
+	        // Set filtering
+	        TyrGL.glTexParameteri(TyrGL.GL_TEXTURE_2D, TyrGL.GL_TEXTURE_MIN_FILTER, TyrGL.GL_LINEAR_MIPMAP_LINEAR);
+	        TyrGL.glTexParameteri(TyrGL.GL_TEXTURE_2D, TyrGL.GL_TEXTURE_MAG_FILTER, TyrGL.GL_LINEAR);
+	        // Load the bitmap into the bound texture.
+	        bitmap.bind();
+	        
+	        String s = GLES20.glGetString(GLES20.GL_EXTENSIONS);
+	        if (s.contains("GL_EXT_texture_filter_anisotropic")) {
+	        	float[] maxAni = new float[1];
+	    		GLES20.glGetFloatv(0x84FF, maxAni, 0);
+	    		GLES20.glTexParameterf(TyrGL.GL_TEXTURE_2D, 0x84FE, maxAni[0]);
+	        }
+	        
+	        TyrGL.glGenerateMipmap(TyrGL.GL_TEXTURE_2D);
+	 
+	        // Recycle the bitmap, since its data has been loaded into OpenGL.
+	        bitmap.recycle();
+	        
+	        ((AndroidBitmap)bitmap).setHanlde(textureHandle[0]);
+	    }
+	}
 	
 	
 }

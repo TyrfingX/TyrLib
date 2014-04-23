@@ -48,4 +48,8 @@ public class AndroidBitmap implements IBitmap {
 		return bitmap;
 	}
 	
+	public void setHanlde(int handle) {
+		this.handle = handle;
+	}
+	
 }

@@ -126,39 +126,16 @@ public class TextureManager {
 	}
 	
 	public Texture createTexture(String name, IBitmap bitmap) {
-	    final int[] textureHandle = new int[1];
-	    
-	    TyrGL.glGenTextures(1, textureHandle, 0);
-	 
-	    Vector2 size = null;
-	    
-	    if (textureHandle[0] != 0)
-	    {
-	        size = new Vector2(bitmap.getWidth(), bitmap.getHeight());
-	        
-	        // Bind to the texture in OpenGL
-	        TyrGL.glBindTexture(TyrGL.GL_TEXTURE_2D, textureHandle[0]);
-	 
-	        // Set filtering
-	        TyrGL.glTexParameteri(TyrGL.GL_TEXTURE_2D, TyrGL.GL_TEXTURE_MIN_FILTER, TyrGL.GL_LINEAR_MIPMAP_LINEAR);
-	        TyrGL.glTexParameteri(TyrGL.GL_TEXTURE_2D, TyrGL.GL_TEXTURE_MAG_FILTER, TyrGL.GL_LINEAR);
-	 
-	        // Load the bitmap into the bound texture.
-	        bitmap.bind();
-	        TyrGL.glGenerateMipmap(TyrGL.GL_TEXTURE_2D);
-	 
-	        // Recycle the bitmap, since its data has been loaded into OpenGL.
-	        bitmap.recycle();
-	    }
-	 
-	    if (textureHandle[0] == 0)
+		 
+		Media.CONTEXT.loadBitmap(bitmap);
+		
+	    if (bitmap.getHandle() == 0)
 	    {
 	        throw new RuntimeException("Error loading texture " + name + ".");
 	    }
 	    
-	    Texture texture = new Texture(textureHandle[0]);
-	    texture.size = size;
-
+	    Texture texture = new Texture(bitmap.getHandle());
+	    texture.size = new Vector2(bitmap.getWidth(), bitmap.getHeight());
 	    textures.put(name, texture);
 	    
 	    return texture;

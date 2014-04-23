@@ -43,6 +43,8 @@ public class ComplexParticleSystem extends ParticleSystem {
 	
 	private int[] buffers = new int[2];
 	
+	private boolean dynamic = true;
+	
 	public ComplexParticleSystem() {
 		affectors = new Affector[MIN_AFFECTORS_SIZE];
 		emitters = new ArrayList<Emitter>();
@@ -117,40 +119,54 @@ public class ComplexParticleSystem extends ParticleSystem {
 		boundingBox.max.z = -Float.MAX_VALUE;
 		
 		// Update everything
-		
-		for (int l = 0; l < steps; ++l) {
-		
-			int countMaterials = particleBatches.size();
-			for (int j = 0; j < countMaterials; ++j) {
+		if (dynamic) {
+			for (int l = 0; l < steps; ++l) {
+			
+				int countMaterials = particleBatches.size();
+				for (int j = 0; j < countMaterials; ++j) {
+					
+					ParticleMaterial material = particleBatches.get(j).material;
+					List<Particle> particles = particleBatches.get(j).particles;
+					int countParticles = particles.size();
+					for (int i = 0; i < countParticles; ++i) {
+						
+						Particle particle = particles.get(i);
+						
+						if (particle.isFinished()) {
+							removeParticle(i, material);
+							--i;
+							--countParticles;
+						} else {
+							checkBoundingBox(particle);
+							useAffectors(particle, time);
+							
+							particle.onUpdate(time);
+							
+							particle.acceleration.x = 0;
+							particle.acceleration.y = 0;
+							particle.acceleration.z = 0;
+						}
+					}
+				}
 				
-				ParticleMaterial material = particleBatches.get(j).material;
-				List<Particle> particles = particleBatches.get(j).particles;
-				int countParticles = particles.size();
-				for (int i = 0; i < countParticles; ++i) {
-					
-					Particle particle = particles.get(i);
-					
-					if (particle.isFinished()) {
-						removeParticle(i, material);
-						--i;
-						--countParticles;
-					} else {
+				for (int i = 0; i < emitters.size(); ++i) {
+					emitters.get(i).onUpdate(time);
+				}
+			}
+		} else {
+			for (int l = 0; l < steps; ++l) {
+				int countMaterials = particleBatches.size();
+				for (int j = 0; j < countMaterials; ++j) {
+					List<Particle> particles = particleBatches.get(j).particles;
+					int countParticles = particles.size();
+					for (int i = 0; i < countParticles; ++i) {
+						Particle particle = particles.get(i);
 						checkBoundingBox(particle);
-						useAffectors(particle, time);
-						
 						particle.onUpdate(time);
-						
-						particle.acceleration.x = 0;
-						particle.acceleration.y = 0;
-						particle.acceleration.z = 0;
 					}
 				}
 			}
-			
-			for (int i = 0; i < emitters.size(); ++i) {
-				emitters.get(i).onUpdate(time);
-			}
-		
+				
 		}
 		
 		if (isBoundingBoxVisible()) {
@@ -172,9 +188,10 @@ public class ComplexParticleSystem extends ParticleSystem {
 	}
 	
 	private void useAffectors(Particle particle, float time) {
-		for (int k = countAffectors - 1; k >= 0; --k) {
-			if (affectors[k].isApplicable(particle, time)) {
-				affectors[k].onUpdate(particle, time);
+		for (int k = 0; k < countAffectors; ++k) {
+			Affector a = affectors[k];
+			if (a.isApplicable(particle, time)) {
+				a.onUpdate(particle, time);
 			}
 		}
 	}
@@ -461,6 +478,10 @@ public class ComplexParticleSystem extends ParticleSystem {
 	@Override
 	public AABB getBoundingBox() {
 		return boundingBox;
+	}
+	
+	public void setDynamic(boolean dynamic) {
+		this.dynamic = dynamic;
 	}
 	
 }

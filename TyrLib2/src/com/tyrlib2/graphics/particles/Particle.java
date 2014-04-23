@@ -2,6 +2,7 @@ package com.tyrlib2.graphics.particles;
 
 import com.tyrlib2.game.IUpdateable;
 import com.tyrlib2.graphics.materials.ParticleMaterial;
+import com.tyrlib2.graphics.renderer.Camera;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.math.Quaternion;
 import com.tyrlib2.math.Vector3;
@@ -118,8 +119,9 @@ public class Particle implements IUpdateable {
 	}
 	
 	protected void updateCorners() {
-		Vector3 camPos = SceneManager.getInstance().getActiveCamera().getAbsolutePos();
-		Vector3 worldUp = SceneManager.getInstance().getActiveCamera().getWorldUpVector();
+		Camera cam = SceneManager.getInstance().getActiveCamera();
+		Vector3 camPos = cam.getAbsolutePos();
+		Vector3 worldUp = cam.getWorldUpVector();
 		
 		up.x = worldUp.x;
 		up.y = worldUp.y;

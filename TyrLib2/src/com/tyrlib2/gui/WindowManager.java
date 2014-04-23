@@ -32,7 +32,7 @@ public class WindowManager {
 	public static final long GUI_BASE_PRIORITY = 10000;
 	public static final long GUI_OVERLAY_PRIORITY = 1000000;
 	
-	protected Vector2 scale = new Vector2(1,1);
+	protected Vector2[] scales = { new Vector2(1,1) };
 	
 	public WindowManager() {
 
@@ -51,16 +51,20 @@ public class WindowManager {
 		}
 	}
 	
-	public void setXScale(float xScale) {
-		scale.x = xScale;
+	public void setScales(Vector2[] scales) {
+		this.scales = scales;
 	}
 	
-	public void setYScale(float yScale) {
-		scale.y = yScale;
+	public void setXScale(int scaleIndex, float xScale) {
+		scales[scaleIndex].x = xScale;
 	}
 	
-	public Vector2 getScale() {
-		return scale;
+	public void setYScale(int scaleIndex, float yScale) {
+		scales[scaleIndex].y = yScale;
+	}
+	
+	public Vector2 getScale(int scaleIndex) {
+		return scales[scaleIndex];
 	}
 	
 	public void destroy() {
