@@ -1,5 +1,6 @@
 package com.tyrlib2.game;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,7 +10,12 @@ import java.util.Map;
  *
  */
 
-public class Stats<T> {
+public class Stats<T> implements Serializable {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2556194353551947323L;
 	
 	/** Collection of the stats **/
 	private Map<T, Float> stats;

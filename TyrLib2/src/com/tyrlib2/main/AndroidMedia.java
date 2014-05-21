@@ -3,14 +3,16 @@ package com.tyrlib2.main;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Point;
 import android.graphics.Typeface;
 import android.opengl.GLES20;
 import android.view.Display;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 
 import com.tyrlib2.bitmap.AndroidCanvas;
 import com.tyrlib2.bitmap.AndroidDrawableBitmap;
@@ -173,6 +175,39 @@ public class AndroidMedia extends Media {
 	        
 	        ((AndroidBitmap)bitmap).setHanlde(textureHandle[0]);
 	    }
+	}
+
+	@Override
+	public void serializeTo(Serializable s, String target, String fileName) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Object deserializeFrom(String target, String fileName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public void showKeyboard() {
+		OpenGLSurfaceView.instance.post(new Runnable() {
+			@Override
+			public void run() {
+
+				context.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+				OpenGLSurfaceView.instance.imm.showSoftInput(OpenGLSurfaceView.instance,0);
+			}
+		});
+	}
+	
+	public void hideKeyboard() {
+		OpenGLSurfaceView.instance.post(new Runnable() {
+			@Override
+			public void run() {
+				context.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+				OpenGLSurfaceView.instance.imm.hideSoftInputFromWindow(OpenGLSurfaceView.instance.getWindowToken(),0);
+			}
+		});
 	}
 	
 	

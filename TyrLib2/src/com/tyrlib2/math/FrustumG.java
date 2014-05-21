@@ -62,6 +62,7 @@ public class FrustumG {
 		planes[FAR_CLIP_PLANE].z = farClipPoint.z;
 		
 		Vector3 right = lookDirection.cross(up);
+		right.normalize();
 
 		float rightNearWidthHalfX = right.x * nearWidth / 2;
 		float rightNearWidthHalfY = right.y * nearWidth / 2;

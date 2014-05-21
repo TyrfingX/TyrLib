@@ -77,7 +77,7 @@ public class ParticleMaterial extends Material implements IBlendable {
 		    
 		    program.textureHandle = textureHandle;
 		    
-		    OpenGLRenderer.textureFails++;
+		    OpenGLRenderer.setTextureFails(OpenGLRenderer.getTextureFails() + 1);
 		    
 		}
 	    
@@ -120,6 +120,10 @@ public class ParticleMaterial extends Material implements IBlendable {
 	
 	public Texture getTexture() {
 		return texture;
+	}
+	
+	public void setTexture(Texture texture) {
+		this.texture = texture;
 	}
 	
 	public TextureRegion getRegion() {

@@ -1,12 +1,16 @@
 package com.tyrlib2.graphics.renderables;
 
 import com.tyrlib2.graphics.materials.TexturedMaterial;
+import com.tyrlib2.graphics.renderer.Material;
 import com.tyrlib2.graphics.renderer.Mesh;
 import com.tyrlib2.graphics.renderer.Renderable2;
 import com.tyrlib2.graphics.renderer.Texture;
 import com.tyrlib2.graphics.renderer.TextureRegion;
 import com.tyrlib2.graphics.renderer.TyrGL;
+import com.tyrlib2.graphics.scene.SceneManager;
+import com.tyrlib2.math.Quaternion;
 import com.tyrlib2.math.Vector2;
+import com.tyrlib2.math.Vector3;
 
 /**
  * Class for rendering a 2D image
@@ -82,6 +86,10 @@ public class Image2 extends Renderable2 {
 		mat.setTexture(texture);
 	}
 	
+	public void setMaterial(Material material) {
+		this.material = material;
+	}
+	
 	public void setTextureRegion(TextureRegion textureRegion) {
 		if (textureRegion != this.textureRegion) {
 			this.textureRegion = textureRegion;
@@ -103,4 +111,19 @@ public class Image2 extends Renderable2 {
 		this.mesh = new Mesh(vertexData, DRAW_ORDER_IMAGE, 4);
 	}
 
+	public void rotate(Quaternion quat) {
+		
+		Vector3 topLeft = quat.multiply(new Vector3(0,0,0));
+		Vector3 topRight = quat.multiply(new Vector3(size.x,0,0));
+		Vector3 bottomLeft = quat.multiply(new Vector3(0,-size.y,0));
+		Vector3 bottomRight = quat.multiply(new Vector3(size.x,-size.y,0));
+		
+		float[] vertexData = { topLeft.x, topLeft.y/SceneManager.getInstance().getViewportRatio(), topLeft.z, textureRegion.u1, textureRegion.v1,
+							   topRight.x, topRight.y/SceneManager.getInstance().getViewportRatio(), topRight.z, textureRegion.u2, textureRegion.v1,
+							   bottomLeft.x, bottomLeft.y/SceneManager.getInstance().getViewportRatio(), bottomLeft.z, textureRegion.u1, textureRegion.v2,
+							   bottomRight.x, bottomRight.y/SceneManager.getInstance().getViewportRatio(), bottomRight.z, textureRegion.u2, textureRegion.v2
+		};
+		this.mesh = new Mesh(vertexData, DRAW_ORDER_IMAGE, 4);
+	}
+	
 }

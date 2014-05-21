@@ -2,8 +2,8 @@ package com.tyrlib2.graphics.materials;
 
 import java.nio.FloatBuffer;
 
-import android.opengl.GLES20;
-
+import com.tyrlib2.graphics.animation.Skeleton;
+import com.tyrlib2.graphics.renderables.Entity;
 import com.tyrlib2.graphics.renderer.Material;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.renderer.Program;
@@ -32,13 +32,27 @@ public class OutlineMaterial extends Material {
 	public static final int posOffset = DefaultMaterial3.posOffset;
 	
 	public static final String OUTLINE_PROGRAM = "OUTLINE";
-
+	
 	public OutlineMaterial(Color color) {
-		program = ProgramManager.getInstance().getProgram(OUTLINE_PROGRAM);
-		
+		this(color, false);
 		setup(color);
 	}
 	
+	public OutlineMaterial(Color color, boolean animated) {
+		if (animated) {
+			
+			this.boneParam = "u_Bone";
+			this.boneIndexParam = "a_BoneIndex";
+			this.boneWeightParam = "a_BoneWeight";
+			
+			program = ProgramManager.getInstance().getProgram("ANIMATED_" + OUTLINE_PROGRAM);
+		} else {
+			program = ProgramManager.getInstance().getProgram(OUTLINE_PROGRAM);
+		}
+		
+		
+		setup(color);
+	}
 	
 	
 	protected void setup(Color color) {
@@ -66,13 +80,21 @@ public class OutlineMaterial extends Material {
 		// Pass in the color information
 		TyrGL.glUniform4f(colorHandle, color.r, color.g, color.b, color.a);
 	    
+		if (TyrGL.GL_USE_VBO  == 1) {
+	        TyrGL.glVertexAttribPointer(normalHandle, normalDataSize, TyrGL.GL_FLOAT, false, 
+	        							strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, normalOffset * OpenGLRenderer.BYTES_PER_FLOAT);
+		} else {
+		    // Pass in the normal information
+		    vertexBuffer.position(normalOffset);
+		    TyrGL.glVertexAttribPointer(normalHandle, normalDataSize, TyrGL.GL_FLOAT, false,
+		    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
+		 
+		   
+		}
 		
-	    // Pass in the normal information
-	    vertexBuffer.position(normalOffset);
-	    TyrGL.glVertexAttribPointer(normalHandle, normalDataSize, TyrGL.GL_FLOAT, false,
-	    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
-	 
-	    TyrGL.glEnableVertexAttribArray(normalHandle);
+		 TyrGL.glEnableVertexAttribArray(normalHandle);
+		
+
 	}
 	
 	public Color getColors() {

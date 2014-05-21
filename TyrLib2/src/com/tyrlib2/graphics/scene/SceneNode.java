@@ -1,5 +1,6 @@
 package com.tyrlib2.graphics.scene;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,16 +14,21 @@ import com.tyrlib2.math.Vector3;
  *
  */
 
-public class SceneNode {
+public class SceneNode implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3917422812324934988L;
+
 	/** The SceneObjects attached to this node **/
-	protected List<SceneObject> attachedObjects;
+	protected transient List<SceneObject> attachedObjects;
 	
 	/** The children of this node **/
-	protected List<SceneNode> children;
+	protected transient List<SceneNode> children;
 	
 	/** The parent node **/
-	protected SceneNode parent;
+	protected transient SceneNode parent;
 	
 	/** The relative position of this node **/
 	protected Vector3 pos = new Vector3();
@@ -43,13 +49,13 @@ public class SceneNode {
 	protected Vector3 absoluteScale = new Vector3(1,1,1);
 	
 	/** Transforms model space to world space **/
-	protected float[] modelMatrix = new float[16];
+	protected transient float[] modelMatrix = new float[16];
 	
 	/** This node has been transformed and requires an update for itself and all children **/
-	protected boolean update;
+	protected transient boolean update;
 	
 	/** A child node requires an update. **/
-	protected boolean dirty;
+	protected transient boolean dirty;
 	
 	private static float[] translation = new float[16];
 	private static float[] rotation = new float[16];

@@ -80,7 +80,6 @@ public class TerrainMaterial extends LightedMaterial {
 	    
 		normalHandle = TyrGL.glGetAttribLocation(program.handle, "a_Normal");
 		lightPosHandle = TyrGL.glGetUniformLocation(program.handle, "u_LightPos");
-		lightTypeHandle = TyrGL.glGetUniformLocation(program.handle, "u_LightType");
 		ambientHandle = TyrGL.glGetUniformLocation(program.handle, "u_Ambient");
 		
 		textureUniformHandle = new int[TEXTURES_PER_CHUNK];

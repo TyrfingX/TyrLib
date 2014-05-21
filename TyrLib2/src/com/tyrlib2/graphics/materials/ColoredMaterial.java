@@ -22,6 +22,7 @@ public class ColoredMaterial extends Material implements IBlendable {
 	private int colorOffset = 3;
 	private int colorDataSize = 4;
 	private int colorHandle;
+	private int alphaHandle;
 	private Color[] colors;
 
 	private Color color = Color.WHITE.copy();
@@ -31,6 +32,8 @@ public class ColoredMaterial extends Material implements IBlendable {
 		this.colors = colors;
 		
 		program = ProgramManager.getInstance().getProgram("BASIC");
+		colorHandle = TyrGL.glGetAttribLocation(program.handle, "a_Color");
+		alphaHandle = TyrGL.glGetUniformLocation(program.handle, "u_Color");
 		init(7,0,3, "u_MVPMatrix", "a_Position");
 	}
 	
@@ -40,13 +43,15 @@ public class ColoredMaterial extends Material implements IBlendable {
 		this.color = color;
 		
 		program = ProgramManager.getInstance().getProgram("BASIC");
+		colorHandle = TyrGL.glGetAttribLocation(program.handle, "a_Color");
+		alphaHandle = TyrGL.glGetUniformLocation(program.handle, "u_Color");
 		init(7,0,3, "u_MVPMatrix", "a_Position");
 	}
 	
 	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
 		super.render(vertexBuffer, modelMatrix);
 		
-		colorHandle = TyrGL.glGetAttribLocation(program.handle, "a_Color");
+		
 		
 		if (TyrGL.GL_USE_VBO == 1) {		
 		    // Pass in the color information
@@ -64,7 +69,6 @@ public class ColoredMaterial extends Material implements IBlendable {
 		    TyrGL.glEnableVertexAttribArray(colorHandle);
 		}
 	    
-	    int alphaHandle = TyrGL.glGetUniformLocation(program.handle, "u_Color");
 	    TyrGL.glUniform4f(alphaHandle, color.r, color.g, color.b, color.a);
 	    
 	    Program.blendEnable(TyrGL.GL_SRC_ALPHA, TyrGL.GL_ONE_MINUS_SRC_ALPHA);

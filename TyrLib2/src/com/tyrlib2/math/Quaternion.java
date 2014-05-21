@@ -1,6 +1,7 @@
 package com.tyrlib2.math;
 
-import android.util.FloatMath;
+import java.io.Serializable;
+
 
 
 /**
@@ -9,7 +10,12 @@ import android.util.FloatMath;
  *
  */
 
-public class Quaternion {
+public class Quaternion implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6773898758471817987L;
+	
 	public float x;
 	public float y;
 	public float z;
@@ -331,7 +337,7 @@ public class Quaternion {
 		crossY = -(x * resultZ - z * resultX);
 		crossZ = x * resultY - y * resultX;
 		
-		resultVector.x = x * resultW + resultX * w +  crossX;
+		resultVector.x = x * resultW + resultX * w + crossX;
 		resultVector.y = y * resultW + resultY * w + crossY;
 		resultVector.z = z * resultW + resultZ * w + crossZ;
 

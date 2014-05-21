@@ -20,18 +20,19 @@ public abstract class PCOpenGLActivity implements OpenGLActivity {
         // We may at this point tweak the caps and request a translucent drawable
         caps.setBackgroundOpaque(false);
         caps.setSampleBuffers(true);
-        caps.setNumSamples(8);
-        //caps.setAlphaBits(8);
-        //caps.setRedBits(8);
-        //caps.setBlueBits(8);
-       // caps.setGreenBits(8);
+        caps.setNumSamples(1);
+        caps.setAlphaBits(8);
+        caps.setRedBits(8);
+        caps.setBlueBits(8);
+        caps.setGreenBits(8);
+        
         
 		Media.CONTEXT = new PCMedia(this);
 		Matrix.IMPL = new PCMatrixImpl();
 	
 		glView = new PCOpenGLSurfaceView("Test", caps);
-		glView.setSize(1600, 900);
-		glView.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		glView.setSize(800, 450);
+		//glView.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
 		go();
 		

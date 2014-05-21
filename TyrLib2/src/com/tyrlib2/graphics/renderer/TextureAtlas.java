@@ -36,6 +36,10 @@ public class TextureAtlas {
 	}
 	
 	public static TextureAtlas fromXMLFile(String fileName) {
+		return fromXMLFile(fileName, 1);
+	}
+	
+	public static TextureAtlas fromXMLFile(String fileName, float  atlasScale) {
 		
 		TextureAtlas atlas = null;
 		
@@ -87,13 +91,13 @@ public class TextureAtlas {
 							if (attributeName.equals("name")) {
 								name = parser.getAttributeValue(i);
 							} else if (attributeName.equals("x")) {
-								x = Float.valueOf(parser.getAttributeValue(i));
+								x = Float.valueOf(parser.getAttributeValue(i)) * atlasScale;
 							} else if (attributeName.equals("y")) {
-								y = Float.valueOf(parser.getAttributeValue(i));
+								y = Float.valueOf(parser.getAttributeValue(i)) * atlasScale;
 							} else if (attributeName.equals("w")) {
-								w = Float.valueOf(parser.getAttributeValue(i));
+								w = Float.valueOf(parser.getAttributeValue(i)) * atlasScale;
 							} else if (attributeName.equals("h")) {
-								h = Float.valueOf(parser.getAttributeValue(i));
+								h = Float.valueOf(parser.getAttributeValue(i)) * atlasScale;
 							}
 						}
 						

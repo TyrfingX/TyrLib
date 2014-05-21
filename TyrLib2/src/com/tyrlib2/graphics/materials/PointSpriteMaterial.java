@@ -87,7 +87,7 @@ public class PointSpriteMaterial extends Material implements IBlendable {
 		    
 		    program.textureHandle = textureHandle;
 		    
-		    OpenGLRenderer.textureFails++;
+		    OpenGLRenderer.setTextureFails(OpenGLRenderer.getTextureFails() + 1);
 		    
 		}
 	    

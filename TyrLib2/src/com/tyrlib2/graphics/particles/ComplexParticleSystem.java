@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import android.opengl.GLES20;
-
 import com.tyrlib2.graphics.materials.ParticleMaterial;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.renderer.TyrGL;
@@ -37,9 +35,6 @@ public class ComplexParticleSystem extends ParticleSystem {
 	private AABB boundingBox;
 	
 	private boolean disableZWriting = true;
-	
-	private int colorHandle;
-	private int texHandle;
 	
 	private int[] buffers = new int[2];
 	
@@ -190,7 +185,7 @@ public class ComplexParticleSystem extends ParticleSystem {
 	private void useAffectors(Particle particle, float time) {
 		for (int k = 0; k < countAffectors; ++k) {
 			Affector a = affectors[k];
-			if (a.isApplicable(particle, time)) {
+			if (particle.passedTime >= a.timeMin && particle.passedTime <= a.timeMax) {
 				a.onUpdate(particle, time);
 			}
 		}
@@ -219,7 +214,9 @@ public class ComplexParticleSystem extends ParticleSystem {
 		particle.system = this;
 		
 		batch.particles.add(particle);
-	
+		batch.colorHandle = TyrGL.glGetAttribLocation(material.getProgram().handle, "a_Color");
+		batch.texHandle = TyrGL.glGetAttribLocation(material.getProgram().handle, "a_TexCoordinate");
+		
 		FloatArray particleData = batch.particleData;
 		particle.dataIndex = particleData.getSize();
 		particle.floatArray = particleData;
@@ -351,6 +348,18 @@ public class ComplexParticleSystem extends ParticleSystem {
 		return super.detach();	
 	}
 	
+	public int getCountMaterials() {
+		return particleBatches.size();
+	}
+	
+	public ParticleMaterial getMaterial(int index) {
+		return particleBatches.get(index).material;
+	}
+	
+	public Affector getAffector(int index) {
+		return affectors[index];
+	}
+	
 	@Override
 	public void render(float[] vpMatrix) {
 		
@@ -393,20 +402,16 @@ public class ComplexParticleSystem extends ParticleSystem {
 					TyrGL.glVertexAttribPointer(material.getPositionHandle(), POSITION_SIZE, TyrGL.GL_FLOAT, false,
 				    							 (PARTICLE_DATA_SIZE/4) * OpenGLRenderer.BYTES_PER_FLOAT, 0);
 					TyrGL.glEnableVertexAttribArray(material.getPositionHandle());  
-					
-			        colorHandle = TyrGL.glGetAttribLocation(material.getProgram().handle, "a_Color");
 			        
 					// Pass in the color.
-			        TyrGL.glVertexAttribPointer(colorHandle, COLOR_SIZE, TyrGL.GL_FLOAT, false,
+			        TyrGL.glVertexAttribPointer(batch.colorHandle, COLOR_SIZE, TyrGL.GL_FLOAT, false,
 				    							 (PARTICLE_DATA_SIZE/4) * OpenGLRenderer.BYTES_PER_FLOAT, COLOR_OFFSET * OpenGLRenderer.BYTES_PER_FLOAT);
-			        TyrGL.glEnableVertexAttribArray(colorHandle);  
-
-			        texHandle = TyrGL.glGetAttribLocation(material.getProgram().handle, "a_TexCoordinate");
+			        TyrGL.glEnableVertexAttribArray(batch.colorHandle);  
 			        
 			        // Pass in the uv coords.
-			        TyrGL.glVertexAttribPointer(texHandle, UV_SIZE, TyrGL.GL_FLOAT, false,
+			        TyrGL.glVertexAttribPointer(batch.texHandle, UV_SIZE, TyrGL.GL_FLOAT, false,
 			        							(PARTICLE_DATA_SIZE/4) * OpenGLRenderer.BYTES_PER_FLOAT, UV_OFFSET * OpenGLRenderer.BYTES_PER_FLOAT);
-			        TyrGL.glEnableVertexAttribArray(texHandle);  
+			        TyrGL.glEnableVertexAttribArray(batch.texHandle);  
 				} else {
 					// Pass in the position.
 					TyrGL.glVertexAttribPointer(material.getPositionHandle(), POSITION_SIZE, TyrGL.GL_FLOAT, false,
@@ -414,21 +419,17 @@ public class ComplexParticleSystem extends ParticleSystem {
 					
 					TyrGL.glEnableVertexAttribArray(material.getPositionHandle());  
 					
-			        colorHandle = TyrGL.glGetAttribLocation(material.getProgram().handle, "a_Color");
-			        
 					// Pass in the color.
 			        buffer.position(COLOR_OFFSET);
-			        TyrGL.glVertexAttribPointer(colorHandle, COLOR_SIZE, TyrGL.GL_FLOAT, false,
+			        TyrGL.glVertexAttribPointer(batch.colorHandle, COLOR_SIZE, TyrGL.GL_FLOAT, false,
 			        							(PARTICLE_DATA_SIZE/4) * OpenGLRenderer.BYTES_PER_FLOAT, buffer);
-			        TyrGL.glEnableVertexAttribArray(colorHandle);  
-			        
-			        texHandle = TyrGL.glGetAttribLocation(material.getProgram().handle, "a_TexCoordinate");
+			        TyrGL.glEnableVertexAttribArray(batch.colorHandle);  
 			        
 					// Pass in the uv coords.
 			        buffer.position(UV_OFFSET);
-			        TyrGL.glVertexAttribPointer(texHandle, UV_SIZE, TyrGL.GL_FLOAT, false,
+			        TyrGL.glVertexAttribPointer(batch.texHandle, UV_SIZE, TyrGL.GL_FLOAT, false,
 			        							(PARTICLE_DATA_SIZE/4) * OpenGLRenderer.BYTES_PER_FLOAT, buffer);
-			        TyrGL.glEnableVertexAttribArray(texHandle);  
+			        TyrGL.glEnableVertexAttribArray(batch.texHandle);  
 				}
 		        
 		        // Apply the projection and view transformation

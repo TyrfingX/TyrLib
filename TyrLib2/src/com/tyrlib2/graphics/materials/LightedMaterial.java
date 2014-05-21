@@ -19,7 +19,6 @@ public abstract class LightedMaterial extends Material{
 	protected int lightPosHandle;
 	protected int normalMatrixHandle;
 	protected int ambientHandle;
-	protected int lightTypeHandle;
 	
 	private static final Color DEFAULT_AMBIENT = new Color(0,0,0,0);
 	
@@ -49,8 +48,8 @@ public abstract class LightedMaterial extends Material{
 		if (light != null) {
 			
 			lightPosHandle = TyrGL.glGetUniformLocation(program.handle, "u_LightPos");
-			lightTypeHandle = TyrGL.glGetUniformLocation(program.handle, "u_LightType");
 		
+			/*
 	    	if (light.getType() == Type.POINT_LIGHT) {
 	    	
 	    		// Set the light type to point light
@@ -60,15 +59,16 @@ public abstract class LightedMaterial extends Material{
 	    		
 	    		// Set the light type to directional light
 	    		TyrGL.glUniform1f(lightTypeHandle, 0.5f);
-	    	}
+	    	}*/
+			
 	    	float[] lightPosInEyeSpace = light.getLightVector();
 	    	
 			// Pass in the light position in eye space.        
 	    	TyrGL.glUniform3f(lightPosHandle, lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
-		} else {
+		} /* else {
     		// Set the light type to no extra light
 			TyrGL.glUniform1f(lightTypeHandle, 0.0f);		
-		}
+		} */
     	
 		
 

@@ -103,7 +103,7 @@ public class TexturedMaterial extends Material implements IBlendable  {
 		    
 		    program.textureHandle = textureHandle;
 		    
-		    OpenGLRenderer.textureFails++;
+		    OpenGLRenderer.setTextureFails(OpenGLRenderer.getTextureFails() + 1);
 		}
 	    
 		Program.blendEnable(TyrGL.GL_SRC_ALPHA, TyrGL.GL_ONE_MINUS_SRC_ALPHA);
@@ -115,6 +115,10 @@ public class TexturedMaterial extends Material implements IBlendable  {
 	
 	public void setTexture(Texture texture) {
 		this.texture = texture;
+	}
+	
+	public Texture getTexture() {
+		return texture;
 	}
 	
 	public void setColor(Color color) {

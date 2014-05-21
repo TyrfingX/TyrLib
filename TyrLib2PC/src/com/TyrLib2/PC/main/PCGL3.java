@@ -41,6 +41,7 @@ public class PCGL3 implements GLImpl {
 		TyrGL.GL_FRAGMENT_SHADER = GL3.GL_FRAGMENT_SHADER;
 		TyrGL.GL_UNSIGNED_SHORT = GL3.GL_UNSIGNED_SHORT;
 		TyrGL.GL_COMPILE_STATUS = GL3.GL_COMPILE_STATUS;
+		TyrGL.GL_INFO_LOG_LENGTH = GL3.GL_INFO_LOG_LENGTH;
 		TyrGL.GL_TEXTURE_MIN_FILTER = GL3.GL_TEXTURE_MIN_FILTER;
 		TyrGL.GL_LINEAR = GL3.GL_LINEAR;
 		TyrGL.GL_TEXTURE_MAG_FILTER = GL3.GL_TEXTURE_MAG_FILTER;
@@ -282,7 +283,7 @@ public class PCGL3 implements GLImpl {
 	@Override
 	public String glGetShaderInfoLog(int shader) {
 		IntBuffer intBuffer = IntBuffer.allocate(1);
-		gl.glGetShaderiv(shader, GL3bc.GL_INFO_LOG_LENGTH, intBuffer);
+		gl.glGetShaderiv(shader, GL3.GL_INFO_LOG_LENGTH, intBuffer);
 		int size = intBuffer.get(0);
 		
         ByteBuffer byteBuffer = ByteBuffer.allocate(size);

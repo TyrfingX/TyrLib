@@ -226,6 +226,10 @@ public class ItemList extends Window {
 	public void clear() {
 		itemListEntries.clear();
 	}
+	
+	public int getMaxVisibleItems() {
+		return displayItems;
+	}
 
 
 }

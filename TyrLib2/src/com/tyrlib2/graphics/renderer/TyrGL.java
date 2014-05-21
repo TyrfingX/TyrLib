@@ -35,6 +35,7 @@ public class TyrGL {
 	public static int GL_FRAGMENT_SHADER;
 	public static int GL_UNSIGNED_SHORT;
 	public static int GL_COMPILE_STATUS;
+	public static int GL_INFO_LOG_LENGTH;
 	public static int GL_TEXTURE_MIN_FILTER;
 	public static int GL_LINEAR;
 	public static int GL_TEXTURE_MAG_FILTER;

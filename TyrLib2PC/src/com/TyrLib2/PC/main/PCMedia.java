@@ -8,8 +8,12 @@ import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -97,7 +101,7 @@ public class PCMedia extends Media {
 
 	@Override
 	public InputStream openRawResource(int id) throws IOException {
-		String path = "/res/"+ resourceNames.get(id) + "." + resourceEndings.get(id);
+		String path = "/res/"+ resourceNames.get(id) +  (resourceEndings.get(id).equals("") ? "" : "." + resourceEndings.get(id));
 		URL url = getClass().getResource(path);
 		return new FileInputStream(url.getPath());
 	}
@@ -178,6 +182,47 @@ public class PCMedia extends Media {
 	@Override
 	public void loadBitmap(IBitmap bitmap) {
 
+	}
+
+	@Override
+	public void serializeTo(Serializable s, String target, String fileName) {
+		try {
+			URL url = getClass().getResource(target);
+			String path = url.getPath() + "/" + fileName;
+			FileOutputStream fileOut = new FileOutputStream(path);
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			out.writeObject(s);
+			out.close();
+			fileOut.close();
+			System.out.printf("Saved successful to " + target);
+		}catch(IOException i) {
+			i.printStackTrace();
+		}
+	}
+
+	@Override
+	public Object deserializeFrom(String target, String fileName) {
+		InputStream fis = null;
+		Object result = null;
+		
+		try
+		{
+			
+		  URL url = getClass().getResource(target);
+		  String path = url.getPath() + "/" + fileName;
+		  
+		  fis = new FileInputStream( path );
+
+		  ObjectInputStream o = new ObjectInputStream( fis );
+		  result = o.readObject();
+		  o.close();
+		  
+		}
+		catch ( IOException e ) { System.err.println( e ); }
+		catch ( ClassNotFoundException e ) { System.err.println( e ); }
+		finally { try { fis.close(); } catch ( Exception e ) { } }
+		
+		return result;
 	}
 
 

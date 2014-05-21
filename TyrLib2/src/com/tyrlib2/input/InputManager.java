@@ -13,17 +13,26 @@ public class InputManager {
 	public static final long FOCUS_PRIORITY = 2000000;
 	
 	private List<ITouchListener> touchListeners;
+	private List<IKeyboardListener> keyListeners;;
 	private Vector<IBackListener> backListeners;
+	private Vector<IScrollListener> scrollListeners;
+	private Vector<IMoveListener> moveListeners;
 	private boolean touching = false;
 	private Vector2 lastTouch = null;
 	private static InputManager instance;
+	
+	public static int VK_ENTER;
+	public static int VK_BACK_SPACE;
 	
 	private boolean sort;
 	
 	public InputManager()
 	{
 		touchListeners = new ArrayList<ITouchListener>();
+		keyListeners = new ArrayList<IKeyboardListener>();
 		backListeners = new Vector<IBackListener>();
+		scrollListeners = new Vector<IScrollListener>();
+		moveListeners = new Vector<IMoveListener>();
 	}
 	
 	public static InputManager getInstance() {
@@ -98,6 +107,70 @@ public class InputManager {
 		return true;
 	}
 	
+	public boolean onScroll(IView v, IMotionEvent event) {
+		
+		float rotation = event.getRotation();
+		
+		for (int i = 0; i < scrollListeners.size(); ++i) {
+			scrollListeners.get(i).onScroll(rotation);
+		}
+		
+		return false;
+	}
+	
+	public void addScrollListener(IScrollListener listener) {
+		scrollListeners.add(listener);
+	}
+	
+	public void removeScrollListener(IScrollListener listener) {
+		scrollListeners.remove(listener);
+	}
+	
+	public boolean onMove(IView v, IMotionEvent event) {
+		
+		int action = event.getAction();
+		int pid = action >> IMotionEvent.ACTION_POINTER_INDEX_SHIFT;
+		
+		Vector2 point = new Vector2(event.getX(pid) / v.getWidth(), event.getY(pid) / v.getHeight());
+		
+		for (int i = 0; i < moveListeners.size(); ++i) {
+			moveListeners.get(i).onMove(point);
+		}
+		
+		return false;
+	}
+	
+	public void addMoveListener(IMoveListener listener) {
+		moveListeners.add(listener);
+	}
+	
+	public void removeMoveListener(IMoveListener listener) {
+		moveListeners.remove(listener);
+	}
+	
+	public boolean onKeyEvent(IKeyboardEvent e) {
+		
+		int action = e.getAction();
+		
+		for (int i = 0; i < keyListeners.size(); ++i) {
+			if (action == IKeyboardEvent.ACTION_PRESSED) {
+				keyListeners.get(i).onPress(e);
+			} else {
+				keyListeners.get(i).onRelease(e);
+			}
+		}
+		
+		return false;
+	}
+	
+	public void addKeyboardListener(IKeyboardListener listener) {
+		keyListeners.add(listener);
+	}
+	
+	public void removeKeyboardListener(IKeyboardListener listener) {
+		keyListeners.remove(listener);
+	}
+	
 	public boolean onPressBack()
 	{
 		for (int i = backListeners.size() - 1; i >= 0; --i) {
@@ -156,7 +229,5 @@ public class InputManager {
 	public void sort() {
 		sort = true;
 	}
-	
-	
 
 }

@@ -25,7 +25,7 @@ public class TextureFailCounter implements IUpdateable {
 	public void onUpdate(float time) {
 
 		t += time;
-		fails += OpenGLRenderer.textureFails;
+		fails += OpenGLRenderer.getTextureFails();
 		frames++;
 		
 		if (t >= 1) {

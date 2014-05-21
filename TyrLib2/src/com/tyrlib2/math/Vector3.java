@@ -1,12 +1,19 @@
 package com.tyrlib2.math;
 
+import java.io.Serializable;
+
 /**
  * Basic vector object implementing 3D vector math.
  * @author Sascha
  *
  */
 
-public class Vector3 {
+public class Vector3 implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5645860908411944792L;
+	
 	public float x;
 	public float y;
 	public float z;
@@ -174,6 +181,12 @@ public class Vector3 {
 	
 	public static float length(float x, float y, float z) {
 		return (float) Math.sqrt(x*x +  y*y + z*z);
+	}
+	
+	public static void add(Vector3 v1, Vector3 v2, Vector3 target) {
+		target.x = v1.x + v2.x;
+		target.y = v1.y + v2.y;
+		target.z = v1.z + v2.z;
 	}
 
 	

@@ -50,6 +50,11 @@ public class Label extends Window{
 		if (!this.text.getText().equals(text)) {
 			this.text.setText(text);
 			setSize(new Vector2(this.text.getSize()));
+			
+			if (background != null) {
+				Vector2 size = new Vector2(getSize());
+				background.setSize(size);
+			}
 		}
 	}
 
@@ -119,6 +124,11 @@ public class Label extends Window{
 	
 	public FormattedText2 getFormattedText() {
 		return text;
+	}
+	
+	@Override
+	public long getPriority() {
+		return WindowManager.GUI_OVERLAY_PRIORITY*100;
 	}
 	
 	

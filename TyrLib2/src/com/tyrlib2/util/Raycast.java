@@ -107,11 +107,11 @@ public class Raycast {
 		
 		Vector3 camUpDirection = cam.getWorldUpVector();
 		camUpDirection.normalize();
-		camUpDirection = camUpDirection.multiply(SceneManager.getInstance().getRenderer().getFrustum().getFarClipHeight());
+		camUpDirection = camUpDirection.multiply(SceneManager.getInstance().getRenderer().getFrustum().getFarClipHeight()*1.25f);
 		
 		Vector3 camRightDirection = camLookDirection.cross(camUpDirection);
 		camRightDirection.normalize();
-		camRightDirection = camRightDirection.multiply(SceneManager.getInstance().getRenderer().getFrustum().getFarClipWidth());
+		camRightDirection = camRightDirection.multiply(SceneManager.getInstance().getRenderer().getFrustum().getFarClipWidth()*1.25f);
 		
 		camLookDirection.normalize();
 		

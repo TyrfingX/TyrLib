@@ -97,9 +97,7 @@ public class Emitter extends SceneObject implements IUpdateable {
 	public void emit() {
 		
 		parent.getCachedAbsoluteRot().multiply(velocity, rotatedVelocity);
-		rotatedVelocity.x += movementVelocity.x;
-		rotatedVelocity.y += movementVelocity.y;
-		rotatedVelocity.z += movementVelocity.z;
+		Vector3.add(rotatedVelocity, movementVelocity, rotatedVelocity);
 		
 		parent.getCachedAbsoluteRot().multiply(randomVelocity, rotatedRandomVelocity);
 		
@@ -177,6 +175,8 @@ public class Emitter extends SceneObject implements IUpdateable {
 
 	public void setRandomPos(Vector3 randomPos) { this.randomPos = randomPos; };
 	public Vector3 getRandomPos() { return randomPos; };
+	
+	public IParticleFactory getFactory() { return particleFactory; }
 	
 	public void setMovementVelocity(Vector3 movementVelocity) {
 		this.movementVelocity = movementVelocity;

@@ -91,4 +91,8 @@ public class ImageBox extends Window {
 	public TexturedMaterial getMaterial() {
 		return (TexturedMaterial) image.getMaterial();
 	}
+	
+	public Image2 getImage() {
+		return image;
+	}
 }

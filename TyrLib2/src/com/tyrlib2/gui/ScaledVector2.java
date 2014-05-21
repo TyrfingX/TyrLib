@@ -1,5 +1,7 @@
 package com.tyrlib2.gui;
 
+import java.io.Serializable;
+
 import com.tyrlib2.math.Vector2;
 
 /**
@@ -8,7 +10,12 @@ import com.tyrlib2.math.Vector2;
  *
  */
 
-public class ScaledVector2 {
+public class ScaledVector2 implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6489101662972809135L;
+	
 	public float x;
 	public float y;
 	public int scaleIndex;

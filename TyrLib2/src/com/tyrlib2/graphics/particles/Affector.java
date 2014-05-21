@@ -17,7 +17,7 @@ public abstract class Affector extends SceneObject {
 	protected float timeMax;
 	
 	public Affector() {
-		
+		timeMax = Float.MAX_VALUE;
 	}
 
 	public void setParticleSystem(ParticleSystem system) { 
@@ -26,16 +26,6 @@ public abstract class Affector extends SceneObject {
 		}
 		this.system = system; 
 	};
-	
-	public boolean isApplicable(Particle particle, float time) {
-		if (timeMin == 0 || particle.passedTime >= timeMin) {
-			if (timeMax == 0 ||  particle.passedTime <= timeMax) {
-				return true;
-			}
-		}
-		
-		return false;
-	}
 	
 	public abstract void onUpdate(Particle particle, float time);
 	

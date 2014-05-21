@@ -35,4 +35,14 @@ public class AndroidMotionEvent implements IMotionEvent {
 		return event.getPointerCount();
 	}
 
+	@Override
+	public float getRotation() {
+		return 0;
+	}
+
+	@Override
+	public int getButton() {
+		return 0;
+	}
+
 }

@@ -3,7 +3,6 @@ package com.TyrLib2.PC.main;
 
 import java.util.Vector;
 
-import javax.media.opengl.DebugGL3;
 import javax.media.opengl.GL3;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
@@ -18,8 +17,10 @@ import com.tyrlib2.main.Media;
 
 public class PCOpenGLRenderer extends OpenGLRenderer implements GLEventListener {
 
-	private int fb;
 	private Vector<Runnable> queuedEvents = new Vector<Runnable>();
+
+	//private int[] fbo = new int[1];
+	//private int[] rbo = new int[2];
 	
 	public PCOpenGLRenderer() {
 		super();
@@ -28,15 +29,28 @@ public class PCOpenGLRenderer extends OpenGLRenderer implements GLEventListener 
 	@Override
 	public void init(GLAutoDrawable drawable) {
 		
-		drawable.setGL(new DebugGL3((GL3) drawable.getGL()));
+		//drawable.setGL(new DebugGL3((GL3) drawable.getGL()));
 		
-		TyrGL.IMPL = new PCGL3(drawable.getGL().getGL3());
+		GL3 gl = drawable.getGL().getGL3();
+		TyrGL.IMPL = new PCGL3(gl);
 		
 		defaultSetup();
 		
 		drawable.getGL().glEnable(GL3.GL_VERTEX_PROGRAM_POINT_SIZE);
 		
 		loadShaders();
+		/*
+		gl.glEnable(GL3.GL_MULTISAMPLE);
+		
+		gl.glGenFramebuffers( 1, fbo, 0 );
+		gl.glBindFramebuffer( GL3.GL_FRAMEBUFFER, fbo[0] );
+		
+		gl.glGenRenderbuffers( 2, rbo, 0 );
+		gl.glBindRenderbuffer(GL3.GL_RENDERBUFFER, rbo[0]);
+		gl.glRenderbufferStorageMultisample(GL3.GL_RENDERBUFFER, 4, GL3.GL_RGB8, drawable.getWidth(), drawable.getHeight());
+		gl.glBindRenderbuffer(GL3.GL_RENDERBUFFER, rbo[1]);
+		gl.glRenderbufferStorageMultisample(GL3.GL_RENDERBUFFER, 4, GL3.GL_DEPTH_COMPONENT24, drawable.getWidth(), drawable.getHeight());
+		*/
 		startRendering();
 				
 		//Generate a new FBO. It will contain your texture.
@@ -72,9 +86,22 @@ public class PCOpenGLRenderer extends OpenGLRenderer implements GLEventListener 
 			queuedEvents.clear();
 		}
 		
+		GL3 gl = drawable.getGL().getGL3();
+		/*
+		gl.glBindFramebuffer( GL3.GL_FRAMEBUFFER, fbo[0] );
+		gl.glFramebufferRenderbuffer(GL3.GL_FRAMEBUFFER, GL3.GL_COLOR_ATTACHMENT0, GL3.GL_RENDERBUFFER, rbo[0]);
+		gl.glFramebufferRenderbuffer(GL3.GL_FRAMEBUFFER, GL3.GL_DEPTH_ATTACHMENT, GL3.GL_RENDERBUFFER, rbo[1]);
+		*/
 		render();
+		/*
+		gl.glBindFramebuffer(GL3.GL_READ_FRAMEBUFFER, fbo[0]); // Unseren Framebuffer also Quelle binden
+		gl.glBindFramebuffer(GL3.GL_DRAW_FRAMEBUFFER, 0); // Den OpenGL Framebuffer als Ziel binden
+		gl.glBlitFramebuffer(0, 0, drawable.getWidth(), drawable.getHeight(), 0, 0, 
+							 drawable.getWidth(), drawable.getHeight(), GL3.GL_COLOR_BUFFER_BIT, GL3.GL_NEAREST);
+		*/
 	}
 	
+	@Override
 	public void queueEvent(Runnable r) {
 		synchronized (queuedEvents) {
 			queuedEvents.add(r);

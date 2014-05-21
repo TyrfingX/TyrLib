@@ -33,7 +33,8 @@ public class DefaultMaterial3 extends LightedMaterial {
 	/** Per vertex normals of this object **/
 	public static final int normalOffset = 3;
 	public static final int normalDataSize = 3;
-	private int normalHandle;
+	protected int normalHandle;
+	protected int normalSize = normalDataSize;
 	
 	/** Texture information of this object **/
 	public static final int uvOffset = 6;
@@ -42,8 +43,8 @@ public class DefaultMaterial3 extends LightedMaterial {
 	private int textureCoordinateHandle;
 	private String textureName;
 	private Texture texture;
-	private float repeatX;
-	private float repeatY;
+	protected float repeatX;
+	protected float repeatY;
 	
 	public static final int dataSize = 8;
 	public static final int posOffset = 0;
@@ -188,26 +189,26 @@ public class DefaultMaterial3 extends LightedMaterial {
 	{	
 		if (TyrGL.GL_USE_VBO == 1) {
 		    // Pass in the normal information
-		    TyrGL.glVertexAttribPointer(normalHandle, normalDataSize, TyrGL.GL_FLOAT, false,
-		    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, normalOffset * OpenGLRenderer.BYTES_PER_FLOAT);
+		    TyrGL.glVertexAttribPointer(normalHandle, normalSize, TyrGL.GL_FLOAT, false,
+		    							strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, normalOffset * OpenGLRenderer.BYTES_PER_FLOAT);
 		 
 		    TyrGL.glEnableVertexAttribArray(normalHandle);
 		    
 	        // Pass in the texture coordinate information
 	        TyrGL.glVertexAttribPointer(textureCoordinateHandle, uvDataSize, TyrGL.GL_FLOAT, false, 
-	        		strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, uvOffset * OpenGLRenderer.BYTES_PER_FLOAT);
+	        		strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, this.getUVOffset() * OpenGLRenderer.BYTES_PER_FLOAT);
 	        
 	        TyrGL.glEnableVertexAttribArray(textureCoordinateHandle);
 		} else {
 		    // Pass in the normal information
 		    vertexBuffer.position(normalOffset);
-		    TyrGL.glVertexAttribPointer(normalHandle, normalDataSize, TyrGL.GL_FLOAT, false,
+		    TyrGL.glVertexAttribPointer(normalHandle, normalSize, TyrGL.GL_FLOAT, false,
 		    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
 		 
 		    TyrGL.glEnableVertexAttribArray(normalHandle);
 		    
 	        // Pass in the texture coordinate information
-	        vertexBuffer.position(uvOffset);
+	        vertexBuffer.position(this.getUVOffset());
 	        TyrGL.glVertexAttribPointer(textureCoordinateHandle, uvDataSize, TyrGL.GL_FLOAT, false, 
 	        		strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
 	        
@@ -227,7 +228,7 @@ public class DefaultMaterial3 extends LightedMaterial {
 	    
 	    program.textureHandle = textureHandle;
 	    
-	    OpenGLRenderer.textureFails++;
+	    OpenGLRenderer.setTextureFails(OpenGLRenderer.getTextureFails() + 1);
 	}
 
 	public Color[] getColors() {

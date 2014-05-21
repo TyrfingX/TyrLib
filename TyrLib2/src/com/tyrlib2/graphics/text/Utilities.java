@@ -61,7 +61,7 @@ public class Utilities {
 	        // If the compilation failed, delete the shader.
 	        if (compileStatus[0] == 0)
 	        {
-	        	Log.v(TAG, "Shader fail info: " + TyrGL.glGetShaderInfoLog(shaderHandle));
+	        	System.out.println("Shader fail info: " + TyrGL.glGetShaderInfoLog(shaderHandle));
 	        	TyrGL.glDeleteShader(shaderHandle);
 	            shaderHandle = 0;
 	        }

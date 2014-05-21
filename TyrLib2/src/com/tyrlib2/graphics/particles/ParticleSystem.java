@@ -24,6 +24,8 @@ public abstract class ParticleSystem  extends BoundedSceneObject implements IUpd
 		FloatArray particleData ;
 		List<Particle> particles = new ArrayList<Particle>();
 		ParticleMaterial material;
+		int colorHandle;
+		int texHandle;
 	}
 	
 	public final static int POSITION_OFFSET = 0;

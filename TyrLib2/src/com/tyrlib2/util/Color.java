@@ -60,4 +60,8 @@ public class Color {
 		Random random = new Random();
 		return new Color(random.nextFloat(), random.nextFloat(), random.nextFloat(), random.nextFloat() + min);
 	}
+	
+	public String toHex() {
+		return String.format("#%02x%02x%02x", (int)(r*255), (int)(g*255), (int)(b*255));
+	}
 }

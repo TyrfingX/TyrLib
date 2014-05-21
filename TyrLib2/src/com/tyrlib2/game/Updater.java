@@ -1,12 +1,17 @@
 package com.tyrlib2.game;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.tyrlib2.graphics.renderer.IFrameListener;
 
-public class Updater implements IFrameListener {
+public class Updater implements IFrameListener, Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6660445587292999876L;
 	private boolean pause;
 	private List<IUpdateable> queue;
 	

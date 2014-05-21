@@ -119,18 +119,18 @@ public class Renderable extends BoundedRenderable {
 	        	
 		        material.program.meshChange = true;
 		        
+		        if (TyrGL.GL_USE_VBO == 1) {
+		        	TyrGL.glBindBuffer(TyrGL.GL_ELEMENT_ARRAY_BUFFER, mesh.getIBOBuffer());
+		        }
 	        
 	        }
 	        
 	        material.render(mesh.vertexBuffer, modelMatrix);
 	        
-	        if (TyrGL.GL_USE_VBO == 1) {
-	        	TyrGL.glBindBuffer(TyrGL.GL_ELEMENT_ARRAY_BUFFER, mesh.getIBOBuffer());
-	        }
+
 	        
 	        if (material.lighted) {
 	    		
-
 	        	LightedMaterial lightedMaterial = (LightedMaterial) material;
 	        	
 	        	// First draw using depth buffer and no blending
@@ -141,8 +141,6 @@ public class Renderable extends BoundedRenderable {
     	        } else {
     	        	TyrGL.glDrawElements(renderMode, mesh.getIndexCount(), TyrGL.GL_UNSIGNED_SHORT, mesh.drawListBuffer);	
     	        }
-        		
-        	
 	        	
 	        	// Enable blending
 	    		//TyrGL.glDisable(TyrGL.GL_DEPTH_TEST);

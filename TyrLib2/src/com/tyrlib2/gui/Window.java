@@ -41,6 +41,12 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	/** The size of this window **/
 	private Vector2 size;
 	
+	/** Factors to relax size for UI interaction **/
+	private Vector2 sizeRelaxation = new Vector2(1,1);
+	
+	/** Size relaxed by sizeRelaxation **/
+	private Vector2 relaxedSize = new Vector2(0,0);
+	
 	/** Takes care of moving this window **/
 	private DirectMovement movement;
 	
@@ -422,6 +428,14 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	
 	public void setSize(Vector2 size) {
 		this.size = size;
+		relaxedSize.x = size.x * sizeRelaxation.x;
+		relaxedSize.y = size.y * sizeRelaxation.y;
+	}
+	
+	public void setSizeRelaxation(Vector2 relaxation) {
+		sizeRelaxation = relaxation;
+		relaxedSize.x = size.x * sizeRelaxation.x;
+		relaxedSize.y = size.y * sizeRelaxation.y;
 	}
 	
 	/**
@@ -456,7 +470,9 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	public boolean onTouchDown(Vector2 point, IMotionEvent event, int fingerId) {
 		point = new Vector2(point.x, 1-point.y);
 		Vector2 pos = getAbsolutePos();
-		if (Rectangle.pointInRectangle(pos, size, point)) {
+		pos.x -= size.x * (sizeRelaxation.x-1) /2;
+		pos.y += size.y * (sizeRelaxation.y-1) /2;
+		if (Rectangle.pointInRectangle(pos, relaxedSize, point)) {
 			if (!touchInWindow) {
 				onTouchEntersWindow();
 			}
@@ -484,7 +500,9 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	public boolean onTouchUp(Vector2 point, IMotionEvent event, int fingerId) {
 		point = new Vector2(point.x, 1-point.y);
 		Vector2 pos = getAbsolutePos();
-		if (drag || Rectangle.pointInRectangle(pos, size, point)) {
+		pos.x -= size.x * (sizeRelaxation.x-1) /2;
+		pos.y += size.y * (sizeRelaxation.y-1) /2;
+		if (drag || Rectangle.pointInRectangle(pos, relaxedSize, point)) {
 			onTouchUpWindow(point, event);
 			if (touchInWindow) {
 				onTouchLeavesWindow();
@@ -506,6 +524,13 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 		windowEvent.setParam("POINT", point);
 		windowEvent.setParam("MOTIONEVENT", event);
 		fireEvent(windowEvent);
+		
+		if (touchInWindow) {
+			windowEvent = new WindowEvent(this, WindowEventType.TOUCH);
+			windowEvent.setParam("POINT", point);
+			windowEvent.setParam("MOTIONEVENT", event);
+			fireEvent(windowEvent);
+		}
 	}
 
 	
@@ -518,7 +543,7 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	public boolean onTouchMove(Vector2 point, IMotionEvent event, int fingerId) {
 		point = new Vector2(point.x, 1-point.y);
 		Vector2 pos = getAbsolutePos();
-		if (Rectangle.pointInRectangle(pos, size, point)) {
+		if (Rectangle.pointInRectangle(pos, relaxedSize, point)) {
 			if (!touchInWindow) {
 				onTouchEntersWindow();
 			}

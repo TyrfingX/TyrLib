@@ -31,8 +31,8 @@ public class Particle implements IUpdateable {
 	protected float passedTime;
 	protected float size;
 	
-	protected int dataIndex;
-	protected FloatArray floatArray;
+	public int dataIndex;
+	public FloatArray floatArray;
 	protected ParticleSystem system;
 	
 	public Particle(float size) {

@@ -3,6 +3,7 @@ package com.tyrlib2.main;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 
 import com.tyrlib2.bitmap.ICanvas;
 import com.tyrlib2.bitmap.IDrawableBitmap;
@@ -29,4 +30,6 @@ public abstract class Media {
 	public abstract ICanvas createCanvas();
 	public abstract ICanvas createCanvas(IDrawableBitmap bitmap);
 	public abstract Vector2 getScreenSize();
+	public abstract void serializeTo(Serializable s, String target, String fileName);
+	public abstract Object deserializeFrom(String target, String fileName);
 }

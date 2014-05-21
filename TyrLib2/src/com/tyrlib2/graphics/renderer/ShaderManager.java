@@ -59,12 +59,17 @@ public class ShaderManager {
         // If the compilation failed, delete the shader.
         if (compileStatus[0] == 0)
         {
+        	
+            String info = TyrGL.glGetShaderInfoLog(shader);
+            System.out.println(info);
+        	
         	TyrGL.glDeleteShader(shader);
             shader = 0;
+            
             if (type == TyrGL.GL_VERTEX_SHADER) {
-            	throw new RuntimeException("Error creating vertex shader: " + name + ".");
+            	throw new RuntimeException("Error creating vertex shader: " + name);
             } else {
-            	throw new RuntimeException("Error creating fragment shader: " + name + ".");
+            	throw new RuntimeException("Error creating fragment shader: " + name);
             }
         } else {
         	shaders.put(name, shader);

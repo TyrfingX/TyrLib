@@ -29,7 +29,8 @@ public class BatchTextProgram extends Program {
 
 
 	private static final String fragmentShaderCode =
-			"uniform sampler2D u_Texture;       \n"    // The input texture.
+			//"#version 330\n" 
+			 "uniform sampler2D u_Texture;       \n"    // The input texture.
 			+	"precision mediump float;       \n"     // Set the default precision to medium. We don't need as high of a
 	        // precision in the fragment shader.
 			+ "uniform vec4 u_Color;          \n"

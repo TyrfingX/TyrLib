@@ -15,4 +15,6 @@ public interface IMotionEvent {
 	public float getX(int id);
 	public float getY(int id);
 	public int getPointerCount();
+	public float getRotation();
+	public int getButton();
 }

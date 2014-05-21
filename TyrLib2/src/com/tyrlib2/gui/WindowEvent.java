@@ -14,7 +14,8 @@ public class WindowEvent {
 		TOUCH_DOWN,
 		TOUCH_UP,
 		DESTROYED,
-		CONFIRMED
+		CONFIRMED,
+		TOUCH
 	}
 	
 	private WindowEventType type;

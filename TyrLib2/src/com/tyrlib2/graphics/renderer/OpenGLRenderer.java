@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import android.opengl.GLES20;
-
 import com.tyrlib2.graphics.lighting.Light;
 import com.tyrlib2.graphics.scene.BoundedSceneObject;
 import com.tyrlib2.graphics.scene.Octree;
@@ -42,7 +40,7 @@ public abstract class OpenGLRenderer {
 	protected boolean rendering = false;
 	protected static boolean init = false;
 	protected FrustumG frustum;
-	public static int textureFails = 0;
+	private static int textureFails = 0;
 	private RenderSceneQuery query = new RenderSceneQuery();
 
 	class RenderChannel {
@@ -139,8 +137,6 @@ public abstract class OpenGLRenderer {
 	protected void updateListeners() {
 	    
 	    if (lastTime != 0) {
-	    	
-	
 	    	
 	    	long time = System.nanoTime();
 	    	long diff = time - lastTime;
@@ -397,10 +393,20 @@ public abstract class OpenGLRenderer {
 		    drawScene();
 		    updateListeners();
 		    
-		    textureFails = 0;
+		    setTextureFails(0);
 
     	}
         
 	}
+
+	public static int getTextureFails() {
+		return textureFails;
+	}
+
+	public static void setTextureFails(int textureFails) {
+		OpenGLRenderer.textureFails = textureFails;
+	}
+	
+	public abstract void queueEvent(Runnable r);
 
 }

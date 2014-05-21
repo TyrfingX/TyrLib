@@ -73,9 +73,12 @@ public class ProgramManager {
         // If the link failed, delete the program.
         if (linkStatus[0] == 0)
         {
+        	
+            String info = TyrGL.glGetProgramInfoLog(programHandle);
+        	
         	TyrGL.glDeleteProgram(programHandle);
             programHandle = 0;
-            throw new RuntimeException("Error creating program: " + programName + ".");
+            throw new RuntimeException("Error creating program: " + programName + ".\n" + info);
         }
         
         programs.put(programName, program);

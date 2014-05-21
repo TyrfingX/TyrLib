@@ -1,5 +1,6 @@
 package com.TyrLib2.PC.bitmap;
 
+import java.awt.BasicStroke;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -34,6 +35,10 @@ public class PCCanvas implements ICanvas {
 		g.setFont(font);
 		g.setRenderingHint(	RenderingHints.KEY_ANTIALIASING, // Anti-alias!
 		        			RenderingHints.VALUE_ANTIALIAS_ON);
+		
+		g.setRenderingHint(	RenderingHints.KEY_RENDERING,
+							RenderingHints.VALUE_RENDER_QUALITY);
+		
 		g.setColor(p.g.getColor());
 		
 		if (p.align == TextAlign.RIGHT) {

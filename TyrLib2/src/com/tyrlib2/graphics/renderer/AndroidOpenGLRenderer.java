@@ -8,6 +8,7 @@ import android.opengl.GLSurfaceView;
 
 import com.tyrlib2.graphics.materials.DefaultMaterial3;
 import com.tyrlib2.main.Media;
+import com.tyrlib2.main.OpenGLSurfaceView;
 
 /**
  * This class initiates the actual rendering.
@@ -104,5 +105,10 @@ public class AndroidOpenGLRenderer extends OpenGLRenderer implements GLSurfaceVi
 													Media.CONTEXT.getResourceID("depth_vs", "raw"), 
 													Media.CONTEXT.getResourceID("depth_fs", "raw"), 
 													new String[]{"aPosition" });
+	}
+
+	@Override
+	public void queueEvent(Runnable r) {
+		OpenGLSurfaceView.instance.queueEvent(r);
 	}
 }
