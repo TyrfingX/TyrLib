@@ -23,6 +23,23 @@ public class Server extends Thread{
 	    this.start();
 	}
 	
+	public int getPort() {
+		return serverSocket.getLocalPort();
+	}
+	
+	public String getServerName() {
+		return serverSocket.getInetAddress().getHostAddress();
+	}
+	
+	public void close() {
+		try {
+			serverSocket.close();
+			acceptConnections = false;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public void setAcceptConnections(boolean state) {
 		this.acceptConnections = state;
 	}

@@ -13,6 +13,8 @@ public class WindowEvent {
 		TOUCH_MOVES,
 		TOUCH_DOWN,
 		TOUCH_UP,
+		MOUSE_ENTERS,
+		MOUSE_LEAVES,
 		DESTROYED,
 		CONFIRMED,
 		TOUCH

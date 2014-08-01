@@ -89,7 +89,7 @@ public class OpenGLSurfaceView extends GLSurfaceView {
 				InputManager.getInstance().onKeyEvent(eventCopy);
 			}
 	    });
-    	return true;
+    	return super.onKeyDown(keyCode, event);
     }
     
     @Override
@@ -101,8 +101,7 @@ public class OpenGLSurfaceView extends GLSurfaceView {
 				InputManager.getInstance().onKeyEvent(eventCopy);
 			}
 	    });
-    	return true;
+    	return super.onKeyUp(keyCode, event);
     }
-    
     
 }

@@ -110,9 +110,9 @@ public class Button extends Window {
 	}
 	
 	@Override
-	public void onTouchEntersWindow() {
+	public void onTouchEntersWindow(Vector2 point) {
 		// Start highlighting the button
-		super.onTouchEntersWindow();
+		super.onTouchEntersWindow(point);
 		label.setColor(highlightTextColor);
 		for (ButtonImagePosition position : ButtonImagePosition.values()) {
 			bgImageBoxes.get(position).setAtlasRegion(highlightBgImages.get(position));

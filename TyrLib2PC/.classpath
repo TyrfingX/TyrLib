@@ -5,7 +5,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/TyrLib2"/>
 	<classpathentry kind="lib" path="lib/gluegen-rt.jar"/>
 	<classpathentry kind="lib" path="lib/jogl-all.jar"/>
-	<classpathentry kind="lib" path="lib/gluegen-rt-natives-windows-amd64.jar"/>
-	<classpathentry kind="lib" path="lib/jogl-all-natives-windows-amd64.jar"/>
+	<classpathentry kind="lib" path="/media/sascha/Windows8_OS/Users/Media/Downloads/jogamp-all-platforms/jogamp-all-platforms/jar/gluegen-rt-natives-linux-amd64.jar"/>
+	<classpathentry kind="lib" path="/media/sascha/Windows8_OS/Users/Media/Downloads/jogamp-all-platforms/jogamp-all-platforms/jar/jogl-all-natives-linux-amd64.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -20,12 +20,24 @@ import com.tyrlib2.graphics.renderer.TyrGL;
 public class PCBitmap implements IBitmap {
 
 	private Texture text;
+	private BufferedImage tBufferedImage;
 	
 	public static final Map<Integer, Texture> textures = new HashMap<Integer, Texture>();
 	
+	public PCBitmap(String path, boolean staticBitmap) {
+		try {
+			tBufferedImage = ImageIO.read(new File(path));
+			if (!staticBitmap) toTexture(tBufferedImage);
+		} catch (GLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public PCBitmap(String path) {
 		try {
-			BufferedImage tBufferedImage = ImageIO.read(new File(path));
+			tBufferedImage = ImageIO.read(new File(path));
 			toTexture(tBufferedImage);
 		} catch (GLException e) {
 			e.printStackTrace();
@@ -59,12 +71,25 @@ public class PCBitmap implements IBitmap {
 	
 	@Override
 	public int getWidth() {
-		return text.getWidth();
+		if (tBufferedImage != null) {
+			return tBufferedImage.getWidth();
+		} else {
+			return text.getWidth();
+		}
 	}
 
 	@Override
 	public int getHeight() {
-		return text.getHeight();
+		if (tBufferedImage != null) {
+			return tBufferedImage.getHeight();
+		} else {
+			return text.getHeight();
+		}
+	}
+	
+	@Override
+	public int getRGB(int x, int y) {
+		return tBufferedImage.getRGB(x, y);
 	}
 
 	@Override

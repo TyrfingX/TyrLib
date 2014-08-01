@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 import com.tyrlib2.game.IUpdateable;
 import com.tyrlib2.graphics.renderer.IRenderable;
 import com.tyrlib2.graphics.renderer.Viewport;
@@ -14,6 +13,7 @@ import com.tyrlib2.graphics.scene.SceneNode;
 import com.tyrlib2.graphics.scene.SceneObject;
 import com.tyrlib2.gui.WindowEvent.WindowEventType;
 import com.tyrlib2.input.IMotionEvent;
+import com.tyrlib2.input.IMoveListener;
 import com.tyrlib2.input.ITouchListener;
 import com.tyrlib2.input.InputManager;
 import com.tyrlib2.math.Rectangle;
@@ -30,7 +30,7 @@ import com.tyrlib2.util.IPrioritizable;
  *
  */
 
-public class Window implements IUpdateable, ITouchListener, IRenderable, IPrioritizable {
+public class Window implements IUpdateable, ITouchListener, IRenderable, IPrioritizable, IMoveListener {
 	
 	/** The name of this window **/
 	private String name;
@@ -45,7 +45,7 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	private Vector2 sizeRelaxation = new Vector2(1,1);
 	
 	/** Size relaxed by sizeRelaxation **/
-	private Vector2 relaxedSize = new Vector2(0,0);
+	protected Vector2 relaxedSize = new Vector2(0,0);
 	
 	/** Takes care of moving this window **/
 	private DirectMovement movement;
@@ -120,6 +120,9 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	
 	/** does this window inherit fade out/ins from parent? **/
 	private boolean inheritsFade = true;
+	
+	/** is he window being hovered by the mouse **/
+	protected boolean hovered;
 	
 	private Window() {
 		node = new SceneNode();
@@ -474,7 +477,7 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 		pos.y += size.y * (sizeRelaxation.y-1) /2;
 		if (Rectangle.pointInRectangle(pos, relaxedSize, point)) {
 			if (!touchInWindow) {
-				onTouchEntersWindow();
+				onTouchEntersWindow(point);
 			}
 			onTouchDownWindow(point, event);
 			return !passTouchEventsThrough;
@@ -545,7 +548,7 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 		Vector2 pos = getAbsolutePos();
 		if (Rectangle.pointInRectangle(pos, relaxedSize, point)) {
 			if (!touchInWindow) {
-				onTouchEntersWindow();
+				onTouchEntersWindow(point);
 			}
 			onTouchMoveWindow(point, event);
 			return !passTouchEventsThrough;
@@ -573,11 +576,14 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	
 	/**
 	 * The user has started touching this window
+	 * @param point 
 	 */
 	
-	protected void onTouchEntersWindow() {
+	protected void onTouchEntersWindow(Vector2 point) {
 		touchInWindow = true;
-		fireEvent(new WindowEvent(this, WindowEventType.TOUCH_ENTERS));
+		WindowEvent e = new WindowEvent(this, WindowEventType.TOUCH_ENTERS);
+		e.setParam("POINT", point);
+		fireEvent(e);
 	}
 	
 	/**
@@ -627,9 +633,11 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 		if (receiveTouchEvents) {
 			if (!InputManager.getInstance().isAdded(this)) {
 				InputManager.getInstance().addTouchListener(this);
+				InputManager.getInstance().addMoveListener(this);
 			}
 		} else {
 			InputManager.getInstance().removeTouchListener(this);
+			InputManager.getInstance().removeMoveListener(this);
 		}
 	}
 	
@@ -826,6 +834,53 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	
 	public void setInheritsFade(boolean state) {
 		this.inheritsFade = state;
+	}
+	
+	public boolean isMoving() {
+		return !movement.isFinished();
+	}
+	
+	@Override
+	public boolean onMove(Vector2 point) {
+		point = new Vector2(point.x, 1-point.y);
+		Vector2 pos = getAbsolutePos();
+		if (Rectangle.pointInRectangle(pos, relaxedSize, point)) {
+			if (!hovered) {
+				WindowEvent e = new WindowEvent(this, WindowEventType.MOUSE_ENTERS);
+				e.setParam("POINT", point);
+				fireEvent(e);
+			}
+			hovered = true;
+		} else {
+			if (hovered) {
+				WindowEvent e = new WindowEvent(this, WindowEventType.MOUSE_LEAVES);
+				e.setParam("POINT", point);
+				fireEvent(e);
+			}
+			hovered = false;
+		}
+		
+		return false;
+	}
+
+	@Override
+	public boolean onEnterRenderWindow() {
+		return false;
+	}
+
+	@Override
+	public boolean onLeaveRenderWindow() {
+		return false;
+	}
+
+	@Override
+	public boolean onRenderWindowLoseFocus() {
+		return false;
+	}
+
+	@Override
+	public boolean onRenderWindowGainFocus() {
+		return false;
 	}
 	
 }

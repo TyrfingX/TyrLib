@@ -1,8 +1,10 @@
 package com.tyrlib2.graphics.materials;
 
+
 import java.nio.FloatBuffer;
 
 import com.tyrlib2.graphics.renderer.Material;
+import com.tyrlib2.graphics.renderer.Mesh;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.renderer.ProgramManager;
 import com.tyrlib2.graphics.renderer.TyrGL;
@@ -75,8 +77,10 @@ public class TerrainMaterial extends LightedMaterial {
 
 	}
 	
-	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
-	    super.render(vertexBuffer, modelMatrix);
+	public void render(Mesh mesh, float[] modelMatrix) {
+	    super.render(mesh, modelMatrix);
+	    
+	    FloatBuffer vertexBuffer = mesh.getVertexBuffer();
 	    
 		normalHandle = TyrGL.glGetAttribLocation(program.handle, "a_Normal");
 		lightPosHandle = TyrGL.glGetUniformLocation(program.handle, "u_LightPos");
@@ -95,14 +99,14 @@ public class TerrainMaterial extends LightedMaterial {
 		if (program.meshChange) {
 			
 		    // Pass in the normal information
-		    vertexBuffer.position(normalOffset);
+			vertexBuffer.position(normalOffset);
 		    TyrGL.glVertexAttribPointer(normalHandle, normalDataSize, TyrGL.GL_FLOAT, false,
 		    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
 		 
 		    TyrGL.glEnableVertexAttribArray(normalHandle);
 		    
 	        // Pass in the texture coordinate information
-	        vertexBuffer.position(uvOffset);
+		    vertexBuffer.position(uvOffset);
 	        TyrGL.glVertexAttribPointer(textureCoordinateHandle, uvDataSize, TyrGL.GL_FLOAT, false, 
 	        		strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
 	        

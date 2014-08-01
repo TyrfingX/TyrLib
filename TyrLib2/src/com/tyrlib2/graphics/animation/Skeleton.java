@@ -147,7 +147,7 @@ public class Skeleton implements IUpdateable {
 			
 			TyrGL.glUniform1f(sizeHandle, size);
 	        
-			if (TyrGL.GL_USE_VBO == 1) {
+			if (mesh.isUsingVBO()) {
 				TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, mesh.getBBuffer());
 		        TyrGL.glEnableVertexAttribArray(boneIndexHandle);
 		        TyrGL.glVertexAttribPointer(boneIndexHandle, Mesh.MAX_BONES_PER_VERTEX,

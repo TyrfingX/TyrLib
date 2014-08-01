@@ -2,9 +2,8 @@ package com.tyrlib2.graphics.materials;
 
 import java.nio.FloatBuffer;
 
-import com.tyrlib2.graphics.animation.Skeleton;
-import com.tyrlib2.graphics.renderables.Entity;
 import com.tyrlib2.graphics.renderer.Material;
+import com.tyrlib2.graphics.renderer.Mesh;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.renderer.Program;
 import com.tyrlib2.graphics.renderer.ProgramManager;
@@ -64,23 +63,23 @@ public class OutlineMaterial extends Material {
 	    colorHandle = TyrGL.glGetUniformLocation(program.handle, "u_Color");
 	}
 	
-	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
-	    super.render(vertexBuffer, modelMatrix);
+	public void render(Mesh mesh, float[] modelMatrix) {
+	    super.render(mesh, modelMatrix);
 		
 		if (program.meshChange) {
-			passMesh(vertexBuffer);
+			passMesh(mesh);
 		}
 		
 		Program.blendEnable(TyrGL.GL_SRC_ALPHA, TyrGL.GL_SRC_ALPHA);
 	}
 	
-	private void passMesh(FloatBuffer vertexBuffer)
+	private void passMesh(Mesh mesh)
 	{
-		
+		FloatBuffer vertexBuffer = mesh.getVertexBuffer();
 		// Pass in the color information
 		TyrGL.glUniform4f(colorHandle, color.r, color.g, color.b, color.a);
 	    
-		if (TyrGL.GL_USE_VBO  == 1) {
+		if (mesh.isUsingVBO()) {
 	        TyrGL.glVertexAttribPointer(normalHandle, normalDataSize, TyrGL.GL_FLOAT, false, 
 	        							strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, normalOffset * OpenGLRenderer.BYTES_PER_FLOAT);
 		} else {

@@ -97,8 +97,8 @@ public class ProgramManager {
 	 */
 	
 	public Program createProgram(String programName, int vertexShaderResId, int fragmentShaderResId, String[] bindAttributes) {
-		String vertexShader = FileReader.readRawFile(vertexShaderResId);
-		String fragmentShader = FileReader.readRawFile(fragmentShaderResId);
+		String vertexShader = (TyrGL.GL_USE_VBO == 1) ? preprocessVertexShader(FileReader.readRawFile(vertexShaderResId)) : FileReader.readRawFile(vertexShaderResId);
+		String fragmentShader = (TyrGL.GL_USE_VBO == 1) ? preprocessFragmentShader(FileReader.readRawFile(fragmentShaderResId)) : FileReader.readRawFile(fragmentShaderResId);
 		ShaderManager.getInstance().loadShader(programName + "_VS", TyrGL.GL_VERTEX_SHADER, vertexShader);
 		ShaderManager.getInstance().loadShader(programName + "_FS", TyrGL.GL_FRAGMENT_SHADER, fragmentShader);
 		Program program = ProgramManager.getInstance()
@@ -108,6 +108,20 @@ public class ProgramManager {
 		program.fragmentShader = fragmentShader;
 		program.bindAttributes = bindAttributes;
 		return program;
+	}
+	
+	public static String preprocessVertexShader(String vertexShader) {
+		vertexShader = "#version 150\n" + vertexShader;
+		vertexShader = vertexShader.replaceAll("attribute", "in");
+		vertexShader = vertexShader.replaceAll("varying", "out");
+		return vertexShader;
+	}
+	
+	public static String preprocessFragmentShader(String fragmentShader) {
+		fragmentShader = "#version 150\nout vec4 colorOut;\n" + fragmentShader;
+		fragmentShader = fragmentShader.replaceAll("varying", "in");
+		fragmentShader = fragmentShader.replaceAll("gl_FragColor", "colorOut");
+		return fragmentShader;
 	}
 	
 	/**

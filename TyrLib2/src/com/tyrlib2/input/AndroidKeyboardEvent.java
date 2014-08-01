@@ -33,5 +33,10 @@ public class AndroidKeyboardEvent implements IKeyboardEvent {
 	public boolean isPrintable() {
 		return e.isPrintingKey();
 	}
+
+	@Override
+	public int getModifiers() {
+		return e.getModifiers();
+	}
 	
 }

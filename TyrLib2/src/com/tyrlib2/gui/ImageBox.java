@@ -21,7 +21,7 @@ public class ImageBox extends Window {
 	private String atlasName;
 	private String atlasRegion;
 	
-	protected ImageBox(String name, Vector2 pos, String atlasName, String atlasRegion, Vector2 size) {
+	public ImageBox(String name, Vector2 pos, String atlasName, String atlasRegion, Vector2 size, Vector2 repeat) {
 		super(name, size);
 		
 		this.atlasName = atlasName;
@@ -32,11 +32,15 @@ public class ImageBox extends Window {
 		
 		Viewport viewport = SceneManager.getInstance().getViewport();
 		Vector2 imageSize = new Vector2(size.x * viewport.getWidth(), size.y * viewport.getHeight());
-		image = new Image2(imageSize, atlas.getTexture(), region);
+		image = new Image2(imageSize, atlas.getTexture(), region, repeat);
 		
 		addComponent(image);
 		
 		setRelativePos(pos);
+	}
+	
+	protected ImageBox(String name, Vector2 pos, String atlasName, String atlasRegion, Vector2 size) {
+		this(name, pos, atlasName, atlasRegion, size, null);
 	}
 	
 	protected ImageBox(String name, Vector2 pos, String texture, Vector2 size) {
@@ -50,7 +54,7 @@ public class ImageBox extends Window {
 		
 		setRelativePos(pos);
 	}
-	
+
 	@Override
 	public float getAlpha() {
 		return image.getAlpha();

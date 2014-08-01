@@ -1,13 +1,27 @@
 precision mediump float;
 
 uniform sampler2D u_Texture;
+
+uniform vec2 u_Min;
+uniform vec2 u_Size;
+
 varying vec2 v_TexCoordinate;
 uniform float u_Alpha;
 uniform vec3 u_Color;
 
 void main() 
 {
-    vec4 texColor = texture2D(u_Texture, v_TexCoordinate);
+
+	vec2 pos = vec2(v_TexCoordinate.x - u_Min.x, v_TexCoordinate.y - u_Min.y);
+	if (pos.x > u_Size.x) {
+		pos.x -= float(int(pos.x / u_Size.x - 0.075)) * u_Size.x;
+	}
+	
+	if (pos.y > u_Size.y) {
+		pos.y -= float(int(pos.y / u_Size.y - 0.075)) * u_Size.y;
+	}
+
+    vec4 texColor = texture2D(u_Texture, vec2(u_Min.x + pos.x, u_Min.y + pos.y));
     texColor.a *= u_Alpha;
     
     if(texColor.a == 0.0){

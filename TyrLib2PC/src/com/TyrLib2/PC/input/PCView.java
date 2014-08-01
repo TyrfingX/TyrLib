@@ -1,25 +1,24 @@
 package com.TyrLib2.PC.input;
 
-import javax.media.opengl.awt.GLCanvas;
-
+import com.TyrLib2.PC.main.PCOpenGLSurfaceView;
 import com.tyrlib2.input.IView;
 
 public class PCView implements IView {
 	
-	private GLCanvas view;
+	private PCOpenGLSurfaceView view;
 	
-	public PCView(GLCanvas canvas) {
-		this.view = canvas;
+	public PCView(PCOpenGLSurfaceView pcOpenGLSurfaceView) {
+		this.view = pcOpenGLSurfaceView;
 	}
 	
 	@Override
 	public float getWidth() {
-		return view.getWidth();
+		return view.getSize().x;
 	}
 
 	@Override
 	public float getHeight() {
-		return view.getHeight();
+		return view.getSize().y;
 	}
 
 }

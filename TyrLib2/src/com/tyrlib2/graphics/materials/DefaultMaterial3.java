@@ -3,12 +3,14 @@ package com.tyrlib2.graphics.materials;
 import java.nio.FloatBuffer;
 
 import com.tyrlib2.graphics.renderer.Material;
+import com.tyrlib2.graphics.renderer.Mesh;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.renderer.Program;
 import com.tyrlib2.graphics.renderer.ProgramManager;
 import com.tyrlib2.graphics.renderer.Texture;
 import com.tyrlib2.graphics.renderer.TextureManager;
 import com.tyrlib2.graphics.renderer.TyrGL;
+import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.util.Color;
@@ -79,15 +81,19 @@ public class DefaultMaterial3 extends LightedMaterial {
 	
 	public DefaultMaterial3(String textureName, float repeatX, float repeatY, Color[] colors) {
 
-		program = ProgramManager.getInstance().getProgram(PER_PIXEL_PROGRAM_NAME);
+		if (!SceneManager.getInstance().getRenderer().isInServerMode()) {
 		
-		if (colors == null) {
-			colors = new Color[1];
-			colors[0] = new Color(1,1,1,1);
-		}
+			program = ProgramManager.getInstance().getProgram(PER_PIXEL_PROGRAM_NAME);
 		
-		if (textureName != null) {
-			texture = TextureManager.getInstance().getTexture(textureName);
+			if (colors == null) {
+				colors = new Color[1];
+				colors[0] = new Color(1,1,1,1);
+			}
+			
+			if (textureName != null) {
+				texture = TextureManager.getInstance().getTexture(textureName);
+			}
+		
 		}
 		
 		setup(textureName, repeatX, repeatY, colors);
@@ -135,19 +141,23 @@ public class DefaultMaterial3 extends LightedMaterial {
 		
 		init(dataSize,posOffset,3, "u_MVPMatrix", "a_Position");
 		
-		normalMatrixHandle = TyrGL.glGetUniformLocation(program.handle, "u_NormalMatrix"); 
-		textureUniformHandle = TyrGL.glGetUniformLocation(program.handle, "u_Texture");
-		ambientHandle = TyrGL.glGetUniformLocation(program.handle, "u_Ambient");
-		textureUniformHandle = TyrGL.glGetUniformLocation(program.handle, "u_Texture");
-		colorHandle = TyrGL.glGetAttribLocation(program.handle, "a_Color");
-		normalHandle = TyrGL.glGetAttribLocation(program.handle, "a_Normal");
-		textureCoordinateHandle = TyrGL.glGetAttribLocation(program.handle, "a_TexCoordinate");
+		if (!SceneManager.getInstance().getRenderer().isInServerMode()) {
+			
+			normalMatrixHandle = TyrGL.glGetUniformLocation(program.handle, "u_NormalMatrix"); 
+			textureUniformHandle = TyrGL.glGetUniformLocation(program.handle, "u_Texture");
+			ambientHandle = TyrGL.glGetUniformLocation(program.handle, "u_Ambient");
+			textureUniformHandle = TyrGL.glGetUniformLocation(program.handle, "u_Texture");
+			colorHandle = TyrGL.glGetAttribLocation(program.handle, "a_Color");
+			normalHandle = TyrGL.glGetAttribLocation(program.handle, "a_Normal");
+			textureCoordinateHandle = TyrGL.glGetAttribLocation(program.handle, "a_TexCoordinate");
+		}
 	}
 	
-	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
+	@Override
+	public void render(Mesh mesh, float[] modelMatrix) {
 		
 		if (program.meshChange) {
-			passMesh(vertexBuffer);
+			passMesh(mesh);
 		}
 	    
 		//passModelViewMatrix(modelMatrix);
@@ -171,7 +181,7 @@ public class DefaultMaterial3 extends LightedMaterial {
 	    }
 	    
 	    if (transparent) {
-	    	Program.blendEnable(TyrGL.GL_SRC_ALPHA, TyrGL.GL_ONE_MINUS_SRC_ALPHA);
+	    	Program.blendEnable(TyrGL.GL_SRC_ALPHA, TyrGL.GL_SRC_ALPHA);
 	    }
 	}
 	
@@ -185,9 +195,10 @@ public class DefaultMaterial3 extends LightedMaterial {
 //        TyrGL.glUniformMatrix4fv(mvMatrixHandle, 1, false, mvMatrix, 0);
 //	}
 	
-	private void passMesh(FloatBuffer vertexBuffer)
+	private void passMesh(Mesh mesh)
 	{	
-		if (TyrGL.GL_USE_VBO == 1) {
+		FloatBuffer vertexBuffer = mesh.getVertexBuffer();
+		if (mesh.isUsingVBO()) {
 		    // Pass in the normal information
 		    TyrGL.glVertexAttribPointer(normalHandle, normalSize, TyrGL.GL_FLOAT, false,
 		    							strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, normalOffset * OpenGLRenderer.BYTES_PER_FLOAT);

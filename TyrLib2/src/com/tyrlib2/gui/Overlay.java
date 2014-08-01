@@ -44,7 +44,6 @@ public class Overlay extends Window {
 	@Override
 	public void setAlpha(float alpha) {
 		bg.setAlpha(alpha);
-		
 		super.setAlpha(alpha);
 	}
 	

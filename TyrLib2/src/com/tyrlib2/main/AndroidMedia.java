@@ -1,10 +1,15 @@
 package com.tyrlib2.main;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.URL;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -23,6 +28,7 @@ import com.tyrlib2.bitmap.IDrawableBitmap;
 import com.tyrlib2.bitmap.IPaint;
 import com.tyrlib2.bitmap.ITypeface;
 import com.tyrlib2.files.AndroidBitmap;
+import com.tyrlib2.files.FileReader;
 import com.tyrlib2.files.IBitmap;
 import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.graphics.text.GLText;
@@ -63,6 +69,13 @@ public class AndroidMedia extends Media {
 		glText.load( fontSource, size, 2, 2 );  // Create Font (Height: 14 Pixels / X+Y Padding 2 Pixels)
 		glText.setScale(1);
 		return glText;
+	}
+	
+	@Override
+	public IBitmap loadStaticBitmap(int resID, boolean prescaling) {
+		final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inScaled = prescaling;   // No pre-scaling
+		return new AndroidBitmap(BitmapFactory.decodeResource(context.getResources(), resID, options));
 	}
 
 	@Override
@@ -179,14 +192,38 @@ public class AndroidMedia extends Media {
 
 	@Override
 	public void serializeTo(Serializable s, String target, String fileName) {
-		// TODO Auto-generated method stub
-		
+		try {
+			FileOutputStream fileOut = context.openFileOutput(fileName, Context.MODE_PRIVATE);
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			out.writeObject(s);
+			out.close();
+			fileOut.close();
+			System.out.printf("Saved successful to " + target);
+		}catch(IOException i) {
+			i.printStackTrace();
+		}
 	}
 
 	@Override
 	public Object deserializeFrom(String target, String fileName) {
-		// TODO Auto-generated method stub
-		return null;
+		InputStream fis = null;
+		Object result = null;
+		
+		try
+		{
+		  
+		  fis = Media.CONTEXT.openFileInput(fileName);
+
+		  ObjectInputStream o = new ObjectInputStream( fis );
+		  result = o.readObject();
+		  o.close();
+		  
+		}
+		catch ( IOException e ) { e.printStackTrace(); }
+		catch ( ClassNotFoundException e ) { e.printStackTrace(); }
+		finally { try { fis.close(); } catch ( Exception e ) { e.printStackTrace(); } }
+		
+		return result;
 	}
 	
 	public void showKeyboard() {
@@ -208,6 +245,22 @@ public class AndroidMedia extends Media {
 				OpenGLSurfaceView.instance.imm.hideSoftInputFromWindow(OpenGLSurfaceView.instance.getWindowToken(),0);
 			}
 		});
+	}
+
+	@Override
+	public String getClipboard() {
+		return "";
+	}
+
+	@Override
+	public void quit() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean fileExists(String target, String fileName) {
+		return FileReader.fileExists(context, fileName);
 	}
 	
 	

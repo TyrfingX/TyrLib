@@ -32,4 +32,9 @@ public class PCKeyboardEvent implements IKeyboardEvent {
 	public boolean isPrintable() {
 		return e.isPrintableKey();
 	}
+
+	@Override
+	public int getModifiers() {
+		return e.getModifiers();
+	}
 }

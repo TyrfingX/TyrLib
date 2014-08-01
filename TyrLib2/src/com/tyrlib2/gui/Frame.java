@@ -3,6 +3,7 @@ package com.tyrlib2.gui;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.tyrlib2.graphics.renderer.TextureRegion;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.math.Vector2;
 
@@ -85,7 +86,8 @@ public class Frame extends Window{
 							     new Vector2(0, 0), 
 							     atlas, 
 								 bgRegions.get(FrameImagePosition.MIDDLE), 
-								 new Vector2(size.x, size.y)));
+								 new Vector2(size.x, size.y),
+								 skin.FRAME_MIDDLE_REPEAT));
 		bgImageBoxes.put(FrameImagePosition.RIGHT,
 						(ImageBox) windowManager.createImageBox(name + "/BackgroundRight", 
 							     new Vector2(size.x-borderSizeX, borderSizeY), 
@@ -130,6 +132,10 @@ public class Frame extends Window{
 		bgRegions.put(position, regionName);
 		ImageBox imageBox = bgImageBoxes.get(position);
 		imageBox.setAtlasRegion(regionName);
+	}
+	
+	public ImageBox getImageBox(FrameImagePosition position) {
+		return bgImageBoxes.get(position);
 	}
 	
 	public float getBorderSize() {

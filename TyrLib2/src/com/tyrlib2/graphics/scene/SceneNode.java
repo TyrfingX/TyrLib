@@ -538,6 +538,13 @@ public class SceneNode implements Serializable {
 		forceUpdate();
 	}
 	
+	public void translate(float x, float y, float z) {
+		pos.x += x;
+		pos.y += y;
+		pos.z += z;
+		forceUpdate();
+	}
+	
 	/**
 	 * Rotates this node by the passed rotation
 	 * @param rotation	The rotation which will be applied to this node

@@ -1,11 +1,11 @@
 package com.tyrlib2.main;
 
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -22,7 +22,7 @@ import com.tyrlib2.math.Matrix;
  *
  */
 
-public abstract class AndroidOpenGLActivity extends Activity implements OpenGLActivity {
+public abstract class AndroidOpenGLActivity extends FragmentActivity implements OpenGLActivity {
 	private GLSurfaceView glView;
 	public static boolean RUNNING = false;
 	

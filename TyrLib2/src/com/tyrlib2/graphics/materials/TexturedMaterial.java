@@ -1,15 +1,17 @@
 package com.tyrlib2.graphics.materials;
 
-import java.nio.FloatBuffer;
 
 import com.tyrlib2.graphics.renderer.IBlendable;
 import com.tyrlib2.graphics.renderer.Material;
+import com.tyrlib2.graphics.renderer.Mesh;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.renderer.Program;
 import com.tyrlib2.graphics.renderer.ProgramManager;
 import com.tyrlib2.graphics.renderer.Texture;
 import com.tyrlib2.graphics.renderer.TextureManager;
+import com.tyrlib2.graphics.renderer.TextureRegion;
 import com.tyrlib2.graphics.renderer.TyrGL;
+import com.tyrlib2.math.Vector2;
 import com.tyrlib2.util.Color;
 
 /**
@@ -26,34 +28,36 @@ public class TexturedMaterial extends Material implements IBlendable  {
 	private int uvDataSize = 2;
 	private int uvOffset = 3;
 	private Color color = Color.WHITE.copy();
+	private TextureRegion texRegion;
+	private int sizeHandle;
+	private int minHandle;
 	
 	int alphaHandle;
 	int textureCoordinateHandle;
 	int colorHandle;
 	int textureUniformHandle;
 	
-	public TexturedMaterial() {
-		
-	}
-	
-	public TexturedMaterial(Texture texture, Program program) {
+	public TexturedMaterial(Texture texture, TextureRegion texRegion, Program program) {
 		this.texture = texture;
 		this.program = program;
+		this.texRegion = texRegion;
 		init(5,0,3, "u_MVPMatrix", "a_Position");
 		
 		alphaHandle = TyrGL.glGetUniformLocation(program.handle, "u_Alpha");
 		textureCoordinateHandle = TyrGL.glGetAttribLocation(program.handle, "a_TexCoordinate");
 		colorHandle = TyrGL.glGetUniformLocation(program.handle, "u_Color");
 		textureUniformHandle = TyrGL.glGetUniformLocation(program.handle, "u_Texture");
+		minHandle = TyrGL.glGetUniformLocation(program.handle, "u_Min");
+		sizeHandle = TyrGL.glGetUniformLocation(program.handle, "u_Size");
 	}
 	
-	public TexturedMaterial(Texture texture) {
-		this(texture, ProgramManager.getInstance().getProgram("TEXTURED"));
+	public TexturedMaterial(Texture texture, TextureRegion texRegion) {
+		this(texture, texRegion, ProgramManager.getInstance().getProgram("TEXTURED"));
 	}
 	
 	
-	public TexturedMaterial(String textureName) {
-		this(TextureManager.getInstance().getTexture(textureName));
+	public TexturedMaterial(String textureName, TextureRegion texRegion) {
+		this(TextureManager.getInstance().getTexture(textureName), texRegion);
 		this.textureName = textureName;
 	}
 	
@@ -71,10 +75,13 @@ public class TexturedMaterial extends Material implements IBlendable  {
 		return textureName;
 	}
 	
-	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
+	public void render(Mesh mesh, float[] modelMatrix) {
         
 		TyrGL.glUniform1f(alphaHandle, alpha);
 		TyrGL.glUniform3f(colorHandle, color.r, color.g, color.b);
+		
+		TyrGL.glUniform2f(minHandle, texRegion.u1, texRegion.v1);
+		TyrGL.glUniform2f(sizeHandle, texRegion.u2 - texRegion.u1, texRegion.v2 - texRegion.v1);
 		
 		if (TyrGL.GL_USE_VBO == 1) {
 	        // Pass in the texture coordinate information
@@ -82,9 +89,9 @@ public class TexturedMaterial extends Material implements IBlendable  {
 	        		strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, uvOffset * OpenGLRenderer.BYTES_PER_FLOAT);
 		} else {
 	        // Pass in the texture coordinate information
-	        vertexBuffer.position(uvOffset);
+	        mesh.getVertexBuffer().position(uvOffset);
 	        TyrGL.glVertexAttribPointer(textureCoordinateHandle, uvDataSize, TyrGL.GL_FLOAT, false, 
-	        		strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
+	        		strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, mesh.getVertexBuffer());
 	        TyrGL.glEnableVertexAttribArray(textureCoordinateHandle);
 		}
 		
@@ -113,8 +120,9 @@ public class TexturedMaterial extends Material implements IBlendable  {
 		this.program = program;
 	}
 	
-	public void setTexture(Texture texture) {
+	public void setTexture(Texture texture, TextureRegion texRegion) {
 		this.texture = texture;
+		this.texRegion = texRegion;
 	}
 	
 	public Texture getTexture() {
@@ -123,6 +131,10 @@ public class TexturedMaterial extends Material implements IBlendable  {
 	
 	public void setColor(Color color) {
 		this.color = color;
+	}
+
+	public TextureRegion getTextureRegion() {
+		return texRegion;
 	}
 
 }

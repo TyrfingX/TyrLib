@@ -5,6 +5,10 @@ import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.GraphicsEnvironment;
+import java.awt.HeadlessException;
+import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -143,10 +147,11 @@ public class PCMedia extends Media {
 			font = Font.createFont(Font.TRUETYPE_FONT, new File(url.getPath()));
 			ge.registerFont(font);
 			return new PCTypeface(font);
-		} catch (FontFormatException | IOException e) {
+		} catch (FontFormatException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 		return null;
 		
 	}
@@ -164,8 +169,7 @@ public class PCMedia extends Media {
 
 	@Override
 	public Vector2 getScreenSize() {
-		Dimension d = context.getGLView().getSize();
-		return new Vector2(d.width, d.height);
+		return context.getGLView().getSize();
 	}
 
 	@Override
@@ -223,6 +227,47 @@ public class PCMedia extends Media {
 		finally { try { fis.close(); } catch ( Exception e ) { } }
 		
 		return result;
+	}
+
+	@Override
+	public String getClipboard() {
+		try {
+			String data = (String) Toolkit.getDefaultToolkit()
+			        .getSystemClipboard().getData(DataFlavor.stringFlavor);
+			return data;
+		} catch (HeadlessException e) {
+			e.printStackTrace();
+		} catch (UnsupportedFlavorException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		
+		
+		return "";
+	}
+
+	@Override
+	public IBitmap loadStaticBitmap(int resID, boolean prescaling) {
+		String path = "/res/"+ resourceNames.get(resID) + "." + resourceEndings.get(resID);
+		URL url = getClass().getResource(path);
+		return new PCBitmap(url.getPath(), true);
+	}
+
+	@Override
+	public void quit() {
+        new Thread(new Runnable() {
+
+            public void run() {
+                PCOpenGLSurfaceView.animator.stop();
+                System.exit(0);
+            }
+        }).start();
+	}
+
+	@Override
+	public boolean fileExists(String target, String fileName) {
+		return true;
 	}
 
 

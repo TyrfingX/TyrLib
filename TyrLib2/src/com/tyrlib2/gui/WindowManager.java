@@ -170,10 +170,14 @@ public class WindowManager {
 		return createFrame(name, pos, size.get());
 	}
 	
-	public Window createImageBox(String name, Vector2 pos, String atlasName, String atlasRegion, Vector2 size) {
-		ImageBox imageBox = new ImageBox(name, pos, atlasName, atlasRegion, size);
+	public ImageBox createImageBox(String name, Vector2 pos, String atlasName, String atlasRegion, Vector2 size, Vector2 repeat) {
+		ImageBox imageBox = new ImageBox(name, pos, atlasName, atlasRegion, size, repeat);
 		addWindow(imageBox);
 		return imageBox;
+	}
+	
+	public Window createImageBox(String name, Vector2 pos, String atlasName, String atlasRegion, Vector2 size) {
+		return createImageBox(name, pos, atlasName, atlasRegion, size, null);
 	}
 	
 	public Window createImageBox(String name, ScaledVector2 pos, String atlasName, String atlasRegion, ScaledVector2 size) {
@@ -228,7 +232,7 @@ public class WindowManager {
 	}
 	
 	public Window createOverlay(String name, Color color) {
-		Window overlay = createOverlay(name, new Vector2(0,0), new Vector2(1,1), color);
+		Window overlay = createOverlay(name, new Vector2(0,-1), new Vector2(1,1), color);
 		return overlay;
 	}
 	
@@ -286,6 +290,18 @@ public class WindowManager {
 		return createTooltip(name, size.get());
 	}
 	
+	public void addTextTooltip(Window window, String text) {
+		Label tooltipText = (Label) WindowManager.getInstance().createLabel(window.getName()+"/TooltipText", new Vector2(), text);
+		tooltipText.setLayer(101);
+		tooltipText.setBgColor(new Color(0.275f, 0.275f, 0.275f, 1));
+		Tooltip t = (Tooltip) WindowManager.getInstance().createTooltip(window.getName()+"/Tooltip", tooltipText.getSize());
+		t.addChild(tooltipText);
+		t.addTarget(window);
+		t.setPriority(tooltipText.getPriority()-1);
+		window.setSizeRelaxation(new Vector2(1.3f, 1));
+		
+	}
+	
 	public Window createProgressBar(String name, Vector2 pos, Vector2 size, float maxProgress) {
 		Window progressBar = new ProgressBar(name, pos, size, maxProgress);
 		addWindow(progressBar);
@@ -319,5 +335,7 @@ public class WindowManager {
 	protected void notifyResort() {
 		renderer.notifyResort();
 	}
+
+
 }
 	

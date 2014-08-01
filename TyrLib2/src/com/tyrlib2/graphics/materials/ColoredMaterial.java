@@ -1,9 +1,9 @@
 package com.tyrlib2.graphics.materials;
 
-import java.nio.FloatBuffer;
 
 import com.tyrlib2.graphics.renderer.IBlendable;
 import com.tyrlib2.graphics.renderer.Material;
+import com.tyrlib2.graphics.renderer.Mesh;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.renderer.Program;
 import com.tyrlib2.graphics.renderer.ProgramManager;
@@ -48,23 +48,20 @@ public class ColoredMaterial extends Material implements IBlendable {
 		init(7,0,3, "u_MVPMatrix", "a_Position");
 	}
 	
-	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
-		super.render(vertexBuffer, modelMatrix);
+	public void render(Mesh mesh, float[] modelMatrix) {
+		super.render(mesh, modelMatrix);
 		
-		
-		
-		if (TyrGL.GL_USE_VBO == 1) {		
+		if (mesh.isUsingVBO()) {		
 		    // Pass in the color information
-		    vertexBuffer.position();
 		    TyrGL.glVertexAttribPointer(colorHandle, colorDataSize, TyrGL.GL_FLOAT, false,
 		    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, colorOffset * OpenGLRenderer.BYTES_PER_FLOAT);
 		 
 		    TyrGL.glEnableVertexAttribArray(colorHandle);
 		} else {
 		    // Pass in the color information
-		    vertexBuffer.position(colorOffset);
+		    mesh.getVertexBuffer().position(colorOffset);
 		    TyrGL.glVertexAttribPointer(colorHandle, colorDataSize, TyrGL.GL_FLOAT, false,
-		    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
+		    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, mesh.getVertexBuffer());
 		 
 		    TyrGL.glEnableVertexAttribArray(colorHandle);
 		}

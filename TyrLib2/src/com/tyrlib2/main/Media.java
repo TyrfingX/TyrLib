@@ -32,4 +32,8 @@ public abstract class Media {
 	public abstract Vector2 getScreenSize();
 	public abstract void serializeTo(Serializable s, String target, String fileName);
 	public abstract Object deserializeFrom(String target, String fileName);
+	public abstract String getClipboard();
+	public abstract IBitmap loadStaticBitmap(int resID, boolean prescaling);
+	public abstract void quit();
+	public abstract boolean fileExists(String target, String fileName);
 }

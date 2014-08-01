@@ -1,82 +1,171 @@
 package com.TyrLib2.PC.main;
 
+import java.awt.DisplayMode;
 import java.awt.Frame;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.awt.GLCanvas;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import com.TyrLib2.PC.input.PCKeyboardEvent;
 import com.TyrLib2.PC.input.PCMotionEvent;
 import com.TyrLib2.PC.input.PCView;
+import com.TyrLib2.PC.main.Config.ScreenState;
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.KeyListener;
 import com.jogamp.newt.event.MouseEvent;
 import com.jogamp.newt.event.MouseListener;
+import com.jogamp.newt.event.WindowEvent;
+import com.jogamp.newt.event.WindowListener;
+import com.jogamp.newt.event.WindowUpdateEvent;
 import com.jogamp.newt.event.awt.AWTKeyAdapter;
 import com.jogamp.newt.event.awt.AWTMouseAdapter;
+import com.jogamp.newt.event.awt.AWTWindowAdapter;
+import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.util.FPSAnimator;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.input.IKeyboardEvent;
 import com.tyrlib2.input.IMotionEvent;
 import com.tyrlib2.input.InputManager;
+import com.tyrlib2.math.Vector2;
 
 
-public class PCOpenGLSurfaceView extends Frame implements MouseListener, KeyListener {
-	
+public class PCOpenGLSurfaceView implements MouseListener, KeyListener, WindowListener {
+
 	public static FPSAnimator animator;
 	
 	public static PCView view;
 	private PCOpenGLRenderer renderer;
+	private GLCapabilities caps;
+	private GLWindow window;
+	private JFrame frame;
+	private GLCanvas canvas;
+	private Config config;
 	
-	public PCOpenGLSurfaceView(String name, GLCapabilities caps) {
-        
-		this.setTitle(name);
+	private boolean useNEWT;
+	private boolean useFullscreen;
+	
+	private boolean destroyed = false;
+	
+	public PCOpenGLSurfaceView(Config config, String name, GLCapabilities caps) {
 		
         InputManager.getInstance();
         InputManager.VK_ENTER = KeyEvent.VK_ENTER;
         InputManager.VK_BACK_SPACE = KeyEvent.VK_BACK_SPACE;
+        InputManager.VK_V =  KeyEvent.VK_V;
+        InputManager.CTRL_MASK = KeyEvent.CTRL_MASK;
+        InputManager.VK_ESC = KeyEvent.VK_ESCAPE;
         
-        GLCanvas canvas = new GLCanvas(caps);
-        //GLCanvas canvas = new GLCanvas(caps);
-        this.add(canvas);
+        this.config = config;
+        
         renderer = new PCOpenGLRenderer();
-        canvas.addGLEventListener(renderer);
+        
+        useFullscreen = config == null || config.screenState == ScreenState.FULLSCREEN;
+        
+		String OS = System.getProperty("os.name").toLowerCase();
+		useNEWT = useFullscreen && isUnix(OS);
+        
+        if (useNEWT) {
+            window = GLWindow.create(caps);
+            window.addGLEventListener(renderer);
+            
+        	window.setFullscreen(true);
+        	window.setAlwaysOnTop(false);
+        	
+            window.addKeyListener(this);
+            window.addWindowListener(this);
+            window.addMouseListener(this);
+            
+            animator = new FPSAnimator(window, 60);
+        } else {
+    		
+            canvas = new GLCanvas(caps);
+            canvas.addGLEventListener(renderer);
+            
+        	if (config.screenState == ScreenState.WINDOWED) {
+        		
+            	frame = new JFrame();
+        		frame.setTitle("Sword & Scroll");
+        		
+        		frame.setSize((int)config.screenSize.x, (int)config.screenSize.y);
+        		frame.setLocationRelativeTo(null);
+        	} else if (config == null || config.screenState == ScreenState.FULLSCREEN) {
+        		
+        		frame = new JFrame();
+        		frame.setTitle("Sword & Scroll");
+        		frame.setUndecorated(true);
+        		GraphicsEnvironment ge=GraphicsEnvironment.getLocalGraphicsEnvironment();
+        		GraphicsDevice vc = ge.getDefaultScreenDevice();
+        		
+        		vc.setFullScreenWindow(frame);		
+        		
+        		 //check low-level display changes are supported for this graphics device
+        		DisplayMode dm = new DisplayMode(frame.getWidth(), frame.getHeight(), 16, DisplayMode.REFRESH_RATE_UNKNOWN);
+        		if(dm!=null && vc.isDisplayChangeSupported()) {
+    				try{
+    					vc.setDisplayMode(dm);
+    				}
+    				catch(Exception ex){
+    				}
+        		}
+        		
+        	}
+        	
+        	frame.add(canvas);
+        	
+        	animator = new FPSAnimator(canvas, 60);
+        	
+            new AWTMouseAdapter(this).addTo(canvas);
+            new AWTKeyAdapter(this).addTo(canvas);
+            new AWTWindowAdapter(this).addTo(canvas);
+            
+            frame.addWindowListener(new WindowAdapter() {
+                public void windowClosing( WindowEvent windowevent ) {
+                	if (!destroyed) {
+                		destroyed = true;
+                		frame.dispose();
+                    	System.exit( 0 );
+                	}
+                }
+            });
+
+        }
 
         // Setup the SceneManager
         SceneManager.getInstance().setRenderer(renderer);
         
-        animator = new FPSAnimator(canvas, 60);
+        view = new PCView(this);
 
-        this.addWindowListener(new WindowAdapter() {
-
-            @Override
-            public void windowClosing(WindowEvent e) {
-                // Run this on another thread than the AWT event queue to
-                // make sure the call to Animator.stop() completes before
-                // exiting
-                new Thread(new Runnable() {
-
-                    public void run() {
-                        animator.stop();
-                        System.exit(0);
-                    }
-                }).start();
-            }
-        });
-        // Center frame
-        this.setLocationRelativeTo(null);
-        
-        view = new PCView(canvas);
-        
-        new AWTMouseAdapter(this).addTo(canvas);
-        new AWTKeyAdapter(this).addTo(canvas);
+	}
+	
+	public Vector2 getSize() {
+		if (useNEWT) {
+			return new Vector2(window.getScreen().getWidth(), window.getScreen().getHeight());
+		} else {
+			return new Vector2((int)canvas.getSize().width, (int)canvas.getSize().getHeight());
+		}
+	}
+	
+	public void setSkipRendering(boolean skipRendering) {
+		renderer.setSkipRendering(skipRendering);
 	}
 	
 	public void startRendering() {
+		if (useNEWT) {
+			window.setVisible(true);
+		} else {
+			String OS = System.getProperty("os.name").toLowerCase();
+			if (!isUnix(OS) && !useFullscreen) {
+				frame.setResizable(false);
+			}
+			frame.setVisible(true);
+
+		}
 		animator.start();
-		this.setVisible(true);
 	}
 
 	@Override
@@ -90,10 +179,26 @@ public class PCOpenGLSurfaceView extends Frame implements MouseListener, KeyList
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
+		final PCMotionEvent e = new PCMotionEvent(arg0);
+		
+    	renderer.queueEvent(new Runnable() {
+			@Override
+			public void run() {
+				InputManager.getInstance().onEnterMouse(view, e);
+			}
+	    });
 	}
 
 	@Override
 	public void mouseExited(MouseEvent arg0) {
+		final PCMotionEvent e = new PCMotionEvent(arg0);
+		
+    	renderer.queueEvent(new Runnable() {
+			@Override
+			public void run() {
+				InputManager.getInstance().onExitMouse(view, e);
+			}
+	    });
 	}
 
 	@Override
@@ -160,5 +265,61 @@ public class PCOpenGLSurfaceView extends Frame implements MouseListener, KeyList
 				InputManager.getInstance().onKeyEvent(e);
 			}
 	    });
+	}
+
+	@Override
+	public void windowDestroyNotify(com.jogamp.newt.event.WindowEvent arg0) {
+        new Thread(new Runnable() {
+
+            public void run() {
+            	if (!destroyed) {
+            		destroyed = true;
+                	System.exit( 0 );
+            	}
+            }
+        }).start();
+	}
+
+	@Override
+	public void windowDestroyed(com.jogamp.newt.event.WindowEvent arg0) {
+
+	}
+
+	@Override
+	public void windowGainedFocus(com.jogamp.newt.event.WindowEvent arg0) {
+    	renderer.queueEvent(new Runnable() {
+			@Override
+			public void run() {
+				InputManager.getInstance().onGainFocus(view);
+			}
+	    });
+	}
+
+	@Override
+	public void windowLostFocus(com.jogamp.newt.event.WindowEvent arg0) {
+    	renderer.queueEvent(new Runnable() {
+			@Override
+			public void run() {
+				InputManager.getInstance().onLoseFocus(view);
+			}
+	    });
+	}
+
+	@Override
+	public void windowMoved(com.jogamp.newt.event.WindowEvent arg0) {
+	}
+
+	@Override
+	public void windowRepaint(WindowUpdateEvent arg0) {
+	}
+
+	@Override
+	public void windowResized(com.jogamp.newt.event.WindowEvent arg0) {
+	}
+	
+	public static boolean isUnix(String os) {
+		 
+		return (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0 || os.indexOf("aix") > 0 );
+ 
 	}
 }

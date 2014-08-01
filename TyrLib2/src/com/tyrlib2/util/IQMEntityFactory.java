@@ -178,7 +178,7 @@ public class IQMEntityFactory implements IEntityFactory {
 	private EntityPrototype entityPrototype;
 	
 	
-	public IQMEntityFactory(String fileName, DefaultMaterial3 baseMaterial) {
+	public IQMEntityFactory(String fileName, DefaultMaterial3 baseMaterial, boolean useVBO) {
 		
 		this.fileName = fileName;
 		this.baseMaterial = baseMaterial;
@@ -211,7 +211,7 @@ public class IQMEntityFactory implements IEntityFactory {
 			SubEntityPrototype p = new SubEntityPrototype();
 			entityPrototype.subEntityPrototypes[i] = p;
 			
-			p.mesh = new Mesh(data.vertexData, data.triangleData, data.countVertices);
+			p.mesh = new Mesh(data.vertexData, data.triangleData, data.countVertices, useVBO);
 			p.mesh.setVertexBones(data.boneData);
 			p.material = (DefaultMaterial3) baseMaterial.copy(entityData.skeletonData.bones.size() > 0);
 			Texture texture = TextureManager.getInstance().getTexture(data.material);

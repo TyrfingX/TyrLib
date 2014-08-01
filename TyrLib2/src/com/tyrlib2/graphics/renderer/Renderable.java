@@ -1,5 +1,7 @@
 package com.tyrlib2.graphics.renderer;
 
+import android.opengl.GLES20;
+
 import com.tyrlib2.graphics.materials.LightedMaterial;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.graphics.scene.SceneNode;
@@ -96,7 +98,7 @@ public class Renderable extends BoundedRenderable {
 		        // Enable a handle to the triangle vertices
 	        	TyrGL.glEnableVertexAttribArray(material.positionHandle);
 	        	
-	        	if (TyrGL.GL_USE_VBO == 1) {
+	        	if (mesh.isUsingVBO()) {
 		        	
 		        	TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, mesh.getVBOBuffer());
 		        	
@@ -108,11 +110,16 @@ public class Renderable extends BoundedRenderable {
 			                                     material.strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, 
 			                                     material.positionOffest);
 	        	} else {
+	        		
+	        		if (material.program.mesh == null || material.program.mesh.usesVBO) {
+	        			TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, 0);
+	        		}
+	        		
 		        	mesh.vertexBuffer.position(material.positionOffest);
 		        	
 			        // Prepare the coordinate data
 		        	TyrGL.glVertexAttribPointer(material.positionHandle, material.positionDataSize,
-		        			TyrGL.GL_FLOAT, false,
+		        								TyrGL.GL_FLOAT, false,
 			                                     material.strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, 
 			                                     mesh.vertexBuffer);
 	        	}
@@ -125,7 +132,7 @@ public class Renderable extends BoundedRenderable {
 	        
 	        }
 	        
-	        material.render(mesh.vertexBuffer, modelMatrix);
+	        material.render(mesh, modelMatrix);
 	        
 
 	        

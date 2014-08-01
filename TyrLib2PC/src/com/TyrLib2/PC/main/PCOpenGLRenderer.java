@@ -73,17 +73,21 @@ public class PCOpenGLRenderer extends OpenGLRenderer implements GLEventListener 
 
 	@Override
 	public void dispose(GLAutoDrawable drawable) {
-		// TODO Auto-generated method stub
-		
+		System.out.println("Disposing of OpenGL Context");
 	}
 
 	@Override
 	public void display(GLAutoDrawable drawable) {
-		synchronized (queuedEvents) {
-			for (int i = 0; i < queuedEvents.size(); ++i) {
-				queuedEvents.get(i).run();
+		try {
+			synchronized (queuedEvents) {
+				for (int i = 0; i < queuedEvents.size(); ++i) {
+					queuedEvents.get(i).run();
+				}
+				queuedEvents.clear();
 			}
-			queuedEvents.clear();
+		} catch (Exception e) {
+			e.printStackTrace();
+			errorHandler.onError();
 		}
 		
 		GL3 gl = drawable.getGL().getGL3();
@@ -92,6 +96,7 @@ public class PCOpenGLRenderer extends OpenGLRenderer implements GLEventListener 
 		gl.glFramebufferRenderbuffer(GL3.GL_FRAMEBUFFER, GL3.GL_COLOR_ATTACHMENT0, GL3.GL_RENDERBUFFER, rbo[0]);
 		gl.glFramebufferRenderbuffer(GL3.GL_FRAMEBUFFER, GL3.GL_DEPTH_ATTACHMENT, GL3.GL_RENDERBUFFER, rbo[1]);
 		*/
+		
 		render();
 		/*
 		gl.glBindFramebuffer(GL3.GL_READ_FRAMEBUFFER, fbo[0]); // Unseren Framebuffer also Quelle binden

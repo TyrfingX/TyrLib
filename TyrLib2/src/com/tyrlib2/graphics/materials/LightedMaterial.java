@@ -1,7 +1,6 @@
 package com.tyrlib2.graphics.materials;
 
 import com.tyrlib2.graphics.lighting.Light;
-import com.tyrlib2.graphics.lighting.Light.Type;
 import com.tyrlib2.graphics.renderer.Material;
 import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.graphics.scene.SceneManager;
@@ -19,6 +18,7 @@ public abstract class LightedMaterial extends Material{
 	protected int lightPosHandle;
 	protected int normalMatrixHandle;
 	protected int ambientHandle;
+	protected Color color = Color.WHITE.copy();;
 	
 	private static final Color DEFAULT_AMBIENT = new Color(0,0,0,0);
 	
@@ -43,7 +43,7 @@ public abstract class LightedMaterial extends Material{
 			ambient = sceneManager.getAmbientLight();
 		}
 		
-		TyrGL.glUniform4f(ambientHandle, ambient.r, ambient.g, ambient.b, ambient.a);
+		TyrGL.glUniform4f(ambientHandle, ambient.r*color.r, ambient.g*color.g, ambient.b*color.b, ambient.a*color.a);
 		
 		if (light != null) {
 			
@@ -69,8 +69,10 @@ public abstract class LightedMaterial extends Material{
     		// Set the light type to no extra light
 			TyrGL.glUniform1f(lightTypeHandle, 0.0f);		
 		} */
-    	
-		
-
+    
+	}
+	
+	public void setColor(Color color) {
+		this.color = color;
 	}
 }

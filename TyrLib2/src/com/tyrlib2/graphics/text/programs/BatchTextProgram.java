@@ -1,5 +1,7 @@
 package com.tyrlib2.graphics.text.programs;
 
+import com.tyrlib2.graphics.renderer.ProgramManager;
+import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.graphics.text.AttribVariable;
 
 
@@ -44,7 +46,14 @@ public class BatchTextProgram extends Program {
 
 	@Override
 	public void init() {
-		super.init(vertexShaderCode, fragmentShaderCode, programVariables);
+		super.init(
+		(TyrGL.GL_USE_VBO==1) ? 
+					ProgramManager.preprocessVertexShader(vertexShaderCode) : 
+					vertexShaderCode, 
+		(TyrGL.GL_USE_VBO==1) ? 
+					ProgramManager.preprocessFragmentShader(fragmentShaderCode) : 
+					fragmentShaderCode, 
+		programVariables);
 	}
 	
 }

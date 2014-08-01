@@ -27,30 +27,40 @@ public class Image2 extends Renderable2 {
 	
 	public Image2(Vector2 size, Texture texture) {
 		this.size = size;
-		this.material = new TexturedMaterial(texture);
 		this.textureRegion = new TextureRegion();
+		this.material = new TexturedMaterial(texture, textureRegion);
 		createMesh();
 	}
 	
 	public Image2(Vector2 size, Texture texture, TextureRegion textureRegion) {
 		this.size = size;
 		this.textureRegion = textureRegion;
-		this.material = new TexturedMaterial(texture);
+		this.material = new TexturedMaterial(texture, textureRegion);
 		createMesh();
 	}
 	
-	public Image2(Vector2 size, Texture texture, TextureRegion textureRegion, Vector2 uvSize) {
+	public Image2(Vector2 size, Texture texture, TextureRegion textureRegion, Vector2 repeat) {
 		this.size = size;
-		this.textureRegion = textureRegion;
-		this.material = new TexturedMaterial(texture);
+		this.material = new TexturedMaterial(texture, textureRegion);
+		if (repeat != null) {
+			TextureRegion region = new TextureRegion();
+			region.u1 = textureRegion.u1;
+			region.v1 = textureRegion.v1;
+			region.u2 = (textureRegion.u2-textureRegion.u1)*repeat.x;
+			region.v2 = (textureRegion.u2-textureRegion.u1)*repeat.y;
+			this.textureRegion = region;
+		} else {
+			this.textureRegion = textureRegion;
+		}
 		createMesh();
 	}
 	
 	public Image2(Vector2 size, String textureName) {
 		this.size = size;
 		this.textureName = textureName;
-		this.material = new TexturedMaterial(textureName);
 		this.textureRegion = new TextureRegion();
+		this.material = new TexturedMaterial(textureName, textureRegion);
+		
 		
 		createMesh();
 	}
@@ -83,7 +93,7 @@ public class Image2 extends Renderable2 {
 	
 	public void setTexture(Texture texture) {
 		TexturedMaterial mat = (TexturedMaterial) material;
-		mat.setTexture(texture);
+		mat.setTexture(texture, textureRegion);
 	}
 	
 	public void setMaterial(Material material) {
@@ -93,8 +103,15 @@ public class Image2 extends Renderable2 {
 	public void setTextureRegion(TextureRegion textureRegion) {
 		if (textureRegion != this.textureRegion) {
 			this.textureRegion = textureRegion;
+			TexturedMaterial mat = (TexturedMaterial) material;
+			mat.setTexture(mat.getTexture(), textureRegion);
 			createMesh();
 		}
+	}
+	
+	public TextureRegion getTextureRegion() {
+		TexturedMaterial mat = (TexturedMaterial) material;
+		return mat.getTextureRegion();
 	}
 	
 	public void setSize(Vector2 size) {

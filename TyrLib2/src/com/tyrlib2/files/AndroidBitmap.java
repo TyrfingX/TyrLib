@@ -51,5 +51,10 @@ public class AndroidBitmap implements IBitmap {
 	public void setHanlde(int handle) {
 		this.handle = handle;
 	}
+
+	@Override
+	public int getRGB(int x, int y) {
+		return bitmap.getPixel(x, y);
+	}
 	
 }

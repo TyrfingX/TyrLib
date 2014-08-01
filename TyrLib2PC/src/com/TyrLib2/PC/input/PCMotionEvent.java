@@ -2,7 +2,6 @@ package com.TyrLib2.PC.input;
 
 import com.jogamp.newt.event.MouseEvent;
 import com.tyrlib2.input.IMotionEvent;
-import com.tyrlib2.math.Vector3;
 
 public class PCMotionEvent implements IMotionEvent {
 

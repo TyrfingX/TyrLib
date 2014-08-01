@@ -5,6 +5,8 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
+import android.opengl.GLES20;
+
 import com.tyrlib2.math.AABB;
 
 /**
@@ -21,6 +23,8 @@ public class Mesh {
 	protected float[] vertexData;
 	protected short[] drawOrder;
 	protected float[] boneData;
+	
+	protected boolean usesVBO;
 	
 	public static final int MAX_BONES_PER_VERTEX = 4;
 	public static final int BONE_BYTE_STRIDE = MAX_BONES_PER_VERTEX * 2;
@@ -42,6 +46,10 @@ public class Mesh {
 	}
 	
 	public Mesh(float[] vertexData, short[] drawOrder, int vertexCount) {
+		this(vertexData, drawOrder, vertexCount, TyrGL.GL_USE_VBO == 1);
+	}
+	
+	public Mesh(float[] vertexData, short[] drawOrder, int vertexCount, boolean useVBO) {
 		this.vertexData = vertexData;
 		this.drawOrder = drawOrder;
 		this.vertexCount = vertexCount;
@@ -73,8 +81,9 @@ public class Mesh {
         
         boundingBox = AABB.createFromPoints(vertexData, stride);
         
-        if (TyrGL.GL_USE_VBO == 1) {
+        if (useVBO) {
         	createVBO();
+        	usesVBO = true;
         }
 	}
 
@@ -126,7 +135,7 @@ public class Mesh {
         
         boneBuffer.position(0);
         
-        if (TyrGL.GL_USE_VBO == 1) {
+        if (usesVBO) {
         	createBoneBuffer();
         }
       
@@ -164,9 +173,10 @@ public class Mesh {
 		vertexBuffer.put(index, info);
 		vertexData[index] = info;
 		
-		if (TyrGL.GL_USE_VBO == 1) {
+		if (usesVBO) {
 			TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, buffers[0]);
 			TyrGL.glBufferSubData(TyrGL.GL_ARRAY_BUFFER, 0, vertexData.length * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
+			TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, 0);
 		}
 	}
 	
@@ -183,15 +193,23 @@ public class Mesh {
 	}
 	
 	private void createVBO() {
-		TyrGL.glGenBuffers(2, buffers, 0); // Get A Valid Name
+		TyrGL.glGenBuffers(1, buffers, 0); // Get A Valid Name
 		TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, buffers[0]); // Bind The Buffer
         // Load The Data
-        TyrGL.glBufferData(TyrGL.GL_ARRAY_BUFFER, vertexData.length * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer, TyrGL.GL_STATIC_DRAW);
+		TyrGL.glBufferData(TyrGL.GL_ARRAY_BUFFER, vertexBuffer.capacity() * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer, TyrGL.GL_STATIC_DRAW);
+		TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, 0);
+		
+        if (TyrGL.GL_USE_VBO == 1) {
+        	TyrGL.glGenBuffers(1, buffers, 1);
+			TyrGL.glBindBuffer(TyrGL.GL_ELEMENT_ARRAY_BUFFER, buffers[1]); // Bind The Buffer
+	        // Load The Data
+	        TyrGL.glBufferData(TyrGL.GL_ELEMENT_ARRAY_BUFFER, indexCount * 2, drawListBuffer, TyrGL.GL_STATIC_DRAW);
+        }
         
-		TyrGL.glBindBuffer(TyrGL.GL_ELEMENT_ARRAY_BUFFER, buffers[1]); // Bind The Buffer
-        // Load The Data
-        TyrGL.glBufferData(TyrGL.GL_ELEMENT_ARRAY_BUFFER, indexCount * 2, drawListBuffer, TyrGL.GL_STATIC_DRAW);
-        
+	}
+	
+	public FloatBuffer getVertexBuffer() {
+		return vertexBuffer;
 	}
 	
 	private void createBoneBuffer() {
@@ -199,6 +217,10 @@ public class Mesh {
 		TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, buffers[2]); // Bind The Buffer
         // Load The Data
         TyrGL.glBufferData(TyrGL.GL_ARRAY_BUFFER, boneData.length * OpenGLRenderer.BYTES_PER_FLOAT, boneBuffer, TyrGL.GL_STATIC_DRAW);
+	}
+	
+	public boolean isUsingVBO() {
+		return usesVBO;
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.tyrlib2.gui;
 
+import com.tyrlib2.math.Vector2;
 import com.tyrlib2.util.Color;
 
 /**
@@ -49,6 +50,7 @@ public class Skin {
 	public String FRAME_BOTTOMRIGHT = "FRAME_BOTTOMRIGHT";
 	
 	public String FRAME_MIDDLE = "FRAME_MIDDLE";
+	public Vector2 FRAME_MIDDLE_REPEAT = new Vector2(1,1);
 	
 	public float FRAME_BORDER_SIZE = 0.005f;
 	
@@ -74,7 +76,7 @@ public class Skin {
 	
 	/** TOOLTIP SETTINGS **/
 	
-	public float TOOLTIP_MAX_ALPHA = 0.7f;
-	public float TOOLTIP_FADE_TIME = 1;
+	public float TOOLTIP_MAX_ALPHA = 0.95f;
+	public float TOOLTIP_FADE_TIME = 0.25f;
 	
 }

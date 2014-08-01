@@ -2,6 +2,8 @@ package com.tyrlib2.graphics.renderer;
 
 import java.nio.ShortBuffer;
 
+import android.opengl.GLES20;
+
 import com.tyrlib2.graphics.scene.SceneNode;
 import com.tyrlib2.graphics.scene.SceneObject;
 import com.tyrlib2.math.Matrix;
@@ -102,6 +104,11 @@ public class Renderable2 extends SceneObject implements IRenderable {
 			                                     material.positionOffest * OpenGLRenderer.BYTES_PER_FLOAT);
 		        
 	        	} else {
+	        		
+	        		if (material.program.mesh == null || material.program.mesh.usesVBO) {
+	        			TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, 0);
+	        		}
+	        		
 		        	mesh.vertexBuffer.position(material.positionOffest);
 			
 			        // Prepare the coordinate data
@@ -114,7 +121,7 @@ public class Renderable2 extends SceneObject implements IRenderable {
 		        material.program.meshChange = true;
 	        }
 	        
-	        material.render(mesh.vertexBuffer, modelMatrix);
+	        material.render(mesh, modelMatrix);
 
         	// Draw the triangle
 	        if (TyrGL.GL_USE_VBO == 1) {

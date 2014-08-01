@@ -1,10 +1,12 @@
 package com.tyrlib2.networking;
 
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Vector;
 
@@ -13,13 +15,25 @@ public class Network {
 	private Server server;
 	private Vector<Connection> connections = new Vector<Connection>();
 	protected List<INetworkListener> listener;
+	private boolean measure;
+	private long sentBytes;
+	private long receivedBytes;
+	private boolean log;
 	
 	public Network() {
 		this.listener = new ArrayList<INetworkListener>();
 	}
 	
+	public void setLog(boolean log) {
+		this.log = log;
+	}
+	
 	public void addListener(INetworkListener listener) {
 		this.listener.add(listener);
+	}
+	
+	public void removeListener(INetworkListener listener) {
+		this.listener.remove(listener);
 	}
 	
 	public boolean isHost() {
@@ -30,21 +44,40 @@ public class Network {
 		return server == null;
 	}
 	
+	public void setMeasureBandwithUse(boolean state) {
+		measure = state;
+	}
+	
+	public long getSentBytes() {
+		return sentBytes;
+	}
+	
+	public long getReceivedBytes() {
+		return receivedBytes;
+	}
+	
+	public long pollSentBytes() {
+		long sentBytesTmp = sentBytes;
+		sentBytes = 0;
+		return sentBytesTmp;
+	}
+	
+	public long pollReceivedBytes() {
+		long receivedBytesTmp = receivedBytes;
+		receivedBytes = 0;
+		return receivedBytesTmp;
+	}
+	
 	public void host(int port){
 		server = new Server(this, port);
 	}
 	
-	public void connectTo(String serverName, int port) {
-		try {
-			Socket client = new Socket(serverName, port);
-			System.out.println("Successfully connected to " + client.getRemoteSocketAddress());
-			addConnection(client);
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+	public void connectTo(String serverName, int port) throws UnknownHostException, IOException {
+		Socket client = new Socket(serverName, port);
+		if (log) {
+			System.out.println(Calendar.getInstance().getTime() + " Successfully connected to " + client.getRemoteSocketAddress());
 		}
-		
+		addConnection(client);
 	}
 	
 	public void addConnection(Socket socket) {
@@ -65,13 +98,36 @@ public class Network {
 	}
 	
 	public void broadcast(Serializable s) {
+		
+		if (log) {
+			System.out.println(Calendar.getInstance().getTime() + " Sent Data: " + s.toString());
+		}
+		
 		for (int i = 0; i < connections.size(); ++i) {
-			connections.get(i).send(s);
+			if (connections.get(i).openToBroadcasts) {
+				if (measure) {
+					sentBytes += Network.sizeOf(s);
+				}
+				connections.get(i).send(s);
+			}
 		}
 	}
 
 	public void send(Serializable s, int connection) {
-		connections.get(connection).send(s);
+		send(s, connections.get(connection));
+	}
+	
+	public void send(Serializable s, Connection connection) {
+		
+		if (log) {
+			System.out.println(Calendar.getInstance().getTime() + " Sent Data: " + s.toString());
+		}
+		
+		if (measure) {
+			sentBytes += Network.sizeOf(s);
+		}
+		
+		connection.send(s);
 	}
 	
 	public void flush() {
@@ -81,66 +137,60 @@ public class Network {
 	}
 	
 	public void receiveData(Connection c, Object o) {
+		
+		if (measure) {
+			receivedBytes += Network.sizeOf((Serializable)o);
+		}
+		
+		if (log) {
+			System.out.println(Calendar.getInstance().getTime() +  " Received Data: " + o.toString());
+		}
+		
 		for (int i = 0; i <listener.size(); ++i) {
 			listener.get(i).onReceivedData(c, o);
 		}
 	}
 	
-	/*
-	protected byte[] toByteArray(Serializable s) {
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		ObjectOutput out = null;
-		try {
-		  out = new ObjectOutputStream(bos);   
-		  out.writeObject(s);
-		  return bos.toByteArray();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-		  try {
-		    if (out != null) {
-		      out.close();
-		    }
-		  } catch (IOException ex) {
-		  }
-		  try {
-		    bos.close();
-		  } catch (IOException ex) {
-		  }
+	public void connectionLost(Connection c) {
+		
+		if (log) {
+			System.out.println(Calendar.getInstance().getTime() + " Connection " + c.ID + " lost");
 		}
 		
-		return null;
-	}
-	
-	protected Object toObject(byte[] byteArray) {
-		ByteArrayInputStream bis = new ByteArrayInputStream(byteArray);
-		ObjectInput in = null;
-		try {
-		  in = new ObjectInputStream(bis);
-		  Object o = in.readObject(); 
-		  return o;
-		} catch (StreamCorruptedException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} finally {
-		  try {
-		    bis.close();
-		  } catch (IOException ex) {
-		  }
-		  try {
-		    if (in != null) {
-		      in.close();
-		    }
-		  } catch (IOException ex) {
-		  }
+		for (int i = 0; i <listener.size(); ++i) {
+			listener.get(i).onConnectionLost(c);
 		}
 		
-		return null;
+		connections.remove(c);
 	}
 	
-	*/
+    private static long sizeOf(Serializable obj) {
+        try {
+            CheckSerializedSize counter = new CheckSerializedSize();
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(counter);
+            objectOutputStream.writeObject(obj);
+            objectOutputStream.close();
+            return counter.getNBytes();
+        } catch (Exception e) {
+            // Serialization failed
+            return -1;
+        }
+    }
+    
+    public void close() {
+    	for (int i = 0; i < connections.size(); ++i) {
+    		connections.get(i).close();
+    	}
+    	connections.clear();
+    	
+    	if (this.isHost()) {
+    		server.close();
+    	}
+    }
+    
+    public Server getServer() {
+    	return server;
+    }
+
 	
 }

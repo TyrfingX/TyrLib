@@ -413,6 +413,8 @@ public class ComplexParticleSystem extends ParticleSystem {
 			        							(PARTICLE_DATA_SIZE/4) * OpenGLRenderer.BYTES_PER_FLOAT, UV_OFFSET * OpenGLRenderer.BYTES_PER_FLOAT);
 			        TyrGL.glEnableVertexAttribArray(batch.texHandle);  
 				} else {
+					TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, 0);
+					
 					// Pass in the position.
 					TyrGL.glVertexAttribPointer(material.getPositionHandle(), POSITION_SIZE, TyrGL.GL_FLOAT, false,
 												(PARTICLE_DATA_SIZE/4) * OpenGLRenderer.BYTES_PER_FLOAT, buffer);

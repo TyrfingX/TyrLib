@@ -5,6 +5,7 @@ import com.tyrlib2.graphics.renderables.Rectangle2;
 import com.tyrlib2.graphics.renderer.Viewport;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.graphics.text.Font;
+import com.tyrlib2.math.Rectangle;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.util.Color;
 
@@ -18,6 +19,7 @@ public class Label extends Window{
 	
 	private FormattedText2 text;
 	private Rectangle2 background;
+	private int layer = 100;
 	
 	public Label(String name, Vector2 pos, String text) {
 		super(name);
@@ -40,6 +42,10 @@ public class Label extends Window{
 		
 		setSize(new Vector2(size));
 		setRelativePos(pos);
+	}
+	
+	public void setLayer(int layer) {
+		this.layer = layer;
 	}
 	
 	public String getText() {
@@ -74,6 +80,11 @@ public class Label extends Window{
 		text.setBaseColor(color);
 	}
 	
+	@Override
+	public void setSize(Vector2 size) {
+		super.setSize(size);
+	}
+	
 	public Color getBgColor() {
 		if (background == null) {
 			return Color.TRANSPARENT;
@@ -94,6 +105,10 @@ public class Label extends Window{
 		} else {
 			background.setColor(bgColor);
 		}
+	}
+	
+	public Rectangle2 getBackground() {
+		return background;
 	}
 	
 	@Override
@@ -128,7 +143,7 @@ public class Label extends Window{
 	
 	@Override
 	public long getPriority() {
-		return WindowManager.GUI_OVERLAY_PRIORITY*100;
+		return priority*4;
 	}
 	
 	

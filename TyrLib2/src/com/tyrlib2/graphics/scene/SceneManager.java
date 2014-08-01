@@ -24,11 +24,13 @@ import com.tyrlib2.graphics.renderables.Skybox;
 import com.tyrlib2.graphics.renderables.Text2;
 import com.tyrlib2.graphics.renderer.BoundedRenderable;
 import com.tyrlib2.graphics.renderer.Camera;
+import com.tyrlib2.graphics.renderer.GameLoop;
 import com.tyrlib2.graphics.renderer.IFrameListener;
 import com.tyrlib2.graphics.renderer.IRenderable;
 import com.tyrlib2.graphics.renderer.Material;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.renderer.TextureAtlas;
+import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.graphics.renderer.Viewport;
 import com.tyrlib2.graphics.text.Font;
 import com.tyrlib2.main.Media;
@@ -49,7 +51,7 @@ import com.tyrlib2.util.IQMEntityFactory;
 public class SceneManager {
 	
 	private static SceneManager instance;
-	private OpenGLRenderer renderer;
+	private GameLoop renderer;
 	
 	private List<Light> lights;
 	
@@ -99,7 +101,7 @@ public class SceneManager {
 		instance = null;
 	}
 	
-	public void setRenderer(OpenGLRenderer renderer) {
+	public void setRenderer(GameLoop renderer) {
 		this.renderer = renderer;
 	}
 	
@@ -108,7 +110,7 @@ public class SceneManager {
 	 * @return	The renderer
 	 */
 	
-	public OpenGLRenderer getRenderer() {
+	public GameLoop getRenderer() {
 		return renderer;
 	}
 	
@@ -233,13 +235,20 @@ public class SceneManager {
 		}
 	}
 	
+
+	public Entity createEntity(String path) {
+		return createEntity(path, TyrGL.GL_USE_VBO == 1);
+	}
+	
 	/**
 	 * Create an entity from a file source
 	 * @param context	The context for loading the file
 	 * @param path		The path to the file
+	 * @param useVBO	Whether to use a VBO or not
 	 * @return			The newly created entity
 	 */
-	public Entity createEntity(String path) {
+	
+	public Entity createEntity(String path, boolean useVBO) {
 		if (entityFactories.containsKey(path)) {
 			Entity entity = entityFactories.get(path).create();
 			renderer.addRenderable(entity);
@@ -254,7 +263,7 @@ public class SceneManager {
 			entityFactories.put(path, factory);
 		} else if (path.endsWith("iqm")) {
 			DefaultMaterial3 mat = new DefaultMaterial3(null, 1, 1, null);
-			factory = new IQMEntityFactory(path, mat);
+			factory = new IQMEntityFactory(path, mat, useVBO);
 			entityFactories.put(path, factory);
 		} else {
 			throw new RuntimeException("Format for loading entity " +  path + " not supported!");

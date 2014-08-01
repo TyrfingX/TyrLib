@@ -7,7 +7,6 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.Socket;
-import java.net.SocketException;
 
 public class Connection extends Thread{
 	
@@ -15,13 +14,17 @@ public class Connection extends Thread{
 	private ObjectOutputStream out;
 	private InputStream inToOther;
 	private ObjectInputStream in;
+	private Socket socket;
 	
 	private boolean connectionOpen = true;
 	private Network network;
 	
+	public boolean openToBroadcasts = false;
+	
 	public final int ID;
 	
 	public Connection(Socket socket, Network network) {
+		this.socket = socket;
 		this.network = network;
 		this.ID = network.getClientCount();
 		
@@ -60,6 +63,8 @@ public class Connection extends Thread{
 			} 
 		}
 		
+		network.connectionLost(this);
+		
 		
 	}
 	
@@ -69,6 +74,24 @@ public class Connection extends Thread{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void close() {
+		connectionOpen = false;
+		try {
+			in.close();
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public String getServerName() {
+		return socket.getInetAddress().getHostAddress();
+	}
+	
+	public int getServerPort() {
+		return socket.getPort();
 	}
 	
 }

@@ -23,6 +23,9 @@ public class InputManager {
 	
 	public static int VK_ENTER;
 	public static int VK_BACK_SPACE;
+	public static int VK_V;
+	public static int VK_ESC;
+	public static int CTRL_MASK;
 	
 	private boolean sort;
 	
@@ -112,14 +115,14 @@ public class InputManager {
 		float rotation = event.getRotation();
 		
 		for (int i = 0; i < scrollListeners.size(); ++i) {
-			scrollListeners.get(i).onScroll(rotation);
+			if (scrollListeners.get(i).onScroll(rotation)) break;
 		}
 		
 		return false;
 	}
 	
 	public void addScrollListener(IScrollListener listener) {
-		scrollListeners.add(listener);
+		scrollListeners.add(0, listener);
 	}
 	
 	public void removeScrollListener(IScrollListener listener) {
@@ -134,14 +137,14 @@ public class InputManager {
 		Vector2 point = new Vector2(event.getX(pid) / v.getWidth(), event.getY(pid) / v.getHeight());
 		
 		for (int i = 0; i < moveListeners.size(); ++i) {
-			moveListeners.get(i).onMove(point);
+			if (moveListeners.get(i).onMove(point)) break;
 		}
 		
 		return false;
 	}
 	
 	public void addMoveListener(IMoveListener listener) {
-		moveListeners.add(listener);
+		moveListeners.add(0, listener);
 	}
 	
 	public void removeMoveListener(IMoveListener listener) {
@@ -154,9 +157,9 @@ public class InputManager {
 		
 		for (int i = 0; i < keyListeners.size(); ++i) {
 			if (action == IKeyboardEvent.ACTION_PRESSED) {
-				keyListeners.get(i).onPress(e);
+				if (keyListeners.get(i).onPress(e)) break;
 			} else {
-				keyListeners.get(i).onRelease(e);
+				if (keyListeners.get(i).onRelease(e)) break;
 			}
 		}
 		
@@ -229,5 +232,31 @@ public class InputManager {
 	public void sort() {
 		sort = true;
 	}
+
+	public void onEnterMouse(IView v, IMotionEvent event) {
+		for (int i = 0; i < moveListeners.size(); ++i) {
+			if (moveListeners.get(i).onEnterRenderWindow()) break;
+		}
+	}
+	
+	public void onExitMouse(IView v, IMotionEvent event) {
+		for (int i = 0; i < moveListeners.size(); ++i) {
+			if (moveListeners.get(i).onLeaveRenderWindow()) break;
+		}
+	}
+
+	public void onGainFocus(IView v) {
+		for (int i = 0; i < moveListeners.size(); ++i) {
+			if (moveListeners.get(i).onRenderWindowGainFocus()) break;
+		}
+	}
+	
+	public void onLoseFocus(IView v) {
+		for (int i = 0; i < moveListeners.size(); ++i) {
+			if (moveListeners.get(i).onRenderWindowLoseFocus()) break;
+		}
+	}
+	
+	
 
 }

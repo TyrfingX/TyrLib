@@ -84,7 +84,7 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 			if (alignment == ALIGNMENT.LEFT) {
 				glText.draw( section.text, pos.x + section.xOffset, pos.y + section.yOffset - font.glText.getCharHeight(), section.rotation);   
 			} else if (alignment == ALIGNMENT.CENTER) {
-				glText.drawC( section.text, pos.x + section.xOffset, pos.y + section.yOffset - font.glText.getCharHeight(), section.rotation); 
+				glText.drawCX( section.text, pos.x + section.xOffset, pos.y + section.yOffset - font.glText.getCharHeight()); 
 			} else if (alignment == ALIGNMENT.RIGHT) {
 				float length = glText.getLength(section.text);
 				glText.draw( section.text, pos.x + section.xOffset - length, pos.y + section.yOffset - font.glText.getCharHeight(), section.rotation); 

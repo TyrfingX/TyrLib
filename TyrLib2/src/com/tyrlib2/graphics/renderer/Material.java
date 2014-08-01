@@ -1,7 +1,7 @@
 package com.tyrlib2.graphics.renderer;
 
-import java.nio.FloatBuffer;
 
+import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.math.Vector3;
 
 /**
@@ -56,7 +56,7 @@ public class Material {
 
 	}
 	
-	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
+	public void render(Mesh mesh, float[] modelMatrix) {
 
 	}
 	
@@ -74,10 +74,10 @@ public class Material {
 		this.mvpParamName = mvpParamName;
 		this.positionParamName = positionParamName;
 		
-		mvpMatrixHandle = TyrGL.glGetUniformLocation(program.handle, mvpParamName);
-		positionHandle = TyrGL.glGetAttribLocation(program.handle, positionParamName);
-		
-
+		if (!SceneManager.getInstance().getRenderer().isInServerMode()) {
+			mvpMatrixHandle = TyrGL.glGetUniformLocation(program.handle, mvpParamName);
+			positionHandle = TyrGL.glGetAttribLocation(program.handle, positionParamName);
+		}
 	}
 	
 	public int getByteStride() {

@@ -1,9 +1,9 @@
 package com.tyrlib2.graphics.materials;
 
-import java.nio.FloatBuffer;
 
 import com.tyrlib2.graphics.renderer.IBlendable;
 import com.tyrlib2.graphics.renderer.Material;
+import com.tyrlib2.graphics.renderer.Mesh;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.renderer.Program;
 import com.tyrlib2.graphics.renderer.ProgramManager;
@@ -55,8 +55,8 @@ public class ParticleMaterial extends Material implements IBlendable {
 		init(3,0,3, "u_MVPMatrix", "a_Position");
 	}
 	
-	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
-        super.render(vertexBuffer, modelMatrix);
+	public void render(Mesh mesh, float[] modelMatrix) {
+        super.render(mesh, modelMatrix);
 		
 		int textureHandle = texture.getHandle();
 	

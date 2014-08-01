@@ -13,7 +13,7 @@ import com.tyrlib2.math.FrustumG;
 import com.tyrlib2.math.Matrix;
 import com.tyrlib2.math.Vector3;
 
-public abstract class OpenGLRenderer {
+public abstract class OpenGLRenderer extends GameLoop {
 
 	/** 
 	 * These are the default rendering channels. They are rendered starting with the lowest number.
@@ -23,26 +23,21 @@ public abstract class OpenGLRenderer {
 	public static final int TRANSLUCENT_CHANNEL = 2;
 	public static final int OVERLAY_CHANNEL = 3;
 	public static final int BYTES_PER_FLOAT = 4;
-	protected static List<IFrameListener> frameListeners;
-	protected static List<RenderChannel> renderChannels;
-	protected static SceneNode rootSceneNode;
-	protected static Viewport viewport;
+	protected List<RenderChannel> renderChannels;
+	protected Viewport viewport;
 	
-	protected static Camera camera;
+	protected Camera camera;
 	
 	/** View projection matrix of the camera **/
 	protected float[] vpMatrix = new float[16];
 	
 	private float[] proj = new float[16];
 	
-	protected long lastTime;
-	public static float BILLION = 1000000000;
-	protected boolean rendering = false;
-	protected static boolean init = false;
+
 	protected FrustumG frustum;
 	private static int textureFails = 0;
 	private RenderSceneQuery query = new RenderSceneQuery();
-
+	
 	class RenderChannel {
 		Octree octree;
 		List<IRenderable> renderables;
@@ -57,11 +52,9 @@ public abstract class OpenGLRenderer {
 	}
 	
 	public OpenGLRenderer() {
+		super(false);
 		if (!init) {
-			frameListeners = new Vector<IFrameListener>();
 			renderChannels = new ArrayList<RenderChannel>();
-			
-			rootSceneNode = new SceneNode();
 	
 			renderChannels.add(new RenderChannel(BACKGROUND_CHANNEL));
 			renderChannels.add(new RenderChannel(DEFAULT_CHANNEL));
@@ -71,46 +64,63 @@ public abstract class OpenGLRenderer {
 		
 		rendering = false;
 	}
-
-	public void destroy() {
-		rendering = false;
+	
+	public void destroyRenderables() {
+		frameListeners = new Vector<IFrameListener>();
+		renderChannels = new ArrayList<RenderChannel>();
+		rootSceneNode = new SceneNode();
+		
+		renderChannels.clear();
+		renderChannels.add(new RenderChannel(BACKGROUND_CHANNEL));
+		renderChannels.add(new RenderChannel(DEFAULT_CHANNEL));
+		renderChannels.add(new RenderChannel(TRANSLUCENT_CHANNEL));
+		renderChannels.add(new RenderChannel(OVERLAY_CHANNEL));
+	}
+	
+	@Override
+	public void destroyRenderables(int channel) {
+		renderChannels.remove(channel);
+		renderChannels.add(channel, new RenderChannel(channel));
 	}
 
 	protected void drawScene() {
-		RenderChannel renderChannel = renderChannels.get(BACKGROUND_CHANNEL);
+		if (!skipRendering) {
+			RenderChannel renderChannel = renderChannels.get(BACKGROUND_CHANNEL);
+			
+			if (renderChannel.enabled) {
+				drawChannel(renderChannel, vpMatrix);
+			}
+			
+			TyrGL.glEnable(TyrGL.GL_DEPTH_TEST);
+			renderChannel = renderChannels.get(DEFAULT_CHANNEL);
+			if (renderChannel.enabled) {
+				drawChannel(renderChannel, vpMatrix);
+			}
+			
+			renderChannel = renderChannels.get(TRANSLUCENT_CHANNEL);
+			if (renderChannel.enabled) {
+				drawChannel(renderChannel, vpMatrix);
+			}
+			TyrGL.glDisable(TyrGL.GL_DEPTH_TEST);
+			
 		
-		if (renderChannel.enabled) {
-			drawChannel(renderChannel, vpMatrix);
-		}
-		
-		TyrGL.glEnable(TyrGL.GL_DEPTH_TEST);
-		renderChannel = renderChannels.get(DEFAULT_CHANNEL);
-		if (renderChannel.enabled) {
-			drawChannel(renderChannel, vpMatrix);
-		}
-		
-		renderChannel = renderChannels.get(TRANSLUCENT_CHANNEL);
-		if (renderChannel.enabled) {
-			drawChannel(renderChannel, vpMatrix);
-		}
-		TyrGL.glDisable(TyrGL.GL_DEPTH_TEST);
-		
-	
-		
-		renderChannel = renderChannels.get(OVERLAY_CHANNEL);
-		if (renderChannel.enabled) {
-	    	Matrix.orthoM(proj, 0, 0, viewport.getWidth(), 0, viewport.getHeight(), -1, 1);
-	    	
-			// Draw all unbounded objects
-			if (renderChannel.renderables != null) {
-			    for (int i = 0; i < renderChannel.renderables.size(); ++i) {
-			    	renderChannel.renderables.get(i).render(proj);
-			    }
+			
+			renderChannel = renderChannels.get(OVERLAY_CHANNEL);
+			if (renderChannel.enabled) {
+		    	Matrix.orthoM(proj, 0, 0, viewport.getWidth(), 0, viewport.getHeight(), -1, 1);
+		    	
+				// Draw all unbounded objects
+				if (renderChannel.renderables != null) {
+				    for (int i = 0; i < renderChannel.renderables.size(); ++i) {
+				    	renderChannel.renderables.get(i).render(proj);
+				    }
+				}
 			}
 		}
 		
 	}
 
+	@Override
 	public void setRenderChannelEnabled(boolean enabled, int channel) {
 		RenderChannel renderChannel = renderChannels.get(channel);
 		renderChannel.enabled = enabled;
@@ -134,86 +144,57 @@ public abstract class OpenGLRenderer {
 		}
 	}
 
-	protected void updateListeners() {
-	    
-	    if (lastTime != 0) {
-	    	
-	    	long time = System.nanoTime();
-	    	long diff = time - lastTime;
-	    	
-	    	lastTime = System.nanoTime();
-	    	
-	        for (int i = 0; i < frameListeners.size(); ++i) {
-	        	frameListeners.get(i).onFrameRendered(diff / BILLION);
-	        }
-	    
-	    } else {
-	    	lastTime = System.nanoTime();
-	    }
-	    
-	    
-	}
-
-	/**
-	 * Add a new frame listener
-	 * @param listener	The IFrameListener to be added
-	 */
-	public void addFrameListener(IFrameListener listener) {
-		frameListeners.add(listener);
-	}
-
-	/**
-	 * Remove a frame listener
-	 * @param listener	The IFrameListener to be removed
-	 */
-	public void removeFrameListener(IFrameListener listener) {
-		frameListeners.remove(listener);
-	}
-
+	@Override
 	public Viewport getViewport() {
 		return viewport;
 	}
 
+	@Override
 	public void setCamera(Camera camera) {
 		this.camera = camera;
 	}
 
+	@Override
 	public Camera getCamera() {
 		return camera;
 	}
 
-	public SceneNode getRootSceneNode() {
-		return rootSceneNode;
-	}
-
+	@Override
 	public FrustumG getFrustum() {
 		return frustum;
 	}
 
+	@Override
 	public void addRenderable(IRenderable renderable) {
 		this.addRenderable(renderable, DEFAULT_CHANNEL);
 	}
 
+	@Override
 	public void addRenderable(BoundedRenderable renderable) {
 		this.addRenderable(renderable, DEFAULT_CHANNEL);
 	}
 
+	@Override
 	public void addRenderable(BoundedSceneObject renderable) {
 		this.addRenderable(renderable, DEFAULT_CHANNEL);
 	}
 
+	@Override
 	public void removeRenderable(IRenderable renderable) {
 		this.removeRenderable(renderable, DEFAULT_CHANNEL);
 	}
 
+	@Override
 	public void removeRenderable(BoundedRenderable renderable) {
 		this.removeRenderable(renderable, DEFAULT_CHANNEL);
 	}
 
+	@Override
 	public void removeRenderable(BoundedSceneObject renderable) {
 		this.removeRenderable(renderable, DEFAULT_CHANNEL);
 	}
 
+	@Override
 	public void addRenderable(IRenderable renderable, int channel) {
 		RenderChannel renderChannel = renderChannels.get(channel);
 		if (renderChannel != null) {
@@ -225,6 +206,7 @@ public abstract class OpenGLRenderer {
 		}
 	}
 
+	@Override
 	public void addRenderable(BoundedRenderable renderable, int channel) {
 		RenderChannel renderChannel = renderChannels.get(channel);
 		if (renderChannel != null) {
@@ -240,6 +222,7 @@ public abstract class OpenGLRenderer {
 		}
 	}
 
+	@Override
 	public void addRenderable(BoundedSceneObject renderable, int channel) {
 		if (renderable instanceof IRenderable) {
 	    	RenderChannel renderChannel = renderChannels.get(channel);
@@ -257,6 +240,7 @@ public abstract class OpenGLRenderer {
 		}
 	}
 
+	@Override
 	public void removeRenderable(IRenderable renderable, int channel) {
 		RenderChannel renderChannel = renderChannels.get(channel);
 		if (renderChannel != null) {
@@ -264,6 +248,7 @@ public abstract class OpenGLRenderer {
 		} 
 	}
 
+	@Override
 	public void removeRenderable(BoundedSceneObject renderable, int channel) {
 		if (renderable instanceof IRenderable) {
 	    	RenderChannel renderChannel = renderChannels.get(channel);
@@ -272,7 +257,8 @@ public abstract class OpenGLRenderer {
 	    	} 
 		}
 	}
-
+	
+	@Override
 	public void removeRenderable(BoundedRenderable renderable, int channel) {
 		RenderChannel renderChannel = renderChannels.get(channel);
 		if (renderChannel != null) {
@@ -280,6 +266,7 @@ public abstract class OpenGLRenderer {
 		} 
 	}
 
+	@Override
 	public IRenderable getRenderable(int index) {
 		RenderChannel renderChannel = renderChannels.get(DEFAULT_CHANNEL);
 		if (renderChannel != null) {
@@ -289,6 +276,7 @@ public abstract class OpenGLRenderer {
 		return null;
 	}
 
+	@Override
 	public int getCountRenderables() {
 		RenderChannel renderChannel = renderChannels.get(DEFAULT_CHANNEL);
 		if (renderChannel != null) {
@@ -297,6 +285,7 @@ public abstract class OpenGLRenderer {
 		return 0;
 	}
 
+	@Override
 	public Octree getOctree(int channel) {
 		return renderChannels.get(DEFAULT_CHANNEL).octree;
 	}
@@ -324,37 +313,42 @@ public abstract class OpenGLRenderer {
         SceneManager.getInstance().setRenderer(this);
 	}
 	
+	@Override
 	public void startRendering() {
         // Set the background frame color
 		TyrGL.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         viewport = new Viewport();
         
-        lastTime = 0;
-        
-        rendering = true;
         init = true;
         
-        for (int i = 0; i < frameListeners.size(); ++i) {
-           	frameListeners.get(i).onSurfaceCreated();
-        }
+        super.startRendering();
 	}
 	
 	public void surfaceChanged(int width, int height) {
-       viewport.setFullscreen(width, height);
-       
-       for (int i = 0; i < frameListeners.size(); ++i) {
-       	frameListeners.get(i).onSurfaceChanged();
-       }
-       
+		System.out.println("Surface Changed: Reconstructing Context");
 		if (init) {
+	       viewport.setFullscreen(width, height);
+	       
+	       for (int i = 0; i < frameListeners.size(); ++i) {
+	    	   frameListeners.get(i).onSurfaceChanged();
+	       }
+       
+		
 			ProgramManager.getInstance().recreateAll();
 			TextureManager.getInstance().reloadAll();
 			//SceneManager.getInstance().recreateFonts();
 		}
 	}
 	
+	@Override
 	public void render() {
     	if (rendering) {
+    		
+    		try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
         	
 	        // Redraw background color
     		TyrGL.glClear(TyrGL.GL_DEPTH_BUFFER_BIT | TyrGL.GL_COLOR_BUFFER_BIT);
@@ -391,7 +385,7 @@ public abstract class OpenGLRenderer {
 		    Matrix.multiplyMM(vpMatrix, 0, viewport.projectionMatrix, 0, camera.viewMatrix, 0);
 		    
 		    drawScene();
-		    updateListeners();
+		    super.render();
 		    
 		    setTextureFails(0);
 
@@ -406,7 +400,5 @@ public abstract class OpenGLRenderer {
 	public static void setTextureFails(int textureFails) {
 		OpenGLRenderer.textureFails = textureFails;
 	}
-	
-	public abstract void queueEvent(Runnable r);
 
 }

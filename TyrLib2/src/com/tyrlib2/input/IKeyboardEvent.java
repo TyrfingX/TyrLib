@@ -8,4 +8,5 @@ public interface IKeyboardEvent {
 	public char getKeyChar();
 	public short getKeyCode();
 	boolean isPrintable();
+	public int getModifiers();
 }

@@ -6,8 +6,6 @@ attribute float a_Size;
 
 varying vec4 v_Color; 
 
-varying mediump vec2 v_TextureSize;
-
 void main() {
       gl_Position = u_MVPMatrix * vec4(a_Position, 1.0);
 	  vec3 ndc = gl_Position.xyz / gl_Position.w ; // perspective divide.
