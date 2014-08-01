@@ -1,7 +1,5 @@
 package com.tyrlib2.demo.example3;
 
-import android.view.MotionEvent;
-
 import com.tyrlib2.game.Updater;
 import com.tyrlib2.graphics.lighting.DirectionalLight;
 import com.tyrlib2.graphics.lighting.Light.Type;
@@ -14,6 +12,7 @@ import com.tyrlib2.graphics.scene.SceneNode;
 import com.tyrlib2.graphics.terrain.Terrain;
 import com.tyrlib2.graphics.terrain.TerrainTexture;
 import com.tyrlib2.input.Controller;
+import com.tyrlib2.input.IMotionEvent;
 import com.tyrlib2.input.InputManager;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.math.Vector3;
@@ -91,7 +90,7 @@ public class FrameListener implements IFrameListener {
 			Vector2 lastPoint = null;
 			
 			@Override
-			public boolean onTouchMove(Vector2 point, MotionEvent event, int fingerId) {
+			public boolean onTouchMove(Vector2 point, IMotionEvent event, int fingerId) {
 				Vector2 movement = lastPoint.vectorTo(point).multiply(30);
 				movement.y *= -1;
 				
@@ -103,7 +102,7 @@ public class FrameListener implements IFrameListener {
 			}
 			
 			@Override
-			public boolean onTouchDown(Vector2 point, MotionEvent event, int fingerId) {
+			public boolean onTouchDown(Vector2 point, IMotionEvent event, int fingerId) {
 				lastPoint = new Vector2(point);
 				return true;
 			}
