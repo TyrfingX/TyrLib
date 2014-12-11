@@ -27,6 +27,12 @@ public class Plane {
 						 normal.z * (point.z - this.z);
 		return distance;
 	}
+
+	public void set(Vector3 point) {
+		this.x = point.x;
+		this.y = point.y;
+		this.z = point.z;
+	}
 	
 	
 }

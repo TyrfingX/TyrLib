@@ -53,7 +53,7 @@ public class ObstacleAvoidance implements IPattern {
 				}
 			}
 		}
-		
+
 	}
 	
 	/** Every obstacle within the vision will be avoided **/

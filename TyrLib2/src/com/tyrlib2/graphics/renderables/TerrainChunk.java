@@ -11,6 +11,8 @@ import com.tyrlib2.math.AABB;
 
 public class TerrainChunk extends BoundedRenderable {
 
+	private int insertionID;
+
 	@Override
 	public void render(float[] vpMatrix) {
 		// TODO Auto-generated method stub
@@ -20,6 +22,22 @@ public class TerrainChunk extends BoundedRenderable {
 	@Override
 	protected AABB createUntransformedBoundingBox() {
 		return null;
+	}
+
+	@Override
+	public void renderShadow(float[] vpMatrix) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void setInsertionID(int id) {
+		this.insertionID = id;
+	}
+
+	@Override
+	public int getInsertionID() {
+		return insertionID;
 	}
 
 }

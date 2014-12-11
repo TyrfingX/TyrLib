@@ -38,7 +38,7 @@ public class ParticleMaterial extends Material implements IBlendable {
 			texture = TextureManager.getInstance().getTexture(textureName);
 		}
 		
-		init(3,0,3, "u_MVPMatrix", "a_Position");
+		init(0,3, "u_MVPMatrix", "a_Position");
 	}
 	
 	public ParticleMaterial(String textureName, TextureRegion region, Color color) {
@@ -52,7 +52,7 @@ public class ParticleMaterial extends Material implements IBlendable {
 			texture = TextureManager.getInstance().getTexture(textureName);
 		}
 		
-		init(3,0,3, "u_MVPMatrix", "a_Position");
+		init(0,3, "u_MVPMatrix", "a_Position");
 	}
 	
 	public void render(Mesh mesh, float[] modelMatrix) {

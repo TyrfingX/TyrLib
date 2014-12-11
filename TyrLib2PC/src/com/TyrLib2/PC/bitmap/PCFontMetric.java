@@ -6,14 +6,14 @@ import com.tyrlib2.bitmap.IFontMetrics;
 
 
 public class PCFontMetric extends IFontMetrics {
-	public final FontMetrics fm;
+	private final FontMetrics fm;
 	
 	public PCFontMetric(FontMetrics fm) {
 		this.fm = fm;
 		
-		this.top = fm.getMaxAscent();
-		this.bottom = fm.getMaxDescent();
-		this.ascent = fm.getAscent();
-		this.descent = fm.getDescent();
+		this.top = fm.getMaxAscent()*1.3f;
+		this.bottom = fm.getMaxDescent()*1.3f;
+		this.ascent = fm.getAscent()*1.3f;
+		this.descent = fm.getDescent()*1.3f;
 	}
 }

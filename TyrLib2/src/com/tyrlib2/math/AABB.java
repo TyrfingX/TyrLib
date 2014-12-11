@@ -1,6 +1,5 @@
 package com.tyrlib2.math;
 
-import android.util.FloatMath;
 
 
 /**
@@ -28,6 +27,12 @@ public class AABB {
 	public Vector3 getCenter() {
 		Vector3 diff = min.vectorTo(max);
 		return min.add(diff.multiply(0.5f));
+	}
+	
+	public void getCenter(Vector3 center) {
+		Vector3.vectorTo(min, max, center);
+		Vector3.multiply(0.5f, center);
+		Vector3.add(min, center, center);
 	}
 	
 	public float getExtends() {
@@ -145,21 +150,23 @@ public class AABB {
 	 *         returned) or null if no intersection
 	 */
 	public Vector3 intersectsRay(Ray ray, float minDir, float maxDir) {
-		Vector3 invDir = new Vector3(1f / ray.direction.x, 1f / ray.direction.y, 1f / ray.direction.z);
+		float invDirX = 1f / ray.direction.x;
+		float invDirY = 1f / ray.direction.y;
+		float invDirZ = 1f / ray.direction.z;
 		
-		boolean signDirX = invDir.x < 0;
-		boolean signDirY = invDir.y < 0;
-		boolean signDirZ = invDir.z < 0;
+		boolean signDirX = invDirX < 0;
+		boolean signDirY = invDirY < 0;
+		boolean signDirZ = invDirZ < 0;
 		
 		Vector3 bbox = signDirX ? max : min;
 		
-		float tmin = (bbox.x - ray.origin.x) * invDir.x;
+		float tmin = (bbox.x - ray.origin.x) * invDirX;
 		bbox = signDirX ? min : max;
-		float tmax = (bbox.x - ray.origin.x) * invDir.x;
+		float tmax = (bbox.x - ray.origin.x) * invDirX;
 		bbox = signDirY ? max : min;
-		float tymin = (bbox.y - ray.origin.y) * invDir.y;
+		float tymin = (bbox.y - ray.origin.y) * invDirY;
 		bbox = signDirY ? min : max;
-		float tymax = (bbox.y - ray.origin.y) * invDir.y;
+		float tymax = (bbox.y - ray.origin.y) * invDirY;
 
 		if ((tmin > tymax) || (tymin > tmax))
 			return null;
@@ -169,9 +176,9 @@ public class AABB {
 			tmax = tymax;
 
 		bbox = signDirZ ? max : min;
-		float tzmin = (bbox.z - ray.origin.z) * invDir.z;
+		float tzmin = (bbox.z - ray.origin.z) * invDirZ;
 		bbox = signDirZ ? min : max;
-		float tzmax = (bbox.z - ray.origin.z) * invDir.z;
+		float tzmax = (bbox.z - ray.origin.z) * invDirZ;
 
 		if ((tmin > tzmax) || (tzmin > tmax))
 			return null;

@@ -47,10 +47,10 @@ public class BatchTextProgram extends Program {
 	@Override
 	public void init() {
 		super.init(
-		(TyrGL.GL_USE_VBO==1) ? 
+		(TyrGL.TARGET == TyrGL.PC_TARGET) ? 
 					ProgramManager.preprocessVertexShader(vertexShaderCode) : 
 					vertexShaderCode, 
-		(TyrGL.GL_USE_VBO==1) ? 
+		(TyrGL.TARGET == TyrGL.PC_TARGET) ? 
 					ProgramManager.preprocessFragmentShader(fragmentShaderCode) : 
 					fragmentShaderCode, 
 		programVariables);

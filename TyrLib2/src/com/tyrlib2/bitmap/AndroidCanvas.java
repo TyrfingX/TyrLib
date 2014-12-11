@@ -6,9 +6,11 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 
 import com.tyrlib2.math.Rect;
+import com.tyrlib2.util.Color;
 
 public class AndroidCanvas implements ICanvas {
 	private Canvas canvas;
+	private AndroidPaint paint;
 	
 	public AndroidCanvas(Canvas canvas) {
 		this.canvas = canvas;
@@ -37,6 +39,16 @@ public class AndroidCanvas implements ICanvas {
 		AndroidPaint p = (AndroidPaint) paint;
 		RectF r = new RectF(rect.left, rect.top, rect.right, rect.bottom);
 		canvas.drawArc(r, startDegree, degree, useCenter, p.paint);
+	}
+
+	@Override
+	public void setRGB(int x, int y, Color color) {
+		if (paint == null) {
+			paint = new AndroidPaint();
+		}
+		
+		paint.setColor(color);
+		canvas.drawPoint(x, y, paint.paint);
 	}
 
 

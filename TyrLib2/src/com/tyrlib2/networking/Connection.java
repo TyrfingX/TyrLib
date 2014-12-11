@@ -27,16 +27,6 @@ public class Connection extends Thread{
 		this.socket = socket;
 		this.network = network;
 		this.ID = network.getClientCount();
-		
-        try {
-			outToOther = socket.getOutputStream();
-			out = new ObjectOutputStream(outToOther);
-			inToOther = socket.getInputStream();
-			in = new ObjectInputStream(inToOther);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-        
 	}
 	
 	public void send(Serializable s) {
@@ -51,6 +41,19 @@ public class Connection extends Thread{
 	
 	@Override
 	public void run() {
+
+		if (connectionOpen) {
+	        try {
+				outToOther = socket.getOutputStream();
+				out = new ObjectOutputStream(outToOther);
+				inToOther = socket.getInputStream();
+				out.flush();
+				in = new ObjectInputStream(inToOther);	
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		while (connectionOpen) {
 			try {
 				Object o = in.readObject();
@@ -62,11 +65,10 @@ public class Connection extends Thread{
 				connectionOpen = false;
 			} 
 		}
-		
+				
 		network.connectionLost(this);
-		
-		
 	}
+	
 	
 	public void flush() {
 		try {

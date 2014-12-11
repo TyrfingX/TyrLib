@@ -17,7 +17,8 @@ public class WindowEvent {
 		MOUSE_LEAVES,
 		DESTROYED,
 		CONFIRMED,
-		TOUCH
+		TOUCH, 
+		CALL_LINK
 	}
 	
 	private WindowEventType type;

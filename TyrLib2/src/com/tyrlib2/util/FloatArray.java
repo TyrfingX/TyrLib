@@ -55,17 +55,17 @@ public class FloatArray {
 	}
 	
 	public String toString() {
-		String res = "";
+		StringBuilder b = new StringBuilder();
 		
 		for (int i = 0; i < size; ++i) {
-			res += buffer[i];
+			b.append(buffer[i]);
 			
 			if (i != size - 1) {
-				res += ", ";
+				b.append(", ");
 			}
 		}
 		
-		return res;
+		return b.toString();
 	}
 
 }

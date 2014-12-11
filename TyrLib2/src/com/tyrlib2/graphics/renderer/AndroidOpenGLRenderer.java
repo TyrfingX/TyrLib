@@ -36,6 +36,12 @@ public class AndroidOpenGLRenderer extends OpenGLRenderer implements GLSurfaceVi
 	
 	public void onDrawFrame(GL10 unused) {
 		render();
+		
+		try {
+			Thread.sleep(10);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
     }
     
     public void onSurfaceChanged(GL10 unused, int width, int height) {
@@ -99,12 +105,6 @@ public class AndroidOpenGLRenderer extends OpenGLRenderer implements GLSurfaceVi
 													Media.CONTEXT.getResourceID("particle_vs", "raw"), 
 													Media.CONTEXT.getResourceID("particle_fs", "raw"), 
 													new String[]{"a_Position", "a_TexCoordinate", "a_Color"});
-		
-		// Create a program for rendering shadow depth maps
-		ProgramManager.getInstance().createProgram(	"SHADOW_DEPTH", 
-													Media.CONTEXT.getResourceID("depth_vs", "raw"), 
-													Media.CONTEXT.getResourceID("depth_fs", "raw"), 
-													new String[]{"aPosition" });
 	}
 
 	@Override

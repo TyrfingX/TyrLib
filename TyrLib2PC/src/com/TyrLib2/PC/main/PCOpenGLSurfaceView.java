@@ -1,7 +1,6 @@
 package com.TyrLib2.PC.main;
 
 import java.awt.DisplayMode;
-import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.WindowAdapter;
@@ -9,7 +8,6 @@ import java.awt.event.WindowAdapter;
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.awt.GLCanvas;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
 import com.TyrLib2.PC.input.PCKeyboardEvent;
 import com.TyrLib2.PC.input.PCMotionEvent;
@@ -59,6 +57,10 @@ public class PCOpenGLSurfaceView implements MouseListener, KeyListener, WindowLi
         InputManager.VK_V =  KeyEvent.VK_V;
         InputManager.CTRL_MASK = KeyEvent.CTRL_MASK;
         InputManager.VK_ESC = KeyEvent.VK_ESCAPE;
+        InputManager.VK_SPACE = KeyEvent.VK_SPACE;
+        InputManager.VK_PLUS = KeyEvent.VK_PLUS;
+        InputManager.VK_MINUS = KeyEvent.VK_MINUS;
+        
         
         this.config = config;
         

@@ -14,6 +14,7 @@ public class Outline extends BoundedRenderable {
 	private Renderable outline;
 	private Skeleton skeleton;
 	private float size;
+	private int insertionID;
 	
 	public Outline(Mesh mesh, OutlineMaterial material) {
 		outline = new Renderable(mesh, material);
@@ -61,6 +62,30 @@ public class Outline extends BoundedRenderable {
 	public SceneNode detach() {
 		outline.detach();
 		return super.detach();	
+	}
+
+	@Override
+	public void renderShadow(float[] vpMatrix) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public OutlineMaterial getMaterial() {
+		return (OutlineMaterial) outline.getMaterial();
+	}
+	
+	public void setMaterial(OutlineMaterial mat) {
+		outline.setMaterial(mat);
+	}
+	
+	@Override
+	public void setInsertionID(int id) {
+		this.insertionID = id;
+	}
+
+	@Override
+	public int getInsertionID() {
+		return insertionID;
 	}
 
 }

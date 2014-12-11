@@ -123,6 +123,8 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	
 	/** is he window being hovered by the mouse **/
 	protected boolean hovered;
+
+	private int insertionID;
 	
 	private Window() {
 		node = new SceneNode();
@@ -137,6 +139,8 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 		
 		viewport = SceneManager.getInstance().getViewport();
 		absolutePosVector = node.getCachedAbsolutePosVector();
+		
+		this.setRelativePos(new Vector2(-1,-1));
 	}
 	
 	protected Window(String name) {
@@ -236,6 +240,9 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 		node.attachChild(window.node);
 		window.parent = this;
 		
+		window.setVisible(this.isVisible());
+		window.setAlpha(this.getAlpha());
+		
 		window.setPriority(priority+children.size());
 	}
 	
@@ -327,6 +334,7 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 				children.get(i).destroy();
 			}
 			
+			this.setReceiveTouchEvents(false);
 			WindowManager.getInstance().removeWindow(this);
 			
 			if (parent != null && !parent.destroyed) {
@@ -763,7 +771,7 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 		}
 	}
 	
-	protected void fireEvent(WindowEvent event) {
+	public void fireEvent(WindowEvent event) {
 		List<IEventListener> listeners = eventListeners.get(event.getType());
 		if (listeners != null) {
 			for (int i = 0; i < listeners.size(); ++i) {
@@ -882,5 +890,26 @@ public class Window implements IUpdateable, ITouchListener, IRenderable, IPriori
 	public boolean onRenderWindowGainFocus() {
 		return false;
 	}
+
+	@Override
+	public void renderShadow(float[] vpMatrix) {
+		// TODO Auto-generated method stub
+		
+	}
 	
+	@Override
+	public void setInsertionID(int id) {
+		this.insertionID = id;
+	}
+
+	@Override
+	public int getInsertionID() {
+		return insertionID;
+	}
+	
+	@Override
+	public String toString() {
+		return name;
+	}
+
 }

@@ -8,6 +8,7 @@ import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.renderer.Program;
 import com.tyrlib2.graphics.renderer.ProgramManager;
 import com.tyrlib2.graphics.renderer.TyrGL;
+import com.tyrlib2.graphics.renderer.VertexLayout;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.util.Color;
 
@@ -19,11 +20,15 @@ import com.tyrlib2.util.Color;
 
 public class ColoredMaterial extends Material implements IBlendable {
 
-	private int colorOffset = 3;
-	private int colorDataSize = 4;
+	public static final int DEFAULT_COLOR_OFFSET = 3;
+	public static final int DEFAULT_COLOR_SIZE = 4;
+	
 	private int colorHandle;
 	private int alphaHandle;
 	private Color[] colors;
+	
+	private int colorOffset;
+	private int colorSize;
 
 	private Color color = Color.WHITE.copy();
 	
@@ -34,7 +39,11 @@ public class ColoredMaterial extends Material implements IBlendable {
 		program = ProgramManager.getInstance().getProgram("BASIC");
 		colorHandle = TyrGL.glGetAttribLocation(program.handle, "a_Color");
 		alphaHandle = TyrGL.glGetUniformLocation(program.handle, "u_Color");
-		init(7,0,3, "u_MVPMatrix", "a_Position");
+		init(0,3, "u_MVPMatrix", "a_Position");
+		
+		addVertexInfo(VertexLayout.COLOR, DEFAULT_COLOR_OFFSET, DEFAULT_COLOR_SIZE);
+		
+		updateInfos();
 	}
 	
 	public ColoredMaterial(Color[] colors, Color color) {
@@ -45,7 +54,16 @@ public class ColoredMaterial extends Material implements IBlendable {
 		program = ProgramManager.getInstance().getProgram("BASIC");
 		colorHandle = TyrGL.glGetAttribLocation(program.handle, "a_Color");
 		alphaHandle = TyrGL.glGetUniformLocation(program.handle, "u_Color");
-		init(7,0,3, "u_MVPMatrix", "a_Position");
+		init(0,3, "u_MVPMatrix", "a_Position");
+		
+		addVertexInfo(VertexLayout.COLOR, DEFAULT_COLOR_OFFSET, DEFAULT_COLOR_SIZE);
+	
+		updateInfos();
+	}
+	
+	private void updateInfos() {
+		colorSize = getInfoSize(VertexLayout.COLOR);
+		colorOffset = getInfoOffset(VertexLayout.COLOR);
 	}
 	
 	public void render(Mesh mesh, float[] modelMatrix) {
@@ -53,15 +71,15 @@ public class ColoredMaterial extends Material implements IBlendable {
 		
 		if (mesh.isUsingVBO()) {		
 		    // Pass in the color information
-		    TyrGL.glVertexAttribPointer(colorHandle, colorDataSize, TyrGL.GL_FLOAT, false,
-		    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, colorOffset * OpenGLRenderer.BYTES_PER_FLOAT);
+		    TyrGL.glVertexAttribPointer(colorHandle, colorSize, TyrGL.GL_FLOAT, false,
+		    							 getByteStride() * OpenGLRenderer.BYTES_PER_FLOAT, colorOffset * OpenGLRenderer.BYTES_PER_FLOAT);
 		 
 		    TyrGL.glEnableVertexAttribArray(colorHandle);
 		} else {
 		    // Pass in the color information
 		    mesh.getVertexBuffer().position(colorOffset);
-		    TyrGL.glVertexAttribPointer(colorHandle, colorDataSize, TyrGL.GL_FLOAT, false,
-		    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, mesh.getVertexBuffer());
+		    TyrGL.glVertexAttribPointer(colorHandle,colorSize, TyrGL.GL_FLOAT, false,
+		    							 getByteStride() * OpenGLRenderer.BYTES_PER_FLOAT, mesh.getVertexBuffer());
 		 
 		    TyrGL.glEnableVertexAttribArray(colorHandle);
 		}
@@ -103,15 +121,42 @@ public class ColoredMaterial extends Material implements IBlendable {
 	public float[] createVertexData(Vector3[] points, short[] drawOrder) {
 		float[] vertexData = super.createVertexData(points, drawOrder);
 		
-		int vertexCount = points.length;;
+		int colorOffset = getInfoOffset(VertexLayout.COLOR);
+		
+		int vertexCount = points.length;
 		for (int i = 0; i < vertexCount; i++) {
-			int pos = i * strideBytes;
+			int pos = i * getByteStride();
 			int color = i % colors.length;
 			vertexData[pos + colorOffset + 0] = colors[color].r;
 			vertexData[pos + colorOffset + 1] = colors[color].g;
 			vertexData[pos + colorOffset + 2] = colors[color].b;
 			vertexData[pos + colorOffset + 3] = colors[color].a;
 		}
+		
+		return vertexData;
+	}
+	
+	public float[] createVertexData(float[] vertexData, int startPos, float[] points) {
+		int colorOffset = getInfoOffset(VertexLayout.COLOR);
+		int byteStride = getByteStride();
+		
+		int countPoints = points.length/3;
+		
+		// Populate the vertex data
+		for (int i = 0; i < countPoints; ++i) {
+			int pos = startPos + byteStride * i;
+			
+			vertexData[pos + 0] = points[i*3+0];
+			vertexData[pos + 1] = points[i*3+1];
+			vertexData[pos + 2] = points[i*3+2];
+			
+			int color = i % colors.length;
+			vertexData[pos + colorOffset + 0] = colors[color].r;
+			vertexData[pos + colorOffset + 1] = colors[color].g;
+			vertexData[pos + colorOffset + 2] = colors[color].b;
+			vertexData[pos + colorOffset + 3] = colors[color].a;
+		}
+		
 		
 		return vertexData;
 	}

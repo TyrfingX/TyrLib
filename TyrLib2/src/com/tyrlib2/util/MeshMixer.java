@@ -6,7 +6,6 @@ import java.util.List;
 import com.tyrlib2.graphics.renderer.Material;
 import com.tyrlib2.graphics.renderer.Mesh;
 import com.tyrlib2.graphics.renderer.Renderable;
-import com.tyrlib2.graphics.renderer.Renderable2;
 import com.tyrlib2.math.Vector3;
 
 
@@ -53,7 +52,7 @@ public class MeshMixer {
 			Renderable inputRenderable = inputRenderables.get(i);
 			Mesh inputMesh = inputRenderable.getMesh();
 			
-			Vector3 pos = inputRenderable.getParent().getCachedAbsolutePos();
+			Vector3 pos = inputRenderable.getRelativePos();
 			
 			int vertexAdd = 0;
 			int drawOrderAdd = 0;
@@ -69,7 +68,7 @@ public class MeshMixer {
 					vertexData[vertexStart + j] += pos.y;
 				} else if (j % material.getByteStride() == material.getPositionOffset() + 2) {
 					vertexData[vertexStart + j] += pos.z;
-				}
+				} 
 				
 				vertexAdd++;
 			}

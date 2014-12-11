@@ -8,6 +8,7 @@ import com.tyrlib2.graphics.renderer.Mesh;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.renderer.ProgramManager;
 import com.tyrlib2.graphics.renderer.TyrGL;
+import com.tyrlib2.graphics.renderer.VertexLayout;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.graphics.terrain.TerrainTexture;
 import com.tyrlib2.math.Matrix;
@@ -26,22 +27,26 @@ import com.tyrlib2.math.Vector2;
 
 public class TerrainMaterial extends LightedMaterial {
 	
+	public static int TEXTURE_WEIGHT = 4;
+	
+	public static final int DEFAULT_NORMAL_OFFSET = 3;
+	public static final int DEFAULT_NORMAL_SIZE = 3;
+	
+	public static final int DEFAULT_UV_OFFSET = 6;
+	public static final int DEFAULT_UV_SIZE = 2;
+	
+	public static final int DEFAULT_TEXTURE_WEIGHT_OFFSET = 8;
+	public static final int DEFAULT_TEXTURE_WEIGHT_SIZE = 4;
+	
 	/** Per vertex normals of this object **/
-	private int normalOffset = 3;
-	private int normalDataSize = 3;
 	private int normalHandle;
 	
 	/** Texture information of this object **/
-	private int uvOffset = 6;
-	private int uvDataSize = 2;
 	private int textureCoordinateHandle;
 	private TerrainTexture[] textures;
 	
 	private int[] textureUniformHandle;
 	private int textureWeightHandle;
-	
-	private int textureWeightOffset = 8;
-	private int textureWeightDataSize = 4;
 	
 	/** Contains the model*view matrix **/
 	private float[] mvMatrix = new float[16];
@@ -58,9 +63,7 @@ public class TerrainMaterial extends LightedMaterial {
 
 	public TerrainMaterial(TerrainMaterial terrainMaterial) {
 		setup(terrainMaterial.repeat);
-		for (int i = 0; i < TerrainMaterial.TEXTURES_PER_CHUNK; ++i) {
-			textures[i] = terrainMaterial.textures[i];
-		}
+		System.arraycopy(terrainMaterial.textures, 0, textures, 0, TerrainMaterial.TEXTURES_PER_CHUNK);
 	}
 	
 	public TerrainMaterial(Vector2 repeat) {
@@ -73,8 +76,10 @@ public class TerrainMaterial extends LightedMaterial {
 		this.repeat = repeat;
 		textures = new TerrainTexture[TerrainMaterial.TEXTURES_PER_CHUNK];
 		
-		init(12,0,3, "u_MVPMatrix", "a_Position");
-
+		init(0,3, "u_MVPMatrix", "a_Position");
+		this.addVertexInfo(VertexLayout.NORMAL, DEFAULT_NORMAL_OFFSET, DEFAULT_NORMAL_SIZE);
+		this.addVertexInfo(VertexLayout.UV, DEFAULT_UV_OFFSET, DEFAULT_UV_SIZE);
+		this.addVertexInfo(TEXTURE_WEIGHT, DEFAULT_TEXTURE_WEIGHT_OFFSET, DEFAULT_TEXTURE_WEIGHT_SIZE);
 	}
 	
 	public void render(Mesh mesh, float[] modelMatrix) {
@@ -99,24 +104,24 @@ public class TerrainMaterial extends LightedMaterial {
 		if (program.meshChange) {
 			
 		    // Pass in the normal information
-			vertexBuffer.position(normalOffset);
-		    TyrGL.glVertexAttribPointer(normalHandle, normalDataSize, TyrGL.GL_FLOAT, false,
-		    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
+			vertexBuffer.position(getInfoOffset(VertexLayout.NORMAL));
+		    TyrGL.glVertexAttribPointer(normalHandle, getInfoSize(VertexLayout.NORMAL), TyrGL.GL_FLOAT, false,
+		    							 getByteStride() * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
 		 
 		    TyrGL.glEnableVertexAttribArray(normalHandle);
 		    
 	        // Pass in the texture coordinate information
-		    vertexBuffer.position(uvOffset);
-	        TyrGL.glVertexAttribPointer(textureCoordinateHandle, uvDataSize, TyrGL.GL_FLOAT, false, 
-	        		strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
+		    vertexBuffer.position(getInfoOffset(VertexLayout.UV));
+	        TyrGL.glVertexAttribPointer(textureCoordinateHandle, getInfoSize(VertexLayout.UV), TyrGL.GL_FLOAT, false, 
+	        		getByteStride() * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
 	        
 	        TyrGL.glEnableVertexAttribArray(textureCoordinateHandle);
 	        
 	        
 	        // Pass in the texture weight information
-	        vertexBuffer.position(textureWeightOffset);
-	        TyrGL.glVertexAttribPointer(textureWeightHandle, textureWeightDataSize, TyrGL.GL_FLOAT, false, 
-	        		strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
+	        vertexBuffer.position(getInfoOffset(TEXTURE_WEIGHT));
+	        TyrGL.glVertexAttribPointer(textureWeightHandle, getInfoSize(TEXTURE_WEIGHT), TyrGL.GL_FLOAT, false, 
+	        		getByteStride() * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
 	        
 	        TyrGL.glEnableVertexAttribArray(textureWeightHandle);
 	    
@@ -147,15 +152,15 @@ public class TerrainMaterial extends LightedMaterial {
 	}
 	
 	public int getNormalOffset() {
-		return normalOffset;
+		return getInfoOffset(VertexLayout.NORMAL);
 	}
 	
 	public int getUVOffset(){
-		return uvOffset;
+		return getInfoOffset(VertexLayout.UV);
 	}
 	
 	public int getTextureWeightOffset() {
-		return textureWeightOffset;
+		return getInfoOffset(TEXTURE_WEIGHT);
 	}
 	
 	public Material copy() {

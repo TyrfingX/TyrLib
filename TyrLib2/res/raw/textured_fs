@@ -14,11 +14,13 @@ void main()
 
 	vec2 pos = vec2(v_TexCoordinate.x - u_Min.x, v_TexCoordinate.y - u_Min.y);
 	if (pos.x > u_Size.x) {
-		pos.x -= float(int(pos.x / u_Size.x - 0.075)) * u_Size.x;
+		float scale = floor(pos.x / u_Size.x - 0.075);
+		pos.x -= scale * u_Size.x;
 	}
-	
+
 	if (pos.y > u_Size.y) {
-		pos.y -= float(int(pos.y / u_Size.y - 0.075)) * u_Size.y;
+		float scale = floor(pos.y / u_Size.y - 0.075);
+		pos.y -= scale * u_Size.y;
 	}
 
     vec4 texColor = texture2D(u_Texture, vec2(u_Min.x + pos.x, u_Min.y + pos.y));

@@ -23,6 +23,8 @@ public class PCGL3 implements GLImpl {
 		TyrGL.GL_ARRAY_BUFFER = GL3.GL_ARRAY_BUFFER;
 		TyrGL.GL_TEXTURE0 = GL3.GL_TEXTURE0;
 		TyrGL.GL_TEXTURE1 = GL3.GL_TEXTURE1;
+		TyrGL.GL_TEXTURE2 = GL3.GL_TEXTURE2;
+		TyrGL.GL_TEXTURE3 = GL3.GL_TEXTURE3;
 		TyrGL.GL_TEXTURE_2D = GL3.GL_TEXTURE_2D;
 		TyrGL.GL_CULL_FACE = GL3.GL_CULL_FACE;
 		TyrGL.GL_TRIANGLES = GL3.GL_TRIANGLES;
@@ -59,6 +61,13 @@ public class PCGL3 implements GLImpl {
 		TyrGL.GL_USE_VBO = 1;
 		TyrGL.GL_ELEMENT_ARRAY_BUFFER = GL3.GL_ELEMENT_ARRAY_BUFFER;
 		TyrGL.GL_STREAM_DRAW = GL3.GL_STREAM_DRAW;
+		TyrGL.GL_DEPTH_COMPONENT16 = GL3.GL_DEPTH_COMPONENT16;
+		TyrGL.GL_DEPTH_COMPONENT24 = GL3.GL_DEPTH_COMPONENT24;
+		TyrGL.GL_DEPTH_COMPONENT = GL3.GL_DEPTH_COMPONENT;
+		TyrGL.GL_DEPTH_ATTACHMENT = GL3.GL_DEPTH_ATTACHMENT;
+		TyrGL.GL_RGB = GL3.GL_RGB;
+		TyrGL.GL_UNSIGNED_INT = GL3.GL_UNSIGNED_INT;
+		TyrGL.TARGET = TyrGL.PC_TARGET;
 		PCGL3.gl = gl;
 	}
 	
@@ -133,8 +142,8 @@ public class PCGL3 implements GLImpl {
 
 	@Override
 	public void glBindTexture(int target, int texture) {
-		PCBitmap.bind(texture);
-		//gl.glBindTexture(target, texture);
+		//PCBitmap.bind(target, texture);
+		gl.glBindTexture(target, texture);
 	}
 
 	@Override
@@ -371,6 +380,12 @@ public class PCGL3 implements GLImpl {
 	@Override
 	public void glGenerateMipmap(int mode) {
 		gl.glGenerateMipmap(mode);
+	}
+	
+	@Override
+	public void glTexImage2D(int target, int level, int internalFormat,
+							 int width, int height, int border, int format, int type, Buffer data) {
+		gl.glTexImage2D(target, level, internalFormat, width, height, border, format, type, data);
 	}
 
 }

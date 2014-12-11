@@ -4,6 +4,7 @@ import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.tyrlib2.game.IUpdateable;
 import com.tyrlib2.graphics.renderer.Material;
@@ -11,6 +12,7 @@ import com.tyrlib2.graphics.renderer.Mesh;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.renderer.Program;
 import com.tyrlib2.graphics.renderer.TyrGL;
+import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.graphics.scene.SceneNode;
 
 /**
@@ -22,7 +24,7 @@ import com.tyrlib2.graphics.scene.SceneNode;
 public class Skeleton implements IUpdateable {
 	
 	private List<Animation> animations = new ArrayList<Animation>();;
-	private HashMap<String, Animation> animationsMap = new HashMap<String, Animation>();
+	private Map<String, Animation> animationsMap = new HashMap<String, Animation>();
 	protected List<Bone> bones = new ArrayList<Bone>();
 	protected float[] boneData = null; 
 	protected SceneNode rootNode = new SceneNode();
@@ -133,51 +135,64 @@ public class Skeleton implements IUpdateable {
 	
 	public static void passData(float[] skeletonBuffer, int bones, float size, Material material, Mesh mesh) {
 		if (skeletonBuffer != null && skeletonBuffer.length > 0) {
-			
 			Program program = material.getProgram();
 			program.use();
-			
-			int boneHandle = TyrGL.glGetUniformLocation(program.handle, material.getBoneParam());
-			int sizeHandle = TyrGL.glGetUniformLocation(program.handle, "u_Size");
-			int boneIndexHandle = TyrGL.glGetAttribLocation(program.handle, material.getBoneIndexParam());
-			int boneWeightHandle = TyrGL.glGetAttribLocation(program.handle, material.getBoneWeightParam());
-			
-	        // Prepare the skeleton data
-			TyrGL.glUniformMatrix4fv(boneHandle, bones, false, skeletonBuffer, 0);
-			
+
+			passDataIntern(skeletonBuffer,bones,size,material,mesh,program);
+		}
+	}
+
+	public static void passShadowData(float[] skeletonBuffer, int bones, Material material, Mesh mesh) {
+		if (skeletonBuffer != null && skeletonBuffer.length > 0) {
+			Program program = SceneManager.getInstance().getRenderer().getShadowProgram(true);
+			program.use();
+			passDataIntern(skeletonBuffer,bones,0.1f,material,mesh,program);
+		}
+	}
+	
+	private static void passDataIntern(float[] skeletonBuffer, int bones, float size, Material material, Mesh mesh, Program program) {
+		
+		int boneHandle = TyrGL.glGetUniformLocation(program.handle, material.getBoneParam());
+		int sizeHandle = TyrGL.glGetUniformLocation(program.handle, "u_Size");
+		int boneIndexHandle = TyrGL.glGetAttribLocation(program.handle, material.getBoneIndexParam());
+		int boneWeightHandle = TyrGL.glGetAttribLocation(program.handle, material.getBoneWeightParam());
+		
+        // Prepare the skeleton data
+		TyrGL.glUniformMatrix4fv(boneHandle, bones, false, skeletonBuffer, 0);
+		
+		if (sizeHandle != -1) {
 			TyrGL.glUniform1f(sizeHandle, size);
+		}
+		
+		if (mesh.isUsingVBO()) {
+			TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, mesh.getBBuffer());
+	        TyrGL.glEnableVertexAttribArray(boneIndexHandle);
+	        TyrGL.glVertexAttribPointer(boneIndexHandle, Mesh.MAX_BONES_PER_VERTEX,
+	        							TyrGL.GL_FLOAT, false,
+						                Mesh.BONE_BYTE_STRIDE * OpenGLRenderer.BYTES_PER_FLOAT, 
+						                Mesh.BONE_INDEX_OFFSET * OpenGLRenderer.BYTES_PER_FLOAT);
 	        
-			if (mesh.isUsingVBO()) {
-				TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, mesh.getBBuffer());
-		        TyrGL.glEnableVertexAttribArray(boneIndexHandle);
-		        TyrGL.glVertexAttribPointer(boneIndexHandle, Mesh.MAX_BONES_PER_VERTEX,
-		        							TyrGL.GL_FLOAT, false,
-							                Mesh.BONE_BYTE_STRIDE * OpenGLRenderer.BYTES_PER_FLOAT, 
-							                Mesh.BONE_INDEX_OFFSET * OpenGLRenderer.BYTES_PER_FLOAT);
-		        
-		        TyrGL.glEnableVertexAttribArray(boneWeightHandle);
-		        TyrGL.glVertexAttribPointer(boneWeightHandle, Mesh.MAX_BONES_PER_VERTEX,
-		        							TyrGL.GL_FLOAT, false,
-							                Mesh.BONE_BYTE_STRIDE * OpenGLRenderer.BYTES_PER_FLOAT, 
-							                Mesh.BONE_WEIGHT_OFFSET * OpenGLRenderer.BYTES_PER_FLOAT);
-			} else {
-		        FloatBuffer boneBuffer = mesh.getBoneBuffer();
-		        TyrGL.glEnableVertexAttribArray(boneIndexHandle);
-		        boneBuffer.position(Mesh.BONE_INDEX_OFFSET);
-		        TyrGL.glVertexAttribPointer(boneIndexHandle, Mesh.MAX_BONES_PER_VERTEX,
-		        							TyrGL.GL_FLOAT, false,
-							                Mesh.BONE_BYTE_STRIDE * OpenGLRenderer.BYTES_PER_FLOAT, 
-							                mesh.getBoneBuffer());
-		        
-		        
-		        boneBuffer.position(Mesh.BONE_WEIGHT_OFFSET);
-		        TyrGL.glEnableVertexAttribArray(boneWeightHandle);
-		        TyrGL.glVertexAttribPointer(boneWeightHandle, Mesh.MAX_BONES_PER_VERTEX,
-		        							TyrGL.GL_FLOAT, false,
-							                Mesh.BONE_BYTE_STRIDE * OpenGLRenderer.BYTES_PER_FLOAT, 
-							                mesh.getBoneBuffer());
-			}
+	        TyrGL.glEnableVertexAttribArray(boneWeightHandle);
+	        TyrGL.glVertexAttribPointer(boneWeightHandle, Mesh.MAX_BONES_PER_VERTEX,
+	        							TyrGL.GL_FLOAT, false,
+						                Mesh.BONE_BYTE_STRIDE * OpenGLRenderer.BYTES_PER_FLOAT, 
+						                Mesh.BONE_WEIGHT_OFFSET * OpenGLRenderer.BYTES_PER_FLOAT);
+		} else {
+	        FloatBuffer boneBuffer = mesh.getBoneBuffer();
+	        TyrGL.glEnableVertexAttribArray(boneIndexHandle);
+	        boneBuffer.position(Mesh.BONE_INDEX_OFFSET);
+	        TyrGL.glVertexAttribPointer(boneIndexHandle, Mesh.MAX_BONES_PER_VERTEX,
+	        							TyrGL.GL_FLOAT, false,
+						                Mesh.BONE_BYTE_STRIDE * OpenGLRenderer.BYTES_PER_FLOAT, 
+						                mesh.getBoneBuffer());
 	        
+	        
+	        boneBuffer.position(Mesh.BONE_WEIGHT_OFFSET);
+	        TyrGL.glEnableVertexAttribArray(boneWeightHandle);
+	        TyrGL.glVertexAttribPointer(boneWeightHandle, Mesh.MAX_BONES_PER_VERTEX,
+	        							TyrGL.GL_FLOAT, false,
+						                Mesh.BONE_BYTE_STRIDE * OpenGLRenderer.BYTES_PER_FLOAT, 
+						                mesh.getBoneBuffer());
 		}
 	}
 	

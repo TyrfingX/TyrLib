@@ -11,4 +11,7 @@ public interface IRenderable {
 	
 	/** Renders this object the matrix containing projection and view will be passed **/
 	public void render(float[] vpMatrix);
+	public void renderShadow(float[] vpMatrix);
+	public void setInsertionID(int id);
+	public int getInsertionID();
 }

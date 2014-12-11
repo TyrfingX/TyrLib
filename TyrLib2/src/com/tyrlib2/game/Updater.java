@@ -14,6 +14,7 @@ public class Updater implements IFrameListener, Serializable {
 	private static final long serialVersionUID = 6660445587292999876L;
 	private boolean pause;
 	private List<IUpdateable> queue;
+	private int countItems;
 	
 	public Updater(List<IUpdateable> queue) {
 		this.queue = queue;
@@ -27,17 +28,21 @@ public class Updater implements IFrameListener, Serializable {
 	{
 		if (item != null) {
 			queue.add(item);
+			countItems++;
 		}
 	}
 
 	public void removeItem(IUpdateable item)
 	{
-		queue.remove(item);
+		if (queue.remove(item)) {
+			countItems--;
+		}
 	}
 	
 	public void clear()
 	{
 		queue.clear();
+		countItems = 0;
 	}
 	
 	public boolean hasItem(IUpdateable item)
@@ -82,7 +87,7 @@ public class Updater implements IFrameListener, Serializable {
 
 	@Override
 	public void onFrameRendered(float time) {
-		for (int i = 0; i < queue.size() && !pause; ++i) {
+		for (int i = 0; i < countItems && !pause; ++i) {
 			IUpdateable item = queue.get(i);
 			if (item.isFinished()) {
 				removeItem(i);
@@ -94,9 +99,10 @@ public class Updater implements IFrameListener, Serializable {
 	}
 	
 	private void removeItem(int i) {
-		if (i < queue.size()) {
-			queue.set(i, queue.get(queue.size() - 1));
-			queue.remove(queue.size() - 1);
+		if (i < countItems) {
+			queue.set(i, queue.get(countItems - 1));
+			queue.remove(countItems - 1);
+			countItems--;
 		}
 	}
 }

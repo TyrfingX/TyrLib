@@ -180,6 +180,10 @@ public class Mesh {
 		}
 	}
 	
+	public float getVertexInfo(int index) {
+		return vertexData[index];
+	}
+	
 	public int getVBOBuffer() {
 		return buffers[0];
 	}
@@ -199,13 +203,13 @@ public class Mesh {
 		TyrGL.glBufferData(TyrGL.GL_ARRAY_BUFFER, vertexBuffer.capacity() * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer, TyrGL.GL_STATIC_DRAW);
 		TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, 0);
 		
-        if (TyrGL.GL_USE_VBO == 1) {
-        	TyrGL.glGenBuffers(1, buffers, 1);
+		if (TyrGL.TARGET != TyrGL.ANDROID_TARGET) {
+	    	TyrGL.glGenBuffers(1, buffers, 1);
 			TyrGL.glBindBuffer(TyrGL.GL_ELEMENT_ARRAY_BUFFER, buffers[1]); // Bind The Buffer
 	        // Load The Data
 	        TyrGL.glBufferData(TyrGL.GL_ELEMENT_ARRAY_BUFFER, indexCount * 2, drawListBuffer, TyrGL.GL_STATIC_DRAW);
-        }
-        
+	        TyrGL.glBindBuffer(TyrGL.GL_ELEMENT_ARRAY_BUFFER, 0);
+		}
 	}
 	
 	public FloatBuffer getVertexBuffer() {
@@ -217,10 +221,15 @@ public class Mesh {
 		TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, buffers[2]); // Bind The Buffer
         // Load The Data
         TyrGL.glBufferData(TyrGL.GL_ARRAY_BUFFER, boneData.length * OpenGLRenderer.BYTES_PER_FLOAT, boneBuffer, TyrGL.GL_STATIC_DRAW);
+        TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, 0);
 	}
 	
 	public boolean isUsingVBO() {
 		return usesVBO;
+	}
+
+	public boolean isUsingIBO() {
+		return buffers[1] != 0;
 	}
 
 }

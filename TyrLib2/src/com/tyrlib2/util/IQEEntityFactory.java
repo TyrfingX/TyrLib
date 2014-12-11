@@ -50,19 +50,19 @@ public class IQEEntityFactory implements IEntityFactory {
 	
 	
 	/** Holds the data for one triangle **/
-	private class Triangle {
+	private static class Triangle {
 		short[] data = new short[3];
 	}
 	
 	
 	/** Contains the data for binding a vertex to a bone **/ 
-	private class BoneBinding {
+	private static class BoneBinding {
 		float boneIndex;
 		float boneWeight;
 	}
 	
 	/** Contains per vertex data **/
-	private class VertexData {
+	private static class VertexData {
 		public Vector3 pos;
 		public Vector2 uv;
 		public Vector3 normal;
@@ -74,7 +74,7 @@ public class IQEEntityFactory implements IEntityFactory {
 	}
 	
 	/** Contains data for creating a SubEntity **/
-	private class SubEntityData {
+	private static class SubEntityData {
 		public String name;
 		public String matName;
 		public List<Triangle> triangles;
@@ -87,7 +87,7 @@ public class IQEEntityFactory implements IEntityFactory {
 	}
 	
 	/** Contains data for creating a bone **/
-	private class BoneData {
+	private static class BoneData {
 		public String name;
 		public Vector3 pos;
 		public Quaternion rot;
@@ -95,7 +95,7 @@ public class IQEEntityFactory implements IEntityFactory {
 	}
 	
 	/** Contains data for creating an animation **/
-	private class AnimationData {
+	private static class AnimationData {
 		public String name;
 		public List<AnimationFrame> animationFrames;
 		public float frameRate;
@@ -105,7 +105,7 @@ public class IQEEntityFactory implements IEntityFactory {
 	}
 	
 	/** Contains data for creating a skeleton **/
-	private class SkeletonData {
+	private static class SkeletonData {
 		public List<BoneData> bones;
 		public List<AnimationData> animations;
 		public SkeletonData() {
@@ -119,7 +119,7 @@ public class IQEEntityFactory implements IEntityFactory {
 	/** Contains a SubEntity prototyp which contains data shared
 	 * by all SubEntities of this type created with this factory
 	 */
-	private class SubEntityPrototype {
+	private static class SubEntityPrototype {
 		public Mesh mesh;
 		public DefaultMaterial3 material;
 		public String name;
@@ -500,9 +500,6 @@ public class IQEEntityFactory implements IEntityFactory {
 					animFrame = new AnimationFrame(skeletonData.bones.size());
 					animFrame.time += animData.animationFrames.size() * 1 / animData.frameRate;
 					animData.animationFrames.add(animFrame);
-					if (animData.animationFrames.size() == 20) {
-						animFrame.time = animFrame.time;
-					}
 				}else if (token.equals(ANIMATION)) {
 					break;
 				}

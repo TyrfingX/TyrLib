@@ -4,8 +4,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 
-import android.opengl.GLES20;
-
 import com.tyrlib2.graphics.materials.ColoredMaterial;
 import com.tyrlib2.graphics.renderer.Material;
 import com.tyrlib2.graphics.renderer.Renderable2;
@@ -87,7 +85,7 @@ public class Rectangle2 extends Renderable2 {
 	
 	public void setFilled(boolean filled) {
 		this.filled = filled;
-		if (filled == false) {
+		if (!filled) {
 			this.setBorder(DEFAULT_BORDER_WIDTH);
 		}
 	}

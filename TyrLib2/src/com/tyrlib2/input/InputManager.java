@@ -14,9 +14,9 @@ public class InputManager {
 	
 	private List<ITouchListener> touchListeners;
 	private List<IKeyboardListener> keyListeners;;
-	private Vector<IBackListener> backListeners;
-	private Vector<IScrollListener> scrollListeners;
-	private Vector<IMoveListener> moveListeners;
+	private List<IBackListener> backListeners;
+	private List<IScrollListener> scrollListeners;
+	private List<IMoveListener> moveListeners;
 	private boolean touching = false;
 	private Vector2 lastTouch = null;
 	private static InputManager instance;
@@ -26,8 +26,13 @@ public class InputManager {
 	public static int VK_V;
 	public static int VK_ESC;
 	public static int CTRL_MASK;
+	public static int VK_SPACE;
+	public static int VK_PLUS;
+	public static int VK_MINUS;
 	
 	private boolean sort;
+	
+	private List<Short> pressedKeys = new ArrayList<Short>();
 	
 	public InputManager()
 	{
@@ -155,10 +160,16 @@ public class InputManager {
 		
 		int action = e.getAction();
 		
+		if (action == IKeyboardEvent.ACTION_PRESSED && !pressedKeys.contains(e.getKeyCode())) {
+			pressedKeys.add(new Short(e.getKeyCode()));
+		} else if (action == IKeyboardEvent.ACTION_RELEASED) {
+			pressedKeys.remove(new Short(e.getKeyCode()));
+		}
+		
 		for (int i = 0; i < keyListeners.size(); ++i) {
 			if (action == IKeyboardEvent.ACTION_PRESSED) {
 				if (keyListeners.get(i).onPress(e)) break;
-			} else {
+			} else if (action == IKeyboardEvent.ACTION_RELEASED) {
 				if (keyListeners.get(i).onRelease(e)) break;
 			}
 		}
@@ -255,6 +266,10 @@ public class InputManager {
 		for (int i = 0; i < moveListeners.size(); ++i) {
 			if (moveListeners.get(i).onRenderWindowLoseFocus()) break;
 		}
+	}
+	
+	public boolean isKeyPressed(short key) {
+		return pressedKeys.contains(key);
 	}
 	
 	

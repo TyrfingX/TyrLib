@@ -20,7 +20,7 @@ public abstract class ParticleSystem  extends BoundedSceneObject implements IUpd
 	protected float[] mvpMatrix = new float[16];
 	protected float[] modelMatrix;
 	
-	protected class ParticleBatch {
+	protected static class ParticleBatch {
 		FloatArray particleData ;
 		List<Particle> particles = new ArrayList<Particle>();
 		ParticleMaterial material;

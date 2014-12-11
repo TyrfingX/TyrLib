@@ -22,6 +22,7 @@ public class Text2  extends SceneObject implements IRenderable {
 	private int rotationValue;
 	
 	private boolean noMVP = false;
+	private int insertionID;
 	
 	public Text2(String text, int rotation, Color color, Font font) {
 		this.color = color;
@@ -87,7 +88,22 @@ public class Text2  extends SceneObject implements IRenderable {
 	public void noMVP() {
 		noMVP = true;
 	}
+
+	@Override
+	public void renderShadow(float[] vpMatrix) {
+		// TODO Auto-generated method stub
+		
+	}
 	
+	@Override
+	public void setInsertionID(int id) {
+		this.insertionID = id;
+	}
+
+	@Override
+	public int getInsertionID() {
+		return insertionID;
+	}
 	
 
 }

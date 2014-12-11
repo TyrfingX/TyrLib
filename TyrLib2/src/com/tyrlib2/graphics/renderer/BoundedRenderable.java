@@ -21,6 +21,10 @@ public abstract class BoundedRenderable extends BoundedSceneObject implements IR
 	
 	protected abstract AABB createUntransformedBoundingBox();
 	
+	public boolean isBoundingBoxDirty() {
+		return boundingBox == null;
+	}
+	
 	@Override
 	public AABB getBoundingBox() {		
 		if (boundingBox == null) {

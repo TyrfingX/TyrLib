@@ -31,6 +31,7 @@ public class SimpleParticleSystem extends ParticleSystem {
 	private AABB boundingBox;
 	
 	private int colorHandle;
+	private int insertionID;
 	
 	public SimpleParticleSystem() {
 		modelMatrix = SceneManager.getInstance().getRootSceneNode().getModelMatrix();
@@ -198,6 +199,11 @@ public class SimpleParticleSystem extends ParticleSystem {
 	}
 	
 	@Override
+	public void renderShadow(float[] vpMatrix) {
+		
+	}
+	
+	@Override
 	public void render(float[] vpMatrix) {
 		
 		if (parent == null) {
@@ -262,5 +268,15 @@ public class SimpleParticleSystem extends ParticleSystem {
 	@Override
 	public AABB getBoundingBox() {
 		return boundingBox;
+	}
+	
+	@Override
+	public void setInsertionID(int id) {
+		this.insertionID = id;
+	}
+
+	@Override
+	public int getInsertionID() {
+		return insertionID;
 	}
 }

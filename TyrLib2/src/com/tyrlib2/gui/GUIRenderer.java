@@ -19,6 +19,7 @@ public class GUIRenderer implements IRenderable {
 	
 	private List<Window> windows; 
 	private boolean resort = false;
+	private int insertionID;
 	
 	public GUIRenderer() {
 		windows = new ArrayList<Window>();
@@ -32,7 +33,7 @@ public class GUIRenderer implements IRenderable {
 			Collections.sort(windows, new PriorityComparator());
 		}
 		
-		for (int i = 0; i < windows.size(); ++i) {
+		for (int i = 0, countWindows = windows.size(); i < countWindows; ++i) {
 			Window window = windows.get(i);
 			if (window.isVisible() && window.getAlpha() > 0) {
 				float posX = window.getAbsolutePosX();
@@ -56,6 +57,22 @@ public class GUIRenderer implements IRenderable {
 	
 	public void notifyResort() {
 		resort = true;
+	}
+
+	@Override
+	public void renderShadow(float[] vpMatrix) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void setInsertionID(int id) {
+		this.insertionID = id;
+	}
+
+	@Override
+	public int getInsertionID() {
+		return insertionID;
 	}
 
 }

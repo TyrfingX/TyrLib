@@ -194,6 +194,12 @@ public class WindowManager {
 		return imageBox;
 	}
 	
+	public Window createImageBox(String name, Vector2 pos, int textureHandle, Vector2 size) {
+		ImageBox imageBox = new ImageBox(name, pos, textureHandle, size);
+		addWindow(imageBox);
+		return imageBox;
+	}
+	
 	public Window createImageBox(String name, ScaledVector2 pos, String textureName, ScaledVector2 size) {
 		return createImageBox(name, pos.get(), textureName, size.get());
 	}
@@ -293,7 +299,7 @@ public class WindowManager {
 	public void addTextTooltip(Window window, String text) {
 		Label tooltipText = (Label) WindowManager.getInstance().createLabel(window.getName()+"/TooltipText", new Vector2(), text);
 		tooltipText.setLayer(101);
-		tooltipText.setBgColor(new Color(0.275f, 0.275f, 0.275f, 1));
+		tooltipText.setBgColor(new Color(0.075f, 0.075f, 0.075f, 1));
 		Tooltip t = (Tooltip) WindowManager.getInstance().createTooltip(window.getName()+"/Tooltip", tooltipText.getSize());
 		t.addChild(tooltipText);
 		t.addTarget(window);

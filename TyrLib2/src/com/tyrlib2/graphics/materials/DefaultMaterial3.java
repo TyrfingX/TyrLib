@@ -2,6 +2,8 @@ package com.tyrlib2.graphics.materials;
 
 import java.nio.FloatBuffer;
 
+import android.opengl.GLES20;
+
 import com.tyrlib2.graphics.renderer.Material;
 import com.tyrlib2.graphics.renderer.Mesh;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
@@ -10,7 +12,9 @@ import com.tyrlib2.graphics.renderer.ProgramManager;
 import com.tyrlib2.graphics.renderer.Texture;
 import com.tyrlib2.graphics.renderer.TextureManager;
 import com.tyrlib2.graphics.renderer.TyrGL;
+import com.tyrlib2.graphics.renderer.VertexLayout;
 import com.tyrlib2.graphics.scene.SceneManager;
+import com.tyrlib2.math.Matrix;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.util.Color;
@@ -33,32 +37,58 @@ public class DefaultMaterial3 extends LightedMaterial {
 	private Color[] colors;
 	
 	/** Per vertex normals of this object **/
-	public static final int normalOffset = 3;
-	public static final int normalDataSize = 3;
+	public static final int DEFAULT_NORMAL_OFFSET = 3;
+	public static final int DEFAULT_NORMAL_SIZE = 3;
 	protected int normalHandle;
-	protected int normalSize = normalDataSize;
 	
 	/** Texture information of this object **/
-	public static final int uvOffset = 6;
-	public static final int uvDataSize = 2;
+	public static final int DEFAULT_UV_OFFSET = 6;
+	public static final int DEFAULT_UV_SIZE = 2;
+	
 	private int textureUniformHandle;
 	private int textureCoordinateHandle;
+	private int shadowTextureHandle;
+	private int depthMVPHandle;
 	private String textureName;
 	private Texture texture;
 	protected float repeatX;
 	protected float repeatY;
 	
-	public static final int dataSize = 8;
 	public static final int posOffset = 0;
 	
 	/** Contains the normal matrix **/
 	private float[] normalMatrix = new float[16];
+	private static float[] shadowMVP = new float[16];
 	
 	public static final String PER_PIXEL_PROGRAM_NAME = "TEXTURED_PPL";
 
 	private boolean transparent;
 	
 	private static boolean wasAnimated = false;
+	
+	private int blendMode = TyrGL.GL_ONE_MINUS_SRC_ALPHA;
+	
+	/** Default vertex layout **/
+	public final static VertexLayout DEFAULT_LAYOUT = new VertexLayout();
+	
+	/** Vertex layout used for meshs with baked in lighting information **/
+	public final static VertexLayout BAKED_LIGHTING_LAYOUT = new VertexLayout();
+	
+	static {
+		DEFAULT_LAYOUT.setPos(VertexLayout.POSITION, 0);
+		DEFAULT_LAYOUT.setSize(VertexLayout.POSITION, 3);
+		DEFAULT_LAYOUT.setPos(VertexLayout.NORMAL, DEFAULT_NORMAL_OFFSET);
+		DEFAULT_LAYOUT.setSize(VertexLayout.NORMAL, DEFAULT_NORMAL_SIZE);
+		DEFAULT_LAYOUT.setPos(VertexLayout.UV, DEFAULT_UV_OFFSET);
+		DEFAULT_LAYOUT.setSize(VertexLayout.UV, DEFAULT_UV_SIZE);
+		
+		BAKED_LIGHTING_LAYOUT.setPos(VertexLayout.POSITION, 0);
+		BAKED_LIGHTING_LAYOUT.setSize(VertexLayout.POSITION, 3);
+		BAKED_LIGHTING_LAYOUT.setPos(VertexLayout.NORMAL, DEFAULT_NORMAL_OFFSET);
+		BAKED_LIGHTING_LAYOUT.setSize(VertexLayout.NORMAL, DEFAULT_NORMAL_SIZE-2);
+		BAKED_LIGHTING_LAYOUT.setPos(VertexLayout.UV, DEFAULT_UV_OFFSET-2);
+		BAKED_LIGHTING_LAYOUT.setSize(VertexLayout.UV, DEFAULT_UV_SIZE);
+	}
 	
 	public DefaultMaterial3() {
 		
@@ -111,6 +141,8 @@ public class DefaultMaterial3 extends LightedMaterial {
 		
 		String add = "";
 		
+		this.animated = animated;
+		
 		if (animated) {
 			add = "_ANIMATED";
 		}
@@ -139,23 +171,55 @@ public class DefaultMaterial3 extends LightedMaterial {
 		this.repeatX = repeatX;
 		this.repeatY = repeatY;
 		
-		init(dataSize,posOffset,3, "u_MVPMatrix", "a_Position");
+		init(posOffset,3, "u_MVPMatrix", "a_Position");
+		
+		addVertexInfo(VertexLayout.NORMAL, DEFAULT_NORMAL_OFFSET, DEFAULT_NORMAL_SIZE);
+		addVertexInfo(VertexLayout.UV, DEFAULT_UV_OFFSET, DEFAULT_UV_SIZE);
 		
 		if (!SceneManager.getInstance().getRenderer().isInServerMode()) {
-			
-			normalMatrixHandle = TyrGL.glGetUniformLocation(program.handle, "u_NormalMatrix"); 
-			textureUniformHandle = TyrGL.glGetUniformLocation(program.handle, "u_Texture");
-			ambientHandle = TyrGL.glGetUniformLocation(program.handle, "u_Ambient");
-			textureUniformHandle = TyrGL.glGetUniformLocation(program.handle, "u_Texture");
-			colorHandle = TyrGL.glGetAttribLocation(program.handle, "a_Color");
-			normalHandle = TyrGL.glGetAttribLocation(program.handle, "a_Normal");
-			textureCoordinateHandle = TyrGL.glGetAttribLocation(program.handle, "a_TexCoordinate");
+			updateHandles();
 		}
+	}
+	
+	public void setLighted(boolean lighted) {
+		this.lighted = lighted;
+	}
+	
+	@Override
+	public void updateHandles() {
+		super.updateHandles();
+		normalMatrixHandle = TyrGL.glGetUniformLocation(program.handle, "u_NormalMatrix"); 
+		textureUniformHandle = TyrGL.glGetUniformLocation(program.handle, "u_Texture");
+		ambientHandle = TyrGL.glGetUniformLocation(program.handle, "u_Ambient");
+		textureUniformHandle = TyrGL.glGetUniformLocation(program.handle, "u_Texture");
+		colorHandle = TyrGL.glGetAttribLocation(program.handle, "a_Color");
+		normalHandle = TyrGL.glGetAttribLocation(program.handle, "a_Normal");
+		textureCoordinateHandle = TyrGL.glGetAttribLocation(program.handle, "a_TexCoordinate");
+		shadowTextureHandle = TyrGL.glGetUniformLocation(program.handle, "u_ShadowMap");
+		depthMVPHandle = TyrGL.glGetUniformLocation(program.handle, "u_DepthMVP");
 	}
 	
 	@Override
 	public void render(Mesh mesh, float[] modelMatrix) {
-		
+		super.render(mesh, modelMatrix);
+
+		if (SceneManager.getInstance().getRenderer().isShadowsEnabled()) {
+			  // Apply the projection and view transformation
+			Matrix.multiplyMM(shadowMVP, 0, SceneManager.getInstance().getRenderer().getShadowVP(), 0, modelMatrix, 0);
+			
+	        // Combine the rotation matrix with the projection and camera view
+			TyrGL.glUniformMatrix4fv(depthMVPHandle, 1, false, shadowMVP, 0);
+			
+		    // Set the active texture unit to texture unit 2.
+			TyrGL.glActiveTexture(TyrGL.GL_TEXTURE2);
+	 
+		    // Bind the texture to this unit.
+			TyrGL.glBindTexture(TyrGL.GL_TEXTURE_2D, SceneManager.getInstance().getRenderer().getShadowMapHandle());
+		 
+		    // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
+			TyrGL.glUniform1i(shadowTextureHandle, 2);
+		}
+		 
 		if (program.meshChange) {
 			passMesh(mesh);
 		}
@@ -181,8 +245,14 @@ public class DefaultMaterial3 extends LightedMaterial {
 	    }
 	    
 	    if (transparent) {
-	    	Program.blendEnable(TyrGL.GL_SRC_ALPHA, TyrGL.GL_SRC_ALPHA);
+	    	Program.blendEnable(TyrGL.GL_SRC_ALPHA, blendMode);
 	    }
+	    
+	    
+	}
+	
+	public void setBlendMode(int mode) {
+		this.blendMode = mode;
 	}
 	
 //	private void passModelViewMatrix(float[] modelMatrix) {
@@ -200,33 +270,35 @@ public class DefaultMaterial3 extends LightedMaterial {
 		FloatBuffer vertexBuffer = mesh.getVertexBuffer();
 		if (mesh.isUsingVBO()) {
 		    // Pass in the normal information
-		    TyrGL.glVertexAttribPointer(normalHandle, normalSize, TyrGL.GL_FLOAT, false,
-		    							strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, normalOffset * OpenGLRenderer.BYTES_PER_FLOAT);
+		    TyrGL.glVertexAttribPointer(normalHandle, getNormalSize(), TyrGL.GL_FLOAT, false,
+		    							getByteStride() * OpenGLRenderer.BYTES_PER_FLOAT, getNormalOffset() * OpenGLRenderer.BYTES_PER_FLOAT);
 		 
 		    TyrGL.glEnableVertexAttribArray(normalHandle);
 		    
 	        // Pass in the texture coordinate information
-	        TyrGL.glVertexAttribPointer(textureCoordinateHandle, uvDataSize, TyrGL.GL_FLOAT, false, 
-	        		strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, this.getUVOffset() * OpenGLRenderer.BYTES_PER_FLOAT);
+	        TyrGL.glVertexAttribPointer(textureCoordinateHandle, getUVSize(), TyrGL.GL_FLOAT, false, 
+	        		getByteStride() * OpenGLRenderer.BYTES_PER_FLOAT, getUVOffset() * OpenGLRenderer.BYTES_PER_FLOAT);
 	        
 	        TyrGL.glEnableVertexAttribArray(textureCoordinateHandle);
 		} else {
-		    // Pass in the normal information
-		    vertexBuffer.position(normalOffset);
-		    TyrGL.glVertexAttribPointer(normalHandle, normalSize, TyrGL.GL_FLOAT, false,
-		    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
-		 
-		    TyrGL.glEnableVertexAttribArray(normalHandle);
+			if (getNormalSize() > 0) {
+			    // Pass in the normal information
+			    vertexBuffer.position(getNormalOffset());
+			    TyrGL.glVertexAttribPointer(normalHandle, getNormalSize(), TyrGL.GL_FLOAT, false,
+			    		getByteStride() * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
+			 
+			    TyrGL.glEnableVertexAttribArray(normalHandle);
+			}
 		    
 	        // Pass in the texture coordinate information
-	        vertexBuffer.position(this.getUVOffset());
-	        TyrGL.glVertexAttribPointer(textureCoordinateHandle, uvDataSize, TyrGL.GL_FLOAT, false, 
-	        		strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
+	        vertexBuffer.position(getUVOffset());
+	        TyrGL.glVertexAttribPointer(textureCoordinateHandle, getUVSize(), TyrGL.GL_FLOAT, false, 
+	        		getByteStride() * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
 	        
 	        TyrGL.glEnableVertexAttribArray(textureCoordinateHandle);
 		}
 	}
-	
+
 	protected void passTexture(int textureHandle) {
 	    // Set the active texture unit to texture unit 0.
 		TyrGL.glActiveTexture(TyrGL.GL_TEXTURE0);
@@ -236,7 +308,8 @@ public class DefaultMaterial3 extends LightedMaterial {
 	 
 	    // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
 		TyrGL.glUniform1i(textureUniformHandle, 0);
-	    
+		
+		
 	    program.textureHandle = textureHandle;
 	    
 	    OpenGLRenderer.setTextureFails(OpenGLRenderer.getTextureFails() + 1);
@@ -248,6 +321,10 @@ public class DefaultMaterial3 extends LightedMaterial {
 	
 	public void setTransparent(boolean transparent) {
 		this.transparent = transparent;
+	}
+	
+	public boolean isTransparent() {
+		return transparent;
 	}
 	
 	
@@ -279,12 +356,14 @@ public class DefaultMaterial3 extends LightedMaterial {
 		
 		for (int i = 0; i < vertexCount; i++) {
 			
-			int pos = i * strideBytes;
+			int pos = i * getByteStride();
 			
-			vertexData[pos + normalOffset + 0] = normals[i].x;
+			int normalOffset = getNormalOffset();
+			vertexData[pos + normalOffset  + 0] = normals[i].x;
 			vertexData[pos + normalOffset + 1] = normals[i].y;
 			vertexData[pos + normalOffset + 2] = normals[i].z;
 			
+			int uvOffset = getUVOffset();
 			vertexData[pos + uvOffset + 0] = uvCoords[uvCoord] * repeatX;
 			vertexData[pos + uvOffset + 1] = uvCoords[uvCoord+1] * repeatY;
 			
@@ -328,20 +407,46 @@ public class DefaultMaterial3 extends LightedMaterial {
 	}
 	
 	public int getNormalOffset() {
-		return normalOffset;
+		return getInfoOffset(VertexLayout.NORMAL);
 	}
 	
 	public int getUVOffset(){
-		return uvOffset;
+		return getInfoOffset(VertexLayout.UV);
+	}
+	
+	public int getUVSize() {
+		return getInfoSize(VertexLayout.UV);
+	}
+
+	public int getNormalSize() {
+		return getInfoSize(VertexLayout.NORMAL);
+	}
+	
+	public void setNormalSize(int size) {
+		vertexLayout.setSize(VertexLayout.NORMAL, size);
+	}
+	
+	public void setNormalOffset(int offset) {
+		vertexLayout.setPos(VertexLayout.NORMAL, offset);
+	}
+	
+	public void setUVSize(int size) {
+		vertexLayout.setSize(VertexLayout.UV, size);
+	}
+	
+	public void setUVOffset(int offset) {
+		vertexLayout.setPos(VertexLayout.UV, offset);
 	}
 	
 	public Material copy() {
 		DefaultMaterial3 material = new DefaultMaterial3(textureName, repeatX, repeatY, colors, animated);
+		material.vertexLayout = vertexLayout.copy();
 		return material;
 	}
 	
 	public Material copy(boolean animated) {
 		DefaultMaterial3 material = new DefaultMaterial3(textureName, repeatX, repeatY, colors, animated);
+		material.vertexLayout = vertexLayout.copy();
 		return material;
 	}
 	
@@ -357,6 +462,14 @@ public class DefaultMaterial3 extends LightedMaterial {
 	
 	public Vector2 getRepeat() {
 		return new Vector2(repeatX, repeatY);
+	}
+	
+	public boolean isAnimated() {
+		return animated;
+	}
+
+	public void setVertexLayout(VertexLayout vertexLayout) {
+		this.vertexLayout = vertexLayout;
 	}
 	
 	

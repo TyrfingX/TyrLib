@@ -9,24 +9,37 @@ public class AndroidBitmap implements IBitmap {
 	
 	private Bitmap bitmap;
 	private int handle;
+	private int[] pixels;
+	
+	private int width;
+	private int height;
 
 	public AndroidBitmap(Bitmap bitmap, int handle) {
 		this.bitmap = bitmap;
 		this.handle = handle;
+		width = bitmap.getWidth();
+		height = bitmap.getHeight();
 	}
 	
 	public AndroidBitmap(Bitmap bitmap) {
 		this.bitmap = bitmap;
+		width = bitmap.getWidth();
+		height = bitmap.getHeight();
+	}
+	
+	private void loadPixels() {
+		pixels = new int[width*height];
+		bitmap.getPixels(pixels,0,width,0,0,width,height);
 	}
 	
 	@Override
 	public int getWidth() {
-		return bitmap.getWidth();
+		return width;
 	}
 
 	@Override
 	public int getHeight() {
-		return bitmap.getHeight();
+		return height;
 	}
 
 	@Override
@@ -54,7 +67,10 @@ public class AndroidBitmap implements IBitmap {
 
 	@Override
 	public int getRGB(int x, int y) {
-		return bitmap.getPixel(x, y);
+		if (pixels == null) {
+			loadPixels();
+		}
+		return pixels[x+y*width];
 	}
 	
 }

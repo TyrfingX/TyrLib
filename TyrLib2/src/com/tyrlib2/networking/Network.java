@@ -13,7 +13,7 @@ import java.util.Vector;
 public class Network {
 
 	private Server server;
-	private Vector<Connection> connections = new Vector<Connection>();
+	private List<Connection> connections = new Vector<Connection>();
 	protected List<INetworkListener> listener;
 	private boolean measure;
 	private long sentBytes;
@@ -103,12 +103,16 @@ public class Network {
 			System.out.println(Calendar.getInstance().getTime() + " Sent Data: " + s.toString());
 		}
 		
-		for (int i = 0; i < connections.size(); ++i) {
-			if (connections.get(i).openToBroadcasts) {
-				if (measure) {
-					sentBytes += Network.sizeOf(s);
+		int countConnections = connections.size();
+		
+		if (countConnections > 0) {
+			for (int i = 0; i < countConnections; ++i) {
+				if (connections.get(i).openToBroadcasts) {
+					if (measure) {
+						sentBytes += Network.sizeOf(s);
+					}
+					connections.get(i).send(s);
 				}
-				connections.get(i).send(s);
 			}
 		}
 	}

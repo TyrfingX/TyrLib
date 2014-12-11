@@ -7,6 +7,8 @@ import com.tyrlib2.graphics.renderer.IBlendable;
 import com.tyrlib2.graphics.renderer.IRenderable;
 import com.tyrlib2.graphics.renderer.Program;
 import com.tyrlib2.graphics.renderer.TyrGL;
+import com.tyrlib2.graphics.renderer.Viewport;
+import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.graphics.scene.SceneObject;
 import com.tyrlib2.graphics.text.Font;
 import com.tyrlib2.graphics.text.IGLText;
@@ -18,17 +20,22 @@ import com.tyrlib2.util.Color;
 /**
  * This class renders takes while taking formatting marks into account. These are:
  * 
- * \n				Create a new line
- * <#rrggbb>		The text followed by this tag will be colored in the color corresponding to the hex value of #rrggbb. Where rr is the red component
- * 					gg the green component and bb the blue component. No nesting allowed.
- * \#				This ends colored text.
- * <rVALUE>			Rotate the following text by VALUE. No nesting allowed
- * \r				End the rotation of the text.
+ * \n					Create a new line
+ * <#rrggbb>			The text followed by this tag will be colored in the color corresponding to the hex value of #rrggbb. Where rr is the red component
+ * 						gg the green component and bb the blue component. No nesting allowed.
+ * \#					This ends colored text.
+ * <rVALUE>				Rotate the following text by VALUE. No nesting allowed
+ * \r					End the rotation of the text.
+ * <link=VALUE>			Creates a link calling the event VALUE upon clicking
+ * \l					Ends a link
+ * <img ATLAS REGION>	
  * @author Sascha
  *
  */
 
 public class FormattedText2 extends SceneObject implements IRenderable, IBlendable {
+	
+	public static final Color LINK_COLOR = new Color(0,0,1,1);
 	
 	public enum ALIGNMENT {
 		LEFT,
@@ -36,21 +43,42 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 		RIGHT
 	}
 	
-	private class TextSection {
-		Color color;
-		String text;
-		int rotationValue;
-		float[] rotation = new float[16];
-		float xOffset;
-		float yOffset;
+	public static final float[] NO_ROTATION = Quaternion.fromAxisAngle(Vector3.UNIT_Z, 0).toMatrix();
+	
+	public static class TextSection {
+		public Color color;
+		public String text;
+		public int rotationValue;
+		public float[] rotation;
+		public float xOffset;
+		public float yOffset;
+		public String link;
+		public Vector2 size;
+		public Vector2 pos;
+		public String atlasName;
+		public String regionName;
 		
-		public TextSection(Color color, String text, int rotation, float xOffset, float yOffset) {
+		public TextSection(Color color, String text, int rotation, float xOffset, float yOffset, String link) {
 			this.color = color;
 			this.text = text;
 			this.rotationValue = rotation;
-			Quaternion.fromAxisAngle(new Vector3(0,0,1), rotation).toMatrix(this.rotation);
+			if (rotation != 0) {
+				Quaternion.fromAxisAngle(Vector3.UNIT_Z, rotation).toMatrix(this.rotation);
+			} else {
+				this.rotation = NO_ROTATION;
+			}
 			this.xOffset = xOffset;
 			this.yOffset = yOffset;
+			this.link = link;
+		}
+		
+		public TextSection(Color color, String text, float xOffset, float yOffset, String link) {
+			this.color = color;
+			this.text = text;
+			this.xOffset = xOffset;
+			this.yOffset = yOffset;
+			this.link = link;
+			this.rotation = NO_ROTATION;
 		}
 	}
 	
@@ -58,9 +86,11 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 	private String text;
 	private int baseRotation;
 	private Font font;
-	private List<TextSection> textSections;
+	public List<TextSection> textSections;
 	private ALIGNMENT alignment;
 	private Vector2 size;
+	private boolean dirty;
+	private int insertionID;
 	
 	public FormattedText2(String text, int baseRotation, Color baseColor, Font font) {
 		this.baseColor = baseColor;
@@ -69,7 +99,6 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 		this.font = font;
 		this.size = new Vector2();
 		this.alignment = ALIGNMENT.LEFT;
-		
 		parseText();
 	}
 
@@ -80,16 +109,18 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 		Vector3 pos = parent.getCachedAbsolutePosVector();
 		for (int i = 0; i < textSections.size(); ++i) {
 			TextSection section = textSections.get(i);
-			glText.begin( section.color.r, section.color.g, section.color.b, section.color.a, vpMatrix );
-			if (alignment == ALIGNMENT.LEFT) {
-				glText.draw( section.text, pos.x + section.xOffset, pos.y + section.yOffset - font.glText.getCharHeight(), section.rotation);   
-			} else if (alignment == ALIGNMENT.CENTER) {
-				glText.drawCX( section.text, pos.x + section.xOffset, pos.y + section.yOffset - font.glText.getCharHeight()); 
-			} else if (alignment == ALIGNMENT.RIGHT) {
-				float length = glText.getLength(section.text);
-				glText.draw( section.text, pos.x + section.xOffset - length, pos.y + section.yOffset - font.glText.getCharHeight(), section.rotation); 
-			}
-			glText.end();
+			if (section.atlasName == null) {
+				glText.begin( section.color.r, section.color.g, section.color.b, section.color.a, vpMatrix );
+				if (alignment == ALIGNMENT.LEFT) {
+					glText.draw( section.text, pos.x + section.xOffset, pos.y + section.yOffset - font.glText.getCharHeight(), section.rotation);   
+				} else if (alignment == ALIGNMENT.CENTER) {
+					glText.drawCX( section.text, pos.x + section.xOffset, pos.y + section.yOffset - font.glText.getCharHeight()); 
+				} else if (alignment == ALIGNMENT.RIGHT) {
+					float length = glText.getLength(section.text);
+					glText.draw( section.text, pos.x + section.xOffset - length, pos.y + section.yOffset - font.glText.getCharHeight(), section.rotation); 
+				}
+				glText.end();
+			} 
 		}
 		Program.blendDisable();
 		
@@ -97,7 +128,6 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 	}
 	
 	private void parseText() {
-		
 		textSections = new ArrayList<TextSection>();
 		float xOffset = 0;
 		float yOffset = 0;
@@ -107,6 +137,7 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 		StringBuilder builder = new StringBuilder();
 		Color color = baseColor;
 		int rotation = baseRotation;
+		String link = "";
 		
 		for (int i = 0; i < text.length(); ++i) {
 			char c = text.charAt(i);
@@ -116,17 +147,8 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 					char d = text.charAt(++i);
 					if (d == '#') {
 						// We want to end any special coloring we currently have
-						String sectionText = builder.toString();
-						TextSection textSection = new TextSection(color, sectionText, rotation, xOffset, yOffset);
-						if (alignment == ALIGNMENT.CENTER) {
-							for (int j = 0; j < textSections.size(); ++j) {
-								if (textSections.get(j).yOffset == yOffset) {
-									textSections.get(j).xOffset -= font.glText.getLength(sectionText) / 2;
-								}
-							}
-						}
-						textSections.add(textSection);
-						builder = new StringBuilder();
+						String sectionText = addCurrentSection(builder, color, rotation, xOffset, yOffset, link, null, null, 0);
+						builder.setLength(0);
 						
 						color = baseColor;
 						if (alignment == ALIGNMENT.CENTER) {
@@ -134,6 +156,33 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 						} else {
 							xOffset += font.glText.getLength(sectionText);
 						}
+					} else if (d == 'l') {
+						String sectionText = addCurrentSection(builder, color, rotation, xOffset, yOffset, link, null, null, 0);
+						builder.setLength(0);
+						
+						color = baseColor;
+						if (alignment == ALIGNMENT.CENTER) {
+							xOffset += font.glText.getLength(sectionText) / 2;
+						} else {
+							xOffset += font.glText.getLength(sectionText);
+						}
+						link = "";
+					} else if (d == 'n') {
+						String sectionText = addCurrentSection(builder, color, rotation, xOffset, yOffset, link, null, null, 0);
+						
+						builder.setLength(0);
+						if (alignment == ALIGNMENT.CENTER) {
+							xOffset += font.glText.getLength(sectionText) / 2;
+						} else {
+							xOffset += font.glText.getLength(sectionText);
+						}
+						
+						yOffset -= font.glText.getCharHeight() - font.glText.getDescent();
+						
+						if (xOffset > maxX) {
+							maxX = xOffset;
+						}
+						xOffset = 0;
 					} else {
 						builder.append(c);
 						builder.append(d);
@@ -142,17 +191,9 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 				}
 			} else if (c == '\n') {
 				// Line break here
-				String sectionText = builder.toString();
-				TextSection textSection = new TextSection(color, sectionText, rotation, xOffset, yOffset);
-				if (alignment == ALIGNMENT.CENTER) {
-					for (int j = 0; j < textSections.size(); ++j) {
-						if (textSections.get(j).yOffset == yOffset) {
-							textSections.get(j).xOffset -= font.glText.getLength(sectionText) / 2;
-						}
-					}
-				}
-				textSections.add(textSection);
-				builder = new StringBuilder();
+				String sectionText = addCurrentSection(builder, color, rotation, xOffset, yOffset, link, null, null, 0);
+				
+				builder.setLength(0);
 				if (alignment == ALIGNMENT.CENTER) {
 					xOffset += font.glText.getLength(sectionText) / 2;
 				} else {
@@ -167,17 +208,8 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 				xOffset = 0;
 			} else if (c == '\r') {
 				// We want to end any special rotation we currently have
-				String sectionText = builder.toString();
-				TextSection textSection = new TextSection(color, sectionText, rotation, xOffset, yOffset);
-				if (alignment == ALIGNMENT.CENTER) {
-					for (int j = 0; j < textSections.size(); ++j) {
-						if (textSections.get(j).yOffset == yOffset) {
-							textSections.get(j).xOffset -= font.glText.getLength(sectionText) / 2;
-						}
-					}
-				}
-				textSections.add(textSection);
-				builder = new StringBuilder();
+				String sectionText = addCurrentSection(builder, color, rotation, xOffset, yOffset, link, null, null, 0);
+				builder.setLength(0);
 				
 				rotation = baseRotation;
 				xOffset += font.glText.getLength(sectionText);
@@ -187,17 +219,8 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 				
 					if (d == '#') {
 						
-						String sectionText = builder.toString();
-						TextSection textSection = new TextSection(color, sectionText, rotation, xOffset, yOffset);
-						if (alignment == ALIGNMENT.CENTER) {
-							for (int j = 0; j < textSections.size(); ++j) {
-								if (textSections.get(j).yOffset == yOffset) {
-									textSections.get(j).xOffset -= font.glText.getLength(sectionText) / 2;
-								}
-							}
-						}
-						textSections.add(textSection);
-						builder = new StringBuilder();
+						String sectionText = addCurrentSection(builder, color, rotation, xOffset, yOffset, link, null, null, 0);
+						builder.setLength(0);
 						if (alignment == ALIGNMENT.CENTER) {
 							xOffset += font.glText.getLength(sectionText) / 2;
 						} else {
@@ -223,27 +246,73 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 					} else if (d == 'r') {
 						// We want a different rotation for our text here
 						
-						String sectionText = builder.toString();
-						TextSection textSection = new TextSection(color, sectionText, rotation, xOffset, yOffset);
-						if (alignment == ALIGNMENT.CENTER) {
-							for (int j = 0; j < textSections.size(); ++j) {
-								if (textSections.get(j).yOffset == yOffset) {
-									textSections.get(j).xOffset -= font.glText.getLength(sectionText) / 2;
-								}
-							}
-						}
-						textSections.add(textSection);
-						builder = new StringBuilder();
+						String sectionText = addCurrentSection(builder, color, rotation, xOffset, yOffset, link, null, null, 0);
+						builder.setLength(0);
 						xOffset += font.glText.getLength(sectionText);
 						d = text.charAt(++i);
 						
-						String rotationText = "";
 						while(d != '>') {
-							rotationText += d;
+							builder.append(d);
 							d = text.charAt(++i);
 						}
 						
-						rotation = Integer.parseInt(rotationText);
+						rotation = Integer.parseInt(builder.toString());
+						builder.setLength(0);
+					} else if (d == 'l') {
+						// This block of text is a link
+						String sectionText = addCurrentSection(builder, color, rotation, xOffset, yOffset, link, null, null, 0);
+						builder.setLength(0);
+						if (alignment == ALIGNMENT.CENTER) {
+							xOffset += font.glText.getLength(sectionText) / 2;
+						} else {
+							xOffset += font.glText.getLength(sectionText);
+						}
+						
+						color = LINK_COLOR;
+						++i; //i
+						++i; //n
+						++i; //k
+						++i; //=
+						
+						d = text.charAt(++i);
+						link = "";
+						while(d != '>') {
+							builder.append(d);
+							d = text.charAt(++i);
+						}
+						
+						link = builder.toString();
+						builder.setLength(0);
+					} else if (d == 'i') {
+						String sectionText = addCurrentSection(builder, color, rotation, xOffset, yOffset, link, null, null, 0);
+						if (alignment == ALIGNMENT.CENTER) {
+							xOffset += font.glText.getLength(sectionText) / 2;
+						} else {
+							xOffset += font.glText.getLength(sectionText);
+						}
+						
+						++i; //m
+						++i; //g
+						++i; //=
+						
+						d = text.charAt(++i);
+						String atlasName = "";
+						while(d != ' ') {
+							atlasName += d;
+							d = text.charAt(++i);
+						}
+						
+						d = text.charAt(++i);
+						String regionName = "";
+						while(d != '>') {
+							regionName += d;
+							d = text.charAt(++i);
+						}
+						
+						builder.setLength(0);
+						addCurrentSection(builder, color, rotation, xOffset, yOffset, link, atlasName, regionName, 0);
+						
+						xOffset += font.glText.getCharHeight()*0.8f;
 						
 					} else {
 						builder.append(c);
@@ -257,16 +326,7 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 
 		}
 		
-		String sectionText = builder.toString();
-		TextSection textSection = new TextSection(color, sectionText, rotation, xOffset, yOffset);
-		if (alignment == ALIGNMENT.CENTER) {
-			for (int i = 0; i < textSections.size(); ++i) {
-				if (textSections.get(i).yOffset == yOffset) {
-					textSections.get(i).xOffset -= font.glText.getLength(sectionText) / 2;
-				}
-			}
-		}
-		textSections.add(textSection);
+		String sectionText = addCurrentSection(builder, color, rotation, xOffset, yOffset, link, null, null, 0);
 		xOffset += font.glText.getLength(sectionText);
 		
 		if (xOffset > maxX) {
@@ -275,6 +335,59 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 		
 		size.x = maxX;
 		size.y = -yOffset + font.glText.getCharHeight();
+	}
+	
+	private String addCurrentSection(StringBuilder builder, Color color, int rotation, float xOffset, float yOffset, String link, String atlasName, String regionName, int imgSize) {
+		String sectionText = builder.toString();
+		Viewport viewport = SceneManager.getInstance().getViewport();
+		TextSection textSection = new TextSection(color, sectionText, rotation, xOffset, yOffset, link);
+		if (alignment == ALIGNMENT.CENTER) {
+			for (int j = 0; j < textSections.size(); ++j) {
+				if (textSections.get(j).yOffset == yOffset) {
+					textSections.get(j).xOffset -= font.glText.getLength(sectionText) / 2;
+					if (textSections.get(j).pos != null) {
+						textSections.get(j).pos.x -= font.glText.getLength(sectionText) / (2 * viewport.getWidth());
+					}
+				}
+			}
+		}
+		
+		if (link != null && !link.equals("")) {
+			textSection.size = new Vector2();
+			textSection.size.x = font.glText.getLength(sectionText);
+			textSection.size.y = font.glText.getCharHeight();
+			textSection.size.x /= viewport.getWidth();
+			textSection.size.y /= viewport.getHeight();
+			
+			textSection.pos = new Vector2();
+			textSection.pos.x = xOffset;
+			if (alignment == ALIGNMENT.CENTER) {
+				textSection.pos.x -= font.glText.getLength(sectionText)/2;
+			}
+			textSection.pos.y = -yOffset;
+			textSection.pos.x /= viewport.getWidth();
+			textSection.pos.y /= viewport.getHeight();
+		}
+		
+		textSection.atlasName = atlasName;
+		textSection.regionName = regionName;	
+		
+		if (atlasName != null) {
+			textSection.size = new Vector2();
+			textSection.size.x = font.glText.getCharHeight()*0.7f;
+			textSection.size.y = font.glText.getCharHeight()*0.7f;
+			
+			textSection.pos = new Vector2();
+			textSection.pos.x = xOffset + font.glText.getCharHeight()*0.15f;
+			textSection.pos.y = -yOffset + font.glText.getCharHeight()*0.15f;
+			textSection.pos.x /= viewport.getWidth();
+			textSection.pos.y /= viewport.getHeight();
+			textSection.size.x /= viewport.getWidth();
+			textSection.size.y /= viewport.getHeight();
+		}
+		
+		textSections.add(textSection);
+		return sectionText;
 	}
 	
 	public void setText(String text) {
@@ -338,5 +451,21 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 	
 	public void setFont(Font font) {
 		this.font = font;
+	}
+
+	@Override
+	public void renderShadow(float[] vpMatrix) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void setInsertionID(int id) {
+		this.insertionID = id;
+	}
+
+	@Override
+	public int getInsertionID() {
+		return insertionID;
 	}
 }

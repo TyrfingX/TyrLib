@@ -1,6 +1,5 @@
 package com.tyrlib2.gui;
 
-import com.tyrlib2.math.Vector2;
 
 /**
  * Basic vector object implementing 2D vector math.

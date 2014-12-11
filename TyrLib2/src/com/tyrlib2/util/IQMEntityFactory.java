@@ -10,12 +10,14 @@ import com.tyrlib2.graphics.animation.Animation;
 import com.tyrlib2.graphics.animation.AnimationFrame;
 import com.tyrlib2.graphics.animation.Bone;
 import com.tyrlib2.graphics.animation.Skeleton;
+import com.tyrlib2.graphics.lighting.Light;
 import com.tyrlib2.graphics.materials.DefaultMaterial3;
 import com.tyrlib2.graphics.renderables.Entity;
 import com.tyrlib2.graphics.renderables.SubEntity;
 import com.tyrlib2.graphics.renderer.Mesh;
 import com.tyrlib2.graphics.renderer.Texture;
 import com.tyrlib2.graphics.renderer.TextureManager;
+import com.tyrlib2.graphics.renderer.VertexLayout;
 import com.tyrlib2.main.Media;
 import com.tyrlib2.math.Quaternion;
 import com.tyrlib2.math.Vector3;
@@ -170,18 +172,35 @@ public class IQMEntityFactory implements IEntityFactory {
 	private EntityData entityData;
 	private List<String> texts;
 	private int textPos = 1;
-	private DefaultMaterial3 baseMaterial;
+	private VertexLayout vertexLayout;
 	private VertexArray[] vertexArrays;
 	
 	private Header header;
 	
 	private EntityPrototype entityPrototype;
 	
+	private Light light;
 	
-	public IQMEntityFactory(String fileName, DefaultMaterial3 baseMaterial, boolean useVBO) {
-		
+	/**
+	 * Create a statically lighted entity
+	 * @param fileName
+	 * @param baseMaterial
+	 * @param useVBO
+	 * @param light Light to whose regards the lighting information will be computed
+	 */
+	
+	public IQMEntityFactory(String fileName, VertexLayout vertexLayout, boolean useVBO, Light light) {
+		this.light = light;
+		load(fileName, vertexLayout, useVBO);
+	}
+	
+	public IQMEntityFactory(String fileName, VertexLayout vertexLayout, boolean useVBO) {
+		load(fileName, vertexLayout, useVBO);
+	}
+	
+	private void load(String fileName, VertexLayout vertexLayout, boolean useVBO) {
 		this.fileName = fileName;
-		this.baseMaterial = baseMaterial;
+		this.vertexLayout = vertexLayout;
 		
 		entityData = new EntityData();
 		
@@ -213,7 +232,8 @@ public class IQMEntityFactory implements IEntityFactory {
 			
 			p.mesh = new Mesh(data.vertexData, data.triangleData, data.countVertices, useVBO);
 			p.mesh.setVertexBones(data.boneData);
-			p.material = (DefaultMaterial3) baseMaterial.copy(entityData.skeletonData.bones.size() > 0);
+			p.material = new DefaultMaterial3(null, 1, 1, null, entityData.skeletonData.bones.size() > 0);
+			p.material.setVertexLayout(vertexLayout);
 			Texture texture = TextureManager.getInstance().getTexture(data.material);
 			p.material.setTexture(texture, data.material);
 			
@@ -221,7 +241,6 @@ public class IQMEntityFactory implements IEntityFactory {
 				p.material.setAnimated(true);
 			}
 		}
-		
 	}
 	
 	@Override
@@ -301,7 +320,7 @@ public class IQMEntityFactory implements IEntityFactory {
 			subEntity.countTriangles = numTriangles;
 			subEntity.countVertices = numVertices;
 			
-			subEntity.vertexData = new float[numVertices * baseMaterial.getByteStride()];
+			subEntity.vertexData = new float[numVertices * vertexLayout.getByteStride()];
 			subEntity.triangleData = new short[numTriangles * 3];
 			subEntity.boneData = new float[numVertices * Mesh.BONE_BYTE_STRIDE];
 			
@@ -331,8 +350,6 @@ public class IQMEntityFactory implements IEntityFactory {
 	
 	private void readVertices() throws IOException {
 		
-		boolean noColor = true;
-		
 		for (int i = 0; i < header.num_vertexarrays; ++i) {
 			
 			VertexArray vertexArray = vertexArrays[i];
@@ -347,12 +364,12 @@ public class IQMEntityFactory implements IEntityFactory {
 				readBytes += in.read(buffer);
 				
 				int pos = 0;
-				int byteStride = baseMaterial.getByteStride();
+				int byteStride = vertexLayout.getByteStride();
 				int offset;
 				
 				switch (vertexArray.type) {
 				case 0: // This is a position
-					offset = baseMaterial.getPositionOffset();
+					offset = vertexLayout.getPos(VertexLayout.POSITION);
 					for (int k = 0; k < subEntity.countVertices; ++k) {
 						subEntity.vertexData[k*byteStride + offset + 0] = toFloat(buffer, (pos++)*4);
 						subEntity.vertexData[k*byteStride + offset + 1] = toFloat(buffer, (pos++)*4);
@@ -361,7 +378,7 @@ public class IQMEntityFactory implements IEntityFactory {
 					
 					break;
 				case 1: // This is a texture coordinate
-					offset = baseMaterial.getUVOffset();
+					offset = vertexLayout.getPos(VertexLayout.UV);
 					for (int k = 0; k < subEntity.countVertices; ++k) {
 						subEntity.vertexData[k*byteStride + offset + 0] = toFloat(buffer, (pos++)*4);
 						subEntity.vertexData[k*byteStride + offset + 1] = toFloat(buffer, (pos++)*4);
@@ -369,11 +386,23 @@ public class IQMEntityFactory implements IEntityFactory {
 					
 					break;
 				case 2: // This is a normal
-					offset = baseMaterial.getNormalOffset();
+					offset = vertexLayout.getPos(VertexLayout.NORMAL);
 					for (int k = 0; k < subEntity.countVertices; ++k) {
-						subEntity.vertexData[k*byteStride + offset + 0] = toFloat(buffer, (pos++)*4);
-						subEntity.vertexData[k*byteStride + offset + 1] = toFloat(buffer, (pos++)*4);
-						subEntity.vertexData[k*byteStride + offset + 2] = toFloat(buffer, (pos++)*4);
+						float x = toFloat(buffer, (pos++)*4);
+						float y = toFloat(buffer, (pos++)*4);
+						float z = toFloat(buffer, (pos++)*4);
+						
+						if (light == null) {
+							// Lighting information not baked into the mesh
+							subEntity.vertexData[k*byteStride + offset + 0] = x;
+							subEntity.vertexData[k*byteStride + offset + 1] = y;
+							subEntity.vertexData[k*byteStride + offset + 2] = z;
+						} else {
+							// Lighting information baked into the mesh
+							float[] lightVector = light.getLightVector();
+							float diffuse = Math.max(Vector3.dot(x,y,z,lightVector[0],lightVector[1],lightVector[2]), 0);
+							subEntity.vertexData[k*byteStride + offset] = diffuse;
+						}
 					}
 					break;
 				case 4: // This is a blendindex
@@ -396,7 +425,6 @@ public class IQMEntityFactory implements IEntityFactory {
 					}
 					break;
 				case 6: // This i a color
-					noColor = false;
 					break;
 				default: //None of the above, we dont care about this data;
 					break;

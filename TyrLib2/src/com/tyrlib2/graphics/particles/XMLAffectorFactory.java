@@ -19,9 +19,8 @@ public class XMLAffectorFactory implements IAffectorFactory {
 	 * 					until the first </Affector> Tag will be used to construct it.
 	 */
 	public XMLAffectorFactory(XmlPullParser parser) {
-		int eventType;
 		try {
-			eventType = parser.getEventType();
+			int eventType = parser.getEventType();
 		
 			while (eventType != XmlPullParser.END_DOCUMENT) {
 				if(eventType == XmlPullParser.START_TAG) {

@@ -16,9 +16,9 @@ public class Tooltip extends Window {
 			if (v != null) {
 				Vector2 pos = new Vector2(v);
 				if (v.x >= 0.5f) {
-					pos.x -= getSize().x + (TyrGL.GL_USE_VBO == 1 ? 0 : 0.075f);
+					pos.x -= getSize().x + (TyrGL.TARGET == TyrGL.PC_TARGET ? 0 : 0.075f);
 				} else {
-					pos.x += (TyrGL.GL_USE_VBO == 1 ? 0 : 0.095f);
+					pos.x += (TyrGL.TARGET == TyrGL.PC_TARGET ? 0 : 0.095f);
 				}
 				pos.y = -pos.y;
 				setRelativePos(pos);
@@ -57,7 +57,7 @@ public class Tooltip extends Window {
 		this.setMaxAlpha(skin.TOOLTIP_MAX_ALPHA);
 		
 		fadeTime = skin.TOOLTIP_FADE_TIME;
-
+		
 		setAlpha(0);
 	}
 	

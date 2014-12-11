@@ -1,7 +1,5 @@
 package com.tyrlib2.graphics.lighting;
 
-import android.opengl.GLES20;
-
 import com.tyrlib2.graphics.materials.PointLightMaterial;
 import com.tyrlib2.graphics.renderer.IRenderable;
 import com.tyrlib2.graphics.renderer.Material;
@@ -29,6 +27,8 @@ public class PointLight extends Light implements IRenderable {
 	private Material material;
 	private float[] mvpMatrix = new float[16];
 	private float[] modelMatrix;
+
+	private int insertionID;
 	
 	public PointLight() {
 		super(Type.POINT_LIGHT);
@@ -38,6 +38,11 @@ public class PointLight extends Light implements IRenderable {
 		}
 	}
 
+	@Override
+	public void renderShadow(float[] vpMatrix) {
+		
+	}
+	
 	@Override
 	public void render(float[] vpMatrix) {
         
@@ -73,6 +78,16 @@ public class PointLight extends Light implements IRenderable {
 	
 	public float[] getLightVector() {
 		return eyeSpaceVector;
+	}
+	
+	@Override
+	public void setInsertionID(int id) {
+		this.insertionID = id;
+	}
+
+	@Override
+	public int getInsertionID() {
+		return insertionID;
 	}
 	
 }

@@ -1,14 +1,9 @@
 package com.tyrlib2.graphics.renderables;
 
-import java.nio.FloatBuffer;
-
 import com.tyrlib2.graphics.animation.Skeleton;
 import com.tyrlib2.graphics.renderer.Material;
 import com.tyrlib2.graphics.renderer.Mesh;
-import com.tyrlib2.graphics.renderer.OpenGLRenderer;
-import com.tyrlib2.graphics.renderer.Program;
 import com.tyrlib2.graphics.renderer.Renderable;
-import com.tyrlib2.graphics.renderer.TyrGL;
 
 /**
  * This class represents a SubEntitiy, a part of an Entity. A SubEntity is bascially a named
@@ -30,6 +25,11 @@ public class SubEntity extends Renderable {
 	public void render(float[] vpMatrix, float[] skeletonBuffer, int bones) {
 		Skeleton.passData(skeletonBuffer, bones, material, mesh);
 		super.render(vpMatrix);
+	}
+
+	public void renderShadow(float[] vpMatrix, float[] skeletonBuffer, int bones) {
+		Skeleton.passShadowData(skeletonBuffer, bones, material, mesh);
+		super.renderShadow(vpMatrix);
 	}
 
 }

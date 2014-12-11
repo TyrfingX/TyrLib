@@ -12,7 +12,7 @@ public class FrustumG {
 	public static final int COUNT_PLANES = 6;
 	
 	public Plane[] planes = new Plane[COUNT_PLANES];
-	private static final Vector3 p = new Vector3();
+	private static float PX, PY, PZ;
 	private static final float[] points = new float[24];
 	private static final AABB aabb = new AABB();
 	
@@ -20,6 +20,28 @@ public class FrustumG {
 	public final Vector3 fctr = new Vector3();
 	public final Vector3 fcbl = new Vector3();
 	public final Vector3 fcbr = new Vector3();
+	
+	public final Vector3 fctlD = new Vector3();
+	public final Vector3 fctrD = new Vector3();
+	public final Vector3 fcblD = new Vector3();
+	public final Vector3 fcbrD = new Vector3();
+	
+	public final Vector3 nct = new Vector3();
+	public final Vector3 ncb = new Vector3();
+	public final Vector3 ncr = new Vector3();
+	public final Vector3 ncl = new Vector3();
+	
+	public final Vector3 nctCamPos = new Vector3();
+	public final Vector3 ncbCamPos = new Vector3();
+	public final Vector3 ncrCamPos = new Vector3();
+	public final Vector3 nclCamPos = new Vector3();
+	
+	public final Vector3 nctl = new Vector3();
+	public final Vector3 nctr = new Vector3();
+	public final Vector3 ncbl = new Vector3();
+	public final Vector3 ncbr = new Vector3();
+	
+	public final Vector3 rightNearWidthHalf = new Vector3();
 	
 	private Vector3 nearClipPoint = new Vector3();
 	private Vector3 farClipPoint = new Vector3();
@@ -39,211 +61,90 @@ public class FrustumG {
 		lookDirection.normalize();
 		up.normalize();
 		
-		nearClipPoint.x = camPos.x + lookDirection.x * nearClip;
-		nearClipPoint.y = camPos.y + lookDirection.y * nearClip;
-		nearClipPoint.z = camPos.z + lookDirection.z * nearClip;
+		// Get near clip and farclip point
+		Vector3.addScaled(camPos, lookDirection, nearClip, nearClipPoint);
+		Vector3.addScaled(camPos, lookDirection, farClip, farClipPoint);
 		
-		farClipPoint.x = camPos.x + lookDirection.x * farClip;
-		farClipPoint.y = camPos.y + lookDirection.y * farClip;
-		farClipPoint.z = camPos.z + lookDirection.z * farClip;
+		// setup the nearclip and farclip planes
+		planes[NEAR_CLIP_PLANE].normal.set(lookDirection);
+		planes[NEAR_CLIP_PLANE].set(nearClipPoint);
 		
-		planes[NEAR_CLIP_PLANE].normal.x = lookDirection.x;
-		planes[NEAR_CLIP_PLANE].normal.y = lookDirection.y;
-		planes[NEAR_CLIP_PLANE].normal.z = lookDirection.z;
-		planes[NEAR_CLIP_PLANE].x = nearClipPoint.x;
-		planes[NEAR_CLIP_PLANE].y = nearClipPoint.y;
-		planes[NEAR_CLIP_PLANE].z = nearClipPoint.z;
+		planes[FAR_CLIP_PLANE].normal.setScaled(lookDirection, -1);
+		planes[FAR_CLIP_PLANE].set(farClipPoint);
 		
-		planes[FAR_CLIP_PLANE].normal.x = -lookDirection.x;
-		planes[FAR_CLIP_PLANE].normal.y = -lookDirection.y;
-		planes[FAR_CLIP_PLANE].normal.z = -lookDirection.z;
-		planes[FAR_CLIP_PLANE].x = farClipPoint.x;
-		planes[FAR_CLIP_PLANE].y = farClipPoint.y;
-		planes[FAR_CLIP_PLANE].z = farClipPoint.z;
-		
+		// get the right vector
 		Vector3 right = lookDirection.cross(up);
 		right.normalize();
+		rightNearWidthHalf.setScaled(right, nearWidth /2);
+		
+		// Get the middle points of the edges of the nearclip plane
+		Vector3.addScaled(nearClipPoint, up, nearHeight/2, nct);
+		Vector3.addScaled(nearClipPoint, up, -nearHeight/2, ncb);
+		Vector3.add(nearClipPoint, rightNearWidthHalf, ncr);
+		Vector3.addScaled(nearClipPoint, rightNearWidthHalf, -1, ncl);
 
-		float rightNearWidthHalfX = right.x * nearWidth / 2;
-		float rightNearWidthHalfY = right.y * nearWidth / 2;
-		float rightNearWidthHalfZ = right.z * nearWidth / 2;
-				
-		float nctX = nearClipPoint.x + up.x * nearHeight / 2;
-		float nctY = nearClipPoint.y + up.y * nearHeight / 2;
-		float nctZ = nearClipPoint.z + up.z * nearHeight / 2;
+		// Get the vectors from the camera to the near clip points
+		Vector3.vectorTo(camPos, ncb, ncbCamPos);
+		Vector3.vectorTo(camPos, nct, nctCamPos);
+		Vector3.vectorTo(camPos, ncr, ncrCamPos);
+		Vector3.vectorTo(camPos, ncl, nclCamPos);
 		
-		float ncbX = nearClipPoint.x + up.x * -nearHeight / 2;
-		float ncbY = nearClipPoint.y + up.y * -nearHeight / 2;
-		float ncbZ = nearClipPoint.z + up.z * -nearHeight / 2;
-		
-		float ncrX = nearClipPoint.x + rightNearWidthHalfX;
-		float ncrY = nearClipPoint.y + rightNearWidthHalfY;
-		float ncrZ = nearClipPoint.z + rightNearWidthHalfZ;
-		
-		float nclX = nearClipPoint.x + -rightNearWidthHalfX;
-		float nclY = nearClipPoint.y + -rightNearWidthHalfY;
-		float nclZ = nearClipPoint.z + -rightNearWidthHalfZ;
+		// Get the normal vectors for the remaining planes
+		Vector3.cross(right, ncbCamPos, planes[BOTTOM_CLIP_PLANE].normal);
+		Vector3.cross(nctCamPos, right, planes[TOP_CLIP_PLANE].normal);
+		Vector3.cross(nclCamPos, up, planes[LEFT_CLIP_PLANE].normal);
+		Vector3.cross(up, ncrCamPos, planes[RIGHT_CLIP_PLANE].normal);
 
-		/*
-		Vector3 nct = nearClipPoint.add(up.multiply(nearHeight/2));
-		Vector3 ncb = nearClipPoint.add(up.multiply(-nearHeight/2));
-		Vector3 ncr = nearClipPoint.add(right.multiply(nearWidth/2));
-		Vector3 ncl = nearClipPoint.add(right.multiply(-nearWidth/2));
-*/
-/*
-		float bottomNormalX = right.y * (ncbZ - camPos.z) - right.z * (ncbY - camPos.y);
-		float bottomNormalY = -(right.x * (ncbZ - camPos.z) - right.z * (ncbX - camPos.x));
-		float bottomNormalZ = right.x * (ncbY - camPos.y) - right.y * (ncbX - camPos.x);
-		
-		float topNormalX = nctY * right.z - nctZ * right.y;
-		float topNormalY = -(nctX * right.z - nctZ * right.x);
-		float topNormalZ = nctX * right.y - nctY * right.x;
-		
-		float leftNormalX = nctY * right.z - nctZ * right.y;
-		float leftNormalY = -(nctX * right.z - nctZ * right.x);
-		float leftNormalZ = nctX * right.y - nctY * right.x;
-		*/
-
-		float ncbCamPosX = ncbX - camPos.x;
-		float ncbCamPosY = ncbY - camPos.y;
-		float ncbCamPosZ = ncbZ - camPos.z;
-		
-		float nctCamPosX = nctX - camPos.x;
-		float nctCamPosY = nctY - camPos.y;
-		float nctCamPosZ = nctZ - camPos.z;
-		
-		float nclCamPosX = nclX - camPos.x;
-		float nclCamPosY = nclY - camPos.y;
-		float nclCamPosZ = nclZ - camPos.z;
-		
-		float ncrCamPosX = ncrX - camPos.x;
-		float ncrCamPosY = ncrY - camPos.y;
-		float ncrCamPosZ = ncrZ - camPos.z;
-		
-		Vector3.cross(planes[BOTTOM_CLIP_PLANE].normal, right.x, right.y, right.z, ncbCamPosX, ncbCamPosY, ncbCamPosZ);
-		Vector3.cross(planes[TOP_CLIP_PLANE].normal, nctCamPosX, nctCamPosY, nctCamPosZ, right.x, right.y, right.z);
-		Vector3.cross(planes[LEFT_CLIP_PLANE].normal, nclCamPosX, nclCamPosY, nclCamPosZ, up.x, up.y, up.z);
-		Vector3.cross(planes[RIGHT_CLIP_PLANE].normal, up.x, up.y, up.z, ncrCamPosX, ncrCamPosY, ncrCamPosZ);
-		
 		planes[BOTTOM_CLIP_PLANE].normal.normalize();
 		planes[TOP_CLIP_PLANE].normal.normalize();
 		planes[LEFT_CLIP_PLANE].normal.normalize();
 		planes[RIGHT_CLIP_PLANE].normal.normalize();
 		
-		planes[BOTTOM_CLIP_PLANE].x =  ncbX;
-		planes[BOTTOM_CLIP_PLANE].y =  ncbY;
-		planes[BOTTOM_CLIP_PLANE].z =  ncbZ;
+		// Get the origin vectors for the remaining planes
+		planes[BOTTOM_CLIP_PLANE].set(ncb);
+		planes[TOP_CLIP_PLANE].set(nct);
+		planes[LEFT_CLIP_PLANE].set(ncl);
+		planes[RIGHT_CLIP_PLANE].set(ncr);
 		
-		planes[TOP_CLIP_PLANE].x =  nctX;
-		planes[TOP_CLIP_PLANE].y =  nctZ;
-		planes[TOP_CLIP_PLANE].z =  ncbZ;
+		// Get the corners of the nearclip plane
 		
-		planes[LEFT_CLIP_PLANE].x =  nclX;
-		planes[LEFT_CLIP_PLANE].y =  nclY;
-		planes[LEFT_CLIP_PLANE].z =  nclZ;
-	
-		planes[RIGHT_CLIP_PLANE].x =  ncrX;
-		planes[RIGHT_CLIP_PLANE].y =  ncrY;
-		planes[RIGHT_CLIP_PLANE].z =  ncrZ;
+		Vector3.addScaled(nct, rightNearWidthHalf, -1, nctl);
+		Vector3.add(nct, rightNearWidthHalf, nctr);
+		Vector3.addScaled(ncb, rightNearWidthHalf, -1, ncbl);
+		Vector3.add(ncb, rightNearWidthHalf, ncbr);
 		
-		float nctlX = nctX - rightNearWidthHalfX;
-		float nctlY = nctY - rightNearWidthHalfY;
-		float nctlZ = nctZ - rightNearWidthHalfZ;
+		// Get the vectors to the far clip plane corners
 		
-		float nctrX = nctX + rightNearWidthHalfX;
-		float nctrY = nctY + rightNearWidthHalfY;
-		float nctrZ = nctZ + rightNearWidthHalfZ;
+		Vector3.vectorTo(camPos, nctl, fctlD);
+		Vector3.vectorTo(camPos, nctr, fctrD);
+		Vector3.vectorTo(camPos, ncbl, fcblD);
+		Vector3.vectorTo(camPos, ncbr, fcbrD);
 		
-		float ncblX = ncbX - rightNearWidthHalfX;
-		float ncblY = ncbY - rightNearWidthHalfY;
-		float ncblZ = ncbZ - rightNearWidthHalfZ;
+		fctlD.normalize();
+		fctrD.normalize();
+		fcblD.normalize();
+		fcbrD.normalize();
 		
-		float ncbrX = ncbX + rightNearWidthHalfX;
-		float ncbrY = ncbY + rightNearWidthHalfY;
-		float ncbrZ = ncbZ + rightNearWidthHalfZ;
+		Vector3.addScaled(nctl, fctlD, farClip, fctl);
+		Vector3.addScaled(nctr, fctrD, farClip, fctr);
+		Vector3.addScaled(ncbl, fcblD, farClip, fcbl);
+		Vector3.addScaled(ncbr, fcbrD, farClip, fcbr);
 		
-		/*
-		Vector3 nctl = nct.add(right.multiply(-nearWidth/2));
-		Vector3 nctr = nct.add(right.multiply(nearWidth/2));
-		Vector3 ncbl = ncb.add(right.multiply(-nearWidth/2));
-		Vector3 ncbr = ncb.add(right.multiply(nearWidth/2));
-		*/
+		points[0] = nctl.x;
+		points[1] = nctl.y;
+		points[2] = nctl.z;
 		
-		float fctlDX = nctlX - camPos.x;
-		float fctlDY = nctlY - camPos.y;
-		float fctlDZ = nctlZ - camPos.z;
+		points[3] = nctr.x;
+		points[4] = nctr.y;
+		points[5] = nctr.z;
 		
-		float fctrDX = nctrX - camPos.x;
-		float fctrDY = nctrY - camPos.y;
-		float fctrDZ = nctrZ - camPos.z;
+		points[6] = ncbl.x;
+		points[7] = ncbl.y;
+		points[8] = ncbl.z;
 		
-		float fcblDX = ncblX - camPos.x;
-		float fcblDY = ncblY - camPos.y;
-		float fcblDZ = ncblZ - camPos.z;
-		
-		float fcbrDX = ncbrX - camPos.x;
-		float fcbrDY = ncbrY - camPos.y;
-		float fcbrDZ = ncbrZ - camPos.z;
-		
-		float lengthfctl = (float) Math.sqrt(fctlDX * fctlDX + fctlDY * fctlDY + fctlDZ * fctlDZ);
-		if (lengthfctl != 0) {
-			fctlDX /= lengthfctl;
-			fctlDY /= lengthfctl;
-			fctlDZ /= lengthfctl;
-		}
-		
-		float lengthfctr = (float) Math.sqrt(fctrDX * fctrDX + fctrDY * fctrDY + fctrDZ * fctrDZ);
-		if (lengthfctr != 0) {
-			fctrDX /= lengthfctr;
-			fctrDY /= lengthfctr;
-			fctrDZ /= lengthfctr;
-		}
-		
-		float lengthfcbl = (float) Math.sqrt(fcblDX * fcblDX + fcblDY * fcblDY + fcblDZ * fcblDZ);
-		if (lengthfcbl != 0) {
-			fcblDX /= lengthfcbl;
-			fcblDY /= lengthfcbl;
-			fcblDZ /= lengthfcbl;
-		}
-		
-		float lengthfcbr = (float) Math.sqrt(fcbrDX * fcbrDX + fcbrDY * fcbrDY + fcbrDZ * fcbrDZ);
-		if (lengthfcbr != 0) {
-			fcbrDX /= lengthfcbr;
-			fcbrDY /= lengthfcbr;
-			fcbrDZ /= lengthfcbr;
-		}
-		
-		fctl.x = nctlX + fctlDX * farClip;
-		fctl.y = nctlY + fctlDY * farClip;
-		fctl.z = nctlZ + fctlDZ * farClip;
-		
-		fctr.x = nctrX + fctrDX * farClip;
-		fctr.y = nctrY + fctrDY * farClip;
-		fctr.z = nctrZ + fctrDZ * farClip;
-		
-		fcbl.x = ncblX + fcblDX * farClip;
-		fcbl.y = ncblY + fcblDY * farClip;
-		fcbl.z = ncblZ + fcblDZ * farClip;
-
-		fcbr.x = ncbrX + fcbrDX * farClip;
-		fcbr.y = ncbrY + fcbrDY * farClip;
-		fcbr.z = ncbrZ + fcbrDZ * farClip;
-		
-		points[0] = nctlX;
-		points[1] = nctlY;
-		points[2] = nctlZ;
-		
-		points[3] = nctrX;
-		points[4] = nctrY;
-		points[5] = nctrZ;
-		
-		points[6] = ncblX;
-		points[7] = ncblY;
-		points[8] = ncblZ;
-		
-		points[9] = ncbrX;
-		points[10] = ncbrY;
-		points[11] = ncbrZ;
+		points[9] = ncbr.x;
+		points[10] = ncbr.y;
+		points[11] = ncbr.z;
 		
 		points[12] = fctl.x;
 		points[13] = fctl.y;
@@ -291,30 +192,18 @@ public class FrustumG {
 		
 		for (int i = 1; i < COUNT_PLANES; ++i) {
 			
-			Vector3 normal = planes[i].normal;
+			Plane plane = planes[i];
+
+			Vector3 normal = plane.normal;
 			
-			if (normal.x >= 0) {
-				p.x = aabb.max.x;
-			} else {
-				p.x = aabb.min.x;
-			}
-			
-			if (normal.y >= 0) {
-				p.y = aabb.max.y;
-			} else {
-				p.y = aabb.min.y;
-			}
-			
-			if (normal.z >= 0) {
-				p.z = aabb.max.z;
-			} else {
-				p.z = aabb.min.z;
-			}
+			PX = normal.x >= 0 ? aabb.max.x : aabb.min.x;
+			PY = normal.y >= 0 ? aabb.max.y : aabb.min.y;
+			PZ = normal.z >= 0 ? aabb.max.z : aabb.min.z;
 			
 			// is the positive vertex outside?
-			if (normal.x * (p.x - planes[i].x) +
-				normal.y * (p.y - planes[i].y) + 
-				normal.z * (p.z - planes[i].z) < 0) {
+			if (normal.x * (PX - plane.x) +
+				normal.y * (PY - plane.y) + 
+				normal.z * (PZ - plane.z) < 0) {
 				return false;
 			}
 		}

@@ -95,52 +95,53 @@ public class Emitter extends SceneObject implements IUpdateable {
 	 */
 	
 	public void emit() {
-		
-		parent.getCachedAbsoluteRot().multiply(velocity, rotatedVelocity);
-		Vector3.add(rotatedVelocity, movementVelocity, rotatedVelocity);
-		
-		parent.getCachedAbsoluteRot().multiply(randomVelocity, rotatedRandomVelocity);
-		
-		Vector3 parentPos = parent.getCachedAbsolutePosVector();
-		emitterPos.x = parentPos.x;
-		emitterPos.y = parentPos.y;
-		emitterPos.z = parentPos.z;
-		
-		if (oldParentPos != null) {
-			float dX = emitterPos.x - oldParentPos.x;
-			float dY = emitterPos.y - oldParentPos.y;
-			float dZ = emitterPos.z - oldParentPos.z;
+		if (parent != null) {
+			parent.getCachedAbsoluteRot().multiply(velocity, rotatedVelocity);
+			Vector3.add(rotatedVelocity, movementVelocity, rotatedVelocity);
 			
-			emitterPos.x += dX / 2;
-			emitterPos.y += dY / 2;
-			emitterPos.z += dZ / 2;
-		}
-		
-		for (int i = 0; i < amount && system.allowsMoreParticles(); ++i) {
-			Particle particle = particleFactory.create(system.requestDeadParticle());
-			Vector3 particlePos = particle.getPos();
-			particlePos.x = emitterPos.x;
-			particlePos.y = emitterPos.y;
-			particlePos.z = emitterPos.z;
-
-			particlePos.x += (0.5f-random.nextFloat()) * randomPos.x;
-			particlePos.y += (0.5f-random.nextFloat()) * randomPos.y;
-			particlePos.z += (0.5f-random.nextFloat()) * randomPos.z;
+			parent.getCachedAbsoluteRot().multiply(randomVelocity, rotatedRandomVelocity);
 			
-			particle.setPos(particlePos);
+			Vector3 parentPos = parent.getCachedAbsolutePosVector();
+			emitterPos.x = parentPos.x;
+			emitterPos.y = parentPos.y;
+			emitterPos.z = parentPos.z;
 			
-			particle.velocity.x = rotatedVelocity.x + (0.5f-random.nextFloat()) * rotatedRandomVelocity.x;
-			particle.velocity.y = rotatedVelocity.y + (0.5f-random.nextFloat()) * rotatedRandomVelocity.y;
-			particle.velocity.z = rotatedVelocity.z + (0.5f-random.nextFloat()) * rotatedRandomVelocity.z;
-			system.addParticle(particle);
-		}
-		
-		if (oldParentPos == null) {
-			oldParentPos = parent.getCachedAbsolutePos();
-		} else {
-			oldParentPos.x = parent.getCachedAbsolutePosVector().x;
-			oldParentPos.y = parent.getCachedAbsolutePosVector().y;
-			oldParentPos.z = parent.getCachedAbsolutePosVector().z;
+			if (oldParentPos != null) {
+				float dX = emitterPos.x - oldParentPos.x;
+				float dY = emitterPos.y - oldParentPos.y;
+				float dZ = emitterPos.z - oldParentPos.z;
+				
+				emitterPos.x += dX / 2;
+				emitterPos.y += dY / 2;
+				emitterPos.z += dZ / 2;
+			}
+			
+			for (int i = 0; i < amount && system.allowsMoreParticles(); ++i) {
+				Particle particle = particleFactory.create(system.requestDeadParticle());
+				Vector3 particlePos = particle.getPos();
+				particlePos.x = emitterPos.x;
+				particlePos.y = emitterPos.y;
+				particlePos.z = emitterPos.z;
+	
+				particlePos.x += (0.5f-random.nextFloat()) * randomPos.x;
+				particlePos.y += (0.5f-random.nextFloat()) * randomPos.y;
+				particlePos.z += (0.5f-random.nextFloat()) * randomPos.z;
+				
+				particle.setPos(particlePos);
+				
+				particle.velocity.x = rotatedVelocity.x + (0.5f-random.nextFloat()) * rotatedRandomVelocity.x;
+				particle.velocity.y = rotatedVelocity.y + (0.5f-random.nextFloat()) * rotatedRandomVelocity.y;
+				particle.velocity.z = rotatedVelocity.z + (0.5f-random.nextFloat()) * rotatedRandomVelocity.z;
+				system.addParticle(particle);
+			}
+			
+			if (oldParentPos == null) {
+				oldParentPos = parent.getCachedAbsolutePos();
+			} else {
+				oldParentPos.x = parent.getCachedAbsolutePosVector().x;
+				oldParentPos.y = parent.getCachedAbsolutePosVector().y;
+				oldParentPos.z = parent.getCachedAbsolutePosVector().z;
+			}
 		}
 	}
 

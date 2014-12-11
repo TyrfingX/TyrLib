@@ -6,12 +6,8 @@ import java.util.List;
 import com.tyrlib2.graphics.renderer.Camera;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.renderer.Viewport;
-import com.tyrlib2.graphics.scene.BoundedSceneObject;
-import com.tyrlib2.graphics.scene.ISceneQuery;
 import com.tyrlib2.graphics.scene.Octree;
 import com.tyrlib2.graphics.scene.SceneManager;
-import com.tyrlib2.graphics.scene.SceneObject;
-import com.tyrlib2.math.AABB;
 import com.tyrlib2.math.Ray;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.math.Vector3;
@@ -25,54 +21,7 @@ import com.tyrlib2.math.Vector3;
 public class Raycast {
 	
 	private Ray ray;
-	private float maxDist;
-	
-	private class RaySceneQuery implements ISceneQuery {
-		
-		private Vector3 intersect;
-		private List<RaycastResult> results;
-		
-		public RaySceneQuery(List<RaycastResult> results) {
-			this.results = results;
-		}
-		
-		@Override
-		public boolean intersects(AABB aabb) {
-			if (aabb != null) {
-				intersect = aabb.intersectsRay(ray, 0, maxDist);
-				return (intersect != null);
-			} 
-			
-			return false;
-		}
-
-		@Override
-		public void callback(BoundedSceneObject sceneObject) {
-			RaycastResult result = new RaycastResult();
-			result.sceneObject = sceneObject;
-			result.intersection = intersect;
-			result.distance = ray.origin.sub(intersect).length();
-			results.add(result);
-		}
-		
-	}
-	
-	public class RaycastResult implements Comparable<RaycastResult> {
-		public SceneObject sceneObject;
-		public Vector3 intersection;
-		public float distance;
-
-		@Override
-		public int compareTo(RaycastResult another) {
-			if (another.distance < distance) {
-				return 1;
-			} else if (another.distance > distance) {
-				return -1;
-			}
-			
-			return 0;
-		}
-	}
+	public float maxDist;
 	
 	public Raycast(Vector3 startPoint, Vector3 direction, float maxDist) {
 		direction.normalize();
@@ -94,7 +43,13 @@ public class Raycast {
 	
 	public List<RaycastResult> performRaycast(Octree octree) {
 		List<RaycastResult> results = new ArrayList<RaycastResult>();
-		octree.query(new RaySceneQuery(results));
+		octree.query(new RaySceneQuery(results, ray, maxDist));
+		return results;
+	}
+	
+	public List<RaycastResult> performRaycast(Octree octree, RaySceneQuery query) {
+		List<RaycastResult> results = new ArrayList<RaycastResult>();
+		octree.query(query);
 		return results;
 	}
 	
@@ -107,20 +62,18 @@ public class Raycast {
 		
 		Vector3 camUpDirection = cam.getWorldUpVector();
 		camUpDirection.normalize();
-		camUpDirection = camUpDirection.multiply(SceneManager.getInstance().getRenderer().getFrustum().getFarClipHeight()*1.25f);
+		camUpDirection = camUpDirection.multiply(viewport.getNearClipHeight());
 		
 		Vector3 camRightDirection = camLookDirection.cross(camUpDirection);
 		camRightDirection.normalize();
-		camRightDirection = camRightDirection.multiply(SceneManager.getInstance().getRenderer().getFrustum().getFarClipWidth()*1.25f);
+		camRightDirection = camRightDirection.multiply(viewport.getNearClipWidth());
 		
 		camLookDirection.normalize();
 		
-		float farClipDistance = viewport.getFarClip();
+		Vector3 nearClipPoint = origin.add(camLookDirection.multiply(viewport.getNearClip()));
 		
-		Vector3 farClipPoint = origin.add(camLookDirection.multiply(farClipDistance));
-		
-		Vector3 raycastPoint = farClipPoint.add(camUpDirection.multiply(-1*(point.y-0.5f)))
-										   .add(camRightDirection.multiply(point.x-0.5f));
+		Vector3 raycastPoint = nearClipPoint.add(camUpDirection.multiply(-1*(point.y-0.5f)))
+										    .add(camRightDirection.multiply(point.x-0.5f));
 		
 		Vector3 raycastDirection = raycastPoint.sub(origin);
 		raycastDirection.normalize();

@@ -2,7 +2,6 @@ package com.tyrlib2.graphics.terrain;
 
 import java.nio.ByteBuffer;
 
-import android.opengl.GLES20;
 import android.util.FloatMath;
 
 import com.tyrlib2.graphics.materials.DefaultMaterial3;

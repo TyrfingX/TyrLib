@@ -16,7 +16,7 @@ public class BoundingBoxTreeNode extends BoundedSceneObject {
 	
 	public static int MAX_POINTS = 20;
 	
-	public class XComparator implements Comparator<Vector3> {
+	public static class XComparator implements Comparator<Vector3> {
 		@Override
 		public int compare(Vector3 v1, Vector3 v2) {
 			if (v1.x < v2.x) {
@@ -29,7 +29,7 @@ public class BoundingBoxTreeNode extends BoundedSceneObject {
 		}
 	}
 	
-	public class YComparator implements Comparator<Vector3> {
+	public static class YComparator implements Comparator<Vector3> {
 		@Override
 		public int compare(Vector3 v1, Vector3 v2) {
 			if (v1.y < v2.y) {
@@ -42,7 +42,7 @@ public class BoundingBoxTreeNode extends BoundedSceneObject {
 		}
 	}
 	
-	public class ZComparator implements Comparator<Vector3> {
+	public static class ZComparator implements Comparator<Vector3> {
 		@Override
 		public int compare(Vector3 v1, Vector3 v2) {
 			if (v1.z < v2.z) {

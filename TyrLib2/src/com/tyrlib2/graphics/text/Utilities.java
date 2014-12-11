@@ -4,7 +4,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-import android.opengl.GLES20;
 import android.util.Log;
 
 import com.tyrlib2.graphics.renderer.TyrGL;

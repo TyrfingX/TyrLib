@@ -2,9 +2,10 @@ package com.tyrlib2.graphics.renderer;
 
 import java.nio.Buffer;
 
-import android.opengl.GLES20;
-
 public class TyrGL {
+
+	public static final int ANDROID_TARGET = 0;
+	public static final int PC_TARGET = 1;
 	public static GLImpl IMPL;
 	
 	public static int GL_POINTS;
@@ -17,6 +18,8 @@ public class TyrGL {
 	public static int GL_ARRAY_BUFFER;
 	public static int GL_TEXTURE0;
 	public static int GL_TEXTURE1;
+	public static int GL_TEXTURE2;
+	public static int GL_TEXTURE3;
 	public static int GL_TEXTURE_2D;
 	public static int GL_CULL_FACE;
 	public static int GL_TRIANGLES;
@@ -53,6 +56,15 @@ public class TyrGL {
 	public static int GL_USE_VBO;
 	public static int GL_ELEMENT_ARRAY_BUFFER;
 	public static int GL_STREAM_DRAW;
+	public static int GL_DEPTH_COMPONENT16;
+	public static int GL_DEPTH_COMPONENT24;
+	public static int GL_DEPTH_COMPONENT;
+	public static int GL_DEPTH_ATTACHMENT;
+	public static int GL_RGB;
+	public static int GL_UNSIGNED_INT;
+	public static int TARGET;
+
+	
 	
 	public static void glVertexAttrib3f(int handle, float x, float y, float z) {
 		IMPL.glVertexAttrib3f(handle, x, y, z);
@@ -276,5 +288,10 @@ public class TyrGL {
 	
 	public static void glGenerateMipmap(int mode) {
 		IMPL.glGenerateMipmap(mode);
+	}
+	
+	public static void glTexImage2D(int target, int level, int internalFormat, int width,
+									int height, int border, int format, int type, Buffer data) {
+		IMPL.glTexImage2D(target, level, internalFormat, width, height, border, format, type, data);
 	}
 }

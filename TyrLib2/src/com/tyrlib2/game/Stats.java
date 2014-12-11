@@ -1,9 +1,8 @@
 package com.tyrlib2.game;
 
-import java.io.IOException;
+import gnu.trove.map.hash.TIntFloatHashMap;
+
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * This class manages a collection of stats
@@ -11,7 +10,7 @@ import java.util.Map;
  *
  */
 
-public class Stats<T> implements Serializable {
+public class Stats implements Serializable {
 	
 	/**
 	 * 
@@ -19,11 +18,11 @@ public class Stats<T> implements Serializable {
 	private static final long serialVersionUID = 2556194353551947323L;
 	
 	/** Collection of the stats **/
-	public Map<T, Float> stats;
+	public TIntFloatHashMap stats;
 	
 	public Stats()
 	{
-		stats = new HashMap<T, Float>();
+		stats = new TIntFloatHashMap();
 	}
 	
 	/**
@@ -31,16 +30,13 @@ public class Stats<T> implements Serializable {
 	 * @param name	Name of the stat
 	 * @param value	New Value
 	 */
-	public void setStat(T name, Float value)
+	public void setStat(int name, float value)
 	{
 		stats.put(name, value);
 	}
 	
 	
-	public void changeStat(T name, Float value) {
-		if (!stats.containsKey(name)) {
-			stats.put(name, 0f);
-		}
+	public void changeStat(int name, float value) {
 		stats.put(name, stats.get(name) + value);
 	}
 	
@@ -50,19 +46,12 @@ public class Stats<T> implements Serializable {
 	 * @return		The value of the stat
 	 */
 	
-	public Float getStat(Integer name)
+	public float getStat(int name)
 	{
-		if (stats.containsKey(name))
-		{
-			return stats.get(name);
-		}
-		else
-		{
-			return 0f;
-		}
+		return stats.get(name);
 	}
 	
-	public boolean hasStat(Integer name) {
+	public boolean hasStat(int name) {
 		return stats.containsKey(name);
 	}
 	
@@ -85,13 +74,16 @@ public class Stats<T> implements Serializable {
 	
 	public String toString(char delimiterKeyValue, char delimiterKeys)
 	{
-		String res = "";
-		for (T key : stats.keySet())
+		StringBuilder b = new StringBuilder();
+		for (int key : stats.keys())
 		{
 			float value = stats.get(key);
-			res += key.toString() + delimiterKeyValue + value + delimiterKeys;
+			b.append(key);
+			b.append(delimiterKeyValue);
+			b.append(value);
+			b.append(delimiterKeys);
 		}
-		return res;
+		return b.toString();
 	}
 	
 	/**
@@ -106,8 +98,8 @@ public class Stats<T> implements Serializable {
 		return copyStats;
 	}
 	
-	public void changeStats(Stats<T> stats) {
-		for (T key : stats.stats.keySet())
+	public void changeStats(Stats stats) {
+		for (int key : stats.stats.keys())
 		{
 			float value = stats.stats.get(key);
 			changeStat(key, value);

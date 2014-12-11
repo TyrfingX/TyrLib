@@ -24,9 +24,8 @@ public class FileWriter {
 	
 	public static void writeFile(Context context, String name, String value)
 	{	
-		FileOutputStream fos;
 		try {
-			fos = context.openFileOutput(name, Context.MODE_PRIVATE);
+			FileOutputStream fos = context.openFileOutput(name, Context.MODE_PRIVATE);
 			fos.write(value.getBytes());
 			fos.close();
 		} catch (FileNotFoundException e) {

@@ -3,9 +3,17 @@ precision mediump float;        // Set the default precision to medium. We don't
 uniform vec3 u_LightPos;        // The position of the light in eye space.
 uniform vec4 u_Ambient;			// Constant global ambient illumination
 uniform sampler2D u_Texture;    // The input texture.
+
+#if SHADOW 
+uniform sampler2D u_ShadowMap;
+#endif 
  
 varying vec3 v_Normal;          // Interpolated normal for this fragment.
 varying vec2 v_TexCoordinate;   // Interpolated texture coordinate per fragment.
+
+#if SHADOW 
+varying vec4 v_ShadowCoord;
+#endif 
  
 // The entry point for our fragment shader.
 void main()
@@ -34,6 +42,16 @@ void main()
 	    diffuse = max(dot(v_Normal, u_LightPos), 0.0);
 	}
 	*/
+
+#if SHADOW 
+	float visibility = 1.0;
+	if ( texture2D( u_ShadowMap, v_ShadowCoord.xy ).z  <  v_ShadowCoord.z - 0.005){
+	    visibility = 0.5;
+	}
+#endif 
+	
+	
 	// Multiply the color by the diffuse illumination level and texture value to get final output color.
-	gl_FragColor = (diffuse + u_Ambient) * texture2D(u_Texture, v_TexCoordinate);
+	gl_FragColor = (#if SHADOW visibility * #endif diffuse + u_Ambient) * texture2D(u_Texture, v_TexCoordinate);
+
   }

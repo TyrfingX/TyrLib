@@ -11,7 +11,7 @@ import com.tyrlib2.graphics.renderer.Texture;
 import com.tyrlib2.graphics.renderer.TextureManager;
 import com.tyrlib2.graphics.renderer.TextureRegion;
 import com.tyrlib2.graphics.renderer.TyrGL;
-import com.tyrlib2.math.Vector2;
+import com.tyrlib2.graphics.renderer.VertexLayout;
 import com.tyrlib2.util.Color;
 
 /**
@@ -22,11 +22,12 @@ import com.tyrlib2.util.Color;
 
 public class TexturedMaterial extends Material implements IBlendable  {
 
+	public static final int DEFAULT_UV_SIZE = 2;
+	public static final int DEFAULT_UV_OFFSET = 3;
+	
 	private float alpha = 1;
 	private String textureName;
 	private Texture texture;
-	private int uvDataSize = 2;
-	private int uvOffset = 3;
 	private Color color = Color.WHITE.copy();
 	private TextureRegion texRegion;
 	private int sizeHandle;
@@ -41,7 +42,9 @@ public class TexturedMaterial extends Material implements IBlendable  {
 		this.texture = texture;
 		this.program = program;
 		this.texRegion = texRegion;
-		init(5,0,3, "u_MVPMatrix", "a_Position");
+		init(0,3, "u_MVPMatrix", "a_Position");
+		
+		addVertexInfo(VertexLayout.UV, DEFAULT_UV_OFFSET, DEFAULT_UV_SIZE);
 		
 		alphaHandle = TyrGL.glGetUniformLocation(program.handle, "u_Alpha");
 		textureCoordinateHandle = TyrGL.glGetAttribLocation(program.handle, "a_TexCoordinate");
@@ -85,13 +88,13 @@ public class TexturedMaterial extends Material implements IBlendable  {
 		
 		if (TyrGL.GL_USE_VBO == 1) {
 	        // Pass in the texture coordinate information
-	        TyrGL.glVertexAttribPointer(textureCoordinateHandle, uvDataSize, TyrGL.GL_FLOAT, false, 
-	        		strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, uvOffset * OpenGLRenderer.BYTES_PER_FLOAT);
+	        TyrGL.glVertexAttribPointer(textureCoordinateHandle, getInfoSize(VertexLayout.UV), TyrGL.GL_FLOAT, false, 
+	        		getByteStride() * OpenGLRenderer.BYTES_PER_FLOAT, getInfoOffset(VertexLayout.UV) * OpenGLRenderer.BYTES_PER_FLOAT);
 		} else {
 	        // Pass in the texture coordinate information
-	        mesh.getVertexBuffer().position(uvOffset);
-	        TyrGL.glVertexAttribPointer(textureCoordinateHandle, uvDataSize, TyrGL.GL_FLOAT, false, 
-	        		strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, mesh.getVertexBuffer());
+	        mesh.getVertexBuffer().position(getInfoOffset(VertexLayout.UV));
+	        TyrGL.glVertexAttribPointer(textureCoordinateHandle, getInfoSize(VertexLayout.UV), TyrGL.GL_FLOAT, false, 
+	        		getByteStride() * OpenGLRenderer.BYTES_PER_FLOAT, mesh.getVertexBuffer());
 	        TyrGL.glEnableVertexAttribArray(textureCoordinateHandle);
 		}
 		

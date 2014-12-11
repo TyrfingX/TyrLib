@@ -45,6 +45,9 @@ public class OpenGLSurfaceView extends GLSurfaceView {
         
         InputManager.VK_BACK_SPACE = KeyEvent.KEYCODE_DEL;
         InputManager.VK_ENTER = KeyEvent.KEYCODE_ENTER;
+        InputManager.VK_SPACE = KeyEvent.KEYCODE_SPACE;
+        InputManager.VK_PLUS = KeyEvent.KEYCODE_PLUS;
+        InputManager.VK_MINUS = KeyEvent.KEYCODE_MINUS;
         
         InputManager.getInstance();
         

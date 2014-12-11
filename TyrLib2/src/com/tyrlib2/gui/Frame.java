@@ -3,7 +3,6 @@ package com.tyrlib2.gui;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.tyrlib2.graphics.renderer.TextureRegion;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.math.Vector2;
 
@@ -82,7 +81,7 @@ public class Frame extends Window{
 								 bgRegions.get(FrameImagePosition.LEFT), 
 								 new Vector2(borderSizeX, size.y - 2 * borderSizeY)));
 		bgImageBoxes.put(FrameImagePosition.MIDDLE,
-						(ImageBox) windowManager.createImageBox(name + "/BackgroundMiddle", 
+						 windowManager.createImageBox(name + "/BackgroundMiddle", 
 							     new Vector2(0, 0), 
 							     atlas, 
 								 bgRegions.get(FrameImagePosition.MIDDLE), 

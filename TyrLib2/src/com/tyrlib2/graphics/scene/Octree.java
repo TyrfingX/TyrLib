@@ -63,5 +63,9 @@ public class Octree extends SceneObject {
 		}
 	}
 	
+	public boolean checkDuplicates() {
+		return root.checkDuplicates();
+	}
+	
 	
 }

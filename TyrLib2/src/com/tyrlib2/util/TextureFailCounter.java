@@ -29,7 +29,7 @@ public class TextureFailCounter implements IUpdateable {
 		frames++;
 		
 		if (t >= 1) {
-			text.setText(String.valueOf((int)(fails/frames)));
+			text.setText(String.valueOf((fails/frames)));
 			t = 0;
 			fails = 0;
 			frames = 0;

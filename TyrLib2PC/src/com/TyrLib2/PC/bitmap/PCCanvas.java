@@ -1,6 +1,6 @@
 package com.TyrLib2.PC.bitmap;
 
-import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -67,4 +67,10 @@ public class PCCanvas implements ICanvas {
 		g.dispose();
 	}
 
+	@Override
+	public void setRGB(int x, int y, com.tyrlib2.util.Color color) {
+		canvas.setRGB(x, y, new Color(	(int)(color.r*255), 
+										(int)(color.g*255), 
+										(int)(color.b*255)).getRGB());
+	}
 }

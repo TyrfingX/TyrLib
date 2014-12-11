@@ -14,6 +14,10 @@ public class Vector3 implements Serializable {
 	 */
 	private static final long serialVersionUID = 5645860908411944792L;
 	
+	public static final Vector3 UNIT_X = new Vector3(1,0,0);
+	public static final Vector3 UNIT_Y = new Vector3(0,1,0);
+	public static final Vector3 UNIT_Z = new Vector3(0,0,1);
+	
 	public float x;
 	public float y;
 	public float z;
@@ -31,6 +35,24 @@ public class Vector3 implements Serializable {
 	public Vector3 vectorTo(Vector3 other)
 	{
 		return new Vector3(other.x - this.x, other.y - this.y, other.z - this.z);
+	}
+	
+	public void set(float x, float y, float z) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+	}
+	
+	public void set(Vector3 v) {
+		this.x = v.x;
+		this.y = v.y;
+		this.z = v.z;
+	}
+	
+	public void setScaled(Vector3 v, float scale) {
+		this.x = v.x * scale;
+		this.y = v.y * scale;
+		this.z = v.z * scale;
 	}
 	
 	/**
@@ -179,6 +201,12 @@ public class Vector3 implements Serializable {
 		target.z = x1 * y2 - y1 * x2;
 	}
 	
+	public static void cross(Vector3 v1, Vector3 v2, Vector3 target) {
+		target.x = v1.y * v2.z - v1.z * v2.y;
+		target.y = -(v1.x * v2.z - v1.z * v2.x);
+		target.z = v1.x * v2.y - v1.y * v2.x;
+	}
+	
 	public static float length(float x, float y, float z) {
 		return (float) Math.sqrt(x*x +  y*y + z*z);
 	}
@@ -187,6 +215,31 @@ public class Vector3 implements Serializable {
 		target.x = v1.x + v2.x;
 		target.y = v1.y + v2.y;
 		target.z = v1.z + v2.z;
+	}
+	
+	public static void sub(Vector3 v1, Vector3 v2, Vector3 target) {
+		target.x = v1.x - v2.x;
+		target.y = v1.y - v2.y;
+		target.z = v1.z - v2.z;
+	}
+	
+	public static void vectorTo(Vector3 from, Vector3 to, Vector3 target) {
+		target.x = to.x - from.x;
+		target.y = to.y - from.y;
+		target.z = to.z - from.z;
+	}
+	public static void multiply(float f, Vector3 v) {
+		v.x = v.x * f;
+		v.y = v.y * f;
+		v.z = v.z * f;
+	}
+	public static void addScaled(Vector3 v1, Vector3 v2, float scale, Vector3 target) {
+		target.x = v1.x + v2.x * scale;
+		target.y = v1.y + v2.y * scale;
+		target.z = v1.z + v2.z * scale;
+	}
+	public static float dot(float x1, float y1, float z1, float x2, float y2, float z2) {
+		return x1*x2+y1*y2+z1*z2;
 	}
 
 	

@@ -26,9 +26,9 @@ public class FileReader {
 	
 	public static String readFile(String name)
 	{
-		FileInputStream fis;
+		
 		try {
-			fis = Media.CONTEXT.openFileInput(name);
+			FileInputStream fis = Media.CONTEXT.openFileInput(name);
 			int ch;
 			StringBuffer fileContent = new StringBuffer();
 			while( (ch = fis.read()) != -1)
@@ -52,9 +52,8 @@ public class FileReader {
 	
 	public static String readRawFile(int id) {
 		
-		InputStreamReader isr;
 		try {
-			isr = new InputStreamReader(Media.CONTEXT.openRawResource(id));
+			InputStreamReader isr = new InputStreamReader(Media.CONTEXT.openRawResource(id));
 			char[] ch = new char[50];
 			StringBuffer fileContent = new StringBuffer();
 			int length = 0;
@@ -85,13 +84,14 @@ public class FileReader {
 	
 	public static boolean fileExists(Context context, String fileName)
 	{
-		FileInputStream fis;
 		try {
-			fis = context.openFileInput(fileName);
+			FileInputStream fis = context.openFileInput(fileName);
 			fis.close();
 			return true;
-		} catch (FileNotFoundException e) {			
+		} catch (FileNotFoundException e) {		
+			e.printStackTrace();
 		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		
 		return false;

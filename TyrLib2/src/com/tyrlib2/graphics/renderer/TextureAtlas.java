@@ -30,6 +30,10 @@ public class TextureAtlas {
 	public TextureRegion getRegion(String name) {
 		return regions.get(name);
 	}
+	
+	public String getRegionName(int id) {
+		return (String) regions.keySet().toArray()[0];
+	}
 
 	public Texture getTexture() {
 		return texture;

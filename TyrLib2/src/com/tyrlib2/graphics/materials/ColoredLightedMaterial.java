@@ -6,17 +6,21 @@ import com.tyrlib2.graphics.lighting.LightingType;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.renderer.ProgramManager;
 import com.tyrlib2.graphics.renderer.TyrGL;
+import com.tyrlib2.graphics.renderer.VertexLayout;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.util.Color;
 
 public class ColoredLightedMaterial extends LightedMaterial {
-	private int colorOffset = 6;
-	private int colorDataSize = 4;
+	
+	public static final int DEFAULT_NORMAL_OFFSET = 3;
+	public static final int DEFAULT_NORMAL_SIZE = 3;
+	
+	public static final int DEFAULT_COLOR_OFFSET = 6;
+	public static final int DEFAULT_COLOR_SIZE = 4;
+	
 	private int colorHandle;
 	private Color[] colors;
 	
-	private int normalOffset = 3;
-	private int normalDataSize = 3;
 	private int normalHandle;
 	
 	/** Contains the model*view matrix **/
@@ -40,7 +44,11 @@ public class ColoredLightedMaterial extends LightedMaterial {
 		}
 		
 		
-		init(10,0,3, "u_MVPMatrix", "a_Position");
+		init(0,3, "u_MVPMatrix", "a_Position");
+		
+		addVertexInfo(VertexLayout.COLOR, DEFAULT_COLOR_OFFSET, DEFAULT_COLOR_SIZE);
+		addVertexInfo(VertexLayout.NORMAL, DEFAULT_NORMAL_OFFSET, DEFAULT_NORMAL_SIZE);
+		
 		colorHandle = TyrGL.glGetAttribLocation(program.handle, "a_Color");
 		normalHandle = TyrGL.glGetAttribLocation(program.handle, "a_Normal");
 		lightPosHandle = TyrGL.glGetUniformLocation(program.handle, "u_LightPos");
@@ -48,16 +56,16 @@ public class ColoredLightedMaterial extends LightedMaterial {
 	
 	public void render(FloatBuffer vertexBuffer, float[] modelMatrix) {
 	    // Pass in the color information
-	    vertexBuffer.position(colorOffset);
-	    TyrGL.glVertexAttribPointer(colorHandle, colorDataSize, TyrGL.GL_FLOAT, false,
-	    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
+	    vertexBuffer.position(getInfoOffset(VertexLayout.COLOR));
+	    TyrGL.glVertexAttribPointer(colorHandle, getInfoSize(VertexLayout.COLOR), TyrGL.GL_FLOAT, false,
+	    							 getByteStride() * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
 	 
 	    TyrGL.glEnableVertexAttribArray(colorHandle);
 	    
 	    // Pass in the normal information
-	    vertexBuffer.position(normalOffset);
-	    TyrGL.glVertexAttribPointer(normalHandle, normalDataSize, TyrGL.GL_FLOAT, false,
-	    							 strideBytes * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
+	    vertexBuffer.position(getInfoOffset(VertexLayout.NORMAL));
+	    TyrGL.glVertexAttribPointer(normalHandle, getInfoSize(VertexLayout.NORMAL), TyrGL.GL_FLOAT, false,
+	    							getByteStride() * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
 	 
 	    TyrGL.glEnableVertexAttribArray(normalHandle);
 
@@ -94,11 +102,12 @@ public class ColoredLightedMaterial extends LightedMaterial {
 			normals[i].normalize();
 		}
 		
-		
+		int colorOffset = getInfoOffset(VertexLayout.COLOR);
+		int normalOffset = getInfoOffset(VertexLayout.NORMAL);
 		
 		for (int i = 0; i < vertexCount; i++) {
 			
-			int pos = i * strideBytes;
+			int pos = i * getByteStride();
 			int color = i % colors.length;
 			vertexData[pos + colorOffset + 0] = colors[color].r;
 			vertexData[pos + colorOffset + 1] = colors[color].g;

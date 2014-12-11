@@ -18,8 +18,8 @@ void main()
 	vec4 position = vec4(a_Position, 1.0);
 	vec4 normal = vec4(a_Normal, 0.0);
 
-	mat4 boneMatrix =  	a_BoneWeight.x * u_Bone[ int(a_BoneIndex.x) ];
-    position = boneMatrix * position;
+	mat4 boneMatrix =  a_BoneWeight.x * u_Bone[ int(a_BoneIndex.x) ];
+    	position = boneMatrix * position;
 	normal = normalize(boneMatrix * normal);
  
     // Pass through the texture coordinate.

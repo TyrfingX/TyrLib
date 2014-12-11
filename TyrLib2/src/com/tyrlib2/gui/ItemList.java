@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.tyrlib2.input.IMotionEvent;
-import com.tyrlib2.input.IMoveListener;
 import com.tyrlib2.input.IScrollListener;
 import com.tyrlib2.input.InputManager;
-import com.tyrlib2.math.Rectangle;
 import com.tyrlib2.math.Vector2;
 
 public class ItemList extends Window implements IScrollListener {

@@ -1,6 +1,8 @@
 package com.TyrLib2.PC.main;
 
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import javax.media.opengl.GL3;
@@ -9,6 +11,7 @@ import javax.media.opengl.GLEventListener;
 
 import com.tyrlib2.graphics.materials.DefaultMaterial3;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
+import com.tyrlib2.graphics.renderer.PreprocessorOptions;
 import com.tyrlib2.graphics.renderer.ProgramManager;
 import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.main.Media;
@@ -18,6 +21,7 @@ import com.tyrlib2.main.Media;
 public class PCOpenGLRenderer extends OpenGLRenderer implements GLEventListener {
 
 	private Vector<Runnable> queuedEvents = new Vector<Runnable>();
+	private List<Runnable> events = new ArrayList<Runnable>();
 
 	//private int[] fbo = new int[1];
 	//private int[] rbo = new int[2];
@@ -80,11 +84,15 @@ public class PCOpenGLRenderer extends OpenGLRenderer implements GLEventListener 
 	public void display(GLAutoDrawable drawable) {
 		try {
 			synchronized (queuedEvents) {
-				for (int i = 0; i < queuedEvents.size(); ++i) {
-					queuedEvents.get(i).run();
-				}
+				events.addAll(queuedEvents);
 				queuedEvents.clear();
 			}
+			
+			for (int i = 0; i < events.size(); ++i) {
+				events.get(i).run();
+			}
+			events.clear();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			errorHandler.onError();
@@ -120,6 +128,11 @@ public class PCOpenGLRenderer extends OpenGLRenderer implements GLEventListener 
 
 	@Override
 	public void loadShaders() {
+		
+		PreprocessorOptions prepOptions = new PreprocessorOptions();
+		prepOptions.define("BUMP");
+		prepOptions.define("SHADOW");
+		
 		// Create a default program for 2D primitives
 		ProgramManager.getInstance().createProgram(	"BASIC", 
 													Media.CONTEXT.getResourceID("basic_color_vs", "raw"), 
@@ -137,14 +150,16 @@ public class PCOpenGLRenderer extends OpenGLRenderer implements GLEventListener 
 					  .createProgram(DefaultMaterial3.PER_PIXEL_PROGRAM_NAME, 
 							  		 Media.CONTEXT.getResourceID("textured_ppl_vs", "raw"), 
 							  		 Media.CONTEXT.getResourceID("textured_ppl_fs", "raw"), 
-									 new String[]{"a_Position", "a_Normal", "a_Color", "a_TexCoordinate", "a_BoneIndex", "a_BoneWeight"});
+									 new String[]{"a_Position", "a_Normal", "a_Color", "a_TexCoordinate", "a_BoneIndex", "a_BoneWeight"},
+									 prepOptions);
 		
 		// Default program for 3D objects
 		ProgramManager.getInstance()
 					  .createProgram(DefaultMaterial3.PER_PIXEL_PROGRAM_NAME + "_ANIMATED", 
 							  		 Media.CONTEXT.getResourceID("animated_textured_ppl_vs", "raw"), 
 							  		 Media.CONTEXT.getResourceID("animated_textured_ppl_fs", "raw"), 
-									 new String[]{"a_Position", "a_Normal", "a_Color", "a_TexCoordinate", "a_BoneIndex", "a_BoneWeight"});
+									 new String[]{"a_Position", "a_Normal", "a_Color", "a_TexCoordinate", "a_BoneIndex", "a_BoneWeight"},
+									 prepOptions);
 		// BLOOM
 //		ProgramManager.getInstance()
 //					  .createProgram("BLOOM", 
@@ -181,12 +196,7 @@ public class PCOpenGLRenderer extends OpenGLRenderer implements GLEventListener 
 													Media.CONTEXT.getResourceID("particle_vs", "raw"), 
 													Media.CONTEXT.getResourceID("particle_fs", "raw"), 
 													new String[]{"a_Position", "a_TexCoordinate", "a_Color"});
-		
-		// Create a program for rendering shadow depth maps
-		ProgramManager.getInstance().createProgram(	"SHADOW_DEPTH", 
-													Media.CONTEXT.getResourceID("depth_vs", "raw"), 
-													Media.CONTEXT.getResourceID("depth_fs", "raw"), 
-													new String[]{"aPosition" });
+
 	}
 
 }

@@ -1,6 +1,5 @@
 package com.TyrLib2.PC.main;
 
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Graphics;
@@ -259,7 +258,9 @@ public class PCMedia extends Media {
         new Thread(new Runnable() {
 
             public void run() {
-                PCOpenGLSurfaceView.animator.stop();
+            	if (PCOpenGLSurfaceView.animator != null) {
+            		PCOpenGLSurfaceView.animator.stop();
+            	}
                 System.exit(0);
             }
         }).start();

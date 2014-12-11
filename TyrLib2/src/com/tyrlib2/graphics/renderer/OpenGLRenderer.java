@@ -1,6 +1,8 @@
 package com.tyrlib2.graphics.renderer;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 
@@ -9,6 +11,7 @@ import com.tyrlib2.graphics.scene.BoundedSceneObject;
 import com.tyrlib2.graphics.scene.Octree;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.graphics.scene.SceneNode;
+import com.tyrlib2.main.Media;
 import com.tyrlib2.math.FrustumG;
 import com.tyrlib2.math.Matrix;
 import com.tyrlib2.math.Vector3;
@@ -30,22 +33,52 @@ public abstract class OpenGLRenderer extends GameLoop {
 	
 	/** View projection matrix of the camera **/
 	protected float[] vpMatrix = new float[16];
+	protected float[] shadowVPMatrix = new float[16];
+	protected float[] shadowViewMatrix = new float[16];
 	
 	private float[] proj = new float[16];
-	
 
 	protected FrustumG frustum;
 	private static int textureFails = 0;
 	private RenderSceneQuery query = new RenderSceneQuery();
+	private RenderShadowSceneQuery queryShadow = new RenderShadowSceneQuery();
+	
+	protected boolean shadowsEnabled;
+	protected Light shadowCastingLight;
+	
+	private Program shadowProgram;
+	private Program shadowProgramAnim;
+	
+	private int shadowMVPHandle;
+	private int shadowMVPHandleAnim;
+
+	private int shadowDistanceIndex;
+	private int[] depthTextures;
+	private int[] shadowBuffers;
+	private int[] shadowTextureSizes;
+	private float[] shadowDistances;
+	
+	private Comparator<IRenderable> comparator = new Comparator<IRenderable>() {
+		@Override
+		public int compare(IRenderable lhs, IRenderable rhs) {
+			if (lhs.getInsertionID() < rhs.getInsertionID()) {
+				return -1;
+			} else if (rhs.getInsertionID() < lhs.getInsertionID()) {
+				return 1;
+			}
+			return 0;
+		}
+	};
 	
 	class RenderChannel {
 		Octree octree;
 		List<IRenderable> renderables;
 		boolean enabled = true;
 		int priority;
+		int countTotalRenderables;
 		
 		public RenderChannel(int priority) {
-			octree = new Octree(5, 2000, new Vector3(), 200);
+			octree = new Octree(5, 20, new Vector3(), 2000);
 			renderables = new ArrayList<IRenderable>();
 			octree.attachTo(rootSceneNode);
 		}
@@ -63,6 +96,92 @@ public abstract class OpenGLRenderer extends GameLoop {
 		}
 		
 		rendering = false;
+	}
+	
+	@Override
+	public void setShadowsEnabled(boolean state, Light caster, int textureSizes[], float distances[]) {
+		this.shadowsEnabled = state;
+		
+		if (state) {
+			
+			this.shadowTextureSizes = textureSizes;
+			this.shadowDistances = distances;
+			
+			shadowBuffers = new int[shadowTextureSizes.length];
+			depthTextures = new int[shadowTextureSizes.length];
+			
+			shadowCastingLight = caster;
+			
+			for (int i = 0; i < textureSizes.length; ++i) {
+				int[] buffer = new int[1];
+				TyrGL.glGenFramebuffers(1, buffer, 0);
+				shadowBuffers[i] = buffer[0];
+				TyrGL.glBindFramebuffer(TyrGL.GL_FRAMEBUFFER, shadowBuffers[i]);
+				
+				TyrGL.glGenTextures(1, buffer, 0);
+				depthTextures[i] = buffer[0];
+				TyrGL.glBindTexture(TyrGL.GL_TEXTURE_2D, depthTextures[i]);
+				
+				TyrGL.glTexImage2D(	TyrGL.GL_TEXTURE_2D, 0, TyrGL.GL_DEPTH_COMPONENT16, 
+									shadowTextureSizes[i],shadowTextureSizes[i], 0, TyrGL.GL_DEPTH_COMPONENT, TyrGL.GL_UNSIGNED_INT, null);
+				
+				TyrGL.glTexParameteri(TyrGL.GL_TEXTURE_2D, TyrGL.GL_TEXTURE_MAG_FILTER, TyrGL.GL_NEAREST);
+				TyrGL.glTexParameteri(TyrGL.GL_TEXTURE_2D, TyrGL.GL_TEXTURE_MIN_FILTER, TyrGL.GL_NEAREST);
+				TyrGL.glTexParameteri(TyrGL.GL_TEXTURE_2D, TyrGL.GL_TEXTURE_WRAP_S, TyrGL.GL_CLAMP_TO_EDGE);
+				TyrGL.glTexParameteri(TyrGL.GL_TEXTURE_2D, TyrGL.GL_TEXTURE_WRAP_T, TyrGL.GL_CLAMP_TO_EDGE);
+				
+				TyrGL.glFramebufferTexture2D(TyrGL.GL_FRAMEBUFFER, TyrGL.GL_DEPTH_ATTACHMENT, TyrGL.GL_TEXTURE_2D, depthTextures[i], 0);
+			
+				TyrGL.glBindFramebuffer(TyrGL.GL_FRAMEBUFFER, 0);
+				
+			}
+			
+			ProgramManager.getInstance().createProgram(	"SHADOW_DEPTH", 
+														Media.CONTEXT.getResourceID("depth_vs", "raw"), 
+														Media.CONTEXT.getResourceID("depth_fs", "raw"), 
+														new String[]{"a_Position"});
+			
+			ProgramManager.getInstance().createProgram(	"SHADOW_DEPTH_ANIM", 
+														Media.CONTEXT.getResourceID("animated_depth_vs", "raw"), 
+														Media.CONTEXT.getResourceID("depth_fs", "raw"), 
+														new String[]{"a_Position", "a_BoneIndex", "a_BoneWeight"});
+			
+			
+			shadowProgram = ProgramManager.getInstance().getProgram("SHADOW_DEPTH");
+			shadowMVPHandle = TyrGL.glGetUniformLocation(shadowProgram.handle, "u_SMVP");
+			
+			shadowProgramAnim = ProgramManager.getInstance().getProgram("SHADOW_DEPTH_ANIM");
+			shadowMVPHandleAnim = TyrGL.glGetUniformLocation(shadowProgram.handle, "u_SMVP");
+		}
+		
+	}
+	
+	public boolean isShadowsEnabled() { 
+		return shadowsEnabled; 
+	}
+	
+	@Override
+	public int getShadowMapHandle() {
+		return depthTextures[shadowDistanceIndex]; 
+	}
+	
+	@Override
+	public float[] getShadowVP() { 
+		return shadowVPMatrix; 
+	}
+	
+	@Override
+	public int getShadowModelHandle() {
+		return 0; 
+	}
+	
+	@Override
+	public Program getShadowProgram(boolean animated) {
+		if (animated) {
+			return shadowProgramAnim;
+		} else {
+			return shadowProgram;
+		}
 	}
 	
 	public void destroyRenderables() {
@@ -92,6 +211,65 @@ public abstract class OpenGLRenderer extends GameLoop {
 			}
 			
 			TyrGL.glEnable(TyrGL.GL_DEPTH_TEST);
+			
+			if (shadowsEnabled) {
+				//TyrGL.glCullFace(TyrGL.GL_FRONT);
+				shadowDistanceIndex = -1;
+				float cameraDistance = camera.getAbsolutePos().z;
+				
+				for (int i = 0; i < shadowTextureSizes.length; ++i) {
+					if (cameraDistance < shadowDistances[i]) {
+						shadowDistanceIndex = i;
+						break;
+					}
+				}
+				
+				if (shadowDistanceIndex != -1) {
+					TyrGL.glBindFramebuffer(TyrGL.GL_FRAMEBUFFER, shadowBuffers[shadowDistanceIndex]);
+					TyrGL.glClear( TyrGL.GL_DEPTH_BUFFER_BIT | TyrGL.GL_COLOR_BUFFER_BIT );
+					
+					TyrGL.glViewport(0, 0, 	shadowTextureSizes[shadowDistanceIndex], 
+											shadowTextureSizes[shadowDistanceIndex]);
+					Program.blendDisable();
+					
+					float[] lightDir = shadowCastingLight.getLightVector();
+					
+					Vector3 look = new Vector3(lightDir[0], lightDir[1], lightDir[2]);
+					Vector3 right = look.cross(new Vector3(0,0,1));
+					Vector3 up = right.cross(look);
+					up.normalize();
+					
+					Matrix.orthoM(shadowVPMatrix,  0, -300, 300, -120, 300, -180, 180);
+					Matrix.setLookAtM(	shadowViewMatrix, 
+										0, 
+										lightDir[0], lightDir[1], lightDir[2], 
+										0,0,0,
+										up.x,up.y,up.z);
+				
+					Matrix.multiplyMM(shadowVPMatrix, 0, shadowVPMatrix, 0, shadowViewMatrix, 0);
+					
+					renderChannel = renderChannels.get(DEFAULT_CHANNEL);
+					if (renderChannel.enabled) {
+						drawShadowChannel(renderChannel, vpMatrix);
+					}
+					
+					renderChannel = renderChannels.get(TRANSLUCENT_CHANNEL);
+					if (renderChannel.enabled) {
+						drawShadowChannel(renderChannel, vpMatrix);
+					}
+					
+
+					TyrGL.glBindFramebuffer(TyrGL.GL_FRAMEBUFFER, 0);
+					//TyrGL.glCullFace(TyrGL.GL_BACK);
+					TyrGL.glViewport(0, 0, viewport.getWidth(), viewport.getHeight());
+				} else {
+					shadowDistanceIndex = shadowTextureSizes.length-1;
+					TyrGL.glBindFramebuffer(TyrGL.GL_FRAMEBUFFER, shadowBuffers[shadowDistanceIndex]);
+					TyrGL.glClear( TyrGL.GL_DEPTH_BUFFER_BIT | TyrGL.GL_COLOR_BUFFER_BIT );
+					TyrGL.glBindFramebuffer(TyrGL.GL_FRAMEBUFFER, 0);
+				}
+			}
+			
 			renderChannel = renderChannels.get(DEFAULT_CHANNEL);
 			if (renderChannel.enabled) {
 				drawChannel(renderChannel, vpMatrix);
@@ -102,7 +280,6 @@ public abstract class OpenGLRenderer extends GameLoop {
 				drawChannel(renderChannel, vpMatrix);
 			}
 			TyrGL.glDisable(TyrGL.GL_DEPTH_TEST);
-			
 		
 			
 			renderChannel = renderChannels.get(OVERLAY_CHANNEL);
@@ -131,15 +308,45 @@ public abstract class OpenGLRenderer extends GameLoop {
 		// Now draw all bounded objects
 		if (channel.octree != null) {
 			channel.octree.update();
+			if (false) {
+				channel.octree.setBoundingBoxVisible(true);
+			}
 			query.init(frustum, transformMatrix);
 			channel.octree.query(query);   
 		}
+		
+		Collections.sort(toRender, comparator);
+		
+		for (int i = 0, toRenderCount = toRender.size(); i < toRenderCount; ++i) {
+			IRenderable renderable = toRender.get(i);
+			renderable.render(transformMatrix);
+		}
+		
+		toRender.clear();
 		
 		// Draw all unbounded objects
 		if (channel.renderables != null) {
 		    int countRenderables = channel.renderables.size();
 			for (int i = 0; i < countRenderables; ++i) {
 		    	channel.renderables.get(i).render(transformMatrix);
+		    }
+		}
+	}
+	
+	private void drawShadowChannel(RenderChannel channel, final float[] transformMatrix) {
+		
+		// Now draw all bounded objects
+		if (channel.octree != null) {
+			channel.octree.update();
+			queryShadow.init(frustum, transformMatrix);
+			channel.octree.query(queryShadow);   
+		}
+		
+		// Draw all unbounded objects
+		if (channel.renderables != null) {
+		    int countRenderables = channel.renderables.size();
+			for (int i = 0; i < countRenderables; ++i) {
+		    	channel.renderables.get(i).renderShadow(transformMatrix);
 		    }
 		}
 	}
@@ -197,13 +404,14 @@ public abstract class OpenGLRenderer extends GameLoop {
 	@Override
 	public void addRenderable(IRenderable renderable, int channel) {
 		RenderChannel renderChannel = renderChannels.get(channel);
-		if (renderChannel != null) {
-			renderChannel.renderables.add(renderable);
-		} else {
+		if (renderChannel == null) {
 			renderChannel = new RenderChannel(channel);
 			renderChannels.add(renderChannel);
-			renderChannel.renderables.add(renderable);
 		}
+		
+		renderChannel.renderables.add(renderable);
+		renderable.setInsertionID(renderChannel.countTotalRenderables);
+		renderChannel.countTotalRenderables++;
 	}
 
 	@Override
@@ -220,6 +428,9 @@ public abstract class OpenGLRenderer extends GameLoop {
 			renderChannels.add(renderChannel);
 			renderChannel.octree.addObject(renderable);
 		}
+		
+		renderable.setInsertionID(renderChannel.countTotalRenderables);
+		renderChannel.countTotalRenderables++;
 	}
 
 	@Override
@@ -237,6 +448,9 @@ public abstract class OpenGLRenderer extends GameLoop {
 	    		renderChannels.add(renderChannel);
 	    		renderChannel.octree.addObject(renderable);
 	    	}
+	    	
+	    	((IRenderable)renderable).setInsertionID(renderChannel.countTotalRenderables);
+			renderChannel.countTotalRenderables++;
 		}
 	}
 
@@ -245,6 +459,7 @@ public abstract class OpenGLRenderer extends GameLoop {
 		RenderChannel renderChannel = renderChannels.get(channel);
 		if (renderChannel != null) {
 			renderChannel.renderables.remove(renderable);
+			renderChannel.countTotalRenderables--;
 		} 
 	}
 
@@ -254,6 +469,7 @@ public abstract class OpenGLRenderer extends GameLoop {
 	    	RenderChannel renderChannel = renderChannels.get(channel);
 	    	if (renderChannel != null) {
 	    		renderChannel.octree.removeObject(renderable);
+	    		renderChannel.countTotalRenderables--;
 	    	} 
 		}
 	}
@@ -263,6 +479,7 @@ public abstract class OpenGLRenderer extends GameLoop {
 		RenderChannel renderChannel = renderChannels.get(channel);
 		if (renderChannel != null) {
 			renderChannel.octree.removeObject(renderable);
+			renderChannel.countTotalRenderables--;
 		} 
 	}
 
@@ -326,29 +543,23 @@ public abstract class OpenGLRenderer extends GameLoop {
 	
 	public void surfaceChanged(int width, int height) {
 		System.out.println("Surface Changed: Reconstructing Context");
-		if (init) {
-	       viewport.setFullscreen(width, height);
-	       
-	       for (int i = 0; i < frameListeners.size(); ++i) {
-	    	   frameListeners.get(i).onSurfaceChanged();
-	       }
-       
 		
+		viewport.setFullscreen(width, height);
+       
+		for (int i = 0; i < frameListeners.size(); ++i) {
+			frameListeners.get(i).onSurfaceChanged();
+		}
+		
+		if (!init) {
 			ProgramManager.getInstance().recreateAll();
 			TextureManager.getInstance().reloadAll();
 			//SceneManager.getInstance().recreateFonts();
-		}
+		} 
 	}
 	
 	@Override
 	public void render() {
     	if (rendering) {
-    		
-    		try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
         	
 	        // Redraw background color
     		TyrGL.glClear(TyrGL.GL_DEPTH_BUFFER_BIT | TyrGL.GL_COLOR_BUFFER_BIT);

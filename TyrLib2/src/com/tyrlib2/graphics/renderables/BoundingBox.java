@@ -38,7 +38,6 @@ public class BoundingBox extends Renderable {
 				new Vector3(max.x, min.y, max.z),
 				new Vector3(min.x, max.y, max.z),
 				new Vector3(max),
-
 		};
 		
 		ColoredMaterial mat = new ColoredMaterial(new Color[] { Color.getRandomColor(0.2f) });

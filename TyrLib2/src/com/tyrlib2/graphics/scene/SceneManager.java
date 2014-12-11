@@ -31,6 +31,7 @@ import com.tyrlib2.graphics.renderer.Material;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.renderer.TextureAtlas;
 import com.tyrlib2.graphics.renderer.TyrGL;
+import com.tyrlib2.graphics.renderer.VertexLayout;
 import com.tyrlib2.graphics.renderer.Viewport;
 import com.tyrlib2.graphics.text.Font;
 import com.tyrlib2.main.Media;
@@ -249,6 +250,38 @@ public class SceneManager {
 	 */
 	
 	public Entity createEntity(String path, boolean useVBO) {
+		return createEntity(path, useVBO, -1, DefaultMaterial3.DEFAULT_LAYOUT);
+	}
+	
+	/**
+	 * Create an entity from a file source with static lighting information
+	 * baked into the vertex data
+	 * @param context	The context for loading the file
+	 * @param path		The path to the file
+	 * @param useVBO	Whether to use a VBO or not
+	 * @param light		Index of the light for ligthing information
+	 * @return			The newly created entity
+	 */
+	
+	public Entity createEntity(String path, boolean useVBO, int lightIndex) {
+		return createEntity(path, useVBO, lightIndex, DefaultMaterial3.BAKED_LIGHTING_LAYOUT);
+	}
+	
+	/**
+	 * Create an entity from a file source with static lighting information
+	 * baked into the vertex data
+	 * @param context	The context for loading the file
+	 * @param path		The path to the file
+	 * @param useVBO	Whether to use a VBO or not
+	 * @param light		Index of the light for ligthing information
+	 * @param layout	Layout of the vertex information
+	 * @return			The newly created entity
+	 */
+	
+	public Entity createEntity(String path, boolean useVBO, int lightIndex, VertexLayout layout) {
+		
+		Light light = lightIndex >= 0 ? getLight(lightIndex) : null;
+		
 		if (entityFactories.containsKey(path)) {
 			Entity entity = entityFactories.get(path).create();
 			renderer.addRenderable(entity);
@@ -262,8 +295,7 @@ public class SceneManager {
 			factory = new IQEEntityFactory(path, mat);
 			entityFactories.put(path, factory);
 		} else if (path.endsWith("iqm")) {
-			DefaultMaterial3 mat = new DefaultMaterial3(null, 1, 1, null);
-			factory = new IQMEntityFactory(path, mat, useVBO);
+			factory = new IQMEntityFactory(path, layout, useVBO, light);
 			entityFactories.put(path, factory);
 		} else {
 			throw new RuntimeException("Format for loading entity " +  path + " not supported!");

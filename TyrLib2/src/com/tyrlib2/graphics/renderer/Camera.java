@@ -90,12 +90,16 @@ public class Camera extends SceneObject {
 			rotatedUp = new Vector3(up);
 		}
 		
-		Matrix.setLookAtM	(viewMatrix, 
-							0, 
-							pos.x, pos.y, pos.z, 
-							rotatedLookDirection.x + pos.x, rotatedLookDirection.y + pos.y, rotatedLookDirection.z + pos.z,
-							rotatedUp.x, rotatedUp.y, rotatedUp.z);
+		setLookAt(viewMatrix, pos);
 
+	}
+	
+	public void setLookAt(float[] matrix, Vector3 pos) {
+		Matrix.setLookAtM	(	viewMatrix, 
+								0, 
+								pos.x, pos.y, pos.z, 
+								rotatedLookDirection.x + pos.x, rotatedLookDirection.y + pos.y, rotatedLookDirection.z + pos.z,
+								rotatedUp.x, rotatedUp.y, rotatedUp.z);
 	}
 	
 	/**

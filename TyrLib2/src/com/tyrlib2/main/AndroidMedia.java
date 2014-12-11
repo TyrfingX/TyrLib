@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.net.URL;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -17,7 +16,6 @@ import android.graphics.Typeface;
 import android.opengl.GLES20;
 import android.view.Display;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 
 import com.tyrlib2.bitmap.AndroidCanvas;
 import com.tyrlib2.bitmap.AndroidDrawableBitmap;

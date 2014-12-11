@@ -43,4 +43,6 @@ public abstract class Light extends SceneObject {
 	 */
 	public abstract void update(float[] viewMatrix);
 
+
+
 }

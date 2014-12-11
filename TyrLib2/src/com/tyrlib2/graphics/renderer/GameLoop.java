@@ -1,8 +1,10 @@
 package com.tyrlib2.graphics.renderer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import com.tyrlib2.graphics.lighting.Light;
 import com.tyrlib2.graphics.scene.BoundedSceneObject;
 import com.tyrlib2.graphics.scene.Octree;
 import com.tyrlib2.graphics.scene.SceneNode;
@@ -22,6 +24,8 @@ public abstract class GameLoop {
 	
 	protected static boolean init = false;
 	public boolean serverMode;
+
+	public List<IRenderable> toRender = new ArrayList<IRenderable>();
 	
 	public GameLoop(boolean serverMode) {
 		
@@ -42,7 +46,7 @@ public abstract class GameLoop {
 	}
 	
 	public abstract void queueEvent(Runnable r);
-
+	
 	public void startRendering() {
 		
         lastTime = 0;
@@ -126,4 +130,12 @@ public abstract class GameLoop {
 	public IRenderable getRenderable(int index) { return null; }
 	public int getCountRenderables() { return 0; }
 	public Octree getOctree(int channel) { return null; }
+	public void setShadowsEnabled(boolean state, Light caster, int textureSizes[], float distances[]) { }
+	public boolean isShadowsEnabled() { return false; }
+	public int getShadowMapHandle() { return 0; }
+	public float[] getShadowVP() { return null; }
+	public int getShadowModelHandle() {return 0; }
+	public Program getShadowProgram(boolean animated) {return null;}
+
+	
 }

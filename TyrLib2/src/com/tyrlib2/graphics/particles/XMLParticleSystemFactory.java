@@ -108,7 +108,7 @@ public class XMLParticleSystemFactory implements IParticleSystemFactory {
 		
 		int index = 0;
 		BasicParticleFactory factory = null;
-		String name = "" + index;;
+		String name = "" + index;
 		
 		int eventType = parser.next();
 		

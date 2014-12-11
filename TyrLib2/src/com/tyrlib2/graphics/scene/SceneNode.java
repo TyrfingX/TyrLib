@@ -72,18 +72,22 @@ public class SceneNode implements Serializable {
 		Matrix.setIdentityM(modelMatrix, 0);
 	}
 	
+	public SceneNode(float x, float y, float z) {
+		attachedObjects = new ArrayList<SceneObject>();
+		children = new ArrayList<SceneNode>();
+		setRelativePos(x, y, z);
+		setRelativeRot(new Quaternion(0,0,0,1));
+		
+		Matrix.setIdentityM(modelMatrix, 0);
+	}
+	
 	/**
 	 * Creates a SceneNode at the passed position
 	 * @param pos
 	 */
 	
 	public SceneNode(Vector3 pos) {
-		attachedObjects = new ArrayList<SceneObject>();
-		children = new ArrayList<SceneNode>();
-		setRelativePos(pos);
-		setRelativeRot(new Quaternion(0,0,0,1));
-		
-		Matrix.setIdentityM(modelMatrix, 0);
+		this(pos.x, pos.y, pos.z);
 	}
 	
 	
@@ -112,10 +116,10 @@ public class SceneNode implements Serializable {
 	
 	public Vector3 getAbsolutePos() {
 		
-		absolutePos = pos;
+		absolutePos.set(pos);
 		
 		if (parent != null) {
-			absolutePos = absolutePos.add(parent.getAbsolutePos());
+			Vector3.add(absolutePos, parent.getAbsolutePos(), absolutePos);
 		} 
 		
 		return absolutePos;
@@ -398,6 +402,12 @@ public class SceneNode implements Serializable {
 	
 	public SceneNode createChild(Vector3 pos) {
 		SceneNode child = new SceneNode(pos);
+		this.attachChild(child);
+		return child;
+	}
+	
+	public SceneNode createChild(float x, float y, float z) {
+		SceneNode child = new SceneNode(x, y, z);
 		this.attachChild(child);
 		return child;
 	}

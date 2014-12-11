@@ -1,7 +1,10 @@
 package com.tyrlib2.graphics.scene;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.Stack;
 
 import com.tyrlib2.graphics.renderables.BoundingBox;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
@@ -34,6 +37,8 @@ public class OctreeNode extends BoundedSceneObject {
 	private OctreeNode parentOctree;
 	
 	private boolean dirty;
+	
+	private static final Stack<OctreeNode> QUERY_LIST = new Stack<OctreeNode>();
 
 	/** Contains the offsets for calculating the new centers of the child nodes
 	 *  Each 3 sequential entries stand for the x,y,z coordinates
@@ -341,7 +346,7 @@ public class OctreeNode extends BoundedSceneObject {
 												center.y + childCenterOffsets[i*3+1] * dimension/4,
 												center.z + childCenterOffsets[i*3+2] * dimension/4);
 			
-			children[i] = new OctreeNode(minimumObjectsPerNode, maximumObjectsPerNode*2, childCenter, childDimension);
+			children[i] = new OctreeNode(minimumObjectsPerNode, maximumObjectsPerNode, childCenter, childDimension);
 			children[i].parentOctree = this;
 			
 			if (parent != null) {
@@ -395,9 +400,21 @@ public class OctreeNode extends BoundedSceneObject {
 	
 	
 	public void query(ISceneQuery query) {
-		if (query.intersects(boundingBox)) {
-			queryObjects(query);
-			queryChildren(query);
+		query(query, this);
+	}
+	
+	private static void query(ISceneQuery query, OctreeNode start) {
+		QUERY_LIST.add(start);
+		while (!QUERY_LIST.isEmpty()) {
+			OctreeNode node = QUERY_LIST.pop();
+			if (query.intersects(node.boundingBox)) {
+				node.queryObjects(query);
+				if (node.children != null) {
+					for (int i = 0; i < CHILDREN_PER_NODE; ++i) {
+						QUERY_LIST.push(node.children[i]);
+					}
+				}
+			} 
 		}
 	}
 	
@@ -407,8 +424,9 @@ public class OctreeNode extends BoundedSceneObject {
 		
 		for (int i = 0; i < countObjects; ++i)  {
 			object = objects.get(i);
-			if (object.getBoundingBox() != null) {
-				if (query.intersects(object.getBoundingBox())) {
+			AABB aabb = object.getBoundingBox();
+			if (aabb != null) {
+				if (query.intersects(aabb)) {
 					query.callback(object);
 				}
 			}
@@ -435,6 +453,34 @@ public class OctreeNode extends BoundedSceneObject {
 				parentOctree.setDirty();
 			}
 		}
+	}
+	
+	public boolean checkDuplicates() {
+		Set<SceneObject> entries = new HashSet<SceneObject>();
+		return checkDuplicates(entries);
+	}
+	
+	private boolean checkDuplicates(Set<SceneObject> entries) {
+		int countObjects = objects.size();
+		
+		for (int i = 0; i < countObjects; ++i)  {
+			SceneObject object = objects.get(i);
+			if (entries.contains(object)) {
+				return true;
+			} else {
+				entries.add(object);
+			}
+		}
+		
+		if (children != null) {
+			for (int i = 0; i < CHILDREN_PER_NODE; ++i) {
+				if (children[i].checkDuplicates(entries)) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
 	}
 	
 }

@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.opengl.GLES20;
-
 import com.tyrlib2.files.IBitmap;
 import com.tyrlib2.main.Media;
 import com.tyrlib2.math.Vector2;

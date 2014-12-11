@@ -13,6 +13,6 @@ import com.tyrlib2.graphics.renderer.ProgramManager;
 public class PointLightMaterial extends Material {
 	public PointLightMaterial() {
 		program = ProgramManager.getInstance().getProgram("POINT_LIGHT");
-		init(3,0,3, "u_MVPMatrix", "a_Position");
+		init(0,3, "u_MVPMatrix", "a_Position");
 	}
 }

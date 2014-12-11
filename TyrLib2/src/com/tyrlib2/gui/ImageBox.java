@@ -55,6 +55,18 @@ public class ImageBox extends Window {
 		setRelativePos(pos);
 	}
 
+	protected ImageBox(String name, Vector2 pos, int textureHandle, Vector2 size) {
+		super(name, size);
+		
+		Viewport viewport = SceneManager.getInstance().getViewport();
+		Vector2 imageSize = new Vector2(size.x * viewport.getWidth(), size.y * viewport.getHeight());
+		image = new Image2(imageSize, new Texture(textureHandle));
+		
+		addComponent(image);
+		
+		setRelativePos(pos);
+	}
+
 	@Override
 	public float getAlpha() {
 		return image.getAlpha();

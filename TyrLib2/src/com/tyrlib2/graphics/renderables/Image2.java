@@ -64,7 +64,7 @@ public class Image2 extends Renderable2 {
 		
 		createMesh();
 	}
-	
+
 	public Vector2 getSize() {
 		return size;
 	}

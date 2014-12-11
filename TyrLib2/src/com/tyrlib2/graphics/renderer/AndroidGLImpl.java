@@ -17,6 +17,8 @@ public class AndroidGLImpl implements GLImpl {
 		TyrGL.GL_ARRAY_BUFFER = GLES20.GL_ARRAY_BUFFER;
 		TyrGL.GL_TEXTURE0 = GLES20.GL_TEXTURE0;
 		TyrGL.GL_TEXTURE1 = GLES20.GL_TEXTURE1;
+		TyrGL.GL_TEXTURE2 = GLES20.GL_TEXTURE2;
+		TyrGL.GL_TEXTURE3 = GLES20.GL_TEXTURE3;
 		TyrGL.GL_TEXTURE_2D = GLES20.GL_TEXTURE_2D;
 		TyrGL.GL_CULL_FACE = GLES20.GL_CULL_FACE;
 		TyrGL.GL_TRIANGLES = GLES20.GL_TRIANGLES;
@@ -51,6 +53,15 @@ public class AndroidGLImpl implements GLImpl {
 		TyrGL.GL_POINT_SPRITE = -1;
 		TyrGL.GL_STATIC_DRAW = GLES20.GL_STATIC_DRAW;
 		TyrGL.GL_USE_VBO = -1;
+		TyrGL.GL_ELEMENT_ARRAY_BUFFER = GLES20.GL_ELEMENT_ARRAY_BUFFER;
+		TyrGL.GL_STREAM_DRAW = GLES20.GL_STREAM_DRAW;
+		TyrGL.GL_DEPTH_COMPONENT16 = GLES20.GL_DEPTH_COMPONENT16;
+		TyrGL.GL_DEPTH_COMPONENT24 = GLES20.GL_DEPTH_COMPONENT16;
+		TyrGL.GL_DEPTH_COMPONENT = GLES20.GL_DEPTH_COMPONENT;
+		TyrGL.GL_DEPTH_ATTACHMENT = GLES20.GL_DEPTH_ATTACHMENT;
+		TyrGL.GL_RGB = GLES20.GL_RGB;
+		TyrGL.GL_UNSIGNED_INT = GLES20.GL_UNSIGNED_INT;
+		TyrGL.TARGET = TyrGL.ANDROID_TARGET;
 	}
 	
 	@Override
@@ -329,6 +340,12 @@ public class AndroidGLImpl implements GLImpl {
 	@Override
 	public void glGenerateMipmap(int mode) {
 		GLES20.glGenerateMipmap(mode);
+	}
+
+	@Override
+	public void glTexImage2D(int target, int level, int internalFormat,
+							 int width, int height, int border, int format, int type, Buffer data) {
+		GLES20.glTexImage2D(target, level, internalFormat, width, height, border, format, type, data);
 	}
 
 }

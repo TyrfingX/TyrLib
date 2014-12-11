@@ -97,8 +97,12 @@ public class ProgramManager {
 	 */
 	
 	public Program createProgram(String programName, int vertexShaderResId, int fragmentShaderResId, String[] bindAttributes) {
-		String vertexShader = (TyrGL.GL_USE_VBO == 1) ? preprocessVertexShader(FileReader.readRawFile(vertexShaderResId)) : FileReader.readRawFile(vertexShaderResId);
-		String fragmentShader = (TyrGL.GL_USE_VBO == 1) ? preprocessFragmentShader(FileReader.readRawFile(fragmentShaderResId)) : FileReader.readRawFile(fragmentShaderResId);
+		return createProgram(programName, vertexShaderResId, fragmentShaderResId, bindAttributes, null);
+	}
+	
+	public Program createProgram(String programName, int vertexShaderResId, int fragmentShaderResId, String[] bindAttributes, PreprocessorOptions options) {
+		String vertexShader = preprocessVertexShader(FileReader.readRawFile(vertexShaderResId),options);
+		String fragmentShader =  preprocessFragmentShader(FileReader.readRawFile(fragmentShaderResId),options);
 		ShaderManager.getInstance().loadShader(programName + "_VS", TyrGL.GL_VERTEX_SHADER, vertexShader);
 		ShaderManager.getInstance().loadShader(programName + "_FS", TyrGL.GL_FRAGMENT_SHADER, fragmentShader);
 		Program program = ProgramManager.getInstance()
@@ -111,17 +115,93 @@ public class ProgramManager {
 	}
 	
 	public static String preprocessVertexShader(String vertexShader) {
-		vertexShader = "#version 150\n" + vertexShader;
-		vertexShader = vertexShader.replaceAll("attribute", "in");
-		vertexShader = vertexShader.replaceAll("varying", "out");
-		return vertexShader;
+		return preprocessVertexShader(vertexShader, null);
 	}
 	
 	public static String preprocessFragmentShader(String fragmentShader) {
-		fragmentShader = "#version 150\nout vec4 colorOut;\n" + fragmentShader;
-		fragmentShader = fragmentShader.replaceAll("varying", "in");
-		fragmentShader = fragmentShader.replaceAll("gl_FragColor", "colorOut");
-		return fragmentShader;
+		return preprocessFragmentShader(fragmentShader, null);
+	}
+	
+	public static String preprocessVertexShader(String vertexShader, PreprocessorOptions options) {
+		if (TyrGL.TARGET == TyrGL.PC_TARGET) {
+			vertexShader = "#version 150\n" + vertexShader;
+			vertexShader = vertexShader.replaceAll("attribute", "in");
+			vertexShader = vertexShader.replaceAll("varying", "out");
+		}
+		
+		return preprocessShader(vertexShader, options);
+	}
+	
+	public static String preprocessFragmentShader(String fragmentShader, PreprocessorOptions options) {
+		if (TyrGL.TARGET == TyrGL.PC_TARGET) {
+			fragmentShader = "#version 150\nout vec4 colorOut;\n" + fragmentShader;
+			fragmentShader = fragmentShader.replaceAll("varying", "in");
+			fragmentShader = fragmentShader.replaceAll("gl_FragColor", "colorOut");
+		}
+		return preprocessShader(fragmentShader, options);
+	}
+	
+	public static String preprocessShader(String shader, PreprocessorOptions options) {
+		
+		StringBuilder builder = new StringBuilder();
+		StringBuilder tmp = new StringBuilder();
+		int length = shader.length();
+		int pos = 0;
+		
+		while (pos != length) {
+			if (shader.charAt(pos) == '#') {
+				while (shader.charAt(pos) != ' ') {
+					tmp.append(shader.charAt(pos));
+					pos++;
+				}
+				
+				String directive = tmp.toString();
+				tmp.setLength(0);
+				
+				pos++;
+				
+				if (directive.equals("#if")) {
+					while (shader.charAt(pos) != ' ') {
+						tmp.append(shader.charAt(pos));
+						pos++;
+					}
+					
+					String option = tmp.toString();
+					tmp.setLength(0);
+					
+					boolean optionDefined = options != null && options.isDefined(option);
+					
+					while (shader.charAt(pos) != '#') {
+						if (optionDefined) {
+							builder.append(shader.charAt(pos));
+						}
+						pos++;
+					}
+					
+					while (shader.charAt(pos) != ' ') {
+						tmp.append(shader.charAt(pos));
+						pos++;
+					}
+					
+					directive = tmp.toString();
+					tmp.setLength(0);
+					
+					pos++;
+					
+					if (!directive.equals("#endif")) {
+						throw new RuntimeException("Preprocessor failed!");
+					}
+				} else {
+					builder.append(directive);
+					builder.append(' ');
+				}
+			} else {
+				builder.append(shader.charAt(pos));
+				pos++;
+			}
+		}
+		
+		return builder.toString();
 	}
 	
 	/**

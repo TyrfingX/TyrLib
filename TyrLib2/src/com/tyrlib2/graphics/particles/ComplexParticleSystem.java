@@ -39,6 +39,9 @@ public class ComplexParticleSystem extends ParticleSystem {
 	private int[] buffers = new int[2];
 	
 	private boolean dynamic = true;
+	private int insertionID;
+	
+	private boolean staticUpdated;
 	
 	public ComplexParticleSystem() {
 		affectors = new Affector[MIN_AFFECTORS_SIZE];
@@ -105,23 +108,24 @@ public class ComplexParticleSystem extends ParticleSystem {
 		
 		time /= steps;
 		
-		boundingBox.min.x = Float.MAX_VALUE;
-		boundingBox.min.y = Float.MAX_VALUE;
-		boundingBox.min.z = Float.MAX_VALUE;
-		
-		boundingBox.max.x = -Float.MAX_VALUE;
-		boundingBox.max.y = -Float.MAX_VALUE;
-		boundingBox.max.z = -Float.MAX_VALUE;
-		
 		// Update everything
 		if (dynamic) {
+			
+			boundingBox.min.x = Float.MAX_VALUE;
+			boundingBox.min.y = Float.MAX_VALUE;
+			boundingBox.min.z = Float.MAX_VALUE;
+			
+			boundingBox.max.x = -Float.MAX_VALUE;
+			boundingBox.max.y = -Float.MAX_VALUE;
+			boundingBox.max.z = -Float.MAX_VALUE;
+			
 			for (int l = 0; l < steps; ++l) {
 			
 				int countMaterials = particleBatches.size();
 				for (int j = 0; j < countMaterials; ++j) {
-					
-					ParticleMaterial material = particleBatches.get(j).material;
-					List<Particle> particles = particleBatches.get(j).particles;
+					ParticleBatch batch = particleBatches.get(j);
+					ParticleMaterial material = batch.material;
+					List<Particle> particles = batch.particles;
 					int countParticles = particles.size();
 					for (int i = 0; i < countParticles; ++i) {
 						
@@ -144,24 +148,31 @@ public class ComplexParticleSystem extends ParticleSystem {
 					}
 				}
 				
-				for (int i = 0; i < emitters.size(); ++i) {
+				for (int i = 0, countEmitters = emitters.size(); i < countEmitters; ++i) {
 					emitters.get(i).onUpdate(time);
 				}
 			}
-		} else {
-			for (int l = 0; l < steps; ++l) {
-				int countMaterials = particleBatches.size();
-				for (int j = 0; j < countMaterials; ++j) {
-					List<Particle> particles = particleBatches.get(j).particles;
-					int countParticles = particles.size();
-					for (int i = 0; i < countParticles; ++i) {
-						Particle particle = particles.get(i);
-						checkBoundingBox(particle);
-						particle.onUpdate(time);
-					}
+		} else if (!staticUpdated || visible){
+			
+			boundingBox.min.x = Float.MAX_VALUE;
+			boundingBox.min.y = Float.MAX_VALUE;
+			boundingBox.min.z = Float.MAX_VALUE;
+			
+			boundingBox.max.x = -Float.MAX_VALUE;
+			boundingBox.max.y = -Float.MAX_VALUE;
+			boundingBox.max.z = -Float.MAX_VALUE;
+			
+			staticUpdated = true;
+			int countMaterials = particleBatches.size();
+			for (int j = 0; j < countMaterials; ++j) {
+				List<Particle> particles = particleBatches.get(j).particles;
+				int countParticles = particles.size();
+				for (int i = 0; i < countParticles; ++i) {
+					Particle particle = particles.get(i);
+					checkBoundingBox(particle);
+					particle.onUpdate(time);
 				}
 			}
-				
 		}
 		
 		if (isBoundingBoxVisible()) {
@@ -228,6 +239,7 @@ public class ComplexParticleSystem extends ParticleSystem {
 		particleData.pushBack(particle.color.g);
 		particleData.pushBack(particle.color.b);
 		particleData.pushBack(particle.color.a);
+		
 		particleData.pushBack(particle.material.getRegion().u2);
 		particleData.pushBack(particle.material.getRegion().v2);
 		
@@ -329,7 +341,11 @@ public class ComplexParticleSystem extends ParticleSystem {
 	public void attachTo(SceneNode node)  {
 		super.attachTo(node);
 		for (Emitter emitter : emitters) {
-			parent.attachChild(emitter.getParent());
+			if (emitter.getParent() != null) {
+				parent.attachChild(emitter.getParent());
+			} else {
+				parent.attachSceneObject(emitter);
+			}
 		}
 		for (int i = 0; i < countAffectors; ++i) {
 			affectors[i].attachTo(node);
@@ -358,6 +374,11 @@ public class ComplexParticleSystem extends ParticleSystem {
 	
 	public Affector getAffector(int index) {
 		return affectors[index];
+	}
+	
+	@Override
+	public void renderShadow(float[] vpMatrix) {
+		
 	}
 	
 	@Override
@@ -485,6 +506,16 @@ public class ComplexParticleSystem extends ParticleSystem {
 	
 	public void setDynamic(boolean dynamic) {
 		this.dynamic = dynamic;
+	}
+	
+	@Override
+	public void setInsertionID(int id) {
+		this.insertionID = id;
+	}
+
+	@Override
+	public int getInsertionID() {
+		return insertionID;
 	}
 	
 }

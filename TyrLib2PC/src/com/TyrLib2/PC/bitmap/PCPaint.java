@@ -56,7 +56,7 @@ public class PCPaint implements IPaint {
 	@Override
 	public void getTextWidths(char[] s, int index, int count, float[] widths) {
 		for (int i = index; i < count; ++i) {
-			widths[i] = (float) g.getFontMetrics().getStringBounds(new String(s), g).getWidth();
+			widths[i] = (float) g.getFontMetrics().getStringBounds(new String(s), g).getWidth()/1.5f;
 		}
 	}
 

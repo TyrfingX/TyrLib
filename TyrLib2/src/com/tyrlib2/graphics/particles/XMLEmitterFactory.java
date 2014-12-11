@@ -22,9 +22,8 @@ public class XMLEmitterFactory implements IEmitterFactory {
 	}
 	
 	private void parse() {
-		int eventType;
 		try {
-			eventType = parser.getEventType();
+			int eventType = parser.getEventType();
 		
 			while (eventType != XmlPullParser.END_DOCUMENT) {
 				if(eventType == XmlPullParser.START_TAG) {

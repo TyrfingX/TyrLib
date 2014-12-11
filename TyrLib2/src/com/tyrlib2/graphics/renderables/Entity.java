@@ -28,6 +28,9 @@ public class Entity extends BoundedRenderable implements IUpdateable {
 	
 	private boolean visible;
 	
+	private int userData = -1;
+	private int insertionID;
+	
 	public Entity() {
 		subEntities = new HashMap<String, SubEntity>();
 		subEntityList = new ArrayList<SubEntity>();
@@ -67,12 +70,21 @@ public class Entity extends BoundedRenderable implements IUpdateable {
 	}
 	
 	@Override
+	public void renderShadow(float[] vpMatrix) {
+		if (visible) {
+			float[] boneData = skeleton.getBoneData();
+			for (int i = 0; i < countSubEntities; ++i) {
+				subEntityList.get(i).renderShadow(vpMatrix, boneData, skeleton.getCountBones());
+			}
+		}
+	}
+	
+	@Override
 	public void render(float[] vpMatrix) {
-		
 		if (visible) {
 			float[] boneData = skeleton.getBoneData();
 			
-			for (int i = 0; i < subEntityList.size(); ++i) {
+			for (int i = 0; i < countSubEntities; ++i) {
 				subEntityList.get(i).render(vpMatrix, boneData, skeleton.getCountBones());
 			}
 		}
@@ -163,6 +175,22 @@ public class Entity extends BoundedRenderable implements IUpdateable {
 		return skeleton.hasAnimation(animName);
 	}
 	
+	public void setUserData(int data) {
+		this.userData = data;
+	}
 	
+	public int getUserData() {
+		return userData;
+	}
+	
+	@Override
+	public void setInsertionID(int id) {
+		this.insertionID = id;
+	}
+
+	@Override
+	public int getInsertionID() {
+		return insertionID;
+	}
 
 }

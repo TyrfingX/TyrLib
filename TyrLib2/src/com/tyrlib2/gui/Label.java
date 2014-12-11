@@ -1,12 +1,19 @@
 package com.tyrlib2.gui;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.tyrlib2.game.LinkManager;
 import com.tyrlib2.graphics.renderables.FormattedText2;
+import com.tyrlib2.graphics.renderables.FormattedText2.ALIGNMENT;
+import com.tyrlib2.graphics.renderables.FormattedText2.TextSection;
 import com.tyrlib2.graphics.renderables.Rectangle2;
 import com.tyrlib2.graphics.renderer.Viewport;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.graphics.text.Font;
-import com.tyrlib2.math.Rectangle;
+import com.tyrlib2.gui.WindowEvent.WindowEventType;
 import com.tyrlib2.math.Vector2;
+import com.tyrlib2.math.Vector3;
 import com.tyrlib2.util.Color;
 
 /**
@@ -20,6 +27,8 @@ public class Label extends Window{
 	private FormattedText2 text;
 	private Rectangle2 background;
 	private int layer = 100;
+	private List<Window> linkRegions = new ArrayList<Window>();
+	private List<Window> imgRegions = new ArrayList<Window>();
 	
 	public Label(String name, Vector2 pos, String text) {
 		super(name);
@@ -42,6 +51,55 @@ public class Label extends Window{
 		
 		setSize(new Vector2(size));
 		setRelativePos(pos);
+	
+		addLinkRegions();
+		addImgRegions();
+	}
+	
+	private void addLinkRegions() {
+		
+		for (int i = 0; i < text.textSections.size(); ++i) {
+			final TextSection s = text.textSections.get(i);
+			if (s.link != null && !s.link.equals("")) {
+				Window linkRegion = WindowManager.getInstance().createWindow(this.getName()+"/links/"+s.link, s.size);
+				this.addChild(linkRegion);
+				linkRegion.addEventListener(WindowEventType.TOUCH_UP, new IEventListener() {
+					@Override
+					public void onEvent(WindowEvent event) {
+						LinkManager.getInstance().call(s.link);
+					}
+				});
+				linkRegion.setReceiveTouchEvents(true);
+				linkRegion.setRelativePos(s.pos);
+				linkRegions.add(linkRegion);
+			}
+		}
+	}
+	
+	private void clearLinkRegions() {
+		for (int i = 0; i < linkRegions.size(); ++i) {
+			WindowManager.getInstance().destroyWindow(linkRegions.get(i));
+		}
+		linkRegions.clear();
+	}
+	
+	private void addImgRegions() {
+		for (int i = 0; i < text.textSections.size(); ++i) {
+			final TextSection s = text.textSections.get(i);
+			if (s.atlasName != null) {
+				Window imgRegion = WindowManager.getInstance().createImageBox(this.getName()+"/img/"+s.regionName, s.pos, s.atlasName, s.regionName, s.size);
+				this.addChild(imgRegion);
+				imgRegion.setRelativePos(s.pos);
+				imgRegions.add(imgRegion);
+			}
+		}
+	}
+	
+	private void clearImgRegions() {
+		for (int i = 0; i < imgRegions.size(); ++i) {
+			WindowManager.getInstance().destroyWindow(imgRegions.get(i));
+		}
+		imgRegions.clear();
 	}
 	
 	public void setLayer(int layer) {
@@ -55,12 +113,23 @@ public class Label extends Window{
 	public void setText(String text) {
 		if (!this.text.getText().equals(text)) {
 			this.text.setText(text);
-			setSize(new Vector2(this.text.getSize()));
+			
+			Viewport viewport = SceneManager.getInstance().getViewport();
+			Vector2 size = new Vector2(this.text.getSize());
+			size.x /= viewport.getWidth();
+			size.y /= viewport.getHeight();
+			
+			setSize(size);
 			
 			if (background != null) {
-				Vector2 size = new Vector2(getSize());
-				background.setSize(size);
+				background.setSize(new Vector2(this.text.getSize()));
 			}
+			
+			clearImgRegions();
+			addImgRegions();
+			
+			clearLinkRegions();
+			addLinkRegions();
 		}
 	}
 
@@ -70,6 +139,10 @@ public class Label extends Window{
 
 	public void setAlignment(FormattedText2.ALIGNMENT alignment) {
 		text.setAligment(alignment);
+		clearImgRegions();
+		addImgRegions();
+		clearLinkRegions();
+		addLinkRegions();
 	}
 	
 	public Color getColor() {
@@ -80,10 +153,6 @@ public class Label extends Window{
 		text.setBaseColor(color);
 	}
 	
-	@Override
-	public void setSize(Vector2 size) {
-		super.setSize(size);
-	}
 	
 	public Color getBgColor() {
 		if (background == null) {
@@ -144,6 +213,20 @@ public class Label extends Window{
 	@Override
 	public long getPriority() {
 		return priority*4;
+	}
+	
+	@Override
+	public Vector2 getAbsolutePos() {
+		Viewport viewport = SceneManager.getInstance().getViewport();
+		Vector3 pos = node.getCachedAbsolutePosVector();
+		float xOffset = 0;
+		if (getAlignment() == ALIGNMENT.RIGHT) {
+			xOffset = this.getSize().x;
+		} else if (getAlignment() == ALIGNMENT.CENTER) {
+			xOffset = this.getSize().x/2;
+		}
+			
+		return new Vector2(pos.x/viewport.getWidth() - xOffset, pos.y/viewport.getHeight());
 	}
 	
 	
