@@ -11,6 +11,7 @@ import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.math.Quaternion;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.math.Vector3;
+import com.tyrlib2.util.Color;
 
 /**
  * Class for rendering a 2D image
@@ -91,6 +92,11 @@ public class Image2 extends Renderable2 {
 		return mat.getAlpha();
 	}
 	
+	public void setColor(Color color) {
+		TexturedMaterial mat = (TexturedMaterial) material;
+		mat.setColor(color);
+	}
+	
 	public void setTexture(Texture texture) {
 		TexturedMaterial mat = (TexturedMaterial) material;
 		mat.setTexture(texture, textureRegion);
@@ -120,10 +126,10 @@ public class Image2 extends Renderable2 {
 	}
 	
 	private void createMesh() {
-		float[] vertexData = { 0, 0, 0, textureRegion.u1, textureRegion.v1,
-							  size.x, 0, 0, textureRegion.u2, textureRegion.v1,
-							  0, -size.y, 0, textureRegion.u1, textureRegion.v2,
-							  size.x, -size.y, 0, textureRegion.u2, textureRegion.v2
+		float[] vertexData = { 	0, 0, 0, textureRegion.u1, textureRegion.v1,
+								size.x, 0, 0, textureRegion.u2, textureRegion.v1,
+								0, -size.y, 0, textureRegion.u1, textureRegion.v2,
+								size.x, -size.y, 0, textureRegion.u2, textureRegion.v2
 		};
 		this.mesh = new Mesh(vertexData, DRAW_ORDER_IMAGE, 4);
 	}
@@ -135,10 +141,10 @@ public class Image2 extends Renderable2 {
 		Vector3 bottomLeft = quat.multiply(new Vector3(0,-size.y,0));
 		Vector3 bottomRight = quat.multiply(new Vector3(size.x,-size.y,0));
 		
-		float[] vertexData = { topLeft.x, topLeft.y/SceneManager.getInstance().getViewportRatio(), topLeft.z, textureRegion.u1, textureRegion.v1,
-							   topRight.x, topRight.y/SceneManager.getInstance().getViewportRatio(), topRight.z, textureRegion.u2, textureRegion.v1,
-							   bottomLeft.x, bottomLeft.y/SceneManager.getInstance().getViewportRatio(), bottomLeft.z, textureRegion.u1, textureRegion.v2,
-							   bottomRight.x, bottomRight.y/SceneManager.getInstance().getViewportRatio(), bottomRight.z, textureRegion.u2, textureRegion.v2
+		float[] vertexData = { 	topLeft.x, topLeft.y/SceneManager.getInstance().getViewportRatio(), topLeft.z, textureRegion.u1, textureRegion.v1,
+								bottomLeft.x, bottomLeft.y/SceneManager.getInstance().getViewportRatio(), bottomLeft.z, textureRegion.u1, textureRegion.v2,
+								topRight.x, topRight.y/SceneManager.getInstance().getViewportRatio(), topRight.z, textureRegion.u2, textureRegion.v1,
+								bottomRight.x, bottomRight.y/SceneManager.getInstance().getViewportRatio(), bottomRight.z, textureRegion.u2, textureRegion.v2
 		};
 		this.mesh = new Mesh(vertexData, DRAW_ORDER_IMAGE, 4);
 	}

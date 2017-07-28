@@ -32,6 +32,7 @@ public class XMLEmitterFactory implements IEmitterFactory {
 						
 						BasicParticleFactory factory = null;
 						int amount = 0;
+						int max = 0;
 						float interval = 0;
 						
 						int countAttributes = parser.getAttributeCount();
@@ -43,12 +44,15 @@ public class XMLEmitterFactory implements IEmitterFactory {
 								amount = Integer.valueOf(parser.getAttributeValue(i));
 							} else if (attributeName.equals("interval")) {
 								interval = Float.valueOf(parser.getAttributeValue(i));
+							} else if (attributeName.equals("max")) {
+								max = Integer.valueOf(parser.getAttributeValue(i));
 							}
 						}
 	
 						prototype = new Emitter(factory);
 						prototype.setAmount(amount);
 						prototype.setInterval(interval);
+						prototype.setMax(max);
 						prototype.attachTo(new SceneNode(new Vector3()));
 					} else if (elementName.equals("Position")) {
 						

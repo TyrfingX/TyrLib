@@ -78,4 +78,11 @@ public class Skybox extends SceneObject implements IRenderable {
 	public int getInsertionID() {
 		return insertionID;
 	}
+
+	@Override
+	public void destroy() {
+		if (r != null) {
+			r.destroy();
+		}
+	}
 }

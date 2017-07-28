@@ -29,17 +29,11 @@ public class TerrainMaterial extends LightedMaterial {
 	
 	public static int TEXTURE_WEIGHT = 4;
 	
-	public static final int DEFAULT_NORMAL_OFFSET = 3;
-	public static final int DEFAULT_NORMAL_SIZE = 3;
-	
-	public static final int DEFAULT_UV_OFFSET = 6;
+	public static final int DEFAULT_UV_OFFSET = 3;
 	public static final int DEFAULT_UV_SIZE = 2;
 	
-	public static final int DEFAULT_TEXTURE_WEIGHT_OFFSET = 8;
+	public static final int DEFAULT_TEXTURE_WEIGHT_OFFSET = 5;
 	public static final int DEFAULT_TEXTURE_WEIGHT_SIZE = 4;
-	
-	/** Per vertex normals of this object **/
-	private int normalHandle;
 	
 	/** Texture information of this object **/
 	private int textureCoordinateHandle;
@@ -77,7 +71,6 @@ public class TerrainMaterial extends LightedMaterial {
 		textures = new TerrainTexture[TerrainMaterial.TEXTURES_PER_CHUNK];
 		
 		init(0,3, "u_MVPMatrix", "a_Position");
-		this.addVertexInfo(VertexLayout.NORMAL, DEFAULT_NORMAL_OFFSET, DEFAULT_NORMAL_SIZE);
 		this.addVertexInfo(VertexLayout.UV, DEFAULT_UV_OFFSET, DEFAULT_UV_SIZE);
 		this.addVertexInfo(TEXTURE_WEIGHT, DEFAULT_TEXTURE_WEIGHT_OFFSET, DEFAULT_TEXTURE_WEIGHT_SIZE);
 	}
@@ -85,10 +78,6 @@ public class TerrainMaterial extends LightedMaterial {
 	public void render(Mesh mesh, float[] modelMatrix) {
 	    super.render(mesh, modelMatrix);
 	    
-	    FloatBuffer vertexBuffer = mesh.getVertexBuffer();
-	    
-		normalHandle = TyrGL.glGetAttribLocation(program.handle, "a_Normal");
-		lightPosHandle = TyrGL.glGetUniformLocation(program.handle, "u_LightPos");
 		ambientHandle = TyrGL.glGetUniformLocation(program.handle, "u_Ambient");
 		
 		textureUniformHandle = new int[TEXTURES_PER_CHUNK];
@@ -102,29 +91,7 @@ public class TerrainMaterial extends LightedMaterial {
 		
 		
 		if (program.meshChange) {
-			
-		    // Pass in the normal information
-			vertexBuffer.position(getInfoOffset(VertexLayout.NORMAL));
-		    TyrGL.glVertexAttribPointer(normalHandle, getInfoSize(VertexLayout.NORMAL), TyrGL.GL_FLOAT, false,
-		    							 getByteStride() * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
-		 
-		    TyrGL.glEnableVertexAttribArray(normalHandle);
-		    
-	        // Pass in the texture coordinate information
-		    vertexBuffer.position(getInfoOffset(VertexLayout.UV));
-	        TyrGL.glVertexAttribPointer(textureCoordinateHandle, getInfoSize(VertexLayout.UV), TyrGL.GL_FLOAT, false, 
-	        		getByteStride() * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
-	        
-	        TyrGL.glEnableVertexAttribArray(textureCoordinateHandle);
-	        
-	        
-	        // Pass in the texture weight information
-	        vertexBuffer.position(getInfoOffset(TEXTURE_WEIGHT));
-	        TyrGL.glVertexAttribPointer(textureWeightHandle, getInfoSize(TEXTURE_WEIGHT), TyrGL.GL_FLOAT, false, 
-	        		getByteStride() * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
-	        
-	        TyrGL.glEnableVertexAttribArray(textureWeightHandle);
-	    
+			passMesh(mesh);
 		}
 	    
 	    SceneManager sceneManager = SceneManager.getInstance();
@@ -151,16 +118,59 @@ public class TerrainMaterial extends LightedMaterial {
 
 	}
 	
-	public int getNormalOffset() {
-		return getInfoOffset(VertexLayout.NORMAL);
+	protected void passMesh(Mesh mesh)
+	{	
+		FloatBuffer vertexBuffer = mesh.getVertexBuffer();
+		if (mesh.isUsingVBO()) {
+			
+			if (textureWeightHandle != -1) {
+			    TyrGL.glVertexAttribPointer(textureWeightHandle, getTextureWeightSize(), TyrGL.GL_FLOAT, false,
+			    							getByteStride() * OpenGLRenderer.BYTES_PER_FLOAT, getTextureWeightOffset() * OpenGLRenderer.BYTES_PER_FLOAT);
+			 
+			    TyrGL.glEnableVertexAttribArray(textureWeightHandle);
+			}
+			
+			if (textureCoordinateHandle != -1) {
+		        // Pass in the texture coordinate information
+		        TyrGL.glVertexAttribPointer(textureCoordinateHandle, getUVSize(), TyrGL.GL_FLOAT, false, 
+		        		getByteStride() * OpenGLRenderer.BYTES_PER_FLOAT, getUVOffset() * OpenGLRenderer.BYTES_PER_FLOAT);
+		        TyrGL.glEnableVertexAttribArray(textureCoordinateHandle);
+			}
+			
+			
+			
+		} else {
+		    
+	        // Pass in the texture weight information
+	        vertexBuffer.position(getInfoOffset(TEXTURE_WEIGHT));
+	        TyrGL.glVertexAttribPointer(textureWeightHandle, getInfoSize(TEXTURE_WEIGHT), TyrGL.GL_FLOAT, false, 
+	        		getByteStride() * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
+	        
+	        TyrGL.glEnableVertexAttribArray(textureWeightHandle);
+			
+	        // Pass in the texture coordinate information
+	        vertexBuffer.position(getUVOffset());
+	        TyrGL.glVertexAttribPointer(textureCoordinateHandle, getUVSize(), TyrGL.GL_FLOAT, false, 
+	        		getByteStride() * OpenGLRenderer.BYTES_PER_FLOAT, vertexBuffer);
+	        
+	        TyrGL.glEnableVertexAttribArray(textureCoordinateHandle);
+		}
 	}
 	
 	public int getUVOffset(){
 		return getInfoOffset(VertexLayout.UV);
 	}
 	
+	public int getUVSize(){
+		return getInfoSize(VertexLayout.UV);
+	}
+	
 	public int getTextureWeightOffset() {
 		return getInfoOffset(TEXTURE_WEIGHT);
+	}
+	
+	public int getTextureWeightSize() {
+		return getInfoSize(TEXTURE_WEIGHT);
 	}
 	
 	public Material copy() {

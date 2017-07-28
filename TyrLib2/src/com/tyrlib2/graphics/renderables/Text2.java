@@ -34,7 +34,7 @@ public class Text2  extends SceneObject implements IRenderable {
 	
 	@Override
 	public void render(float[] vpMatrix) {
-		Program.blendEnable(TyrGL.GL_ONE, TyrGL.GL_ONE_MINUS_SRC_ALPHA);
+		Program.blendEnable(TyrGL.GL_SRC_ALPHA, TyrGL.GL_ONE_MINUS_SRC_ALPHA);
 		IGLText glText = font.glText;
 		float tmpX = glText.getScaleX();
 		float tmpY = glText.getScaleY();
@@ -103,6 +103,12 @@ public class Text2  extends SceneObject implements IRenderable {
 	@Override
 	public int getInsertionID() {
 		return insertionID;
+	}
+
+	@Override
+	public void destroy() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 

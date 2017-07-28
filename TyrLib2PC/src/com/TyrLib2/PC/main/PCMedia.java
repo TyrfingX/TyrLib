@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import kuusisto.tinysound.TinySound;
+
 import com.TyrLib2.PC.bitmap.PCCanvas;
 import com.TyrLib2.PC.bitmap.PCDrawableBitmap;
 import com.TyrLib2.PC.bitmap.PCPaint;
@@ -32,15 +34,19 @@ import com.tyrlib2.bitmap.IDrawableBitmap;
 import com.tyrlib2.bitmap.IPaint;
 import com.tyrlib2.bitmap.ITypeface;
 import com.tyrlib2.files.IBitmap;
+import com.tyrlib2.graphics.compositors.Precision;
 import com.tyrlib2.graphics.text.GLText;
 import com.tyrlib2.graphics.text.IGLText;
+import com.tyrlib2.main.BackgroundWorker;
 import com.tyrlib2.main.Media;
 import com.tyrlib2.math.Vector2;
+import com.tyrlib2.sound.IMusic;
+import com.tyrlib2.sound.ISound;
 
 
 public class PCMedia extends Media {
 
-	private Map<String, Integer> resourceIDs = new HashMap<String, Integer>();;
+	private Map<String, Integer> resourceIDs = new HashMap<String, Integer>();
 	private List<String> resourceNames = new ArrayList<String>();
 	private List<String> resourceEndings = new ArrayList<String>();
 	
@@ -50,15 +56,30 @@ public class PCMedia extends Media {
 		
 		this.context = context;
 		
-		System.out.println("-----Index resources-----");
+		options.setOption(Media.PRECISION, Precision.HIGH);
+		options.setOption(Media.DEPTH_TEXTURES_ENABLED, true);
 		
-		URL url = getClass().getResource("/res");
-		File folder = new File(url.getPath());
+		BackgroundWorker.getInstance().execute(new Runnable() {
+			@Override
+			public void run() {
+				System.out.println("-----Index resources-----");
+				
+				URL url = getClass().getResource("/res");
+				File folder = new File(url.getPath());
+				
+				loadFolder(folder);
+				
+				System.out.println("-----Finished indexing resources-----");
+			}
+		});
 		
-		loadFolder(folder);
-		
-		System.out.println("-----Finished indexing resources-----");
 
+		System.out.println("-----Initializing TinySound-----");
+		
+		TinySound.init();
+		
+		System.out.println("-----Finished initializing TinySound-----");
+			
 	}
 	
 	private void loadFolder(File file) {
@@ -118,13 +139,12 @@ public class PCMedia extends Media {
 	public IGLText createTextRenderer(String fontSource, int size) {
 		IGLText glText = new GLText();
 		glText.load( fontSource, size, 2, 2 );  // Create Font (Height: 14 Pixels / X+Y Padding 2 Pixels)
-		glText.setScale(1);
+		glText.setScale(1f);
 		return glText;
 	}
 
 	@Override
 	public IBitmap loadBitmap(int resID, boolean prescaling) {
-		
 		String path = "/res/"+ resourceNames.get(resID) + "." + resourceEndings.get(resID);
 		URL url = getClass().getResource(path);
 		return new PCBitmap(url.getPath());
@@ -158,7 +178,7 @@ public class PCMedia extends Media {
 	@Override
 	public IPaint createPaint(ICanvas canvas) {
 		Graphics g = ((PCCanvas)canvas).canvas.getGraphics();
-		return new PCPaint(g);
+		return new PCPaint(g, (PCCanvas)canvas);
 	}
 
 	@Override
@@ -223,7 +243,7 @@ public class PCMedia extends Media {
 		}
 		catch ( IOException e ) { System.err.println( e ); }
 		catch ( ClassNotFoundException e ) { System.err.println( e ); }
-		finally { try { fis.close(); } catch ( Exception e ) { } }
+		finally { try { fis.close(); } catch ( Exception e ) { System.err.println( e ); } }
 		
 		return result;
 	}
@@ -268,8 +288,25 @@ public class PCMedia extends Media {
 
 	@Override
 	public boolean fileExists(String target, String fileName) {
-		return true;
+		URL url = getClass().getResource(target);
+		if (url == null) return false;
+		String path = url.getPath() + "/" + fileName;
+		File f = new File(path);
+		return  f.exists() && !f.isDirectory();
 	}
 
+	@Override
+	public ISound createSound(String source) {
+		int resID = Media.CONTEXT.getResourceID(source, "sound");
+		String path = "/res/assets/"+ resourceNames.get(resID) + "." + resourceEndings.get(resID);
+		return new PCSound(TinySound.loadSound(path));
+	}
+
+	@Override
+	public IMusic createMusic(String source) {
+		int resID = Media.CONTEXT.getResourceID(source, "music");
+		String path = "/res/assets/"+ resourceNames.get(resID) + "." + resourceEndings.get(resID);
+		return new PCMusic(TinySound.loadMusic(path));
+	}
 
 }

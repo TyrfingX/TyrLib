@@ -5,8 +5,6 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
-import android.opengl.GLES20;
-
 import com.tyrlib2.math.AABB;
 
 /**
@@ -16,7 +14,7 @@ import com.tyrlib2.math.AABB;
  */
 
 public class Mesh {
-	protected FloatBuffer vertexBuffer;
+	public FloatBuffer vertexBuffer;
 	protected ShortBuffer drawListBuffer;
 	protected FloatBuffer boneBuffer;
 	
@@ -45,11 +43,15 @@ public class Mesh {
 		
 	}
 	
-	public Mesh(float[] vertexData, short[] drawOrder, int vertexCount) {
-		this(vertexData, drawOrder, vertexCount, TyrGL.GL_USE_VBO == 1);
+	public Mesh(float[] vertexData, short[] drawOrder, int vertexCount, boolean threeDim) {
+		this(vertexData, drawOrder, vertexCount, TyrGL.GL_USE_VBO == 1, threeDim);
 	}
 	
-	public Mesh(float[] vertexData, short[] drawOrder, int vertexCount, boolean useVBO) {
+	public Mesh(float[] vertexData, short[] drawOrder, int vertexCount) {
+		this(vertexData, drawOrder, vertexCount, TyrGL.GL_USE_VBO == 1, true);
+	}
+	
+	public Mesh(float[] vertexData, short[] drawOrder, int vertexCount, boolean useVBO, boolean threeDim) {
 		this.vertexData = vertexData;
 		this.drawOrder = drawOrder;
 		this.vertexCount = vertexCount;
@@ -79,7 +81,7 @@ public class Mesh {
       
         int stride = vertexData.length / vertexCount;
         
-        boundingBox = AABB.createFromPoints(vertexData, stride);
+        boundingBox = AABB.createFromPoints(vertexData, stride, threeDim);
         
         if (useVBO) {
         	createVBO();
@@ -230,6 +232,32 @@ public class Mesh {
 
 	public boolean isUsingIBO() {
 		return buffers[1] != 0;
+	}
+	
+	public boolean isUsingBBO() {
+		return buffers[2] != 0;
+	}
+
+	public void destroy() {
+		vertexData = null;
+		drawOrder = null;
+		boneData = null;
+		
+		vertexBuffer = null;
+		drawListBuffer = null;
+		boneBuffer = null;
+		
+		if (this.isUsingVBO()) {
+			TyrGL.glDeleteBuffers(1, buffers, 0);
+		}
+		
+		if (this.isUsingIBO()) {
+			TyrGL.glDeleteBuffers(1, buffers, 1);
+		}
+		
+		if (this.isUsingBBO()) {
+			TyrGL.glDeleteBuffers(1, buffers, 2);
+		}
 	}
 
 }

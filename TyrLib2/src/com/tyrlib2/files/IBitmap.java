@@ -7,4 +7,5 @@ public interface IBitmap {
 	public void recycle();
 	public int getHandle();
 	public int getRGB(int x, int y);
+	public void toTexture();
 }

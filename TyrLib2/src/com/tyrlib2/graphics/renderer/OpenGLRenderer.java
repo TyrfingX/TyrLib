@@ -6,6 +6,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 
+import com.tyrlib2.graphics.compositors.Composit;
+import com.tyrlib2.graphics.compositors.Compositor;
+import com.tyrlib2.graphics.compositors.Precision;
 import com.tyrlib2.graphics.lighting.Light;
 import com.tyrlib2.graphics.scene.BoundedSceneObject;
 import com.tyrlib2.graphics.scene.Octree;
@@ -23,8 +26,9 @@ public abstract class OpenGLRenderer extends GameLoop {
 	 */
 	public static final int BACKGROUND_CHANNEL = 0;
 	public static final int DEFAULT_CHANNEL = 1;
-	public static final int TRANSLUCENT_CHANNEL = 2;
-	public static final int OVERLAY_CHANNEL = 3;
+	public static final int TRANSLUCENT_CHANNEL_1 = 2;
+	public static final int TRANSLUCENT_CHANNEL_2 = 3;
+	public static final int OVERLAY_CHANNEL = 4;
 	public static final int BYTES_PER_FLOAT = 4;
 	protected List<RenderChannel> renderChannels;
 	protected Viewport viewport;
@@ -57,6 +61,11 @@ public abstract class OpenGLRenderer extends GameLoop {
 	private int[] shadowBuffers;
 	private int[] shadowTextureSizes;
 	private float[] shadowDistances;
+	
+	private Vector<Runnable> queuedEvents = new Vector<Runnable>();
+	private List<Runnable> events = new ArrayList<Runnable>();
+	
+	private Compositor compositor;
 	
 	private Comparator<IRenderable> comparator = new Comparator<IRenderable>() {
 		@Override
@@ -91,7 +100,8 @@ public abstract class OpenGLRenderer extends GameLoop {
 	
 			renderChannels.add(new RenderChannel(BACKGROUND_CHANNEL));
 			renderChannels.add(new RenderChannel(DEFAULT_CHANNEL));
-			renderChannels.add(new RenderChannel(TRANSLUCENT_CHANNEL));
+			renderChannels.add(new RenderChannel(TRANSLUCENT_CHANNEL_1));
+			renderChannels.add(new RenderChannel(TRANSLUCENT_CHANNEL_2));
 			renderChannels.add(new RenderChannel(OVERLAY_CHANNEL));
 		}
 		
@@ -156,6 +166,10 @@ public abstract class OpenGLRenderer extends GameLoop {
 		
 	}
 	
+	public boolean hasCompositor() {
+		return compositor != null;
+	}
+	
 	public boolean isShadowsEnabled() { 
 		return shadowsEnabled; 
 	}
@@ -192,25 +206,48 @@ public abstract class OpenGLRenderer extends GameLoop {
 		renderChannels.clear();
 		renderChannels.add(new RenderChannel(BACKGROUND_CHANNEL));
 		renderChannels.add(new RenderChannel(DEFAULT_CHANNEL));
-		renderChannels.add(new RenderChannel(TRANSLUCENT_CHANNEL));
+		renderChannels.add(new RenderChannel(TRANSLUCENT_CHANNEL_1));
+		renderChannels.add(new RenderChannel(TRANSLUCENT_CHANNEL_2));
 		renderChannels.add(new RenderChannel(OVERLAY_CHANNEL));
 	}
 	
-	@Override
-	public void destroyRenderables(int channel) {
-		renderChannels.remove(channel);
-		renderChannels.add(channel, new RenderChannel(channel));
+	public void destroyRenderables(int channelIndex) {
+		
+		RenderChannel channel = renderChannels.get(channelIndex);
+		
+		// Now draw all bounded objects
+		if (channel.octree != null) {
+			channel.octree.update();
+			channel.octree.query(new DestroyQuery());   
+		}
+		
+		// Draw all unbounded objects
+		if (channel.renderables != null) {
+		    int countRenderables = channel.renderables.size();
+			for (int i = 0; i < countRenderables; ++i) {
+		    	channel.renderables.get(i).destroy();
+		    }
+		}
+	
+		renderChannels.remove(channelIndex);
+		renderChannels.add(channelIndex, new RenderChannel(channelIndex));
 	}
 
 	protected void drawScene() {
 		if (!skipRendering) {
-			RenderChannel renderChannel = renderChannels.get(BACKGROUND_CHANNEL);
 			
+			if (hasCompositor()) {
+				compositor.bind();
+				TyrGL.glClear( TyrGL.GL_DEPTH_BUFFER_BIT | TyrGL.GL_COLOR_BUFFER_BIT );
+			}
+			
+			TyrGL.glEnable(TyrGL.GL_DEPTH_TEST);
+			
+			RenderChannel renderChannel = renderChannels.get(BACKGROUND_CHANNEL);
 			if (renderChannel.enabled) {
 				drawChannel(renderChannel, vpMatrix);
 			}
 			
-			TyrGL.glEnable(TyrGL.GL_DEPTH_TEST);
 			
 			if (shadowsEnabled) {
 				//TyrGL.glCullFace(TyrGL.GL_FRONT);
@@ -239,11 +276,18 @@ public abstract class OpenGLRenderer extends GameLoop {
 					Vector3 up = right.cross(look);
 					up.normalize();
 					
-					Matrix.orthoM(shadowVPMatrix,  0, -300, 300, -120, 300, -180, 180);
+					Vector3 camPos = new Vector3(camera.getAbsolutePos());
+					camPos = camPos.add(camera.getLookDirection().multiply(camPos.z));
+					
+					Matrix.orthoM(shadowVPMatrix,  0, -100, 100, -40, 100, -100, 100);
 					Matrix.setLookAtM(	shadowViewMatrix, 
 										0, 
-										lightDir[0], lightDir[1], lightDir[2], 
-										0,0,0,
+										camPos.x+lightDir[0], 
+										camPos.y+lightDir[1], 
+										lightDir[2], 
+										camPos.x,
+										camPos.y,
+										0,
 										up.x,up.y,up.z);
 				
 					Matrix.multiplyMM(shadowVPMatrix, 0, shadowVPMatrix, 0, shadowViewMatrix, 0);
@@ -253,12 +297,16 @@ public abstract class OpenGLRenderer extends GameLoop {
 						drawShadowChannel(renderChannel, vpMatrix);
 					}
 					
-					renderChannel = renderChannels.get(TRANSLUCENT_CHANNEL);
+					renderChannel = renderChannels.get(TRANSLUCENT_CHANNEL_1);
 					if (renderChannel.enabled) {
 						drawShadowChannel(renderChannel, vpMatrix);
 					}
 					
-
+					renderChannel = renderChannels.get(TRANSLUCENT_CHANNEL_2);
+					if (renderChannel.enabled) {
+						drawShadowChannel(renderChannel, vpMatrix);
+					}
+					
 					TyrGL.glBindFramebuffer(TyrGL.GL_FRAMEBUFFER, 0);
 					//TyrGL.glCullFace(TyrGL.GL_BACK);
 					TyrGL.glViewport(0, 0, viewport.getWidth(), viewport.getHeight());
@@ -270,17 +318,31 @@ public abstract class OpenGLRenderer extends GameLoop {
 				}
 			}
 			
+			if (hasCompositor()) {
+				compositor.bind();
+			}
+			
 			renderChannel = renderChannels.get(DEFAULT_CHANNEL);
 			if (renderChannel.enabled) {
 				drawChannel(renderChannel, vpMatrix);
 			}
 			
-			renderChannel = renderChannels.get(TRANSLUCENT_CHANNEL);
+			
+			renderChannel = renderChannels.get(TRANSLUCENT_CHANNEL_1);
 			if (renderChannel.enabled) {
 				drawChannel(renderChannel, vpMatrix);
 			}
+			
 			TyrGL.glDisable(TyrGL.GL_DEPTH_TEST);
-		
+			
+			renderChannel = renderChannels.get(TRANSLUCENT_CHANNEL_2);
+			if (renderChannel.enabled) {
+				drawChannel(renderChannel, vpMatrix);
+			}
+
+			if (hasCompositor()) {
+				compositor.apply();
+			}
 			
 			renderChannel = renderChannels.get(OVERLAY_CHANNEL);
 			if (renderChannel.enabled) {
@@ -304,14 +366,10 @@ public abstract class OpenGLRenderer extends GameLoop {
 	}
 
 	private void drawChannel(RenderChannel channel, final float[] transformMatrix) {
-		
 		// Now draw all bounded objects
 		if (channel.octree != null) {
 			channel.octree.update();
-			if (false) {
-				channel.octree.setBoundingBoxVisible(true);
-			}
-			query.init(frustum, transformMatrix);
+			query.init(frustum);
 			channel.octree.query(query);   
 		}
 		
@@ -354,6 +412,11 @@ public abstract class OpenGLRenderer extends GameLoop {
 	@Override
 	public Viewport getViewport() {
 		return viewport;
+	}
+	
+	@Override
+	public void setViewport(Viewport viewport) {
+		this.viewport = viewport;
 	}
 
 	@Override
@@ -507,8 +570,6 @@ public abstract class OpenGLRenderer extends GameLoop {
 		return renderChannels.get(DEFAULT_CHANNEL).octree;
 	}
 	
-	public abstract void loadShaders();
-	
 	public void defaultSetup() {
         // Enable depth testing
 		TyrGL.glDepthFunc( TyrGL.GL_LEQUAL );
@@ -551,8 +612,8 @@ public abstract class OpenGLRenderer extends GameLoop {
 		}
 		
 		if (!init) {
-			ProgramManager.getInstance().recreateAll();
-			TextureManager.getInstance().reloadAll();
+			//ProgramManager.getInstance().recreateAll();
+			//TextureManager.getInstance().reloadAll();
 			//SceneManager.getInstance().recreateFonts();
 		} 
 	}
@@ -589,20 +650,43 @@ public abstract class OpenGLRenderer extends GameLoop {
 		    }
 
 		    TyrGL.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		    TyrGL.glClear( TyrGL.GL_DEPTH_BUFFER_BIT | TyrGL.GL_COLOR_BUFFER_BIT);
 		    
 		    TyrGL.glViewport(0, 0, viewport.getWidth(), viewport.getHeight());
 		    
 		    Matrix.multiplyMM(vpMatrix, 0, viewport.projectionMatrix, 0, camera.viewMatrix, 0);
 		    
 		    drawScene();
+		    
 		    super.render();
 		    
 		    setTextureFails(0);
 
     	}
+    	
+		try {
+			synchronized (queuedEvents) {
+				events.addAll(queuedEvents);
+				queuedEvents.clear();
+			}
+			
+			for (int i = 0; i < events.size(); ++i) {
+				events.get(i).run();
+			}
+			events.clear();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			errorHandler.onError();
+		}
         
 	}
+	
+	public void queueEvent(Runnable r) {
+		synchronized (queuedEvents) {
+			queuedEvents.add(r);
+		}
+	}
+
 
 	public static int getTextureFails() {
 		return textureFails;
@@ -610,6 +694,25 @@ public abstract class OpenGLRenderer extends GameLoop {
 
 	public static void setTextureFails(int textureFails) {
 		OpenGLRenderer.textureFails = textureFails;
+	}
+	
+	@Override
+	public void addComposit(Composit composit) {
+		compositor.add(composit);
+	}
+	
+	public Compositor getCompositor() {
+		return compositor;
+	}
+	
+	@Override
+	public Composit getComposit(int index) { 
+		return compositor.get(index);
+	}
+	
+	@Override
+	public void enableOffscreenRendering(Precision precision) {
+		this.compositor = new Compositor(precision);
 	}
 
 }

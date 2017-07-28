@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.tyrlib2.files.IBitmap;
+import com.tyrlib2.graphics.scene.SceneManager;
+import com.tyrlib2.main.BackgroundWorker;
 import com.tyrlib2.main.Media;
 import com.tyrlib2.math.Vector2;
 
@@ -44,7 +46,7 @@ public class TextureManager {
 		}
 		
 		IBitmap bitmap = Media.CONTEXT.loadBitmap(resourceId, false);
-
+		bitmap.toTexture();
 	 
 	    if (bitmap.getHandle() == 0)
 	    {
@@ -59,6 +61,40 @@ public class TextureManager {
 	    
 	    texture.resId = resourceId;
 	 
+	    return texture;
+	}
+	
+	public Texture backgroundCreateTexture(final String name, final int resourceId) {
+		if (textures.get(name) != null) {
+			return textures.get(name);
+		}
+		
+	    final Texture texture = new Texture();
+	    texture.resId = resourceId;
+	    textures.put(name, texture);
+		
+		BackgroundWorker.getInstance().execute(new Runnable() {
+			@Override
+			public void run() {
+				final IBitmap bitmap = Media.CONTEXT.loadBitmap(resourceId, false);
+				texture.size = new Vector2(bitmap.getWidth(), bitmap.getHeight());
+				SceneManager.getInstance().getRenderer().queueEvent(new Runnable() {
+					@Override
+					public void run() {
+						bitmap.toTexture();
+						
+					    if (bitmap.getHandle() == 0)
+					    {
+					        throw new RuntimeException("Error loading texture " + name + ".");
+					    }
+					    
+						texture.handle = bitmap.getHandle();
+						System.out.println("Background loaded texture: " + name);
+					}
+				});
+			}
+		});
+		
 	    return texture;
 	}
 	
@@ -104,8 +140,9 @@ public class TextureManager {
 	}
 	
 	private void reloadTexture(Texture texture) {
-		
-		int textureHandle = Media.CONTEXT.loadBitmap(texture.resId, false).getHandle();
+		IBitmap bitmap = Media.CONTEXT.loadBitmap(texture.resId, false);
+		bitmap.toTexture();
+		int textureHandle = bitmap.getHandle();
 	    texture.handle = textureHandle;
 	}
 	
@@ -137,6 +174,10 @@ public class TextureManager {
 	    textures.put(name, texture);
 	    
 	    return texture;
+	}
+
+	public void addTexture(String textureName, Texture tex) {
+		textures.put(textureName, tex);
 	}
 	
 }

@@ -1,12 +1,21 @@
 package com.tyrlib2.util;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public class Color {
+public class Color implements Serializable {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6096186688785078790L;
 	
 	public static final Color BLACK = new Color(0,0,0,1);
+	public static final Color GRAY = new Color(0.3f,0.3f,0.3f,1);
+	public static final Color DARK_GRAY = new Color(0.15f,0.15f,0.15f,1);
 	public static final Color WHITE = new Color(1,1,1,1);
 	public static final Color RED = new Color(1,0,0,1);
+	public static final Color ORANGE = new Color(1,0.5f,0.5f,1);
 	public static final Color GREEN = new Color(0,1,0,1);
 	public static final Color BLUE = new Color(0,0,1,1);
 	public static final Color YELLOW = new Color(1,1,0,1);
@@ -19,6 +28,9 @@ public class Color {
 		this.g = g;
 		this.b = b;
 		this.a = a;
+	}
+	public static Color fromRGBA(int r, int g, int b, int a) {
+		return new Color(r / 255f, g / 255f, b / 255f, a / 255f);
 	}
 	
 	public void clamp() {
@@ -59,6 +71,13 @@ public class Color {
 	public static Color getRandomColor(float min) {
 		Random random = new Random();
 		return new Color(random.nextFloat(), random.nextFloat(), random.nextFloat(), random.nextFloat() + min);
+	}
+	
+	public static Color lerp(Color c1, Color c2, float weight) {
+		return new Color(	c1.r * weight + c2.r * (1-weight),
+							c1.g * weight + c2.g * (1-weight),
+							c1.b * weight + c2.b * (1-weight),
+							c1.a * weight + c2.a * (1-weight));
 	}
 	
 	public String toHex() {

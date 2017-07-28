@@ -21,6 +21,12 @@ public class Emitter extends SceneObject implements IUpdateable {
 	// The amount of particles emitted in each step
 	protected int amount;
 	
+	// Maximum amount of particles this emitter is allowed to emit (0 if no restriction)
+	protected int max;
+	
+	// Number of particles that have been emitted by this emitter
+	protected int count;
+	
 	// A factory to create the particles
 	private IParticleFactory particleFactory;
 	
@@ -52,7 +58,7 @@ public class Emitter extends SceneObject implements IUpdateable {
 	// Random generator
 	private Random random = new Random();
 	
-	private Vector3 oldParentPos = new Vector3();
+	private Vector3 oldParentPos = null;
 	
 	private boolean firstEmit = true;
 	
@@ -64,12 +70,13 @@ public class Emitter extends SceneObject implements IUpdateable {
 	}
 	
 	public Emitter(Emitter other) {
-		particleFactory = other.particleFactory;
+		particleFactory = other.particleFactory.oopy();
 		interval = other.interval;
 		amount = other.amount;
-		velocity = other.velocity;
-		randomVelocity = other.randomVelocity;
-		randomPos = other.randomPos;
+		velocity = new Vector3( other.velocity );
+		randomVelocity = new Vector3( other.randomVelocity );
+		randomPos = new Vector3( other.randomPos );
+		max = other.max;
 		parent = new SceneNode(other.getRelativePos());
 	}
 	
@@ -102,21 +109,21 @@ public class Emitter extends SceneObject implements IUpdateable {
 			parent.getCachedAbsoluteRot().multiply(randomVelocity, rotatedRandomVelocity);
 			
 			Vector3 parentPos = parent.getCachedAbsolutePosVector();
-			emitterPos.x = parentPos.x;
-			emitterPos.y = parentPos.y;
-			emitterPos.z = parentPos.z;
+			emitterPos.x = parentPos.x / system.globalScale;
+			emitterPos.y = parentPos.y / system.globalScale;
+			emitterPos.z = parentPos.z / system.globalScale;
 			
 			if (oldParentPos != null) {
-				float dX = emitterPos.x - oldParentPos.x;
-				float dY = emitterPos.y - oldParentPos.y;
-				float dZ = emitterPos.z - oldParentPos.z;
+				float dX = emitterPos.x - oldParentPos.x / system.globalScale;
+				float dY = emitterPos.y - oldParentPos.y / system.globalScale;
+				float dZ = emitterPos.z - oldParentPos.z / system.globalScale;
 				
 				emitterPos.x += dX / 2;
 				emitterPos.y += dY / 2;
 				emitterPos.z += dZ / 2;
 			}
 			
-			for (int i = 0; i < amount && system.allowsMoreParticles(); ++i) {
+			for (int i = 0; i < amount && system.allowsMoreParticles() && (max == 0 || count < max); ++i) {
 				Particle particle = particleFactory.create(system.requestDeadParticle());
 				Vector3 particlePos = particle.getPos();
 				particlePos.x = emitterPos.x;
@@ -133,6 +140,7 @@ public class Emitter extends SceneObject implements IUpdateable {
 				particle.velocity.y = rotatedVelocity.y + (0.5f-random.nextFloat()) * rotatedRandomVelocity.y;
 				particle.velocity.z = rotatedVelocity.z + (0.5f-random.nextFloat()) * rotatedRandomVelocity.z;
 				system.addParticle(particle);
+				++count;
 			}
 			
 			if (oldParentPos == null) {
@@ -147,11 +155,12 @@ public class Emitter extends SceneObject implements IUpdateable {
 
 	@Override
 	public boolean isFinished() {
-		return false;
+		return max != 0 && count >= max;
 	}
 	
 	
 	public void setParticleSystem(ParticleSystem system) { 
+		parent.setRelativePos(parent.getRelativePos().multiply(system.globalScale));
 		if (system.getParent() != null) {
 			if (parent != null) {
 				system.getParent().attachChild(parent);
@@ -198,5 +207,9 @@ public class Emitter extends SceneObject implements IUpdateable {
 	
 	public Emitter copy() {
 		return new Emitter(this);
+	}
+
+	public void setMax(int max) {
+		this.max = max;
 	}
 }

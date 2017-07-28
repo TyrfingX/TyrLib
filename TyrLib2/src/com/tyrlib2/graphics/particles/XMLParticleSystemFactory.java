@@ -84,6 +84,7 @@ public class XMLParticleSystemFactory implements IParticleSystemFactory {
 		
 		int maxParticles = 0;
 		boolean simple = false;
+		boolean screenSpace = false;
 
 		int countAttributes = parser.getAttributeCount();
 		for (int i = 0; i < countAttributes; ++i) {
@@ -91,6 +92,8 @@ public class XMLParticleSystemFactory implements IParticleSystemFactory {
 				maxParticles = Integer.valueOf(parser.getAttributeValue(i));
 			} else if (parser.getAttributeName(i).equals("simple")) {
 				simple = Boolean.valueOf(parser.getAttributeValue(i));
+			} else if (parser.getAttributeName(i).equals("screenSpace")) {
+				screenSpace = Boolean.valueOf(parser.getAttributeValue(i));
 			}
 		}
 		
@@ -99,6 +102,8 @@ public class XMLParticleSystemFactory implements IParticleSystemFactory {
 		} else {
 			prototype = new SimpleParticleSystem();
 		}
+		
+		prototype.setScreenSpace(screenSpace);
 		prototype.setMaxParticles(maxParticles);
 	}
 	
@@ -157,7 +162,19 @@ public class XMLParticleSystemFactory implements IParticleSystemFactory {
 						} 
 					}
 					
-					factory.setMaterial(new ParticleMaterial(texture, color));
+					ParticleMaterial mat = new ParticleMaterial(texture, color);
+					String blendSrc = parser.getAttributeValue(null, "blendSrc");
+					String blendDst = parser.getAttributeValue(null, "blendDst");
+					
+					if (blendSrc != null) {
+						mat.setBlendModeSrc(Integer.valueOf(blendSrc));
+					}
+					
+					if (blendDst != null) {
+						mat.setBlendModeSrc(Integer.valueOf(blendDst));
+					}
+					
+					factory.setMaterial(mat);
 				}
 			} else if (eventType == XmlPullParser.END_TAG) {
 				String elementName = parser.getName();

@@ -36,6 +36,7 @@ public abstract class ParticleSystem  extends BoundedSceneObject implements IUpd
 	public final static int UV_SIZE = 2;
 	public final static int PARTICLE_DATA_SIZE = 36;
 	public final static short[] DRAW_ORDER = {0,1,2,2,1,3};
+	public final static short[] DRAW_ORDER_SCREEN_SPACE = { 2, 1, 0, 2, 3, 1};
 	
 	public final static int DEFAULT_SIZE = PARTICLE_DATA_SIZE; 
 	
@@ -51,6 +52,14 @@ public abstract class ParticleSystem  extends BoundedSceneObject implements IUpd
 	protected int steps = 1;
 	
 	protected boolean visible;
+	
+	protected boolean scale;
+	protected int globalScale = 1;
+	protected float minScale;
+	protected float maxScale;
+	protected float maxDistance;
+	
+	protected boolean screenSpace;
 	
 	public int getMaxParticles() {
 		return maxParticles;
@@ -81,6 +90,13 @@ public abstract class ParticleSystem  extends BoundedSceneObject implements IUpd
         }
         
         buffer2.position(0);
+	}
+	
+	public void setScalable(float maxDistance, float minScale, float maxScale) {
+		this.scale = true;
+		this.maxDistance = maxDistance;
+		this.minScale = minScale;
+		this.maxScale = maxScale;
 	}
 	
 	public boolean allowsMoreParticles() {
@@ -121,4 +137,29 @@ public abstract class ParticleSystem  extends BoundedSceneObject implements IUpd
 	public abstract int getCountEmitters();
 	public abstract void addAffector(Affector affector);
 	
+	@Override
+	public void destroy() {
+		buffer = null;
+		buffer2 = null;
+	}
+	
+	public void setScreenSpace(boolean screenSpace) {
+		this.screenSpace = screenSpace;
+	}
+	
+	public boolean isScreenSpace() {
+		return screenSpace;
+	}
+
+	public void setGlobalScale(int scale) {
+		this.globalScale = scale;
+	}
+	
+	public boolean isVisible() {
+		return visible;
+	}
+	
+	public void setVisible(boolean state)  {
+		this.visible = state;
+	}
 }

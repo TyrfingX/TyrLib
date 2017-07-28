@@ -2,8 +2,6 @@ package com.tyrlib2.graphics.materials;
 
 import java.nio.FloatBuffer;
 
-import android.opengl.GLES20;
-
 import com.tyrlib2.graphics.renderer.Material;
 import com.tyrlib2.graphics.renderer.Mesh;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
@@ -33,7 +31,6 @@ import com.tyrlib2.util.Color;
 public class DefaultMaterial3 extends LightedMaterial {
 	
 	/** Per vertex color of this object **/
-	private int colorHandle;
 	private Color[] colors;
 	
 	/** Per vertex normals of this object **/
@@ -44,6 +41,9 @@ public class DefaultMaterial3 extends LightedMaterial {
 	/** Texture information of this object **/
 	public static final int DEFAULT_UV_OFFSET = 6;
 	public static final int DEFAULT_UV_SIZE = 2;
+	
+	public static final int DIFFUSE_OFFSET = 8;
+	public static final int DIFFUSE = 4;
 	
 	private int textureUniformHandle;
 	private int textureCoordinateHandle;
@@ -57,7 +57,6 @@ public class DefaultMaterial3 extends LightedMaterial {
 	public static final int posOffset = 0;
 	
 	/** Contains the normal matrix **/
-	private float[] normalMatrix = new float[16];
 	private static float[] shadowMVP = new float[16];
 	
 	public static final String PER_PIXEL_PROGRAM_NAME = "TEXTURED_PPL";
@@ -67,12 +66,16 @@ public class DefaultMaterial3 extends LightedMaterial {
 	private static boolean wasAnimated = false;
 	
 	private int blendMode = TyrGL.GL_ONE_MINUS_SRC_ALPHA;
+
+	private int modelMatrixHandle;
 	
 	/** Default vertex layout **/
 	public final static VertexLayout DEFAULT_LAYOUT = new VertexLayout();
 	
 	/** Vertex layout used for meshs with baked in lighting information **/
 	public final static VertexLayout BAKED_LIGHTING_LAYOUT = new VertexLayout();
+
+	private static final float[] mvpMatrix = new float[16];
 	
 	static {
 		DEFAULT_LAYOUT.setPos(VertexLayout.POSITION, 0);
@@ -85,9 +88,11 @@ public class DefaultMaterial3 extends LightedMaterial {
 		BAKED_LIGHTING_LAYOUT.setPos(VertexLayout.POSITION, 0);
 		BAKED_LIGHTING_LAYOUT.setSize(VertexLayout.POSITION, 3);
 		BAKED_LIGHTING_LAYOUT.setPos(VertexLayout.NORMAL, DEFAULT_NORMAL_OFFSET);
-		BAKED_LIGHTING_LAYOUT.setSize(VertexLayout.NORMAL, DEFAULT_NORMAL_SIZE-2);
-		BAKED_LIGHTING_LAYOUT.setPos(VertexLayout.UV, DEFAULT_UV_OFFSET-2);
+		BAKED_LIGHTING_LAYOUT.setSize(VertexLayout.NORMAL, DEFAULT_NORMAL_SIZE);
+		BAKED_LIGHTING_LAYOUT.setPos(VertexLayout.UV, DEFAULT_UV_OFFSET);
 		BAKED_LIGHTING_LAYOUT.setSize(VertexLayout.UV, DEFAULT_UV_SIZE);
+		BAKED_LIGHTING_LAYOUT.setPos(DIFFUSE, DIFFUSE_OFFSET);
+		BAKED_LIGHTING_LAYOUT.setSize(DIFFUSE, 1);
 	}
 	
 	public DefaultMaterial3() {
@@ -192,18 +197,46 @@ public class DefaultMaterial3 extends LightedMaterial {
 		textureUniformHandle = TyrGL.glGetUniformLocation(program.handle, "u_Texture");
 		ambientHandle = TyrGL.glGetUniformLocation(program.handle, "u_Ambient");
 		textureUniformHandle = TyrGL.glGetUniformLocation(program.handle, "u_Texture");
-		colorHandle = TyrGL.glGetAttribLocation(program.handle, "a_Color");
 		normalHandle = TyrGL.glGetAttribLocation(program.handle, "a_Normal");
 		textureCoordinateHandle = TyrGL.glGetAttribLocation(program.handle, "a_TexCoordinate");
 		shadowTextureHandle = TyrGL.glGetUniformLocation(program.handle, "u_ShadowMap");
 		depthMVPHandle = TyrGL.glGetUniformLocation(program.handle, "u_DepthMVP");
+		modelMatrixHandle = TyrGL.glGetUniformLocation(program.handle, "u_M");
 	}
 	
 	@Override
 	public void render(Mesh mesh, float[] modelMatrix) {
 		super.render(mesh, modelMatrix);
 
-		if (SceneManager.getInstance().getRenderer().isShadowsEnabled()) {
+		if (program.meshChange) {
+			passMesh(mesh);
+		}
+		//passModelViewMatrix(modelMatrix);
+	    
+	   // SceneManager sceneManager = SceneManager.getInstance();
+	   // float[] viewMatrix = sceneManager.getRenderer().getCamera().getViewMatrix();
+	   // Matrix.multiplyMM(normalMatrix, 0, viewMatrix, 0, modelMatrix, 0);  
+	    
+        // Pass in the modelview matrix.
+		//TyrGL.glUniformMatrix4fv(normalMatrixHandle, 1, false, normalMatrix, 0);
+
+		
+		if (modelMatrixHandle != -1) {
+		
+			Matrix.setLookAtM(	mvpMatrix, 
+					0, 
+					0,0,1, 
+					0,0,0,
+					1,0,0);
+	
+	        // Apply the projection and view transformation
+			Matrix.multiplyMM(mvpMatrix, 0, mvpMatrix, 0, modelMatrix, 0);
+	        // Combine the rotation matrix with the projection and camera view
+			TyrGL.glUniformMatrix4fv(modelMatrixHandle, 1, false, mvpMatrix, 0);
+			
+		}
+		
+		if (SceneManager.getInstance().getRenderer().isShadowsEnabled() && depthMVPHandle != -1) {
 			  // Apply the projection and view transformation
 			Matrix.multiplyMM(shadowMVP, 0, SceneManager.getInstance().getRenderer().getShadowVP(), 0, modelMatrix, 0);
 			
@@ -218,20 +251,7 @@ public class DefaultMaterial3 extends LightedMaterial {
 		 
 		    // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
 			TyrGL.glUniform1i(shadowTextureHandle, 2);
-		}
-		 
-		if (program.meshChange) {
-			passMesh(mesh);
-		}
-	    
-		//passModelViewMatrix(modelMatrix);
-	    
-	   // SceneManager sceneManager = SceneManager.getInstance();
-	   // float[] viewMatrix = sceneManager.getRenderer().getCamera().getViewMatrix();
-	   // Matrix.multiplyMM(normalMatrix, 0, viewMatrix, 0, modelMatrix, 0);  
-	    
-        // Pass in the modelview matrix.
-		//TyrGL.glUniformMatrix4fv(normalMatrixHandle, 1, false, normalMatrix, 0);
+		} 
 		
 		int textureHandle = texture.getHandle();
         if (program.textureHandle != textureHandle) {
@@ -245,7 +265,7 @@ public class DefaultMaterial3 extends LightedMaterial {
 	    }
 	    
 	    if (transparent) {
-	    	Program.blendEnable(TyrGL.GL_SRC_ALPHA, blendMode);
+	    	Program.blendEnable(TyrGL.GL_SRC_ALPHA, TyrGL.GL_ONE_MINUS_SRC_ALPHA);
 	    }
 	    
 	    
@@ -265,21 +285,25 @@ public class DefaultMaterial3 extends LightedMaterial {
 //        TyrGL.glUniformMatrix4fv(mvMatrixHandle, 1, false, mvMatrix, 0);
 //	}
 	
-	private void passMesh(Mesh mesh)
+	protected void passMesh(Mesh mesh)
 	{	
 		FloatBuffer vertexBuffer = mesh.getVertexBuffer();
 		if (mesh.isUsingVBO()) {
 		    // Pass in the normal information
-		    TyrGL.glVertexAttribPointer(normalHandle, getNormalSize(), TyrGL.GL_FLOAT, false,
-		    							getByteStride() * OpenGLRenderer.BYTES_PER_FLOAT, getNormalOffset() * OpenGLRenderer.BYTES_PER_FLOAT);
-		 
-		    TyrGL.glEnableVertexAttribArray(normalHandle);
-		    
-	        // Pass in the texture coordinate information
-	        TyrGL.glVertexAttribPointer(textureCoordinateHandle, getUVSize(), TyrGL.GL_FLOAT, false, 
-	        		getByteStride() * OpenGLRenderer.BYTES_PER_FLOAT, getUVOffset() * OpenGLRenderer.BYTES_PER_FLOAT);
-	        
-	        TyrGL.glEnableVertexAttribArray(textureCoordinateHandle);
+			if (normalHandle != -1) {
+			    TyrGL.glVertexAttribPointer(normalHandle, getNormalSize(), TyrGL.GL_FLOAT, false,
+			    							getByteStride() * OpenGLRenderer.BYTES_PER_FLOAT, getNormalOffset() * OpenGLRenderer.BYTES_PER_FLOAT);
+			 
+			    TyrGL.glEnableVertexAttribArray(normalHandle);
+			}
+			
+			if (textureCoordinateHandle != -1) {
+		        // Pass in the texture coordinate information
+		        TyrGL.glVertexAttribPointer(textureCoordinateHandle, getUVSize(), TyrGL.GL_FLOAT, false, 
+		        		getByteStride() * OpenGLRenderer.BYTES_PER_FLOAT, getUVOffset() * OpenGLRenderer.BYTES_PER_FLOAT);
+		        TyrGL.glEnableVertexAttribArray(textureCoordinateHandle);
+			}
+			
 		} else {
 			if (getNormalSize() > 0) {
 			    // Pass in the normal information

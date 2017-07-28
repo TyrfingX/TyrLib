@@ -18,7 +18,13 @@ public class WindowEvent {
 		DESTROYED,
 		CONFIRMED,
 		TOUCH, 
-		CALL_LINK
+		CALL_LINK, 
+		SIZE_CHANGED, 
+		FADE_IN_STARTED,
+		FADE_OUT_STARTED,
+		ALPHA_CHANGED,
+		VISIBILITY_CHANGED, 
+		PAUSE_FINISHED
 	}
 	
 	private WindowEventType type;

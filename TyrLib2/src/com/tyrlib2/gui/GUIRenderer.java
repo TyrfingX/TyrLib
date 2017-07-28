@@ -35,16 +35,15 @@ public class GUIRenderer implements IRenderable {
 		
 		for (int i = 0, countWindows = windows.size(); i < countWindows; ++i) {
 			Window window = windows.get(i);
-			if (window.isVisible() && window.getAlpha() > 0) {
+			if (window.isVisible()) {
 				float posX = window.getAbsolutePosX();
 				float posY = window.getAbsolutePosY();
 				Vector2 size = window.getSize();
-				if (Rectangle.overlap(posX, posY, posX + size.x, posY + size.y, 0.0f, 0.0f, 1.0f, 1.0f)) {
+				if (Rectangle.overlap(posX, posY - size.y, posX + size.x, posY, 0.0f, 0.0f, 1.0f, 1.0f)) {
 					window.render(vpMatrix);
 				}
 			}
 		}
-
 	}
 	
 	public void addWindow(Window window) {
@@ -73,6 +72,12 @@ public class GUIRenderer implements IRenderable {
 	@Override
 	public int getInsertionID() {
 		return insertionID;
+	}
+
+	@Override
+	public void destroy() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

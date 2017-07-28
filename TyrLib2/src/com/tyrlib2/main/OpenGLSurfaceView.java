@@ -28,7 +28,7 @@ public class OpenGLSurfaceView extends GLSurfaceView {
 	
 	public final InputMethodManager imm;
 	
-	public OpenGLSurfaceView(Context context){
+	public OpenGLSurfaceView(AndroidOpenGLActivity context){
         super(context);
 
         instance = this;
@@ -48,10 +48,11 @@ public class OpenGLSurfaceView extends GLSurfaceView {
         InputManager.VK_SPACE = KeyEvent.KEYCODE_SPACE;
         InputManager.VK_PLUS = KeyEvent.KEYCODE_PLUS;
         InputManager.VK_MINUS = KeyEvent.KEYCODE_MINUS;
+        InputManager.VK_ONE = KeyEvent.KEYCODE_1;
         
         InputManager.getInstance();
         
-        AndroidOpenGLRenderer renderer = new AndroidOpenGLRenderer();
+        AndroidOpenGLRenderer renderer = new AndroidOpenGLRenderer(context);
         
         // Setup the SceneManager
         SceneManager.getInstance().setRenderer(renderer);

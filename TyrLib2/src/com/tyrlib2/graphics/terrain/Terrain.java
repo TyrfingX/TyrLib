@@ -323,13 +323,12 @@ public class Terrain extends Renderable {
 			for (short x = 0; x < width - 1; x++) {
 				
 				int arrPos = y * width + x;
-				int vertexPos = arrPos * material.getByteStride();
 				
 				Vector3 u1 = points[arrPos + width].sub(points[arrPos]);
 				Vector3 u2 = points[arrPos + width].sub(points[arrPos + 1]);
 				Vector3 normal = u1.cross(u2);
 				normal.normalize();
-				
+				/*
 				vertexData[vertexPos + material.getNormalOffset() + 0] += normal.x/3;
 				vertexData[vertexPos + material.getNormalOffset() + 1] += normal.y/3;
 				vertexData[vertexPos + material.getNormalOffset() + 2] += Math.abs(normal.z/3);
@@ -343,6 +342,7 @@ public class Terrain extends Renderable {
 				vertexData[vertexPos + material.getNormalOffset() + 0] += normal.x/3;
 				vertexData[vertexPos + material.getNormalOffset() + 1] += normal.y/3;
 				vertexData[vertexPos + material.getNormalOffset() + 2] += Math.abs(normal.z/3);
+				*/
 				
 				drawOrder[offset++] = (short) arrPos;
 				drawOrder[offset++] = (short) (arrPos + 1);

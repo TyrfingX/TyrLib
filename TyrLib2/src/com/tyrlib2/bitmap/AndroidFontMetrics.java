@@ -9,7 +9,7 @@ public class AndroidFontMetrics extends IFontMetrics {
 		this.fm  = fm;
 		
 		this.top = fm.top;
-		this.bottom = fm.bottom;
+		this.bottom = fm.bottom * 2;
 		this.ascent = fm.ascent;
 		this.descent = fm.descent;
 	}

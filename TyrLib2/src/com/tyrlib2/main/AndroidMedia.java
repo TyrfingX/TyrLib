@@ -7,12 +7,18 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Typeface;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.opengl.GLES20;
 import android.view.Display;
 import android.view.WindowManager;
@@ -28,18 +34,61 @@ import com.tyrlib2.bitmap.ITypeface;
 import com.tyrlib2.files.AndroidBitmap;
 import com.tyrlib2.files.FileReader;
 import com.tyrlib2.files.IBitmap;
+import com.tyrlib2.graphics.compositors.Precision;
 import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.graphics.text.GLText;
 import com.tyrlib2.graphics.text.IGLText;
 import com.tyrlib2.math.Vector2;
+import com.tyrlib2.sound.AndroidMusic;
+import com.tyrlib2.sound.AndroidSound;
+import com.tyrlib2.sound.IMusic;
+import com.tyrlib2.sound.ISound;
 
 public class AndroidMedia extends Media {
 	
 	private AndroidOpenGLActivity context;
+	private Map<String, String> resourceEndings = new HashMap<String, String>();
 	
 	public AndroidMedia(AndroidOpenGLActivity context) {
 		this.context = context;
+		listAssetFiles("sound");
+		listAssetFiles("music");
+		
+		options.setOption(Media.PRECISION, Precision.LOW);
+		
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+			options.setOption(Media.DEPTH_TEXTURES_ENABLED, true);
+		} else {
+			options.setOption(Media.DEPTH_TEXTURES_ENABLED, false);
+		}
 	}
+	
+	private boolean listAssetFiles(String path) {
+	    String [] list;
+	    try {
+	        list = context.getAssets().list(path);
+	        if (list.length > 0) {
+	            // This is a folder
+	            for (String file : list) {
+	                if (!listAssetFiles(path + "/" + file))
+	                    return false;
+	            }
+	        } else {
+	            // This is a file
+	        	String[] splitPath = path.split("/");
+	        	path = splitPath[splitPath.length-1];
+				String[] split = path.split("\\.");
+				
+				if (split.length > 1) {
+					resourceEndings.put(split[0], split[1]) ;
+				} 
+	        }
+	    } catch (IOException e) {
+	        return false;
+	    }
+
+	    return true; 
+	} 
 	
 	@Override
 	public InputStream openAsset(String fileName) throws IOException {
@@ -64,7 +113,7 @@ public class AndroidMedia extends Media {
 	@Override
 	public IGLText createTextRenderer(String fontSource, int size) {
 		IGLText glText = new GLText();
-		glText.load( fontSource, size, 2, 2 );  // Create Font (Height: 14 Pixels / X+Y Padding 2 Pixels)
+		glText.load( fontSource, size, 0, 0 );  // Create Font (Height: 14 Pixels / X+Y Padding 2 Pixels)
 		glText.setScale(1);
 		return glText;
 	}
@@ -79,45 +128,13 @@ public class AndroidMedia extends Media {
 	@Override
 	public IBitmap loadBitmap(int resID, boolean prescaling) {
 		
-		IBitmap bitmap = null;
+        // Read in the resource        
+    	final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inScaled = prescaling;   // No pre-scaling
+		return new AndroidBitmap(BitmapFactory.decodeResource(context.getResources(), resID, options));
 		
-	    final int[] textureHandle = new int[1];
-	    
-	    TyrGL.glGenTextures(1, textureHandle, 0);
-	 
-	    if (textureHandle[0] != 0)
-	    {
-	    	
-	        // Read in the resource        
-	    	final BitmapFactory.Options options = new BitmapFactory.Options();
-	        options.inScaled = prescaling;   // No pre-scaling
-			bitmap  = new AndroidBitmap(BitmapFactory.decodeResource(context.getResources(), resID, options), textureHandle[0]);
-
-	        // Bind to the texture in OpenGL
-	        TyrGL.glBindTexture(TyrGL.GL_TEXTURE_2D, textureHandle[0]);
-	        
-	        // Set filtering
-	        TyrGL.glTexParameteri(TyrGL.GL_TEXTURE_2D, TyrGL.GL_TEXTURE_MIN_FILTER, TyrGL.GL_LINEAR_MIPMAP_LINEAR);
-	        TyrGL.glTexParameteri(TyrGL.GL_TEXTURE_2D, TyrGL.GL_TEXTURE_MAG_FILTER, TyrGL.GL_LINEAR);
-	        // Load the bitmap into the bound texture.
-	        bitmap.bind();
-	        
-	        String s = GLES20.glGetString(GLES20.GL_EXTENSIONS);
-	        if (s.contains("GL_EXT_texture_filter_anisotropic")) {
-	        	float[] maxAni = new float[1];
-	    		GLES20.glGetFloatv(0x84FF, maxAni, 0);
-	    		GLES20.glTexParameterf(TyrGL.GL_TEXTURE_2D, 0x84FE, maxAni[0]);
-	        }
-	        
-	        TyrGL.glGenerateMipmap(TyrGL.GL_TEXTURE_2D);
-	 
-	        // Recycle the bitmap, since its data has been loaded into OpenGL.
-	        bitmap.recycle();
-	    }
-	    
-		return bitmap;
 	}
-
+	
 	@Override
 	public ITypeface createFromAsset(String file) {
 		return new AndroidTypeface(Typeface.createFromAsset( context.getAssets(), file ));
@@ -184,10 +201,12 @@ public class AndroidMedia extends Media {
 	        // Recycle the bitmap, since its data has been loaded into OpenGL.
 	        bitmap.recycle();
 	        
-	        ((AndroidBitmap)bitmap).setHanlde(textureHandle[0]);
+	        ((AndroidBitmap)bitmap).setHandle(textureHandle[0]);
 	    }
 	}
 
+	
+	
 	@Override
 	public void serializeTo(Serializable s, String target, String fileName) {
 		try {
@@ -252,14 +271,38 @@ public class AndroidMedia extends Media {
 
 	@Override
 	public void quit() {
-		// TODO Auto-generated method stub
-		
+ 	   context.close();
 	}
 
 	@Override
 	public boolean fileExists(String target, String fileName) {
 		return FileReader.fileExists(context, fileName);
 	}
+
+	@Override
+	public ISound createSound(String res) {
+		try {
+	        AssetFileDescriptor afd = context.getAssets().openFd("sound/" + res + "." + resourceEndings.get(res));
+	        
+	        SoundPool sp = new SoundPool(5,AudioManager.STREAM_MUSIC,0);
+	        int soundID = sp.load(afd, 1);
+	        return new AndroidSound(sp, soundID);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 	
+	@Override
+	public IMusic createMusic(String res) {
+		try {
+	        AssetFileDescriptor afd = context.getAssets().openFd("music/" + res + "." + resourceEndings.get(res));
+	        MediaPlayer mp = new MediaPlayer();
+	        return new AndroidMusic(mp, afd);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 	
 }

@@ -69,13 +69,17 @@ public class AABB {
 	 * @return			An AABB containing all vertices
 	 */
 	
-	public static AABB createFromPoints(float[] points, int stride) {
+	public static AABB createFromPoints(float[] points, int stride, boolean threeDim) {
 		AABB box = new AABB();
 		
-		box.updateWithPoints(points, stride);
+		box.updateWithPoints(points, stride, threeDim);
 		
 		return box;
 		
+	}
+	
+	public static AABB createFromPoints(float[] points, int stride) {
+		return createFromPoints(points, stride, true);
 	}
 	
 	public static AABB createFromPoints(Vector3[] points, int start, int end) {
@@ -109,25 +113,45 @@ public class AABB {
 		}
 	}
 	
-	public void updateWithPoints(float[] points, int stride) {
-		if (points.length > 0) {
-			min.x = points[0];
-			min.y = points[1];
-			min.z = points[2];
+	public void updateWithPoints(float[] points, int stride, boolean threeDim) {
+		if (threeDim) {
+			if (points.length > 0) {
+				min.x = points[0];
+				min.y = points[1];
+				min.z = points[2];
+				
+				max.x = points[0];
+				max.y = points[1];
+				max.z = points[2];
+			}
 			
-			max.x = points[0];
-			max.y = points[1];
-			max.z = points[2];
-		}
-		
-		for (int i = stride; i < points.length; i += stride) {
-			if (points[i + 0] > max.x) max.x = points[i + 0];
-			if (points[i + 1] > max.y) max.y = points[i + 1];
-			if (points[i + 2] > max.z) max.z = points[i + 2];
+			for (int i = stride; i < points.length; i += stride) {
+				if (points[i + 0] > max.x) max.x = points[i + 0];
+				if (points[i + 1] > max.y) max.y = points[i + 1];
+				if (points[i + 2] > max.z) max.z = points[i + 2];
+				
+				if (points[i + 0] < min.x) min.x = points[i + 0];
+				if (points[i + 1] < min.y) min.y = points[i + 1];
+				if (points[i + 2] < min.z) min.z = points[i + 2];
+			}
+		} else {
+			if (points.length > 0) {
+				min.x = points[0];
+				min.y = points[1];
+				min.z = 0;
+				
+				max.x = points[0];
+				max.y = points[1];
+				max.z = 0;
+			}
 			
-			if (points[i + 0] < min.x) min.x = points[i + 0];
-			if (points[i + 1] < min.y) min.y = points[i + 1];
-			if (points[i + 2] < min.z) min.z = points[i + 2];
+			for (int i = stride; i < points.length; i += stride) {
+				if (points[i + 0] > max.x) max.x = points[i + 0];
+				if (points[i + 1] > max.y) max.y = points[i + 1];
+				
+				if (points[i + 0] < min.x) min.x = points[i + 0];
+				if (points[i + 1] < min.y) min.y = points[i + 1];
+			}
 		}
 	}
 	

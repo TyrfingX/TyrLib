@@ -4,7 +4,9 @@ import java.net.URL;
 
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLProfile;
+import javax.swing.JFrame;
 
+import com.TyrLib2.PC.config.Config;
 import com.tyrlib2.main.Media;
 import com.tyrlib2.main.OpenGLActivity;
 import com.tyrlib2.math.Matrix;
@@ -16,7 +18,7 @@ public abstract class PCOpenGLActivity implements OpenGLActivity {
 	protected boolean consoleMode;
 	protected ConsoleView consoleView;
 	
-	public PCOpenGLActivity(boolean consoleMode, Config config) {
+	public PCOpenGLActivity(JFrame frame, boolean consoleMode, Config config, String name) {
 		
 		URL url = getClass().getResource("/");
 		Logger.init(url.getPath() + "log.txt");
@@ -37,7 +39,7 @@ public abstract class PCOpenGLActivity implements OpenGLActivity {
 	        caps.setBlueBits(8);
 	        caps.setGreenBits(8);
 	        
-	        glView = new PCOpenGLSurfaceView(config, "Test", caps);
+	        glView = new PCOpenGLSurfaceView(this, frame, config, name, caps);
 
 		} else {
 			consoleView = new ConsoleView();
@@ -52,12 +54,12 @@ public abstract class PCOpenGLActivity implements OpenGLActivity {
 		}
 	}
 	
-	public PCOpenGLActivity() {
-		this(false, null);
+	public PCOpenGLActivity(JFrame frame) {
+		this(frame, false, null, "Unnamed");
 	}
 	
-	public PCOpenGLActivity(Config config) {
-		this(false, config);
+	public PCOpenGLActivity(JFrame frame, Config config, String name) {
+		this(frame, false, config, name);
 	}
 
 	public PCOpenGLSurfaceView getGLView() {

@@ -12,6 +12,7 @@ import com.tyrlib2.graphics.renderer.Viewport;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.graphics.text.Font;
 import com.tyrlib2.gui.WindowEvent.WindowEventType;
+import com.tyrlib2.input.IMotionEvent;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.util.Color;
@@ -26,9 +27,11 @@ public class Label extends Window{
 	
 	private FormattedText2 text;
 	private Rectangle2 background;
-	private int layer = 100;
 	private List<Window> linkRegions = new ArrayList<Window>();
 	private List<Window> imgRegions = new ArrayList<Window>();
+	private String targetText;
+	private float displaySpeed;
+	private float displayAmount;
 	
 	public Label(String name, Vector2 pos, String text) {
 		super(name);
@@ -89,7 +92,7 @@ public class Label extends Window{
 			if (s.atlasName != null) {
 				Window imgRegion = WindowManager.getInstance().createImageBox(this.getName()+"/img/"+s.regionName, s.pos, s.atlasName, s.regionName, s.size);
 				this.addChild(imgRegion);
-				imgRegion.setRelativePos(s.pos);
+				imgRegion.setRelativePos(s.pos.x, s.pos.y+s.size.y);
 				imgRegions.add(imgRegion);
 			}
 		}
@@ -100,10 +103,6 @@ public class Label extends Window{
 			WindowManager.getInstance().destroyWindow(imgRegions.get(i));
 		}
 		imgRegions.clear();
-	}
-	
-	public void setLayer(int layer) {
-		this.layer = layer;
 	}
 	
 	public String getText() {
@@ -139,6 +138,18 @@ public class Label extends Window{
 
 	public void setAlignment(FormattedText2.ALIGNMENT alignment) {
 		text.setAligment(alignment);
+		
+		Viewport viewport = SceneManager.getInstance().getViewport();
+		Vector2 size = new Vector2(this.text.getSize());
+		size.x /= viewport.getWidth();
+		size.y /= viewport.getHeight();
+		
+		setSize(size);
+		
+		if (background != null) {
+			background.setSize(new Vector2(this.text.getSize()));
+		}
+		
 		clearImgRegions();
 		addImgRegions();
 		clearLinkRegions();
@@ -204,6 +215,9 @@ public class Label extends Window{
 	
 	public void setFont(Font font) {
 		text.setFont(font);
+		String txt = text.getText();
+		this.setText("");
+		this.setText(txt);
 	}
 	
 	public FormattedText2 getFormattedText() {
@@ -213,6 +227,12 @@ public class Label extends Window{
 	@Override
 	public long getPriority() {
 		return priority*4;
+	}
+	
+	@Override
+	public void setSize(Vector2 size) {
+		super.setSize(size);
+		fireEvent(new WindowEvent(this, WindowEventType.SIZE_CHANGED));
 	}
 	
 	@Override
@@ -227,6 +247,48 @@ public class Label extends Window{
 		}
 			
 		return new Vector2(pos.x/viewport.getWidth() - xOffset, pos.y/viewport.getHeight());
+	}
+	
+	public void displayText(String targetText, float time) {
+		setText("");
+		this.displayAmount = 0;
+		this.targetText = targetText;
+		displaySpeed = targetText.length() / time;
+	}
+	
+	public void finishDisplaying() {
+		text.setText(targetText);
+		targetText = null;
+		displayAmount = 0;
+	}
+	
+	public boolean isDisplaying() {
+		return targetText != null;
+	}
+	
+	@Override
+	public void onUpdate(float time) {
+		super.onUpdate(time);
+		
+		while(targetText != null) {
+			displayAmount += time * displaySpeed;
+			int amount = (int) displayAmount;
+			
+			if (amount >= targetText.length()) {
+				finishDisplaying();
+				break;
+			} else {
+				try {
+					text.setText(targetText.substring(0, amount));
+					break;
+				} catch (Exception e) {
+				}
+			}
+		}
+	}
+	
+	public void setMaxWidth(float maxWidth) {
+		text.setMaxWidth(maxWidth);
 	}
 	
 	

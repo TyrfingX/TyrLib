@@ -19,8 +19,6 @@ public class Vertices {
 	private static final int MVP_MATRIX_INDEX_CNT = 1; // Number of Components in MVP matrix index
 	
 	final static int INDEX_SIZE = Short.SIZE / 8;      // Index Byte Size (Short.SIZE = bits)
-	
-	private static final String TAG = "Vertices";
 
 	//--Members--//
 	// NOTE: all members are constant, and initialized in constructor!

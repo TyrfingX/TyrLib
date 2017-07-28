@@ -30,6 +30,7 @@ public class Particle implements IUpdateable {
 	protected float lifeTime;
 	protected float passedTime;
 	protected float size;
+	protected float scaleSpeed = 1;
 	
 	public int dataIndex;
 	public FloatArray floatArray;
@@ -37,6 +38,10 @@ public class Particle implements IUpdateable {
 	
 	public Particle(float size) {
 		this.size = size;
+	}
+	
+	public void setScaleSpeed(float scaleSpeed) {
+		this.scaleSpeed = scaleSpeed;
 	}
 	
 	@Override
@@ -123,36 +128,65 @@ public class Particle implements IUpdateable {
 		Vector3 camPos = cam.getAbsolutePos();
 		Vector3 worldUp = cam.getWorldUpVector();
 		
-		up.x = worldUp.x;
-		up.y = worldUp.y;
-		up.z = worldUp.z;
+		if (system.isScreenSpace()) {
+			up.x = 0;
+			up.y = 1;
+			up.z = 0;
+		} else {
+			up.x = worldUp.x;
+			up.y = worldUp.y;
+			up.z = worldUp.z;
+		}
 		
 		float deltaX = camPos.x - pos.x;
 		float deltaY = camPos.y - pos.y;
 		float deltaZ = camPos.z - pos.z;
 		
 		if (rotation != 0) {
-			Quaternion.fromAxisAngle(deltaX, deltaY, deltaZ, passedTime * rotation, rotationUp).multiplyNoTmp(up);
+			Quaternion.fromAxisAngle(deltaX, deltaY, deltaZ, rotation, rotationUp).multiplyNoTmp(up);
 		}
 		
-		Vector3.cross(right, deltaX, deltaY, deltaZ, up.x, up.y, up.z);
-		right.normalize();
 		
-		floatArray.buffer[dataIndex] = pos.x - right.x * size/2 - up.x * size/2;
-		floatArray.buffer[dataIndex + 1] = pos.y - right.y * size/2 - up.y * size/2;
-		floatArray.buffer[dataIndex + 2] =  pos.z - right.z * size/2 - up.z * size/2;
+		float scale = 1;
+		if (system.scale) {
+			float distance = Vector3.length(deltaX, deltaY, deltaZ);
+			if (distance < system.maxDistance) {
+				scale = 1 / (1.0f - distance / (system.maxDistance/scaleSpeed));
+				scale = Math.max(scale, system.minScale);
+				scale = Math.min(scale, system.maxScale*scaleSpeed);
+			} else {
+				scale = system.maxScale*scaleSpeed;
+			}
+		}
 		
-		floatArray.buffer[dataIndex + ParticleSystem.PARTICLE_DATA_SIZE/4] = pos.x - right.x * size/2 + up.x * size/2;
-		floatArray.buffer[dataIndex + 1 + ParticleSystem.PARTICLE_DATA_SIZE/4] = pos.y - right.y * size/2 + up.y * size/2;
-		floatArray.buffer[dataIndex + 2 + ParticleSystem.PARTICLE_DATA_SIZE/4] =  pos.z - right.z * size/2 + up.z * size/2;
+		float size = this.size * scale;
 		
-		floatArray.buffer[dataIndex + 2*ParticleSystem.PARTICLE_DATA_SIZE/4] = pos.x + right.x * size/2 - up.x * size/2;
-		floatArray.buffer[dataIndex + 1 + 2*ParticleSystem.PARTICLE_DATA_SIZE/4] = pos.y + right.y * size/2 - up.y * size/2;
-		floatArray.buffer[dataIndex + 2 + 2*ParticleSystem.PARTICLE_DATA_SIZE/4] =  pos.z + right.z * size/2 - up.z * size/2;
+		if (system.isScreenSpace()) {
+			right.x = 1;
+			right.y = 0;
+			right.z = 0;
+		} else {
+			Vector3.cross(right, deltaX, deltaY, deltaZ, up.x, up.y, up.z);
+			right.normalize();	
+		}
 		
-		floatArray.buffer[dataIndex + 3*ParticleSystem.PARTICLE_DATA_SIZE/4] = pos.x + right.x * size/2 + up.x * size/2;
-		floatArray.buffer[dataIndex + 1 + 3*ParticleSystem.PARTICLE_DATA_SIZE/4] = pos.y + right.y * size/2 + up.y * size/2;
-		floatArray.buffer[dataIndex + 2 + 3*ParticleSystem.PARTICLE_DATA_SIZE/4] =  pos.z + right.z * size/2 + up.z * size/2;
+		int globalScale = system.globalScale;
+		
+		floatArray.buffer[dataIndex] = (pos.x - right.x * size/2 - up.x * size/2) * globalScale;
+		floatArray.buffer[dataIndex + 1] = (pos.y - right.y * size/2 - up.y * size/2) * globalScale;
+		floatArray.buffer[dataIndex + 2] =  (pos.z - right.z * size/2 - up.z * size/2) * globalScale;
+		
+		floatArray.buffer[dataIndex + ParticleSystem.PARTICLE_DATA_SIZE/4] = (pos.x - right.x * size/2 + up.x * size/2) * globalScale;
+		floatArray.buffer[dataIndex + 1 + ParticleSystem.PARTICLE_DATA_SIZE/4] = (pos.y - right.y * size/2 + up.y * size/2) * globalScale;
+		floatArray.buffer[dataIndex + 2 + ParticleSystem.PARTICLE_DATA_SIZE/4] = (pos.z - right.z * size/2 + up.z * size/2) * globalScale;
+		
+		floatArray.buffer[dataIndex + 2*ParticleSystem.PARTICLE_DATA_SIZE/4] = (pos.x + right.x * size/2 - up.x * size/2) * globalScale;
+		floatArray.buffer[dataIndex + 1 + 2*ParticleSystem.PARTICLE_DATA_SIZE/4] = (pos.y + right.y * size/2 - up.y * size/2) * globalScale;
+		floatArray.buffer[dataIndex + 2 + 2*ParticleSystem.PARTICLE_DATA_SIZE/4] =  (pos.z + right.z * size/2 - up.z * size/2) * globalScale;
+		
+		floatArray.buffer[dataIndex + 3*ParticleSystem.PARTICLE_DATA_SIZE/4] = (pos.x + right.x * size/2 + up.x * size/2) * globalScale;
+		floatArray.buffer[dataIndex + 1 + 3*ParticleSystem.PARTICLE_DATA_SIZE/4] = (pos.y + right.y * size/2 + up.y * size/2) * globalScale;
+		floatArray.buffer[dataIndex + 2 + 3*ParticleSystem.PARTICLE_DATA_SIZE/4] = (pos.z + right.z * size/2 + up.z * size/2) * globalScale;
 	}
 
 	public Vector3 getVelocity() {
@@ -160,7 +194,7 @@ public class Particle implements IUpdateable {
 	}
 
 	public void setVelocity(Vector3 velocity) {
-		this.velocity = velocity;
+		this.velocity.set(velocity);
 	}
 	
 	

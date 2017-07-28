@@ -3,8 +3,6 @@ package com.tyrlib2.graphics.renderer;
 import java.util.HashMap;
 import java.util.Map;
 
-import android.util.Log;
-
 /** 
  * Takes care of loading vertex and fragment shaders and cashing them
  * @author Sascha
@@ -62,8 +60,11 @@ public class ShaderManager {
         if (compileStatus[0] == 0)
         {
         	
-            String info = TyrGL.glGetProgramInfoLog(shader);
+            String info = TyrGL.glGetShaderInfoLog(shader);
         	System.out.println(info);
+        	
+        	int error = TyrGL.glGetError();
+        	System.out.println(error);
             
         	TyrGL.glDeleteShader(shader);
             shader = 0;

@@ -11,9 +11,9 @@ public class PCFontMetric extends IFontMetrics {
 	public PCFontMetric(FontMetrics fm) {
 		this.fm = fm;
 		
-		this.top = fm.getMaxAscent()*1.3f;
-		this.bottom = fm.getMaxDescent()*1.3f;
-		this.ascent = fm.getAscent()*1.3f;
-		this.descent = fm.getDescent()*1.3f;
+		this.top = fm.getMaxAscent();
+		this.bottom = (fm.getMaxDescent()*2f);
+		this.ascent = fm.getAscent();
+		this.descent = fm.getDescent();
 	}
 }

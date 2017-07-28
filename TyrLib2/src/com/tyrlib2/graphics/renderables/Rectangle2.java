@@ -1,11 +1,8 @@
 package com.tyrlib2.graphics.renderables;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.ShortBuffer;
-
 import com.tyrlib2.graphics.materials.ColoredMaterial;
 import com.tyrlib2.graphics.renderer.Material;
+import com.tyrlib2.graphics.renderer.Mesh;
 import com.tyrlib2.graphics.renderer.Renderable2;
 import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.math.Vector2;
@@ -32,8 +29,8 @@ public class Rectangle2 extends Renderable2 {
 	
 	public static final short[] DRAW_ORDER_QUAD = { 2, 1, 0, 2, 3, 1};
 	public static final short[] DRAW_ORDER_BORDER = { 0, 1, 3, 2};
-	private static ShortBuffer borderDrawOrderBuffer;
 	
+	private Mesh borderMesh;
 	
 	public Rectangle2(Vector2 size, Color color) {
 		this.size = size;
@@ -52,15 +49,6 @@ public class Rectangle2 extends Renderable2 {
 		Material material = new ColoredMaterial(new Color[] { Color.WHITE.copy() });
 		
 		init(material, points, DRAW_ORDER_QUAD);
-
-		if (borderDrawOrderBuffer == null) {
-			// initialize byte buffer for the draw list
-			ByteBuffer dlb = ByteBuffer.allocateDirect(DRAW_ORDER_BORDER.length * 2);
-			dlb.order(ByteOrder.nativeOrder());
-			borderDrawOrderBuffer = dlb.asShortBuffer();
-			borderDrawOrderBuffer.put(DRAW_ORDER_BORDER);
-			borderDrawOrderBuffer.position(0);
-		}
 		
 		setColor(color);
 	}
@@ -68,7 +56,7 @@ public class Rectangle2 extends Renderable2 {
 	public Rectangle2(Vector2 size) {
 		this(size, DEFAULT_COLOR);
 	}
-	
+
 	public Vector2 getSize() {
 		return size;
 	}
@@ -80,19 +68,30 @@ public class Rectangle2 extends Renderable2 {
 		mesh.setVertexInfo(2 * material.getByteStride() + material.getPositionOffset() + 1, -size.y);
 		mesh.setVertexInfo(3 * material.getByteStride() + material.getPositionOffset() + 0, size.x);
 		mesh.setVertexInfo(3 * material.getByteStride() + material.getPositionOffset() + 1, -size.y);
-		
+
+		if (borderMesh != null) {
+			borderMesh.setVertexInfo(1 * material.getByteStride() + material.getPositionOffset() + 0, size.x);
+			borderMesh.setVertexInfo(2 * material.getByteStride() + material.getPositionOffset() + 1, -size.y);
+			borderMesh.setVertexInfo(3 * material.getByteStride() + material.getPositionOffset() + 0, size.x);
+			borderMesh.setVertexInfo(3 * material.getByteStride() + material.getPositionOffset() + 1, -size.y);
+		}
 	}
 	
 	public void setFilled(boolean filled) {
 		this.filled = filled;
-		if (!filled) {
-			this.setBorder(DEFAULT_BORDER_WIDTH);
-		}
 	}
 	
 	public void setBorder(int borderWidth) {
 		this.borderWidth = borderWidth;
 		this.hasBorder = true;
+		
+		Vector3[] points = { 	new Vector3(0, 0, 0),
+								new Vector3(size.x, 0, 0),
+								new Vector3(0, -size.y, 0),
+								new Vector3(size.x, -size.y, 0) };
+		
+		float[] vertexData = material.createVertexData(points, DRAW_ORDER_BORDER);
+		borderMesh = new Mesh(vertexData, DRAW_ORDER_BORDER, vertexData.length / material.getByteStride());
 	}
 	
 	@Override
@@ -105,14 +104,17 @@ public class Rectangle2 extends Renderable2 {
 		}
 		
 		if (hasBorder) {
+			Mesh tmp = mesh;
+			mesh = borderMesh;
 			renderMode = TyrGL.GL_LINE_LOOP;
 			TyrGL.glLineWidth(borderWidth);
-			drawOrderLength = DRAW_ORDER_BORDER.length;
-			drawOrderBuffer = borderDrawOrderBuffer;
+			drawOrderLength = mesh.getDrawOrder().length;
+			drawOrderBuffer = mesh.getDrawOrderBuffer();
 			super.render(vpMatrix);
 			
-			renderMode = TyrGL.GL_POINTS;
-			super.render(vpMatrix);
+			//renderMode = TyrGL.GL_POINTS;
+			//super.render(vpMatrix);
+			mesh = tmp;
 		}
 	}
 	

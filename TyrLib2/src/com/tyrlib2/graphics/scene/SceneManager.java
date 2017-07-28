@@ -34,6 +34,8 @@ import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.graphics.renderer.VertexLayout;
 import com.tyrlib2.graphics.renderer.Viewport;
 import com.tyrlib2.graphics.text.Font;
+import com.tyrlib2.graphics.text.GLText;
+import com.tyrlib2.main.BackgroundWorker;
 import com.tyrlib2.main.Media;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.math.Vector3;
@@ -308,9 +310,17 @@ public class SceneManager {
 	}
 	
 	public ParticleSystem createParticleSystem(String path) {
+		return createParticleSystem(path, OpenGLRenderer.TRANSLUCENT_CHANNEL_1);
+	}
+	
+	public ParticleSystem createParticleSystem(String path, int channel) {
 		if (particleSystemFactories.containsKey(path)) {
 			ParticleSystem particleSystem = particleSystemFactories.get(path).create();
-			renderer.addRenderable((BoundedSceneObject)particleSystem, OpenGLRenderer.TRANSLUCENT_CHANNEL);
+			if (particleSystem.isScreenSpace()) {
+				renderer.addRenderable((BoundedSceneObject)particleSystem, OpenGLRenderer.OVERLAY_CHANNEL);
+			} else {
+				renderer.addRenderable((BoundedSceneObject)particleSystem, channel);
+			}
 			return particleSystem;
 		}
 		
@@ -324,20 +334,24 @@ public class SceneManager {
 		}
 		
 		ParticleSystem particleSystem = factory.create();
-		renderer.addRenderable((BoundedSceneObject)particleSystem, OpenGLRenderer.TRANSLUCENT_CHANNEL);
+		if (particleSystem.isScreenSpace()) {
+			renderer.addRenderable((BoundedSceneObject)particleSystem, OpenGLRenderer.OVERLAY_CHANNEL);
+		} else {
+			renderer.addRenderable((BoundedSceneObject)particleSystem, channel);
+		}
 		
 		return particleSystem;
 	}
 	
 	public ParticleSystem createParticleSystem(int maxParticles) {
-		ComplexParticleSystem particleSystem = new ComplexParticleSystem(maxParticles);
-		renderer.addRenderable((BoundedSceneObject)particleSystem, OpenGLRenderer.TRANSLUCENT_CHANNEL);
+		ComplexParticleSystem particleSystem = new ComplexParticleSystem(maxParticles, false);
+		renderer.addRenderable((BoundedSceneObject)particleSystem, OpenGLRenderer.TRANSLUCENT_CHANNEL_2);
 		return particleSystem;
 	}
 	
 	public ParticleSystem createSimpleParticleSystem(int maxParticles) {
 		SimpleParticleSystem particleSystem = new SimpleParticleSystem(maxParticles);
-		renderer.addRenderable((BoundedSceneObject)particleSystem, OpenGLRenderer.TRANSLUCENT_CHANNEL);
+		renderer.addRenderable((BoundedSceneObject)particleSystem, OpenGLRenderer.TRANSLUCENT_CHANNEL_2);
 		return particleSystem;
 	}
 	
@@ -364,8 +378,34 @@ public class SceneManager {
 	}
 	
 	public void loadFont(String source, String name, int size) {
+		GLText.init();
 		activeFont = new Font(source, name, Media.CONTEXT.createTextRenderer(source, size));
+		activeFont.glText.toTexture();
 		fonts.put(name, activeFont);
+	}
+	
+	public void backgroundLoadFont(String name, int size) {
+		backgroundLoadFont(name, name, size);
+	}
+	
+	public void backgroundLoadFont(final String source, final String name, final int size) {
+		GLText.init();
+		final Font font = new Font(source, name);
+		fonts.put(name, font);
+		
+		BackgroundWorker.getInstance().execute(new Runnable() {
+			@Override
+			public void run() {
+				font.glText = Media.CONTEXT.createTextRenderer(source, size);
+				renderer.queueEvent(new Runnable() {
+					@Override
+					public void run() {
+						font.glText.toTexture();
+						System.out.println("Background loaded Font: " + name);
+					}
+				});
+			}
+		});
 	}
 	
 	public Font getFont(String name) {
@@ -376,6 +416,7 @@ public class SceneManager {
 		for (String fontName : fonts.keySet()) {
 			Font font = fonts.get(fontName);
 			font.glText = Media.CONTEXT.createTextRenderer(font.source, font.glText.getSize());
+			font.glText.toTexture();
 		}
 	}
 	
@@ -397,6 +438,10 @@ public class SceneManager {
 	
 	public Viewport getViewport() {
 		return renderer.getViewport();
+	}
+
+	public void setViewport(Viewport viewport) {
+		renderer.setViewport(viewport);
 	}
 	
 	public Vector2 getViewportSize() {
@@ -437,5 +482,9 @@ public class SceneManager {
 		SceneManager.getInstance().getRenderer().addRenderable(skybox, OpenGLRenderer.BACKGROUND_CHANNEL);
 		
 		return skybox;
+	}
+
+	public void removeParticleSystemFactory(String path) {
+		particleSystemFactories.remove(path);
 	}
 }

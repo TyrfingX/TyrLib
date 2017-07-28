@@ -10,6 +10,7 @@ import com.tyrlib2.util.Color;
  */
 
 public class Skin {
+
 	public String TEXTURE_ATLAS = "GUI";
 	
 	/** DEFAULT LABEL SETTINGS **/
@@ -71,12 +72,14 @@ public class Skin {
 	
 	/** PROGRESS BAR SETTINGS **/
 	
-	public String PROGRESS_BAR_BG = "TRANSPARENT";
+	public Paint PROGRESS_BAR_BG_PAINT = new Paint(new Color(1,1,1,1), new Color(1,1,1,1), 0);
 	public Color PROGRESS_BAR_COLOR = Color.RED;
 	
 	/** TOOLTIP SETTINGS **/
 	
 	public float TOOLTIP_MAX_ALPHA = 0.95f;
 	public float TOOLTIP_FADE_TIME = 0.25f;
+	public Vector2 TOOLTIP_PADDING = new Vector2(0.01f, 0.01f);
+	public Paint TOOLTIP_PAINT = new Paint(new Color(0.1f, 0.1f, 0.1f, 1), new Color(0.2f, 0.2f, 0.2f, 0.8f), 4);
 	
 }

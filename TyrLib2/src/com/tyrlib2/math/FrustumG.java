@@ -162,7 +162,7 @@ public class FrustumG {
 		points[22] = fcbr.y;
 		points[23] = fcbr.z;
 		
-		aabb.updateWithPoints(points, 3);
+		aabb.updateWithPoints(points, 3, true);
 	}
 	
 	public float getFarClipWidth() {

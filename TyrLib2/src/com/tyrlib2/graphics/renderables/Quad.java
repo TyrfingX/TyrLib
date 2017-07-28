@@ -17,10 +17,11 @@ public class Quad extends Renderable {
 	
 	public Quad(Material material, Vector2 min, Vector2 max) {
 		
-		Vector3[] points = { 	new Vector3(min.x, min.y, 0),
-								new Vector3(max.x, min.y, 0),
-								new Vector3(min.x, max.y, 0),
-								new Vector3(max.x, max.y, 0) };
+		Vector3[] points = { 	new Vector3(max.x, max.y, 0),
+								new Vector3(min.x, max.y, 0),				
+								new Vector3(max.x, min.y, 0),	
+								new Vector3(min.x, min.y, 0),
+							 };
 		init(material, points, DRAW_ORDER_QUAD);
 	}
 }

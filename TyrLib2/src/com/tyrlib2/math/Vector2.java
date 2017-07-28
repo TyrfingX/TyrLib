@@ -1,5 +1,7 @@
 package com.tyrlib2.math;
 
+import java.io.Serializable;
+
 
 /**
  * Basic vector object implementing 2D vector math.
@@ -7,13 +9,18 @@ package com.tyrlib2.math;
  *
  */
 
-public class Vector2 {
+public class Vector2 implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 220971957145805318L;
 	public float x;
 	public float y;
 	
 	public Vector2(float x, float y) { this.x = x; this.y = y; }
 	public Vector2(Vector2 other) { this.x = other.x; this.y = other.y; }
 	public Vector2() { this(0,0); }
+	public Vector2(String x, String y) { this(Float.valueOf(x), Float.valueOf(y)); }
 	
 	/**
 	 * Creates a vector pointing from this to the passed vector.
@@ -62,6 +69,11 @@ public class Vector2 {
 		return new Vector2(x*m, y*m);
 	}
 	
+	public Vector2 multiply(float m1, float m2)
+	{
+		return new Vector2(x*m1, y*m2);
+	}
+	
 	public Vector2 scale(float x, float y)
 	{
 		this.x *= x;
@@ -89,6 +101,11 @@ public class Vector2 {
 	{
 		return new Vector2(other.x + this.x, other.y + this.y);
 	}
+
+	public Vector2 add(float x, float y)
+	{
+		return new Vector2(x + this.x, y + this.y);
+	}
 	
 	/**
 	 * Let another vector subtract from this one.
@@ -109,6 +126,10 @@ public class Vector2 {
 	public float dot(Vector2 other)
 	{
 		return other.x * this.x + other.y * this.y;
+	}
+	
+	public Vector2 copy() {
+		return new Vector2(this);
 	}
 	
 }

@@ -103,7 +103,7 @@ public abstract class BoundedRenderable extends BoundedSceneObject implements IR
 			if (boundingBox == null) {
 				boundingBox = AABB.createFromPoints(points, 4);
 			} else {
-				boundingBox.updateWithPoints(points, 4);
+				boundingBox.updateWithPoints(points, 4, true);
 			}
 		
 		}

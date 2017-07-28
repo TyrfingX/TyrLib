@@ -87,7 +87,7 @@ public class Skeleton implements IUpdateable {
 		
 		if (boneUpdate) {
 			
-			for (int i = 0; i < bones.size(); ++i) {
+			for (int i = 0, countBones = bones.size(); i < countBones; ++i) {
 				Bone bone = bones.get(i);
 				if (bone.getParent() == null) {
 					rootNode.attachChild(bone);
@@ -136,8 +136,6 @@ public class Skeleton implements IUpdateable {
 	public static void passData(float[] skeletonBuffer, int bones, float size, Material material, Mesh mesh) {
 		if (skeletonBuffer != null && skeletonBuffer.length > 0) {
 			Program program = material.getProgram();
-			program.use();
-
 			passDataIntern(skeletonBuffer,bones,size,material,mesh,program);
 		}
 	}
@@ -146,6 +144,7 @@ public class Skeleton implements IUpdateable {
 		if (skeletonBuffer != null && skeletonBuffer.length > 0) {
 			Program program = SceneManager.getInstance().getRenderer().getShadowProgram(true);
 			program.use();
+			material.updateHandles();
 			passDataIntern(skeletonBuffer,bones,0.1f,material,mesh,program);
 		}
 	}

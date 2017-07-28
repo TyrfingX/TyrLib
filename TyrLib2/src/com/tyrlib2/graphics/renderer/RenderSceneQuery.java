@@ -9,20 +9,17 @@ import com.tyrlib2.math.FrustumG;
 public class RenderSceneQuery implements ISceneQuery {
 	
 	private FrustumG frustum;
-	private float[] transformMatrix;
 	
-	public RenderSceneQuery(FrustumG frustum, float[] transformMatrix) {
+	public RenderSceneQuery(FrustumG frustum) {
 		this.frustum = frustum;
-		this.transformMatrix = transformMatrix;
 	}
 	
 	public RenderSceneQuery() {
 		
 	}
 	
-	public void init(FrustumG frustum, float[] transformMatrix) {
+	public void init(FrustumG frustum) {
 		this.frustum = frustum;
-		this.transformMatrix = transformMatrix;
 	}
 	
 	@Override

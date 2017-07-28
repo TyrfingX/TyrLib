@@ -26,6 +26,15 @@ public class FloatArray {
 		}
 	}
 	
+	public void clear() {
+		size = 0;
+		
+		if (size == buffer.length / 4 && size > MIN_SIZE) {
+			resize();
+		}
+	}
+
+	
 	public void popBack(int number) {
 		for (int i = 0; i < number; ++i) {
 			popBack();
@@ -67,5 +76,4 @@ public class FloatArray {
 		
 		return b.toString();
 	}
-
 }

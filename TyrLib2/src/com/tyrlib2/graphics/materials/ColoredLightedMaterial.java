@@ -22,9 +22,6 @@ public class ColoredLightedMaterial extends LightedMaterial {
 	private Color[] colors;
 	
 	private int normalHandle;
-	
-	/** Contains the model*view matrix **/
-	private float[] mvMatrix = new float[16];
 
 	
 	public static final String PER_VERTEX_PROGRAM_NAME = "BASIC_LIGHTED";

@@ -180,4 +180,10 @@ public class Renderable2 extends SceneObject implements IRenderable {
 	public int getInsertionID() {
 		return insertionID;
 	}
+	
+	@Override
+	public void destroy() {
+		mesh.destroy();
+		detach();
+	}
 }

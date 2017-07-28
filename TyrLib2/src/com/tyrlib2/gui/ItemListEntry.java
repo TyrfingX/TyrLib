@@ -9,5 +9,5 @@ public class ItemListEntry extends Window {
 	public ItemListEntry(String name, Vector2 size) {
 		super(name, size);
 	}
-
+	
 }

@@ -40,4 +40,10 @@ public class TerrainChunk extends BoundedRenderable {
 		return insertionID;
 	}
 
+	@Override
+	public void destroy() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

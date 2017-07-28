@@ -1,6 +1,6 @@
 package com.tyrlib2.gui;
 
-import com.tyrlib2.gui.Frame.FrameImagePosition;
+import com.tyrlib2.graphics.renderables.Rectangle2;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.util.Color;
 
@@ -12,7 +12,7 @@ import com.tyrlib2.util.Color;
 
 public class ProgressBar extends Window {
 
-	private Frame frame;
+	private Window bg;
 	private Overlay bar;
 	
 	private float progress;
@@ -25,22 +25,18 @@ public class ProgressBar extends Window {
 		
 		this.maxProgress = maxProgress;
 		
-		frame = WindowManager.getInstance().createFrame(name + "/Frame", new Vector2(), size);
-		
 		Skin skin = WindowManager.getInstance().getSkin();
-		frame.setBgRegion(FrameImagePosition.MIDDLE, skin.PROGRESS_BAR_BG);
-		frame.setReceiveTouchEvents(false);
+		bg = WindowManager.getInstance().createRectWindow(name + "/Frame", new Vector2(), size, skin.PROGRESS_BAR_BG_PAINT);
+		bg.setReceiveTouchEvents(false);
 		
-		float frameBorderSize = frame.getBorderSize();
 		bar = (Overlay) WindowManager.getInstance().createOverlay(	name + "/Bar", 
-																	new Vector2(frameBorderSize, frameBorderSize), 
-																	new Vector2(size.x - 2 * frameBorderSize, size.y - 2 * frameBorderSize), 
+																	new Vector2(0, 0), 
+																	new Vector2(size.x, size.y), 
 																	skin.PROGRESS_BAR_COLOR);
 		bar.setReceiveTouchEvents(false);
-		
+	
+		this.addChild(bg);
 		this.addChild(bar);
-		this.addChild(frame);
-		
 	}
 	
 	/**
@@ -52,7 +48,7 @@ public class ProgressBar extends Window {
 		this.progress = progress;
 	
 		Vector2 frameSize = getSize();
-		Vector2 size = new Vector2(frameSize.x - 2 * frame.getBorderSize(), frameSize.y - 2 * frame.getBorderSize());
+		Vector2 size = new Vector2(frameSize.x, frameSize.y);
 		size.x = size.x * progress/maxProgress;
 		bar.setSize(size);
 	}
@@ -76,6 +72,16 @@ public class ProgressBar extends Window {
 	@Override
 	public float getAlpha() {
 		return bar.getAlpha();
+	}
+	
+	@Override
+	public void setAlpha(float alpha) {
+		super.setAlpha(alpha);
+		Rectangle2 rect = (Rectangle2) bg.getComponent(0);
+		rect.setAlpha(alpha);
+		
+		rect = (Rectangle2) bg.getComponent(1);
+		rect.setAlpha(alpha);
 	}
 
 }

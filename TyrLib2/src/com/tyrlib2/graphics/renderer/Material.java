@@ -28,7 +28,7 @@ public class Material {
 	protected VertexLayout vertexLayout = new VertexLayout();
 	
 	/** Handle to the final display matrix **/
-	protected int mvpMatrixHandle;
+	public int mvpMatrixHandle;
 	
 	/** Name of this material **/
 	protected String name;
@@ -54,6 +54,24 @@ public class Material {
 	
 	protected List<Param> params = new ArrayList<Param>();
 	
+	/** Number of times an object with this material is required to be rendered **/
+	public int repeatRender = 1;
+	
+	/** Current repeat iteration of the render **/
+	protected int iteration;
+	
+	/** Flag whether or not to write to the depth buffer **/
+	public boolean nodepth = false;
+	
+	/** Flag whether or not an object with this material can cast a shadow **/
+	protected boolean castShadow = true;
+	
+	/** Flag indicating if objects with this material are visible **/
+	protected boolean visible = true;
+	
+	/** Flag indicating if backface culling is disabled or enabled **/
+	protected boolean backfaceCulling = true;
+	
 	public Material() {
 
 	}
@@ -69,7 +87,9 @@ public class Material {
 	
 	public void setParams() {
 		for (int i = 0; i < params.size(); ++i) {
-			params.get(i).set(program.handle);
+			if (params.get(i).paramHandle != -1) {
+				params.get(i).set(program.handle);
+			}
 		}
 	}
 	
@@ -149,6 +169,10 @@ public class Material {
 		this.animated = animated;
 	}
 	
+	public void setBackfaceCulling(boolean state) {
+		this.backfaceCulling  = state;
+	}
+	
 	public Material copy() {
 		return new Material();
 	}
@@ -160,7 +184,15 @@ public class Material {
 	
 	public void updateHandles() {
 		mvpMatrixHandle = TyrGL.glGetUniformLocation(program.handle, mvpParamName);
+		if (mvpMatrixHandle == -1) {
+			System.out.println("Error: No MVPMatrix with parameter name " + mvpParamName + " found in fragmentshader");
+		}
+		
 		positionHandle = TyrGL.glGetAttribLocation(program.handle, positionParamName);
+		for (int i = 0; i < params.size(); ++i) {
+			params.get(i).setProgram(program.handle);
+		}
+		
 	}
 	
 	public int getInfoOffset(int info) {
@@ -182,6 +214,14 @@ public class Material {
 	
 	public void setVertexLayout(VertexLayout layout) {
 		this.vertexLayout = layout;
+	}
+	
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
+	
+	public void setCastShadow(boolean visible) {
+		this.castShadow = visible;
 	}
 	
 	

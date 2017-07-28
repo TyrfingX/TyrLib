@@ -27,7 +27,7 @@ public class PCBitmap implements IBitmap {
 	public PCBitmap(String path, boolean staticBitmap) {
 		try {
 			tBufferedImage = ImageIO.read(new File(path));
-			if (!staticBitmap) toTexture(tBufferedImage);
+			if (!staticBitmap) toTexture();
 		} catch (GLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -38,7 +38,6 @@ public class PCBitmap implements IBitmap {
 	public PCBitmap(String path) {
 		try {
 			tBufferedImage = ImageIO.read(new File(path));
-			toTexture(tBufferedImage);
 		} catch (GLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -49,9 +48,13 @@ public class PCBitmap implements IBitmap {
 	public PCBitmap(BufferedImage tBufferedImage) {
 		toTexture(tBufferedImage);
 	}
+
+	@Override
+	public void toTexture() {
+		toTexture(tBufferedImage);
+	}
 	
 	public void toTexture(BufferedImage tBufferedImage) {
-		//ImageUtil.flipImageVertically(tBufferedImage);
 		text = AWTTextureIO.newTexture(GLProfile.getDefault(), tBufferedImage, true); 
 		text.setTexParameteri(PCGL3.gl, TyrGL.GL_TEXTURE_MIN_FILTER, TyrGL.GL_LINEAR_MIPMAP_LINEAR);
 		text.setTexParameteri(PCGL3.gl, TyrGL.GL_TEXTURE_MAG_FILTER, TyrGL.GL_LINEAR);

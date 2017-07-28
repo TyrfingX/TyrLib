@@ -383,6 +383,8 @@ public class SceneNode implements Serializable {
 			parent.detachChild(this);
 			parent = null;
 		}
+		
+		forceUpdate();
 	}
 	
 	/**
@@ -448,7 +450,7 @@ public class SceneNode implements Serializable {
 	 */
 	
 	public void update() {
-		for (int i = 0; i < children.size(); ++i) {	
+		for (int i = 0, countChildren = children.size(); i < countChildren; ++i) {	
 			children.get(i).update(rot, scale, modelMatrix);
 		}
 		
@@ -487,8 +489,8 @@ public class SceneNode implements Serializable {
 		setIdentityMatrix(modelMatrix);
 		parentRot.multiply(rot, absoluteRot);
 		absoluteScale.x = scale.x * parentScale.x;
-		absoluteScale.x = scale.y * parentScale.y;
-		absoluteScale.x = scale.z * parentScale.z;
+		absoluteScale.y = scale.y * parentScale.y;
+		absoluteScale.z = scale.z * parentScale.z;
 		
 		rot.toMatrix(rotation);
 		setIdentityMatrix(translation);
@@ -571,5 +573,9 @@ public class SceneNode implements Serializable {
 	
 	public void scale(Vector3 scale) {
 		setRelativeScale(this.scale.add(scale));
+	}
+	
+	public boolean isDirty() {
+		return dirty;
 	}
 }

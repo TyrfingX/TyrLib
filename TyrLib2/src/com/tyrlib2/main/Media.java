@@ -12,9 +12,17 @@ import com.tyrlib2.bitmap.ITypeface;
 import com.tyrlib2.files.IBitmap;
 import com.tyrlib2.graphics.text.IGLText;
 import com.tyrlib2.math.Vector2;
+import com.tyrlib2.sound.IMusic;
+import com.tyrlib2.sound.ISound;
+import com.tyrlib2.util.Options;
 
 public abstract class Media {
 	public static Media CONTEXT;
+	
+	protected Options options = new Options();
+	
+	public static final int PRECISION = 0;
+	public static final int DEPTH_TEXTURES_ENABLED = 1;
 	
 	public abstract InputStream openAsset(String fileName) throws IOException;
 	public abstract FileInputStream openFileInput(String fileName) throws IOException;
@@ -36,4 +44,10 @@ public abstract class Media {
 	public abstract IBitmap loadStaticBitmap(int resID, boolean prescaling);
 	public abstract void quit();
 	public abstract boolean fileExists(String target, String fileName);
+	public abstract ISound createSound(String source);
+	public abstract IMusic createMusic(String source);
+	
+	public Options getOptions() {
+		return options;
+	}
 }

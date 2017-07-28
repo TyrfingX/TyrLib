@@ -39,9 +39,11 @@ public class ComplexParticleSystem extends ParticleSystem {
 	private int[] buffers = new int[2];
 	
 	private boolean dynamic = true;
-	private int insertionID;
+	private boolean fixInsertionID = false;
+	private int insertionID = -1;
 	
 	private boolean staticUpdated;
+	
 	
 	public ComplexParticleSystem() {
 		affectors = new Affector[MIN_AFFECTORS_SIZE];
@@ -58,11 +60,14 @@ public class ComplexParticleSystem extends ParticleSystem {
 		boundingBox.max.x = -Float.MAX_VALUE;
 		boundingBox.max.y = -Float.MAX_VALUE;
 		boundingBox.max.z = -Float.MAX_VALUE;
+		
+		visible = true;
 	}
 	
-	public ComplexParticleSystem(int maxParticles) {
+	public ComplexParticleSystem(int maxParticles, boolean screenSpace) {
 		this();
 		this.maxParticles = maxParticles;
+		this.screenSpace = screenSpace;
 		
         ByteBuffer bb = ByteBuffer.allocateDirect(maxParticles * OpenGLRenderer.BYTES_PER_FLOAT * PARTICLE_DATA_SIZE);
         // use the device hardware's native byte order
@@ -75,13 +80,15 @@ public class ComplexParticleSystem extends ParticleSystem {
         bb2.order(ByteOrder.nativeOrder());
         buffer2 = bb2.asShortBuffer();
         
+        short[] drawOrder_ = screenSpace ? DRAW_ORDER_SCREEN_SPACE : DRAW_ORDER;
+        
         for (int i = 0; i < maxParticles; ++i) {
-        	short[] drawOrder = { 	(short) (DRAW_ORDER[0]+4*i), 
-									(short) (DRAW_ORDER[1]+4*i),
-									(short) (DRAW_ORDER[2]+4*i),
-									(short) (DRAW_ORDER[3]+4*i),
-									(short) (DRAW_ORDER[4]+4*i),
-									(short) (DRAW_ORDER[5]+4*i) };
+        	short[] drawOrder = { 	(short) (drawOrder_[0]+4*i), 
+									(short) (drawOrder_[1]+4*i),
+									(short) (drawOrder_[2]+4*i),
+									(short) (drawOrder_[3]+4*i),
+									(short) (drawOrder_[4]+4*i),
+									(short) (drawOrder_[5]+4*i) };
         	buffer2.put(drawOrder);
         }
         
@@ -91,6 +98,7 @@ public class ComplexParticleSystem extends ParticleSystem {
 			TyrGL.glGenBuffers(2, buffers, 0); // Get A Valid Name
 			TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, buffers[0]); // Bind The Buffer
 	        // Load The Data
+			
 	        TyrGL.glBufferData(TyrGL.GL_ARRAY_BUFFER,  maxParticles * OpenGLRenderer.BYTES_PER_FLOAT * PARTICLE_DATA_SIZE, buffer, TyrGL.GL_STREAM_DRAW);
 	        
 			TyrGL.glBindBuffer(TyrGL.GL_ARRAY_BUFFER, buffers[1]); // Bind The Buffer
@@ -107,6 +115,10 @@ public class ComplexParticleSystem extends ParticleSystem {
 	public void onUpdate(float time) {
 		
 		time /= steps;
+		
+		if (parent != null) {
+			parent.forceUpdate();
+		}
 		
 		// Update everything
 		if (dynamic) {
@@ -162,7 +174,10 @@ public class ComplexParticleSystem extends ParticleSystem {
 			boundingBox.max.y = -Float.MAX_VALUE;
 			boundingBox.max.z = -Float.MAX_VALUE;
 			
-			staticUpdated = true;
+			if (this.getParent() != null && !this.getParent().isDirty()) {
+				staticUpdated = true;
+			}
+			
 			int countMaterials = particleBatches.size();
 			for (int j = 0; j < countMaterials; ++j) {
 				List<Particle> particles = particleBatches.get(j).particles;
@@ -173,13 +188,25 @@ public class ComplexParticleSystem extends ParticleSystem {
 					particle.onUpdate(time);
 				}
 			}
+		} 
+		
+		if (staticUpdated) {
+			if (this.getParent() != null && this.getParent().isDirty()) {
+				staticUpdated = false;
+			}
 		}
 		
 		if (isBoundingBoxVisible()) {
 			updateBoundingBox();
 		}
+	}
+	
+	public boolean isSaturated() {
+		for (int i = 0; i < emitters.size(); ++i) {
+			if (!emitters.get(i).isFinished()) return false;
+		}
 		
-		visible = false;
+		return countParticles == 0;
 	}
 	
 	
@@ -384,15 +411,13 @@ public class ComplexParticleSystem extends ParticleSystem {
 	@Override
 	public void render(float[] vpMatrix) {
 		
-		if (parent == null) {
+		if (parent == null || !visible) {
 			return;
 		}
 		
-		visible = true;
-		
 		int countBatches = particleBatches.size();
 		
-		if (disableZWriting) {
+		if (disableZWriting && !screenSpace) {
 			TyrGL.glDepthMask( false );
 		}		
 		
@@ -476,17 +501,18 @@ public class ComplexParticleSystem extends ParticleSystem {
 			}
 		}
 		
-		if (disableZWriting) {
+		if (disableZWriting && !screenSpace) {
 			TyrGL.glDepthMask( true );
 		}		
 		
 	}
 	
 	public ParticleSystem copy() {
-		ComplexParticleSystem other = new ComplexParticleSystem(maxParticles);
+		ComplexParticleSystem other = new ComplexParticleSystem(maxParticles, screenSpace);
 		
 		other.affectors = new Affector[countAffectors];
 		other.countAffectors = countAffectors;
+		other.screenSpace = screenSpace;
 		
 		for (int i = 0; i < countAffectors; ++i) {
 			other.affectors[i] = affectors[i].copy();
@@ -508,14 +534,51 @@ public class ComplexParticleSystem extends ParticleSystem {
 		this.dynamic = dynamic;
 	}
 	
+	public void setFixInsertionID(boolean state) {
+		fixInsertionID = state;
+	}
+	
 	@Override
 	public void setInsertionID(int id) {
-		this.insertionID = id;
+		if (!fixInsertionID || this.insertionID == -1) {
+			this.insertionID = id;
+		}
 	}
 
 	@Override
 	public int getInsertionID() {
 		return insertionID;
+	}
+	
+	@Override
+	public void destroy() {
+		super.destroy();
+		for (int i = 0; i < buffers.length; ++i) {
+			if (buffers[i] != 0) {
+				TyrGL.glDeleteBuffers(1, buffers, i);
+			}
+		}
+	}
+	
+	public void clear() {
+		for (int i = 0; i < particleBatches.size(); ++i) {
+			ParticleBatch batch = particleBatches.get(i);
+			
+			List<Particle> particles = batch.particles;
+			batch.particleData.clear();
+			deadParticles.addAll(particles);
+			particles.clear();
+		}
+		
+		countParticles = 0;
+	}
+	
+	@Override
+	public void setGlobalScale(int scale) {
+		super.setGlobalScale(scale);
+		for (int i = 0; i < emitters.size(); ++i) {
+			emitters.get(i).setRelativePos(emitters.get(i).getRelativePos().multiply(globalScale));
+		}
 	}
 	
 }

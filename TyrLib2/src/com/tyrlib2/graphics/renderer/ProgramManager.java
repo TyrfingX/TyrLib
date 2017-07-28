@@ -191,6 +191,37 @@ public class ProgramManager {
 					if (!directive.equals("#endif")) {
 						throw new RuntimeException("Preprocessor failed!");
 					}
+				} else if (directive.equals("#ifndef")){
+					while (shader.charAt(pos) != ' ') {
+						tmp.append(shader.charAt(pos));
+						pos++;
+					}
+					
+					String option = tmp.toString();
+					tmp.setLength(0);
+					
+					boolean optionDefined = options != null && !options.isDefined(option);
+					
+					while (shader.charAt(pos) != '#') {
+						if (optionDefined) {
+							builder.append(shader.charAt(pos));
+						}
+						pos++;
+					}
+					
+					while (shader.charAt(pos) != ' ') {
+						tmp.append(shader.charAt(pos));
+						pos++;
+					}
+					
+					directive = tmp.toString();
+					tmp.setLength(0);
+					
+					pos++;
+					
+					if (!directive.equals("#endif")) {
+						throw new RuntimeException("Preprocessor failed!");
+					}
 				} else {
 					builder.append(directive);
 					builder.append(' ');

@@ -6,7 +6,12 @@ public class Texture {
 	
 	protected int handle;
 	protected int resId;
-	protected Vector2 size;
+	public Vector2 size;
+	
+	public Texture() {
+		this.handle = -1;
+		this.resId = -1;
+	}
 	
 	public Texture(int handle) {
 		this.handle = handle;

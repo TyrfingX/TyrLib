@@ -16,9 +16,9 @@ public abstract class BoundedSceneObject extends SceneObject {
 			AABB aabb = getBoundingBox();
 			boundingBox = new BoundingBox(aabb);
 			SceneManager.getInstance().getRootSceneNode().attachSceneObject(boundingBox);
-			SceneManager.getInstance().getRenderer().addRenderable(boundingBox, OpenGLRenderer.TRANSLUCENT_CHANNEL);
+			SceneManager.getInstance().getRenderer().addRenderable(boundingBox, OpenGLRenderer.TRANSLUCENT_CHANNEL_2);
 		} else if (boundingBoxVisible && !visible) {
-			SceneManager.getInstance().destroyRenderable(boundingBox, OpenGLRenderer.TRANSLUCENT_CHANNEL);
+			SceneManager.getInstance().destroyRenderable(boundingBox, OpenGLRenderer.TRANSLUCENT_CHANNEL_2);
 			boundingBox = null;
 		}
 		

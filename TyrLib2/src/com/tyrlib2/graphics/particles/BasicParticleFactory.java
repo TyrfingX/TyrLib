@@ -52,4 +52,12 @@ public class BasicParticleFactory implements IParticleFactory {
 	}
 
 
+	@Override
+	public IParticleFactory oopy() {
+		BasicParticleFactory f = new BasicParticleFactory(this.lifeTime, this.size);
+		f.setMaterial(material);
+		return f;
+	}
+
+
 }

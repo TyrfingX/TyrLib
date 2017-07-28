@@ -3,6 +3,7 @@ package com.tyrlib2.graphics.renderables;
 import com.tyrlib2.graphics.animation.Skeleton;
 import com.tyrlib2.graphics.renderer.Material;
 import com.tyrlib2.graphics.renderer.Mesh;
+import com.tyrlib2.graphics.renderer.Program;
 import com.tyrlib2.graphics.renderer.Renderable;
 
 /**
@@ -23,6 +24,9 @@ public class SubEntity extends Renderable {
 	}
 	
 	public void render(float[] vpMatrix, float[] skeletonBuffer, int bones) {
+		Program program = material.getProgram();
+		program.use();
+		material.updateHandles();
 		Skeleton.passData(skeletonBuffer, bones, material, mesh);
 		super.render(vpMatrix);
 	}

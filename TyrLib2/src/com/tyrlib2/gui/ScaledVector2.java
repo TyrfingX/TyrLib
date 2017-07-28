@@ -44,5 +44,10 @@ public class ScaledVector2 implements Serializable {
 		return new ScaledVector2(x+v.x, y+v.y, scaleIndex);
 	}
 	
+	public ScaledVector2 sub(ScaledVector2 v)
+	{
+		return new ScaledVector2(x-v.x, y-v.y, scaleIndex);
+	}
+	
 	
 }

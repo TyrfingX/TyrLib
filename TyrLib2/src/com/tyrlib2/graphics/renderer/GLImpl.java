@@ -62,4 +62,15 @@ public interface GLImpl {
 	public void glGenerateMipmap(int mode);
 	public void glTexImage2D(int target, int level, int internalFormat,
 			int width, int height, int border, int format, int type, Buffer data);
+	void glDeleteBuffers(int n, int[] buffers, int offset);
+	void glRenderbufferStorage(int target, int internalformat, int width,int height);
+	void glFramebufferRenderbuffer(int target, int attachment,int renderbuffertarget, int renderbuffer);
+	void glGenRenderbuffer(int n, int[] buffers, int offset);
+	void glBindRenderbuffer(int target, int buffer);
+	int glGetError();
+	void glTexImage2DMultisample(int target, int samples, int internalformat,int width, int height, boolean fixedSampleLocations);
+	void glRenderbufferStorageMultisample(int target, int samples, int internalformat, int width, int height);
+	int glCheckFramebufferStatus(int target);
+	void glBlitFramebuffer(int srcX, int srcY, int srcWidth, int srcHeight, int dstX, int dstY, int dstWidth, int dstHeight, int flag,int filter);
+	void glReadBuffer(int target);
 }

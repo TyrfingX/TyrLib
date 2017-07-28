@@ -26,6 +26,8 @@ public class ParticleMaterial extends Material implements IBlendable {
 	private Color color;
 	private TextureRegion region;
 	private boolean blending = true;
+	private int blendSrc = TyrGL.GL_SRC_ALPHA;
+	private int blendDst = TyrGL.GL_ONE;
 	
 	public ParticleMaterial(String textureName, Color color) {
 		program = ProgramManager.getInstance().getProgram("PARTICLE");
@@ -82,7 +84,7 @@ public class ParticleMaterial extends Material implements IBlendable {
 		}
 	    
 		if (blending) {
-			Program.blendEnable(TyrGL.GL_SRC_ALPHA, TyrGL.GL_ONE_MINUS_SRC_ALPHA);
+			Program.blendEnable(blendSrc , blendDst);
 		} else {
 			Program.blendDisable();
 		}
@@ -90,6 +92,14 @@ public class ParticleMaterial extends Material implements IBlendable {
 	
 	public void setBlending(boolean blending) {
 		this.blending = blending;
+	}
+	
+	public void setBlendModeSrc(int blendSrc) {
+		this.blendSrc = blendSrc;
+	}
+	
+	public void setBlendModeDst(int blendDst) {
+		this.blendDst = blendDst;
 	}
 	
 	public String getTextureName(){

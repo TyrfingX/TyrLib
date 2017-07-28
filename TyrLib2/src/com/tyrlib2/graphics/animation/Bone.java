@@ -13,6 +13,11 @@ import com.tyrlib2.math.Vector3;
  */
 
 public class Bone extends SceneNode {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6784032679949238763L;
+	
 	protected String name;
 	protected Quaternion initRot;
 	protected Quaternion initRotInverse;
@@ -72,7 +77,7 @@ public class Bone extends SceneNode {
 			Matrix.multiplyMM(tmpMatrix, 0, parentTransform, 0, tmpMatrix, 0);
 			
 			
-			for (int i = 0; i < children.size(); ++i) {	
+			for (int i = 0, countChildren = children.size(); i < countChildren; ++i) {	
 				children.get(i).updateAll(absoluteRot, absoluteScale, tmpMatrix);
 			}
 

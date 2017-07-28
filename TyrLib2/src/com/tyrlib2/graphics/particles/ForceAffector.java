@@ -25,7 +25,7 @@ public class ForceAffector extends Affector {
 	
 	
 	public ForceAffector(ForceAffector other) {
-		force = other.force;
+		force = new Vector3(other.force);
 		radialDependency = other.radialDependency;
 		power = other.power;
 		timeMin = other.timeMin;

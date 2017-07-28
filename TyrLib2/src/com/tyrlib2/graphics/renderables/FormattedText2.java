@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.tyrlib2.graphics.renderer.IBlendable;
-import com.tyrlib2.graphics.renderer.IRenderable;
 import com.tyrlib2.graphics.renderer.Program;
+import com.tyrlib2.graphics.renderer.RenderableSceneObject;
 import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.graphics.renderer.Viewport;
 import com.tyrlib2.graphics.scene.SceneManager;
-import com.tyrlib2.graphics.scene.SceneObject;
 import com.tyrlib2.graphics.text.Font;
 import com.tyrlib2.graphics.text.IGLText;
 import com.tyrlib2.math.Quaternion;
@@ -33,9 +32,9 @@ import com.tyrlib2.util.Color;
  *
  */
 
-public class FormattedText2 extends SceneObject implements IRenderable, IBlendable {
+public class FormattedText2 extends RenderableSceneObject implements IBlendable {
 	
-	public static final Color LINK_COLOR = new Color(0,0,1,1);
+	public static final Color LINK_COLOR = new Color(0.2f,0.2f,1,1);
 	
 	public enum ALIGNMENT {
 		LEFT,
@@ -63,6 +62,7 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 			this.text = text;
 			this.rotationValue = rotation;
 			if (rotation != 0) {
+				this.rotation = new float[16];
 				Quaternion.fromAxisAngle(Vector3.UNIT_Z, rotation).toMatrix(this.rotation);
 			} else {
 				this.rotation = NO_ROTATION;
@@ -89,8 +89,8 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 	public List<TextSection> textSections;
 	private ALIGNMENT alignment;
 	private Vector2 size;
-	private boolean dirty;
 	private int insertionID;
+	private float maxWidth;
 	
 	public FormattedText2(String text, int baseRotation, Color baseColor, Font font) {
 		this.baseColor = baseColor;
@@ -104,13 +104,14 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 
 	@Override
 	public void render(float[] vpMatrix) {
+		
 		Program.blendEnable(TyrGL.GL_SRC_ALPHA, TyrGL.GL_ONE_MINUS_SRC_ALPHA);
 		IGLText glText = font.glText;
 		Vector3 pos = parent.getCachedAbsolutePosVector();
 		for (int i = 0; i < textSections.size(); ++i) {
 			TextSection section = textSections.get(i);
-			if (section.atlasName == null) {
-				glText.begin( section.color.r, section.color.g, section.color.b, section.color.a, vpMatrix );
+			if (section.atlasName == null && !section.text.equals("")) {
+				glText.begin( section.color.r, section.color.g, section.color.b, section.color.a * (section.color != baseColor ? baseColor.a : 1), vpMatrix );
 				if (alignment == ALIGNMENT.LEFT) {
 					glText.draw( section.text, pos.x + section.xOffset, pos.y + section.yOffset - font.glText.getCharHeight(), section.rotation);   
 				} else if (alignment == ALIGNMENT.CENTER) {
@@ -120,6 +121,7 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 					glText.draw( section.text, pos.x + section.xOffset - length, pos.y + section.yOffset - font.glText.getCharHeight(), section.rotation); 
 				}
 				glText.end();
+				//glText.end();
 			} 
 		}
 		Program.blendDisable();
@@ -128,6 +130,7 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 	}
 	
 	private void parseText() {
+		
 		textSections = new ArrayList<TextSection>();
 		float xOffset = 0;
 		float yOffset = 0;
@@ -138,6 +141,9 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 		Color color = baseColor;
 		int rotation = baseRotation;
 		String link = "";
+		
+		float length = 0;
+		Viewport viewport = SceneManager.getInstance().getViewport();
 		
 		for (int i = 0; i < text.length(); ++i) {
 			char c = text.charAt(i);
@@ -177,12 +183,13 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 							xOffset += font.glText.getLength(sectionText);
 						}
 						
-						yOffset -= font.glText.getCharHeight() - font.glText.getDescent();
+						yOffset -= font.glText.getCharHeight() - font.glText.getDescent()/2 - font.glText.getAscent()/2;
 						
 						if (xOffset > maxX) {
 							maxX = xOffset;
 						}
 						xOffset = 0;
+						length = 0;
 					} else {
 						builder.append(c);
 						builder.append(d);
@@ -200,12 +207,13 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 					xOffset += font.glText.getLength(sectionText);
 				}
 				
-				yOffset -= font.glText.getCharHeight() - font.glText.getDescent();
+				yOffset -= font.glText.getCharHeight() - font.glText.getDescent()/2 - font.glText.getAscent()/2;
 				
 				if (xOffset > maxX) {
 					maxX = xOffset;
 				}
 				xOffset = 0;
+				length = 0;
 			} else if (c == '\r') {
 				// We want to end any special rotation we currently have
 				String sectionText = addCurrentSection(builder, color, rotation, xOffset, yOffset, link, null, null, 0);
@@ -263,7 +271,7 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 						String sectionText = addCurrentSection(builder, color, rotation, xOffset, yOffset, link, null, null, 0);
 						builder.setLength(0);
 						if (alignment == ALIGNMENT.CENTER) {
-							xOffset += font.glText.getLength(sectionText) / 2;
+							xOffset += font.glText.getLength(sectionText)/ 2;
 						} else {
 							xOffset += font.glText.getLength(sectionText);
 						}
@@ -320,7 +328,41 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 					}
 				}
 			} else {
+				length += font.glText.getLength(String.valueOf(c));
 				builder.append(c);
+				
+				if ((xOffset + length) / viewport.getWidth() >= maxWidth && maxWidth > 0) {
+					String line = builder.toString();
+					builder.setLength(0);
+					String[] words = line.split(" ");
+					for (int j = 0; j < words.length - 1; ++j) {
+						builder.append(words[j]);
+						if (j != words.length - 2) {
+							builder.append(" ");
+						}
+					}
+					
+					String sectionText = addCurrentSection(builder, color, rotation, xOffset, yOffset, link, null, null, 0);
+					
+					builder.setLength(0);
+					if (alignment == ALIGNMENT.CENTER) {
+						xOffset += font.glText.getLength(sectionText) / 2;
+					} else {
+						xOffset += font.glText.getLength(sectionText);
+					}
+					
+					yOffset -= font.glText.getCharHeight() - font.glText.getDescent()/2 - font.glText.getAscent()/2;
+					
+					if (xOffset > maxX) {
+						maxX = xOffset;
+					}
+					
+					xOffset = 0;
+					line = (words.length > 0) ? (words[words.length-1]) : "";
+					if (c == ' ') line += " ";
+					length = font.glText.getLength(line);
+					builder.append(line);
+				}
 			}
 			
 
@@ -334,7 +376,7 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 		}
 		
 		size.x = maxX;
-		size.y = -yOffset + font.glText.getCharHeight();
+		size.y = -yOffset + font.glText.getCharHeight() + font.glText.getDescent() / 2; 
 	}
 	
 	private String addCurrentSection(StringBuilder builder, Color color, int rotation, float xOffset, float yOffset, String link, String atlasName, String regionName, int imgSize) {
@@ -379,7 +421,7 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 			
 			textSection.pos = new Vector2();
 			textSection.pos.x = xOffset + font.glText.getCharHeight()*0.15f;
-			textSection.pos.y = -yOffset + font.glText.getCharHeight()*0.15f;
+			textSection.pos.y = -yOffset - textSection.size.y + font.glText.getCharHeight()*0.15f;
 			textSection.pos.x /= viewport.getWidth();
 			textSection.pos.y /= viewport.getHeight();
 			textSection.size.x /= viewport.getWidth();
@@ -467,5 +509,15 @@ public class FormattedText2 extends SceneObject implements IRenderable, IBlendab
 	@Override
 	public int getInsertionID() {
 		return insertionID;
+	}
+
+	@Override
+	public void destroy() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setMaxWidth(float maxWidth) {
+		this.maxWidth = maxWidth;
 	}
 }

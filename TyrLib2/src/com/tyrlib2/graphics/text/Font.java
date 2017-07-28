@@ -10,4 +10,13 @@ public class Font {
 		this.name = name;
 		this.glText = glText;
 	}
+	
+	public Font(String source, String name) {
+		this.name = name;
+		this.source = source;
+	}
+
+	public int getSize() {
+		return glText.getSize();
+	}
 }

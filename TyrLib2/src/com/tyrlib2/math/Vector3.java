@@ -17,6 +17,7 @@ public class Vector3 implements Serializable {
 	public static final Vector3 UNIT_X = new Vector3(1,0,0);
 	public static final Vector3 UNIT_Y = new Vector3(0,1,0);
 	public static final Vector3 UNIT_Z = new Vector3(0,0,1);
+	public static final Vector3 ORIGIN = new Vector3(0,0,0);
 	
 	public float x;
 	public float y;
@@ -87,6 +88,15 @@ public class Vector3 implements Serializable {
 			z /= length;
 		}
 		return length;
+	}
+	
+	public Vector3 unitVector() {
+		float length = this.length();
+		if (length != 0)
+		{
+			return new Vector3(x/length, y/length, z/length);
+		}
+		return new Vector3(0,0,0);
 	}
 	
 	/**
@@ -215,6 +225,12 @@ public class Vector3 implements Serializable {
 		target.x = v1.x + v2.x;
 		target.y = v1.y + v2.y;
 		target.z = v1.z + v2.z;
+	}
+	
+	public static void add(Vector3 v1, float x, float y, float z, Vector3 target) {
+		target.x = v1.x + x;
+		target.y = v1.y + y;
+		target.z = v1.z + z;
 	}
 	
 	public static void sub(Vector3 v1, Vector3 v2, Vector3 target) {

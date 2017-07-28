@@ -3,6 +3,8 @@ package com.TyrLib2.PC.bitmap;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
 import com.tyrlib2.bitmap.IFontMetrics;
 import com.tyrlib2.bitmap.IPaint;
@@ -11,11 +13,15 @@ import com.tyrlib2.bitmap.ITypeface;
 public class PCPaint implements IPaint {
 	
 	public final Graphics g;
+	public final PCCanvas canvas;
 	
 	public TextAlign align = TextAlign.LEFT;
 	
-	public PCPaint(Graphics g) {
+	public PCPaint(Graphics g, PCCanvas canvas) {
 		this.g = g.create();
+		this.canvas = canvas;
+		Font font = g.getFont().deriveFont(Font.BOLD);
+		g.setFont(font);
 	}
 	
 	@Override
@@ -55,8 +61,23 @@ public class PCPaint implements IPaint {
 
 	@Override
 	public void getTextWidths(char[] s, int index, int count, float[] widths) {
+		
 		for (int i = index; i < count; ++i) {
-			widths[i] = (float) g.getFontMetrics().getStringBounds(new String(s), g).getWidth()/1.5f;
+			Font font =  g.getFont();
+			Graphics2D g = (Graphics2D) canvas.canvas.getGraphics().create();
+			
+			g.setFont(font);
+			g.setRenderingHint(	RenderingHints.KEY_ANTIALIASING, // Anti-alias!
+			        			RenderingHints.VALUE_ANTIALIAS_ON);
+			
+			g.setRenderingHint(	RenderingHints.KEY_RENDERING,
+								RenderingHints.VALUE_RENDER_QUALITY);
+			
+			g.setColor(g.getColor());
+			
+			widths[i] = g.getFontMetrics().stringWidth(new String(s, i, 1));
+			g.dispose();
+		
 		}
 	}
 

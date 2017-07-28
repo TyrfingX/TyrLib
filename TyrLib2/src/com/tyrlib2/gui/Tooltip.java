@@ -20,9 +20,16 @@ public class Tooltip extends Window {
 				} else {
 					pos.x += (TyrGL.TARGET == TyrGL.PC_TARGET ? 0 : 0.095f);
 				}
+				
+				if (v.y <= 0.5f) {
+					pos.y += getSize().y;
+				}
+				
 				pos.y = -pos.y;
 				setRelativePos(pos);
+				currentTarget = event.getSource();
 				fadeIn(getMaxAlpha(), fadeTime);
+				setPriority(event.getSource().getPriority()*10);
 				setVisible(true);
 			}
 		}
@@ -32,14 +39,44 @@ public class Tooltip extends Window {
 		@Override
 		public void onEvent(WindowEvent event) {
 			fadeOut(0, fadeTime);
+			currentTarget = null;
 		}
 	}
 	
 	private class TargetDestroyed implements IEventListener {
 		@Override
 		public void onEvent(WindowEvent event) {
-			Window source = event.getSource();
-			targets.remove(source);
+			removeTarget(event.getSource());
+			fadeOut(0, fadeTime);
+			currentTarget = null;
+		}
+	}
+	
+	private class TargetAlphaChanged implements IEventListener {
+		@Override
+		public void onEvent(WindowEvent event) {
+			if (event.getSource().getAlpha() == 0) {
+				fadeOut(0, fadeTime);
+				currentTarget = null;
+			}
+		}
+	}
+	
+	private class TargetFadeOutStarted implements IEventListener {
+		@Override
+		public void onEvent(WindowEvent event) {
+			fadeOut(0, fadeTime);
+			currentTarget = null;
+		}
+	}
+	
+	private class TargetVisibilityChanged implements IEventListener {
+		@Override
+		public void onEvent(WindowEvent event) {
+			if (!event.getSource().isVisible()) {
+				fadeOut(0, fadeTime);
+				currentTarget = null;
+			}
 		}
 	}
 		
@@ -48,7 +85,11 @@ public class Tooltip extends Window {
 	private AppearOnTouch appearOnTouch = new AppearOnTouch();
 	private DisappearOnTouch disappearOnTouch = new DisappearOnTouch();
 	private TargetDestroyed targetDestroyed = new TargetDestroyed();
+	private TargetAlphaChanged targetAlphaChanged = new TargetAlphaChanged();
+	private TargetFadeOutStarted targetFadeOutStarted = new TargetFadeOutStarted();
+	private TargetVisibilityChanged targetVisibilityChanged = new TargetVisibilityChanged();
 	private List<Window> targets = new ArrayList<Window>();
+	private Window currentTarget;
 	
 	public Tooltip(String name, Vector2 size) {
 		super(name, size);
@@ -67,19 +108,42 @@ public class Tooltip extends Window {
 		window.addEventListener(WindowEventType.TOUCH_LEAVES, disappearOnTouch);
 		window.addEventListener(WindowEventType.MOUSE_LEAVES, disappearOnTouch);
 		window.addEventListener(WindowEventType.DESTROYED, targetDestroyed);
+		window.addEventListener(WindowEventType.ALPHA_CHANGED, targetAlphaChanged);
+		window.addEventListener(WindowEventType.FADE_OUT_STARTED, targetFadeOutStarted);
+		window.addEventListener(WindowEventType.VISIBILITY_CHANGED, targetVisibilityChanged);
 		targets.add(window);
+		
+		this.addEventListener(WindowEventType.DESTROYED, new DestroyOnEvent());
+	}
+	
+	public void removeTarget(Window window) {
+		window.removeEventListener(WindowEventType.TOUCH_ENTERS, appearOnTouch);
+		window.removeEventListener(WindowEventType.TOUCH_LEAVES, disappearOnTouch);
+		window.removeEventListener(WindowEventType.MOUSE_ENTERS, appearOnTouch);
+		window.removeEventListener(WindowEventType.MOUSE_LEAVES, disappearOnTouch);
+		window.removeEventListener(WindowEventType.DESTROYED, targetDestroyed);
+		window.removeEventListener(WindowEventType.ALPHA_CHANGED, targetAlphaChanged);
+		window.removeEventListener(WindowEventType.FADE_OUT_STARTED, targetFadeOutStarted);
+		window.removeEventListener(WindowEventType.VISIBILITY_CHANGED, targetVisibilityChanged);
+		targets.remove(window);
 	}
 	
 	@Override
-	public void destroy() {
-		super.destroy();
-		
-		for (int i = 0; i < targets.size(); ++i) {
-			targets.get(i).removeEventListener(WindowEventType.TOUCH_ENTERS, appearOnTouch);
-			targets.get(i).removeEventListener(WindowEventType.TOUCH_LEAVES, disappearOnTouch);
-			targets.get(i).removeEventListener(WindowEventType.MOUSE_ENTERS, appearOnTouch);
-			targets.get(i).removeEventListener(WindowEventType.MOUSE_LEAVES, disappearOnTouch);
-			targets.get(i).removeEventListener(WindowEventType.DESTROYED, targetDestroyed);
+	public float getAlpha() {
+		return this.getChild(0).getAlpha();
+	}
+	
+	public Window getCurrentTarget() {
+		return currentTarget;
+	}
+	
+	@Override
+	public void onUpdate(float time) {
+		super.onUpdate(time);
+		if (currentTarget != null) {
+			if (isVisible() && blendState == BLEND_STATE.IDLE && !currentTarget.isBeingTouched()) {
+				fadeOut(0, fadeTime);
+			}
 		}
 	}
 }

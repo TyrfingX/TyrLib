@@ -8,6 +8,7 @@ import com.tyrlib2.graphics.renderer.TextureRegion;
 import com.tyrlib2.graphics.renderer.Viewport;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.math.Vector2;
+import com.tyrlib2.util.Color;
 
 /**
  * A basic GUI element for displaying a 2D image
@@ -43,7 +44,7 @@ public class ImageBox extends Window {
 		this(name, pos, atlasName, atlasRegion, size, null);
 	}
 	
-	protected ImageBox(String name, Vector2 pos, String texture, Vector2 size) {
+	public ImageBox(String name, Vector2 pos, String texture, Vector2 size) {
 		super(name, size);
 		
 		Viewport viewport = SceneManager.getInstance().getViewport();
@@ -76,6 +77,10 @@ public class ImageBox extends Window {
 	public void setAlpha(float alpha) {
 		image.setAlpha(alpha);
 		super.setAlpha(alpha);
+	}
+	
+	public void setColor(Color color) {
+		image.setColor(color);
 	}
 
 	public String getAtlasName() {
@@ -110,5 +115,13 @@ public class ImageBox extends Window {
 	
 	public Image2 getImage() {
 		return image;
+	}
+	
+	@Override
+	public void setSize(float x, float y) {
+		super.setSize(x, y);
+		Viewport viewport = SceneManager.getInstance().getViewport();
+		Vector2 imageSize = new Vector2(getSize().x * viewport.getWidth(), getSize().y * viewport.getHeight());
+		image.setSize(imageSize);
 	}
 }

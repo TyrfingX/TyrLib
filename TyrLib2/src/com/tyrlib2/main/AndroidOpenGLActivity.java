@@ -9,7 +9,7 @@ import android.support.v4.app.FragmentActivity;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.tyrlib2.graphics.renderer.AndroidGLImpl;
+import com.tyrlib2.graphics.renderer.GLES20Impl;
 import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.math.AndroidMatrixImpl;
 import com.tyrlib2.math.Matrix;
@@ -41,7 +41,7 @@ public abstract class AndroidOpenGLActivity extends FragmentActivity implements 
 
     	RUNNING = true;
     	AndroidMedia.CONTEXT = new AndroidMedia(this);
-    	TyrGL.IMPL = new AndroidGLImpl();
+    	TyrGL.IMPL = new GLES20Impl();
     	Matrix.IMPL = new AndroidMatrixImpl();
         
         //Remove title bar
@@ -91,5 +91,9 @@ public abstract class AndroidOpenGLActivity extends FragmentActivity implements 
         // The activity must call the GL surface view's onPause() on activity onPause().
         super.onPause();
         glView.onPause();
+    }
+    
+    public void close() {
+		this.finish();
     }
 }

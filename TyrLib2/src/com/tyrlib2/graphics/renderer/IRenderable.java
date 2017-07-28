@@ -14,4 +14,5 @@ public interface IRenderable {
 	public void renderShadow(float[] vpMatrix);
 	public void setInsertionID(int id);
 	public int getInsertionID();
+	public void destroy();
 }

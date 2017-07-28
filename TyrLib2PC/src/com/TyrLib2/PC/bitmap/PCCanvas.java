@@ -44,7 +44,7 @@ public class PCCanvas implements ICanvas {
 		if (p.align == TextAlign.RIGHT) {
 			int textWidth = g.getFontMetrics().stringWidth(s);
 	        x = x - textWidth;
-		}
+		} 
 		
 		g.drawString(s, (int) x, (int) y);
 		g.dispose();
@@ -71,6 +71,7 @@ public class PCCanvas implements ICanvas {
 	public void setRGB(int x, int y, com.tyrlib2.util.Color color) {
 		canvas.setRGB(x, y, new Color(	(int)(color.r*255), 
 										(int)(color.g*255), 
-										(int)(color.b*255)).getRGB());
+										(int)(color.b*255),
+										(int)(color.a*255)).getRGB());
 	}
 }

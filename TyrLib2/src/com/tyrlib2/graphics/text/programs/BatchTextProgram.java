@@ -40,8 +40,9 @@ public class BatchTextProgram extends Program {
 			
 			+ "void main()                    \n"     // The entry point for our fragment shader.
 			+ "{                              \n"
-			+ "   gl_FragColor = texture2D(u_Texture, v_TexCoordinate).w * u_Color;\n" // texture is grayscale so take only grayscale value from  
-																					   // it when computing color output (otherwise font is always black)
+			+ 
+				"   gl_FragColor = vec4(1.0,1.0,1.0,texture2D(u_Texture, v_TexCoordinate).a) * u_Color;\n" // texture is grayscale so take only grayscale value from  
+																		   // it when computing color output (otherwise font is always black)
 			+ "}                             \n";
 
 	@Override

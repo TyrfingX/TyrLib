@@ -3,6 +3,7 @@ package com.tyrlib2.networking;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -12,6 +13,8 @@ import java.util.Vector;
 
 public class Network {
 
+	public static final int DEFAULT_TIMEOUT = 10000;
+	
 	private Server server;
 	private List<Connection> connections = new Vector<Connection>();
 	protected List<INetworkListener> listener;
@@ -41,7 +44,7 @@ public class Network {
 	}
 	
 	public boolean isClient() {
-		return server == null;
+		return server == null && connections.size() > 0;
 	}
 	
 	public void setMeasureBandwithUse(boolean state) {
@@ -73,7 +76,12 @@ public class Network {
 	}
 	
 	public void connectTo(String serverName, int port) throws UnknownHostException, IOException {
-		Socket client = new Socket(serverName, port);
+		connectTo(serverName, port, DEFAULT_TIMEOUT);
+	}
+	
+	public void connectTo(String serverName, int port, int timeout) throws UnknownHostException, IOException {
+		Socket client = new Socket();
+		client.connect(new InetSocketAddress(serverName, port), timeout);
 		if (log) {
 			System.out.println(Calendar.getInstance().getTime() + " Successfully connected to " + client.getRemoteSocketAddress());
 		}

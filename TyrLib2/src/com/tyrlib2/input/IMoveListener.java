@@ -8,4 +8,5 @@ public interface IMoveListener {
 	public boolean onLeaveRenderWindow();
 	public boolean onRenderWindowLoseFocus();
 	public boolean onRenderWindowGainFocus();
+	public boolean isEnabled();
 }

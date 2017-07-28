@@ -230,7 +230,7 @@ public class IQMEntityFactory implements IEntityFactory {
 			SubEntityPrototype p = new SubEntityPrototype();
 			entityPrototype.subEntityPrototypes[i] = p;
 			
-			p.mesh = new Mesh(data.vertexData, data.triangleData, data.countVertices, useVBO);
+			p.mesh = new Mesh(data.vertexData, data.triangleData, data.countVertices, true);
 			p.mesh.setVertexBones(data.boneData);
 			p.material = new DefaultMaterial3(null, 1, 1, null, entityData.skeletonData.bones.size() > 0);
 			p.material.setVertexLayout(vertexLayout);
@@ -365,7 +365,7 @@ public class IQMEntityFactory implements IEntityFactory {
 				
 				int pos = 0;
 				int byteStride = vertexLayout.getByteStride();
-				int offset;
+				int offset, offset2;
 				
 				switch (vertexArray.type) {
 				case 0: // This is a position
@@ -387,21 +387,22 @@ public class IQMEntityFactory implements IEntityFactory {
 					break;
 				case 2: // This is a normal
 					offset = vertexLayout.getPos(VertexLayout.NORMAL);
+					offset2 = vertexLayout.getPos(DefaultMaterial3.DIFFUSE);
 					for (int k = 0; k < subEntity.countVertices; ++k) {
 						float x = toFloat(buffer, (pos++)*4);
 						float y = toFloat(buffer, (pos++)*4);
 						float z = toFloat(buffer, (pos++)*4);
 						
-						if (light == null) {
-							// Lighting information not baked into the mesh
-							subEntity.vertexData[k*byteStride + offset + 0] = x;
-							subEntity.vertexData[k*byteStride + offset + 1] = y;
-							subEntity.vertexData[k*byteStride + offset + 2] = z;
-						} else {
+						// Normal information
+						subEntity.vertexData[k*byteStride + offset + 0] = x;
+						subEntity.vertexData[k*byteStride + offset + 1] = y;
+						subEntity.vertexData[k*byteStride + offset + 2] = z;
+						
+						if (light != null) {
 							// Lighting information baked into the mesh
 							float[] lightVector = light.getLightVector();
 							float diffuse = Math.max(Vector3.dot(x,y,z,lightVector[0],lightVector[1],lightVector[2]), 0);
-							subEntity.vertexData[k*byteStride + offset] = diffuse;
+							subEntity.vertexData[k*byteStride + offset2] = diffuse;
 						}
 					}
 					break;

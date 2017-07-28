@@ -3,12 +3,31 @@ package com.tyrlib2.gui;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.tyrlib2.gui.WindowEvent.WindowEventType;
 import com.tyrlib2.input.IMotionEvent;
 import com.tyrlib2.input.IScrollListener;
 import com.tyrlib2.input.InputManager;
 import com.tyrlib2.math.Vector2;
+import com.tyrlib2.util.Layouter;
 
 public class ItemList extends Window implements IScrollListener {
+	
+	public static final float SCROLLBAR_SIZE = 0.1f;
+	public static final float SCROLLBAR_MAX_SIZE = 20;
+	
+	private IEventListener onShowScrollbar = new IEventListener() {
+		@Override
+		public void onEvent(WindowEvent event) {
+			scrollbar.fadeIn(1, 0.5f);
+		}
+	};
+	
+	private IEventListener onHideScrollbar = new IEventListener() {
+		@Override
+		public void onEvent(WindowEvent event) {
+			scrollbar.fadeOut(0, 0.5f);
+		}
+	};
 	
 	private List<ItemListEntry> itemListEntries = new ArrayList<ItemListEntry>();
 	
@@ -30,9 +49,17 @@ public class ItemList extends Window implements IScrollListener {
 	
 	private float height;
 	
+	private float width;
+	
 	private long oldPriority;
 	
 	private int listRotation;
+	
+	private float alpha;
+	
+	private Window scrollbar;
+	
+	private Orientation orientation = Orientation.Vertical;
 	
 	public ItemList(String name, Vector2 pos, Vector2 size, float padding, int displayItems) {
 		super(name, size);
@@ -40,7 +67,13 @@ public class ItemList extends Window implements IScrollListener {
 		this.displayItems = displayItems > 3 ? displayItems : 3;
 		this.padding = padding;
 		this.height = size.y;
+		this.width = size.x;
+		this.setPassTouchEventsThrough(true);
 	
+	}
+	
+	public void setOrientation(Orientation orientation) {
+		this.orientation = orientation;
 	}
 	
 	public void addItemListEntry(ItemListEntry itemListEntry) {
@@ -51,34 +84,102 @@ public class ItemList extends Window implements IScrollListener {
 		itemListEntries.remove(itemListEntry);
 	}
 	
+	public void setScrollbar(final Window scrollbar) {
+		this.scrollbar = scrollbar;
+		
+		resizeScrollbar();
+		
+		this.addChild(scrollbar);
+		
+		scrollbar.setInheritsAlpha(false);
+		scrollbar.setInheritsFade(false);
+		
+		if (orientation == Orientation.Vertical) {
+			scrollbar.setRelativePos(this.getSize().x, 0);
+		} else {
+			scrollbar.setRelativePos(0, -scrollbar.getSize().y);
+		}
+		
+		this.addEventListener(WindowEventType.TOUCH_ENTERS, onShowScrollbar);
+		this.addEventListener(WindowEventType.MOUSE_ENTERS, onShowScrollbar);
+		this.addEventListener(WindowEventType.TOUCH_LEAVES, onHideScrollbar);
+		this.addEventListener(WindowEventType.MOUSE_LEAVES, onHideScrollbar);
+		this.addEventListener(WindowEventType.SIZE_CHANGED, new IEventListener() {
+			@Override
+			public void onEvent(WindowEvent event) {
+				resizeScrollbar();
+			}
+		});
+		this.addEventListener(WindowEventType.ALPHA_CHANGED, new IEventListener() {
+			@Override
+			public void onEvent(WindowEvent event) {
+				if (event.getSource().getAlpha() == 0) {
+					scrollbar.setAlpha(0);
+				}
+			}
+		});
+		this.addEventListener(WindowEventType.VISIBILITY_CHANGED, new IEventListener() {
+			@Override
+			public void onEvent(WindowEvent event) {
+				if (!event.getSource().isVisible()) {
+					scrollbar.setAlpha(0);
+					scrollbar.setVisible(false);
+				}
+			}
+		});
+	}
+	
+	private void resizeScrollbar() {
+		Vector2 size = this.getSize();
+		switch (orientation) {
+		case Vertical:
+			float height = size.y * displayItems / this.getCountEntries();
+			if (height > size.y) height = size.y;
+			scrollbar.setSize(Layouter.restrictX(SCROLLBAR_SIZE, SCROLLBAR_MAX_SIZE), height);
+			break;
+		case Horizontal:
+			float width = size.x * displayItems / this.getCountEntries();
+			if (width > size.x) width = size.x;
+			scrollbar.setSize(width, Layouter.restrictY(SCROLLBAR_SIZE, SCROLLBAR_MAX_SIZE));
+			break;
+		}
+	}
+	
 	public void addItemListEntry(ItemListEntry itemListEntry, int position) {
 		WindowManager.getInstance().addWindow(itemListEntry);
-		itemSize = itemListEntry.getSize().y;
+		itemSize = orientation == Orientation.Vertical ? itemListEntry.getSize().y : itemListEntry.getSize().x;
 		itemListEntries.add(position, itemListEntry);
 		displaySize = Math.min(itemListEntries.size(), displayItems);
 		middle = displaySize / 2;
 		addChild(itemListEntry);
-		Vector2 pos = new Vector2(0, (padding + itemSize) * (itemListEntries.size()-1));
+		Vector2 pos = orientation == Orientation.Vertical ? 
+					new Vector2(0, (padding + itemSize) * (itemListEntries.size()-1))
+				:	new Vector2((padding + itemSize) * (itemListEntries.size()-1), 0);
 		itemListEntry.setRelativePos(pos);
 		
 		if (itemListEntries.size() > displayItems) {
 		
 			for (int i = 0; i < itemListEntries.size(); ++i) {
 				if (isOutsideDisplay(i)) {
+					itemListEntries.get(i).endBlend();
 					itemListEntries.get(i).setAlpha(0);
-				} else if (isInDisplay(i)) {
-					itemListEntries.get(i).setAlpha(1);
+					itemListEntries.get(i).setInheritsFade(false);
 				} else {
-					itemListEntries.get(i).setAlpha(0.8f);
+					itemListEntries.get(i).setAlpha(getAlpha());
+					itemListEntries.get(i).setInheritsFade(true);
 				}
 				itemListEntries.get(i).position = i+1;
 			}
 		
 		} else {
 			for (int i = 0; i < itemListEntries.size(); ++i) {
-				itemListEntries.get(i).setAlpha(1);
+				itemListEntries.get(i).setAlpha(getAlpha());
 				itemListEntries.get(i).position = i+1;
 			}
+		}
+		
+		if (scrollbar != null) {
+			resizeScrollbar();
 		}
 	}
 	
@@ -93,24 +194,66 @@ public class ItemList extends Window implements IScrollListener {
 	public void correctOffset() {
 		if (itemListEntries.size() > displayItems) {
 			for (int i = 0; i < itemListEntries.size(); ++i) {
-				Vector2 pos = new Vector2(0, (padding + itemSize) * i);
-				itemListEntries.get(i).moveTo(pos, 0.1f);
+				Vector2 pos = new Vector2();
+				switch (orientation) {
+				case Vertical:
+					pos.y = (padding + itemSize) * i;
+					if (i == itemListEntries.size() - 1 && listRotation != 0) {
+						pos.y = -padding - itemSize;
+					}
+					
+					if (i == 0 && listRotation == 0) {
+						pos.y = (padding + itemSize) * i;
+					}
+					break;
+				case Horizontal:
+					pos.x= (padding + itemSize) * i;
+					if (i == itemListEntries.size() - 1 && listRotation != 0) {
+						pos.x = -padding - itemSize;
+					}
+					
+					if (i == 0 && listRotation == 0) {
+						pos.x = (padding + itemSize) * i;
+					}
+					break;
+				}
+				
+				itemListEntries.get(i).setRelativePos(pos);
 				
 				if (isOutsideDisplay(i)) {
 					itemListEntries.get(i).setAlpha(0);
-				} else if (isInDisplay(i)) {
-					itemListEntries.get(i).setAlpha(1);
+					itemListEntries.get(i).setInheritsFade(false);
 				} else {
-					itemListEntries.get(i).setAlpha(0.8f);
+					itemListEntries.get(i).setAlpha(getAlpha());
+					itemListEntries.get(i).setInheritsFade(true);
 				}
+			}
+		}
+		
+		if (scrollbar != null) {
+			switch (orientation) {
+			case Vertical:
+				scrollbar.setRelativePos(scrollbar.getRelativePos().x, this.getSize().y * listRotation / this.getCountEntries());
+				break;
+			case Horizontal:
+				scrollbar.setRelativePos(this.getSize().x * listRotation / this.getCountEntries(), scrollbar.getRelativePos().y);
+				break;
 			}
 		}
 	}
 	
 	public void reposition() {
 		for (int i = 0; i < itemListEntries.size(); ++i) {
-			Vector2 pos = new Vector2(0, (padding + itemSize) * i);
-			itemListEntries.get(i).moveTo(pos, 0.1f);
+			switch (orientation) {
+			case Vertical:
+				Vector2 pos = new Vector2(0, (padding + itemSize) * i);
+				itemListEntries.get(i).setRelativePos(pos);
+				break;
+			case Horizontal:
+				pos = new Vector2((padding + itemSize) * i, 0);
+				itemListEntries.get(i).setRelativePos(pos);
+				break;
+			}
 		}
 		
 	}
@@ -131,6 +274,8 @@ public class ItemList extends Window implements IScrollListener {
 		oldPriority = priority;
 		priority = InputManager.FOCUS_PRIORITY;
 		InputManager.getInstance().sort();
+		
+		super.onTouchDownWindow(point, event);
 	}
 	
 	@Override
@@ -144,63 +289,100 @@ public class ItemList extends Window implements IScrollListener {
 		if (lastPoint != null && itemListEntries.size() > displayItems) {
 			if (touching) {	
 				Vector2 move = lastPoint.vectorTo(point);
-				scroll(move.y*3);
+				switch (orientation) {
+				case Vertical:
+					scroll(move.y*3);
+					break;
+				case Horizontal:
+					scroll(move.x*3);
+					break;
+				}
 			}
 			
 		}
 		
 		lastPoint = new Vector2(point.x, point.y);
 		
-		return false;
+		return super.onTouchMove(point, event, fingerId);
 	}
 	
 	private void scroll(float scroll) {
 		
+		if (listRotation >= this.getCountEntries() - displaySize && scroll < 0) return;
+		if (listRotation <= 0 && scroll > 0) return;
+		
 		int moveUp = 0;
 		
-		for (int i = 0; i < displaySize; ++i) {
-			int item = i % itemListEntries.size();
-			Vector2 pos = itemListEntries.get(item).getRelativePos();
-			ItemListEntry entry = itemListEntries.get(item);
-			if (isInDisplay(item)) {
-				pos.y -= scroll;
-				if (item == (displaySize - 2) % itemListEntries.size() && pos.y >= height/2) {
-					if (scroll < 0) {
-						entry.setAlpha(entry.getAlpha() - Math.abs(scroll)/(height/2));
-					} else {
-						entry.setAlpha(entry.getAlpha() + Math.abs(scroll)/(height/2));
+		for (int i = 0; i < itemListEntries.size(); ++i) {
+			Vector2 pos = itemListEntries.get(i).getRelativePos();
+			ItemListEntry entry = itemListEntries.get(i);
+			
+			if (orientation == Orientation.Vertical) {
+			
+				pos.y += scroll;
+				if (isInDisplay(i)) {
+					entry.setAlpha(1);
+					
+					if (i == (displaySize - 2) % itemListEntries.size() && pos.y >= height/2) {
+						if (pos.y + entry.getSize().y >= height) {
+							moveUp = -1;
+						}
 					}
 					
-					if (pos.y + entry.getSize().y >= height) {
-						moveUp = 1;
+					if (i == 1 && pos.y <= height/2) {
+						if (pos.y <= 0) {
+							moveUp = 1;
+						}
 					}
-				}
-				
-				if (item == 1 && pos.y <= height/2) {
-					if (scroll > 0) {
-						entry.setAlpha(entry.getAlpha() - Math.abs(scroll)/(height/2));
-					} else {
-						entry.setAlpha(entry.getAlpha() + Math.abs(scroll)/(height/2));
-					}
-					
-					if (pos.y <= 0) {
-						moveUp = -1;
-					}
-				}
-			} else {
-				if (!isOutsideDisplay(i) && (scroll < 0 && i < middle)) {
-					entry.setAlpha(entry.getAlpha() + Math.abs(scroll)/(height/2));
-				} else if (!isOutsideDisplay(i) && (scroll > 0 && i > middle)) {
-					entry.setAlpha(entry.getAlpha() + Math.abs(scroll)/(height/2));
-				} else{
-					entry.setAlpha(entry.getAlpha() - Math.abs(scroll)/(height/2));
-				} 
-				
-				if (entry.getAlpha() >= 0.8f) {
-					pos.y -= scroll;
 				} else {
-					pos.y += scroll;
+					if (i == itemListEntries.size() - 1 || i == 0) {
+						if (pos.y < 0){
+							entry.setAlpha(1 + pos.y / entry.getSize().y);
+						} else {
+							entry.setAlpha(1);
+						}
+					} else if (i == displaySize || i == displaySize - 1) {
+						if (pos.y > height - entry.getSize().y) {
+							entry.setAlpha(1 - (pos.y - (height - entry.getSize().y)) / entry.getSize().y);
+						} else {
+							entry.setAlpha(1);
+						}
+					}
 				}
+			
+			} else {
+				
+				pos.x += scroll;
+				if (isInDisplay(i)) {
+					entry.setAlpha(1);
+					
+					if (i == (displaySize - 2) % itemListEntries.size() && pos.x >= width/2) {
+						if (pos.x + entry.getSize().x >= width) {
+							moveUp = -1;
+						}
+					}
+					
+					if (i == 1 && pos.x <= width/2) {
+						if (pos.x <= 0) {
+							moveUp = 1;
+						}
+					}
+				} else {
+					if (i == itemListEntries.size() - 1 || i == 0) {
+						if (pos.x < 0){
+							entry.setAlpha(1 + pos.x / entry.getSize().x);
+						} else {
+							entry.setAlpha(1);
+						}
+					} else if (i == displaySize || i == displaySize - 1) {
+						if (pos.x > width - entry.getSize().x) {
+							entry.setAlpha(1 - (pos.x - (width - entry.getSize().x)) / entry.getSize().x);
+						} else {
+							entry.setAlpha(1);
+						}
+					}
+				}
+				
 			}
 			
 			if (moveUp == 0) {
@@ -216,13 +398,13 @@ public class ItemList extends Window implements IScrollListener {
 	
 	private void rotate(int direction) {
 		if (direction == -1) {
-			ItemListEntry entry = itemListEntries.get(0);
-			itemListEntries.remove(0);
-			itemListEntries.add(entry);
-		} else if (direction == 1) {
 			ItemListEntry entry = itemListEntries.get(itemListEntries.size()-1);
 			itemListEntries.remove(itemListEntries.size()-1);
 			itemListEntries.add(0, entry);
+		} else if (direction == 1) {
+			ItemListEntry entry = itemListEntries.get(0);
+			itemListEntries.remove(0);
+			itemListEntries.add(entry);
 		}
 		
 		listRotation += direction;
@@ -233,13 +415,12 @@ public class ItemList extends Window implements IScrollListener {
 	}
 	
 	public void clearRotation() {
-		if (listRotation < 0) {
-			for (int i = 0; i < -listRotation; ++i) {
-				rotate(1);
-			}
-		} else {
-			for (int i = 0; i < listRotation; ++i) {
-				rotate(-1);
+		listRotation = 0;
+		if (scrollbar != null) {
+			if (orientation == Orientation.Vertical) {
+				scrollbar.setRelativePos(scrollbar.getRelativePos().x, 0);
+			} else {
+				scrollbar.setRelativePos(0, scrollbar.getRelativePos().y);
 			}
 		}
 	}
@@ -260,7 +441,19 @@ public class ItemList extends Window implements IScrollListener {
 	}
 	
 	public void clear() {
+		clearRotation();
 		itemListEntries.clear();
+	}
+	
+	public int getRotation() {
+		return listRotation;
+	}
+	
+	public void addRotation(int rotation) {
+		for (int i = 0; i < rotation; ++i) {
+			rotate(1);
+		}
+		correctOffset();
 	}
 	
 	public int getMaxVisibleItems() {
@@ -291,6 +484,15 @@ public class ItemList extends Window implements IScrollListener {
 		
 		super.setReceiveTouchEvents(receiveTouchEvents);
 	}
+	
+	@Override
+	public void setAlpha(float alpha) {
+		super.setAlpha(alpha);
+		this.alpha = alpha;
+	}
 
-
+	@Override
+	public float getAlpha() {
+		return alpha;
+	}
 }

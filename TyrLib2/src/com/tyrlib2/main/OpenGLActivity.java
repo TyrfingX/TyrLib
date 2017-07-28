@@ -5,4 +5,5 @@ public interface OpenGLActivity {
      * Control goes over to the derivated class
      */
     public void go();
+    public void loadShaders();
 }

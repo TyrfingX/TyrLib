@@ -12,6 +12,7 @@ public class Logger extends FilterOutputStream {
 	public static void init(String fileName) {
 		try {
 			System.setOut(new PrintStream(new Logger(new FileOutputStream(fileName), System.out )));
+			System.setErr(System.out);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

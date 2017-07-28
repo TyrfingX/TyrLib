@@ -318,7 +318,7 @@ public class OctreeNode extends BoundedSceneObject {
 	public void setBoundingBoxVisible(boolean visible) {
 		if (boundingBoxRenderable == null && visible) {
 			boundingBoxRenderable = new BoundingBox(boundingBox);
-			SceneManager.getInstance().getRenderer().addRenderable(boundingBoxRenderable, OpenGLRenderer.TRANSLUCENT_CHANNEL);
+			SceneManager.getInstance().getRenderer().addRenderable(boundingBoxRenderable, OpenGLRenderer.TRANSLUCENT_CHANNEL_2);
 			parent.attachSceneObject(boundingBoxRenderable);
 		} else if (boundingBoxRenderable != null && !visible) {
 			SceneManager.getInstance().destroyRenderable(boundingBoxRenderable);
@@ -346,7 +346,7 @@ public class OctreeNode extends BoundedSceneObject {
 												center.y + childCenterOffsets[i*3+1] * dimension/4,
 												center.z + childCenterOffsets[i*3+2] * dimension/4);
 			
-			children[i] = new OctreeNode(minimumObjectsPerNode, maximumObjectsPerNode, childCenter, childDimension);
+			children[i] = new OctreeNode(minimumObjectsPerNode, maximumObjectsPerNode+minimumObjectsPerNode, childCenter, childDimension);
 			children[i].parentOctree = this;
 			
 			if (parent != null) {

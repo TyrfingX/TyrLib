@@ -88,4 +88,11 @@ public class Outline extends BoundedRenderable {
 		return insertionID;
 	}
 
+	@Override
+	public void destroy() {
+		if (outline != null) {
+			outline.destroy();
+		}
+	}
+
 }

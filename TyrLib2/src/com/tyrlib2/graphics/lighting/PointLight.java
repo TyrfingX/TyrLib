@@ -89,5 +89,11 @@ public class PointLight extends Light implements IRenderable {
 	public int getInsertionID() {
 		return insertionID;
 	}
+
+	@Override
+	public void destroy() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

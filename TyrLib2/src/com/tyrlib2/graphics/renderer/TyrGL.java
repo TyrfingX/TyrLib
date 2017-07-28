@@ -6,12 +6,14 @@ public class TyrGL {
 
 	public static final int ANDROID_TARGET = 0;
 	public static final int PC_TARGET = 1;
+	
 	public static GLImpl IMPL;
 	
 	public static int GL_POINTS;
 	public static int GL_FLOAT;
 	public static int GL_SRC_ALPHA;
 	public static int GL_ONE_MINUS_SRC_ALPHA;
+	public static int GL_ONE_MINUS_SRC_COLOR;
 	public static int GL_DST_ALPHA;
 	public static int GL_SRC_COLOR;
 	public static int GL_DST_COLOR;
@@ -20,6 +22,7 @@ public class TyrGL {
 	public static int GL_TEXTURE1;
 	public static int GL_TEXTURE2;
 	public static int GL_TEXTURE3;
+	public static int GL_TEXTURE4;
 	public static int GL_TEXTURE_2D;
 	public static int GL_CULL_FACE;
 	public static int GL_TRIANGLES;
@@ -37,6 +40,7 @@ public class TyrGL {
 	public static int GL_VERTEX_SHADER;
 	public static int GL_FRAGMENT_SHADER;
 	public static int GL_UNSIGNED_SHORT;
+	public static int GL_BYTE;
 	public static int GL_COMPILE_STATUS;
 	public static int GL_INFO_LOG_LENGTH;
 	public static int GL_TEXTURE_MIN_FILTER;
@@ -45,6 +49,7 @@ public class TyrGL {
 	public static int GL_LINEAR_MIPMAP_LINEAR;
 	public static int GL_FRAMEBUFFER;
 	public static int GL_COLOR_ATTACHMENT0;
+	public static int GL_COLOR_ATTACHMENT1;
 	public static int GL_RGBA;
 	public static int GL_UNSIGNED_BYTE;
 	public static int GL_NEAREST;
@@ -60,10 +65,21 @@ public class TyrGL {
 	public static int GL_DEPTH_COMPONENT24;
 	public static int GL_DEPTH_COMPONENT;
 	public static int GL_DEPTH_ATTACHMENT;
+	public static int GL_RGBA32F;
+	public static int GL_RGBA16F;
 	public static int GL_RGB;
 	public static int GL_UNSIGNED_INT;
+	public static int GL_RENDERBUFFER;
+	public static int GL_MULTISAMPLE;
+	public static int GL_TEXTURE_2D_MULTISAMPLE;
+	public static int GL_TRUE;
+	public static int GL_TEXTURE_COMPARE_MODE;
+	public static int GL_FRAMEBUFFER_COMPLETE;
+	public static int GL_READ_FRAMEBUFFER;
+	public static int GL_WRITE_FRAMEBUFFER;
+	public static int GL_NONE;
 	public static int TARGET;
-
+	public static int GL_DEPTH_COMPONENT32;
 	
 	
 	public static void glVertexAttrib3f(int handle, float x, float y, float z) {
@@ -234,6 +250,10 @@ public class TyrGL {
 		IMPL.glDeleteShader(shader);
 	}
 	
+	public static void glRenderbufferStorage(int target, int internalformat, int width, int height) {
+		IMPL.glRenderbufferStorage(target, internalformat, width, height);
+	}
+	
 	public static void glGenTextures(int n, int[] textures, int offset) {
 		IMPL.glGenTextures(n, textures, offset);
 	}
@@ -293,5 +313,57 @@ public class TyrGL {
 	public static void glTexImage2D(int target, int level, int internalFormat, int width,
 									int height, int border, int format, int type, Buffer data) {
 		IMPL.glTexImage2D(target, level, internalFormat, width, height, border, format, type, data);
+	}
+	
+	public static void glDeleteBuffers(int n, int[] buffers, int offset) {
+		IMPL.glDeleteBuffers(n, buffers, offset);
+	}
+	
+	public static void glFramebufferRenderbuffer(int target, int attachment, int renderbuffertarget, int renderbuffer) {
+		IMPL.glFramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer);
+	}
+	
+	public static void glGenRenderbuffer(int n, int[] buffers, int offset) {
+		IMPL.glGenRenderbuffer(n, buffers, offset);
+	}
+
+	public static void glBindRenderbuffer(int target, int buffer) {
+		IMPL.glBindRenderbuffer(target, buffer);
+	}
+	
+	public static int glGetError() {
+		int error = 0;
+		if (error != 0) {
+			throw new RuntimeException("OpenGL Error " + error);
+		}
+		return error;
+	}
+	
+	public static void glTexImage2DMultisample(int target, int samples, int internalformat, int width, int height, boolean fixedSampleLocations) {
+		IMPL.glTexImage2DMultisample(target, samples, internalformat, width, height, fixedSampleLocations);
+	}
+
+	public static void glRenderbufferStorageMultisample(int target, int samples, int internalformat, int width, int height) {
+		IMPL.glRenderbufferStorageMultisample(target, samples, internalformat, width, height);
+	}
+
+	public static int glCheckFramebufferStatus(int target) {
+		int error = IMPL.glCheckFramebufferStatus(target);
+		if (error != TyrGL.GL_FRAMEBUFFER_COMPLETE) {
+			int error_ = TyrGL.glGetError();
+			System.out.println(error_);
+			throw new RuntimeException("OpenGL glCheckFramebufferStatus Error " + error);
+		}
+		return error;
+	}
+
+	public static void glBlitFramebuffer(int srcX, int srcY, int srcWidth, int srcHeight,
+			int dstX, int dstY, int dstWidth, int dstHeight, int flag,
+			int filter) {
+		IMPL.glBlitFramebuffer(srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight, flag, filter);
+	}
+	
+	public static void glReadBuffer(int target) {
+		IMPL.glReadBuffer(target);
 	}
 }

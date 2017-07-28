@@ -27,6 +27,7 @@ public class Entity extends BoundedRenderable implements IUpdateable {
 	protected int countSubEntities;
 	
 	private boolean visible;
+	private boolean castShadow;
 	
 	private int userData = -1;
 	private int insertionID;
@@ -71,12 +72,16 @@ public class Entity extends BoundedRenderable implements IUpdateable {
 	
 	@Override
 	public void renderShadow(float[] vpMatrix) {
-		if (visible) {
+		if (visible && castShadow) {
 			float[] boneData = skeleton.getBoneData();
 			for (int i = 0; i < countSubEntities; ++i) {
 				subEntityList.get(i).renderShadow(vpMatrix, boneData, skeleton.getCountBones());
 			}
 		}
+	}
+	
+	public void setCastShadow(boolean castShadow) {
+		this.castShadow = castShadow;
 	}
 	
 	@Override
@@ -131,7 +136,7 @@ public class Entity extends BoundedRenderable implements IUpdateable {
 
 	@Override
 	public void onUpdate(float time) {
-		if (skeleton != null) {
+		if (skeleton != null && visible) {
 			skeleton.onUpdate(time);
 		}
 	}
@@ -191,6 +196,13 @@ public class Entity extends BoundedRenderable implements IUpdateable {
 	@Override
 	public int getInsertionID() {
 		return insertionID;
+	}
+
+	@Override
+	public void destroy() {
+		for (SubEntity e : subEntityList) {
+			e.destroy();
+		}
 	}
 
 }

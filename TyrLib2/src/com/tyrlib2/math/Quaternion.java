@@ -21,7 +21,7 @@ public class Quaternion implements Serializable {
 	public float z;
 	public float w;
 	
-	private static final Quaternion IDENTITY = new Quaternion(0,0,0,1);
+	public static final Quaternion IDENTITY = new Quaternion(0,0,0,1);
 	
 	/** When to perform slerp and when lerp (due to numerical instability) **/
 	private static final float SLERP_TO_LERP_SWITCH_THRESHOLD = 0.01f;

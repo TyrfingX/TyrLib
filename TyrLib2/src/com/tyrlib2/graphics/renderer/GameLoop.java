@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import com.tyrlib2.graphics.compositors.Composit;
+import com.tyrlib2.graphics.compositors.Compositor;
+import com.tyrlib2.graphics.compositors.Precision;
 import com.tyrlib2.graphics.lighting.Light;
 import com.tyrlib2.graphics.scene.BoundedSceneObject;
 import com.tyrlib2.graphics.scene.Octree;
@@ -48,7 +51,7 @@ public abstract class GameLoop {
 	public abstract void queueEvent(Runnable r);
 	
 	public void startRendering() {
-		
+		System.out.println("Surface created");
         lastTime = 0;
         rendering = true;
 		
@@ -112,6 +115,7 @@ public abstract class GameLoop {
 	public void destroyRenderables(int channel) {}
 	public void setRenderChannelEnabled(boolean enabled, int channel) {}
 	public Viewport getViewport() { return null; }
+	public void setViewport(Viewport viewport) {} 
 	public void setCamera(Camera camera) { }
 	public Camera getCamera() { return null; }
 	public FrustumG getFrustum() { return null; }
@@ -136,6 +140,9 @@ public abstract class GameLoop {
 	public float[] getShadowVP() { return null; }
 	public int getShadowModelHandle() {return 0; }
 	public Program getShadowProgram(boolean animated) {return null;}
-
+	public void enableOffscreenRendering(Precision precision) {} ;
+	public void addComposit(Composit composit) { }
+	public Composit getComposit(int index) { return null; }
+	public Compositor getCompositor() { return null; }
 	
 }

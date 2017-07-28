@@ -5,16 +5,10 @@ import java.util.Vector;
 import com.tyrlib2.graphics.renderer.GameLoop;
 
 public class ConsoleRenderer extends GameLoop {
-	private int ticksPerSecond = 10;
-	
 	private Vector<Runnable> queuedEvents = new Vector<Runnable>();
 	
 	public ConsoleRenderer(boolean serverMode) {
 		super(serverMode);
-	}
-	
-	public void setTicksPerSecond(int ticksPerSecond) {
-		this.ticksPerSecond = ticksPerSecond;
 	}
 
 	@Override

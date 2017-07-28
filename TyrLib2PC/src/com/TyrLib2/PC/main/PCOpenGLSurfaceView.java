@@ -9,10 +9,11 @@ import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.awt.GLCanvas;
 import javax.swing.JFrame;
 
+import com.TyrLib2.PC.config.Config;
+import com.TyrLib2.PC.config.Config.ScreenState;
 import com.TyrLib2.PC.input.PCKeyboardEvent;
 import com.TyrLib2.PC.input.PCMotionEvent;
 import com.TyrLib2.PC.input.PCView;
-import com.TyrLib2.PC.main.Config.ScreenState;
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.KeyListener;
 import com.jogamp.newt.event.MouseEvent;
@@ -29,6 +30,7 @@ import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.input.IKeyboardEvent;
 import com.tyrlib2.input.IMotionEvent;
 import com.tyrlib2.input.InputManager;
+import com.tyrlib2.main.OpenGLActivity;
 import com.tyrlib2.math.Vector2;
 
 
@@ -49,7 +51,7 @@ public class PCOpenGLSurfaceView implements MouseListener, KeyListener, WindowLi
 	
 	private boolean destroyed = false;
 	
-	public PCOpenGLSurfaceView(Config config, String name, GLCapabilities caps) {
+	public PCOpenGLSurfaceView(OpenGLActivity activity, JFrame old, Config config, String name, GLCapabilities caps) {
 		
         InputManager.getInstance();
         InputManager.VK_ENTER = KeyEvent.VK_ENTER;
@@ -60,18 +62,25 @@ public class PCOpenGLSurfaceView implements MouseListener, KeyListener, WindowLi
         InputManager.VK_SPACE = KeyEvent.VK_SPACE;
         InputManager.VK_PLUS = KeyEvent.VK_PLUS;
         InputManager.VK_MINUS = KeyEvent.VK_MINUS;
-        
+        InputManager.VK_UP = KeyEvent.VK_UP;
+        InputManager.VK_DOWN = KeyEvent.VK_DOWN;
+        InputManager.VK_RIGHT = KeyEvent.VK_RIGHT;
+        InputManager.VK_LEFT = KeyEvent.VK_LEFT;
+        InputManager.VK_ONE = KeyEvent.VK_1;
         
         this.config = config;
         
-        renderer = new PCOpenGLRenderer();
-        
         useFullscreen = config == null || config.screenState == ScreenState.FULLSCREEN;
+        old.setVisible(false);
+        old.dispose();
+        
+        renderer = new PCOpenGLRenderer(activity);
         
 		String OS = System.getProperty("os.name").toLowerCase();
-		useNEWT = useFullscreen && isUnix(OS);
+		//useNEWT = useFullscreen && isUnix(OS);
         
         if (useNEWT) {
+        	
             window = GLWindow.create(caps);
             window.addGLEventListener(renderer);
             
@@ -82,23 +91,20 @@ public class PCOpenGLSurfaceView implements MouseListener, KeyListener, WindowLi
             window.addWindowListener(this);
             window.addMouseListener(this);
             
+            window.setVisible(true);
+            
             animator = new FPSAnimator(window, 60);
         } else {
-    		
+        	
             canvas = new GLCanvas(caps);
             canvas.addGLEventListener(renderer);
-            
+        	
+            frame = new JFrame();
+			
         	if (config.screenState == ScreenState.WINDOWED) {
-        		
-            	frame = new JFrame();
-        		frame.setTitle("Sword & Scroll");
-        		
         		frame.setSize((int)config.screenSize.x, (int)config.screenSize.y);
         		frame.setLocationRelativeTo(null);
         	} else if (config == null || config.screenState == ScreenState.FULLSCREEN) {
-        		
-        		frame = new JFrame();
-        		frame.setTitle("Sword & Scroll");
         		frame.setUndecorated(true);
         		GraphicsEnvironment ge=GraphicsEnvironment.getLocalGraphicsEnvironment();
         		GraphicsDevice vc = ge.getDefaultScreenDevice();
@@ -116,6 +122,13 @@ public class PCOpenGLSurfaceView implements MouseListener, KeyListener, WindowLi
         		}
         		
         	}
+        	
+            frame.setVisible(true);
+    		frame.setTitle(name);
+        	
+			if (!isUnix(OS) && !useFullscreen) {
+				frame.setResizable(false);
+			}
         	
         	frame.add(canvas);
         	
@@ -141,7 +154,6 @@ public class PCOpenGLSurfaceView implements MouseListener, KeyListener, WindowLi
         SceneManager.getInstance().setRenderer(renderer);
         
         view = new PCView(this);
-
 	}
 	
 	public Vector2 getSize() {
@@ -152,21 +164,15 @@ public class PCOpenGLSurfaceView implements MouseListener, KeyListener, WindowLi
 		}
 	}
 	
+	public GLWindow getWindow() {
+		return window;
+	}
+	
 	public void setSkipRendering(boolean skipRendering) {
 		renderer.setSkipRendering(skipRendering);
 	}
 	
 	public void startRendering() {
-		if (useNEWT) {
-			window.setVisible(true);
-		} else {
-			String OS = System.getProperty("os.name").toLowerCase();
-			if (!isUnix(OS) && !useFullscreen) {
-				frame.setResizable(false);
-			}
-			frame.setVisible(true);
-
-		}
 		animator.start();
 	}
 

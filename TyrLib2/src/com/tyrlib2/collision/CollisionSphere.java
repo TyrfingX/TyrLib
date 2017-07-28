@@ -87,11 +87,11 @@ public class CollisionSphere extends BoundedSceneObject {
 								 new Vector3(radius,  radius, radius)); 
 			
 			boundingBoxRenderable = new BoundingBox(aabb);
-			SceneManager.getInstance().getRenderer().addRenderable(boundingBoxRenderable, OpenGLRenderer.TRANSLUCENT_CHANNEL);
+			SceneManager.getInstance().getRenderer().addRenderable(boundingBoxRenderable, OpenGLRenderer.TRANSLUCENT_CHANNEL_2);
 			parent.attachSceneObject(boundingBoxRenderable);
 		} else if (boundingBoxRenderable != null && !visible) {
 			parent.detachSceneObject(boundingBoxRenderable);
-			SceneManager.getInstance().destroyRenderable(boundingBoxRenderable, OpenGLRenderer.TRANSLUCENT_CHANNEL);
+			SceneManager.getInstance().destroyRenderable(boundingBoxRenderable, OpenGLRenderer.TRANSLUCENT_CHANNEL_2);
 			boundingBoxRenderable = null;
 		}
 	}

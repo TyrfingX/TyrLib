@@ -29,6 +29,11 @@ public class InputManager {
 	public static int VK_SPACE;
 	public static int VK_PLUS;
 	public static int VK_MINUS;
+	public static int VK_UP;
+	public static int VK_DOWN;
+	public static int VK_LEFT;
+	public static int VK_RIGHT;
+	public static int VK_ONE;
 	
 	private boolean sort;
 	
@@ -142,7 +147,9 @@ public class InputManager {
 		Vector2 point = new Vector2(event.getX(pid) / v.getWidth(), event.getY(pid) / v.getHeight());
 		
 		for (int i = 0; i < moveListeners.size(); ++i) {
-			if (moveListeners.get(i).onMove(point)) break;
+			if (moveListeners.get(i).isEnabled()) {
+				if (moveListeners.get(i).onMove(point)) break;
+			}
 		}
 		
 		return false;
@@ -178,6 +185,13 @@ public class InputManager {
 	}
 	
 	public void addKeyboardListener(IKeyboardListener listener) {
+		for (int i = 0; i < keyListeners.size(); ++i) {
+			IKeyboardListener other = keyListeners.get(i);
+			if (other.getPriority() <= listener.getPriority()) {
+				keyListeners.add(i, listener);
+				return;
+			}
+		}
 		keyListeners.add(listener);
 	}
 	

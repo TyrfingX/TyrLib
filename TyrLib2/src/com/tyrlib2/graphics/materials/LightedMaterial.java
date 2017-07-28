@@ -18,7 +18,7 @@ public abstract class LightedMaterial extends Material{
 	protected int lightPosHandle;
 	protected int normalMatrixHandle;
 	protected int ambientHandle;
-	protected Color color = Color.WHITE.copy();;
+	protected Color color = Color.BLACK.copy();
 	
 	private static final Color DEFAULT_AMBIENT = new Color(0,0,0,0);
 	
@@ -43,7 +43,7 @@ public abstract class LightedMaterial extends Material{
 			ambient = sceneManager.getAmbientLight();
 		}
 		
-		TyrGL.glUniform4f(ambientHandle, ambient.r*color.r, ambient.g*color.g, ambient.b*color.b, ambient.a*color.a);
+		TyrGL.glUniform4f(ambientHandle,ambient.r+color.r, ambient.g+color.g, ambient.b+color.b, 1);
 		
 		if (light != null) {
 			
@@ -74,5 +74,13 @@ public abstract class LightedMaterial extends Material{
 	
 	public void setColor(Color color) {
 		this.color = color;
+	}
+	
+	public Color getColor() {
+		return color;
+	}
+	
+	public void setLighted(boolean lighted) {
+		this.lighted = lighted;
 	}
 }

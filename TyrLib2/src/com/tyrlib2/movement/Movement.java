@@ -42,6 +42,7 @@ public abstract class Movement implements IUpdateable {
 	
 	public void clear() {
 		targetProviders.clear();
+		currentTargetProvider = null;
 	}
 
 	@Override
@@ -66,12 +67,16 @@ public abstract class Movement implements IUpdateable {
 		newTargetProvider();
 	}
 	
+	public ITargetProvider peekNextTargetProvider() {
+		return targetProviders.get(0);
+	}
+	
 	protected abstract void newTargetProvider();
 	protected abstract float moveTowardsTarget(float time);
 	
 	@Override
 	public boolean isFinished() {
-		return currentTargetProvider == null;
+		return currentTargetProvider == null && targetProviders.size() == 0;
 	}
 	
 	private void targetReached() {

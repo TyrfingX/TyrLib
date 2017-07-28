@@ -9,9 +9,9 @@
 
 package com.tyrlib2.graphics.text;
 
-import com.tyrlib2.bitmap.IFontMetrics;
-import com.tyrlib2.bitmap.IDrawableBitmap;
 import com.tyrlib2.bitmap.ICanvas;
+import com.tyrlib2.bitmap.IDrawableBitmap;
+import com.tyrlib2.bitmap.IFontMetrics;
 import com.tyrlib2.bitmap.IPaint;
 import com.tyrlib2.bitmap.ITypeface;
 import com.tyrlib2.graphics.renderer.TextureRegion;
@@ -20,6 +20,7 @@ import com.tyrlib2.graphics.text.programs.BatchTextProgram;
 import com.tyrlib2.graphics.text.programs.Program;
 import com.tyrlib2.main.Media;
 import com.tyrlib2.math.Matrix;
+import com.tyrlib2.math.Vector2;
 
 public class GLText implements IGLText {
 
@@ -65,20 +66,23 @@ public class GLText implements IGLText {
 	float scaleX, scaleY;                              // Font Scale (X,Y Axis)
 	float spaceX;                                      // Additional (X,Y Axis) Spacing (Unscaled)
 	
-	private Program mProgram; 						   // OpenGL Program object
-	private int mColorHandle;						   // Shader color handle	
-	private int mTextureUniformHandle;                 // Shader texture handle
+	private static Program mProgram; 				   // OpenGL Program object
+	private static int mColorHandle;						   // Shader color handle	
+	private static int mTextureUniformHandle;                 // Shader texture handle
+	private IDrawableBitmap bitmap;
 
-
+	public static void init() {
+		if (mProgram == null) {
+			mProgram = new BatchTextProgram();
+			mProgram.init();
+			mColorHandle = TyrGL.glGetUniformLocation(mProgram.getHandle(), "u_Color");
+        	mTextureUniformHandle = TyrGL.glGetUniformLocation(mProgram.getHandle(), "u_Texture");
+		}
+	}
+	
 	//--Constructor--//
 	// D: save program + asset manager, create arrays, and initialize the members
 	public GLText(Program program) {
-		if (program == null) {
-			program = new BatchTextProgram();
-			program.init();
-		}                       // Save the Asset Manager Instance
-		
-		batch = new SpriteBatch(CHAR_BATCH_SIZE, program );  // Create Sprite Batch (with Defined Size)
 
 		charWidths = new float[CHAR_CNT];               // Create the Array of Character Widths
 		charRgn = new TextureRegion[CHAR_CNT];          // Create the Array of Character Regions
@@ -102,14 +106,12 @@ public class GLText implements IGLText {
 		rowCnt = 0;
 		colCnt = 0;
 
-		scaleX = 1.0f;                                  // Default Scale = 1 (Unscaled)
+		Vector2 screenSize = Media.CONTEXT.getScreenSize();
+		float ratio = screenSize.y / screenSize.x;
+		
+		scaleX = ratio;                                  // Default Scale = 1 (Unscaled)
 		scaleY = 1.0f;                                  // Default Scale = 1 (Unscaled)
 		spaceX = 0.0f;
-
-		// Initialize the color and texture handles
-		mProgram = program; 
-		mColorHandle = TyrGL.glGetUniformLocation(mProgram.getHandle(), "u_Color");
-        mTextureUniformHandle = TyrGL.glGetUniformLocation(mProgram.getHandle(), "u_Texture");
 	}
 	
 	// Constructor using the default program (BatchTextProgram)
@@ -149,7 +151,7 @@ public class GLText implements IGLText {
 
 		// get font metrics
 		IFontMetrics fm = paint.getFontMetrics();  // Get Font Metrics
-		fontHeight = (float)Math.ceil( Math.abs( fm.bottom ) + Math.abs( fm.top ) );  // Calculate Font Height
+		fontHeight = Math.abs( fm.bottom ) + Math.abs( fm.top ) ;  // Calculate Font Height
 		fontAscent = (float)Math.ceil( Math.abs( fm.ascent ) );  // Save Font Ascent
 		fontDescent = (float)Math.ceil( Math.abs( fm.descent ) );  // Save Font Descent
 
@@ -197,7 +199,7 @@ public class GLText implements IGLText {
 			textureSize = 2048;                          // Set 2048 Texture Size
 
 		// create an empty bitmap (alpha only)
-		IDrawableBitmap bitmap = Media.CONTEXT.createAlphaBitmap( textureSize, textureSize );  // Create Bitmap
+		bitmap = Media.CONTEXT.createAlphaBitmap( textureSize, textureSize );  // Create Bitmap
 		bitmap.eraseColor( 0x00000000 );                // Set Transparent Background (ARGB)
 		canvas.setBitmap(bitmap);
 		
@@ -215,14 +217,11 @@ public class GLText implements IGLText {
 			x += cellWidth;                              // Move to Next Character
 			if ( ( x + cellWidth - fontPadX ) > textureSize )  {  // IF End of Line Reached
 				x = fontPadX;                             // Set X for New Row
-				y += cellHeight;                          // Move Down a Row
+				y += cellHeight + fontPadY;                          // Move Down a Row
 			}
 		}
 		s[0] = CHAR_NONE;                               // Set Character to Use for NONE
 		canvas.drawText( s, 0, 1, x, y, paint );        // Draw Character
-
-		// save the bitmap in a texture
-		textureId = bitmap.toTexture();
 
 		// setup the array of character texture regions
 		x = 0;                                          // Initialize X
@@ -232,7 +231,7 @@ public class GLText implements IGLText {
 			x += cellWidth;                              // Move to Next Char (Cell)
 			if ( x + cellWidth > textureSize )  {
 				x = 0;                                    // Reset X Position to Start
-				y += cellHeight;                          // Move to Next Row (Cell)
+				y += cellHeight + fontPadY;                          // Move to Next Row (Cell)
 			}
 		}
 
@@ -241,6 +240,14 @@ public class GLText implements IGLText {
 
 		// return success
 		return true;                                    // Return Success
+	}
+	
+	@Override
+	public void toTexture() {
+		batch = new SpriteBatch(CHAR_BATCH_SIZE, mProgram );  // Create Sprite Batch (with Defined Size)
+		textureId = bitmap.toTexture();
+		bitmap.recycle();
+		bitmap = null;
 	}
 
 	//--Begin/End Text Drawing--//
@@ -480,9 +487,9 @@ public class GLText implements IGLText {
 		int strLen = text.length();                     // Get String Length (Characters)
 		for ( int i = 0; i < strLen; i++ )  {           // For Each Character in String (Except Last
 			int c = (int)text.charAt( i ) - CHAR_START;  // Calculate Character Index (Offset by First Char in Font)
-			len += ( charWidths[c] * scaleX );           // Add Scaled Character Width to Total Length
+			len += ( charWidths[c] * 1.0f );           // Add Scaled Character Width to Total Length
 		}
-		len += ( strLen > 1 ? ( ( strLen - 1 ) * spaceX ) * scaleX : 0 );  // Add Space Length
+		len += ( strLen > 1 ? ( ( strLen - 1 ) * spaceX ) * 1.0f : 0 );  // Add Space Length
 		return len;                                     // Return Total Length
 	}
 

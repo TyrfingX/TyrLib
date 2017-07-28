@@ -25,6 +25,7 @@ public class PCGL3 implements GLImpl {
 		TyrGL.GL_TEXTURE1 = GL3.GL_TEXTURE1;
 		TyrGL.GL_TEXTURE2 = GL3.GL_TEXTURE2;
 		TyrGL.GL_TEXTURE3 = GL3.GL_TEXTURE3;
+		TyrGL.GL_TEXTURE4 = GL3.GL_TEXTURE4;
 		TyrGL.GL_TEXTURE_2D = GL3.GL_TEXTURE_2D;
 		TyrGL.GL_CULL_FACE = GL3.GL_CULL_FACE;
 		TyrGL.GL_TRIANGLES = GL3.GL_TRIANGLES;
@@ -33,6 +34,7 @@ public class PCGL3 implements GLImpl {
 		TyrGL.GL_BACK = GL3.GL_BACK;
 		TyrGL.GL_LEQUAL = GL3.GL_LEQUAL;
 		TyrGL.GL_ONE = GL3.GL_ONE;
+		TyrGL.GL_ONE_MINUS_SRC_COLOR = GL3.GL_ONE_MINUS_SRC_COLOR;
 		TyrGL.GL_DEPTH_BUFFER_BIT = GL3.GL_DEPTH_BUFFER_BIT;
 		TyrGL.GL_COLOR_BUFFER_BIT = GL3.GL_COLOR_BUFFER_BIT;
 		TyrGL.GL_LINE_LOOP = GL3.GL_LINE_LOOP;
@@ -50,6 +52,7 @@ public class PCGL3 implements GLImpl {
 		TyrGL.GL_LINEAR_MIPMAP_LINEAR = GL3.GL_LINEAR_MIPMAP_LINEAR;
 		TyrGL.GL_FRAMEBUFFER = GL3.GL_FRAMEBUFFER;
 		TyrGL.GL_COLOR_ATTACHMENT0 = GL3.GL_COLOR_ATTACHMENT0;
+		TyrGL.GL_COLOR_ATTACHMENT1 = GL3.GL_COLOR_ATTACHMENT1;
 		TyrGL.GL_RGBA = GL3.GL_RGBA;
 		TyrGL.GL_UNSIGNED_BYTE = GL3.GL_UNSIGNED_BYTE;
 		TyrGL.GL_NEAREST = GL3.GL_NEAREST;
@@ -63,11 +66,23 @@ public class PCGL3 implements GLImpl {
 		TyrGL.GL_STREAM_DRAW = GL3.GL_STREAM_DRAW;
 		TyrGL.GL_DEPTH_COMPONENT16 = GL3.GL_DEPTH_COMPONENT16;
 		TyrGL.GL_DEPTH_COMPONENT24 = GL3.GL_DEPTH_COMPONENT24;
+		TyrGL.GL_DEPTH_COMPONENT32 = GL3.GL_DEPTH_COMPONENT32;
 		TyrGL.GL_DEPTH_COMPONENT = GL3.GL_DEPTH_COMPONENT;
 		TyrGL.GL_DEPTH_ATTACHMENT = GL3.GL_DEPTH_ATTACHMENT;
+		TyrGL.GL_RGBA32F = GL3.GL_RGBA32F;
+		TyrGL.GL_RGBA16F = GL3.GL_RGBA16F;
 		TyrGL.GL_RGB = GL3.GL_RGB;
 		TyrGL.GL_UNSIGNED_INT = GL3.GL_UNSIGNED_INT;
+		TyrGL.GL_RENDERBUFFER = GL3.GL_RENDERBUFFER;
+		TyrGL.GL_MULTISAMPLE = GL3.GL_MULTISAMPLE;
+		TyrGL.GL_TEXTURE_2D_MULTISAMPLE = GL3.GL_TEXTURE_2D_MULTISAMPLE;
+		TyrGL.GL_TRUE = GL3.GL_TRUE;
+		TyrGL.GL_TEXTURE_COMPARE_MODE = GL3.GL_TEXTURE_COMPARE_MODE;
+		TyrGL.GL_NONE = GL3.GL_NONE;
 		TyrGL.TARGET = TyrGL.PC_TARGET;
+		TyrGL.GL_FRAMEBUFFER_COMPLETE = GL3.GL_FRAMEBUFFER_COMPLETE;
+		TyrGL.GL_READ_FRAMEBUFFER = GL3.GL_READ_FRAMEBUFFER;
+		TyrGL.GL_WRITE_FRAMEBUFFER = GL3.GL_DRAW_FRAMEBUFFER;
 		PCGL3.gl = gl;
 	}
 	
@@ -316,6 +331,31 @@ public class PCGL3 implements GLImpl {
 	}
 
 	@Override
+	public void glRenderbufferStorageMultisample(int target, int samples, int internalformat, int width, int height) {
+		gl.glRenderbufferStorageMultisample(target, samples, internalformat, width, height);
+	}
+	
+	@Override
+	public void glRenderbufferStorage(int target, int internalformat, int width, int height) {
+		gl.glRenderbufferStorage(target, internalformat, width, height);
+	}
+	
+	@Override
+	public void glFramebufferRenderbuffer(int target, int attachment, int renderbuffertarget, int renderbuffer) {
+		gl.glFramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer);
+	}
+	
+	@Override
+	public void glGenRenderbuffer(int n, int[] buffers, int offset) {
+		gl.glGenRenderbuffers(n, buffers, offset);
+	}
+	
+	@Override
+	public void glBindRenderbuffer(int target, int buffer) {
+		gl.glBindRenderbuffer(target, buffer);
+	}
+	
+	@Override
 	public void glGenTextures(int n, int[] textures, int offset) {
 		gl.glGenTextures(n, textures, offset);
 	}
@@ -387,5 +427,43 @@ public class PCGL3 implements GLImpl {
 							 int width, int height, int border, int format, int type, Buffer data) {
 		gl.glTexImage2D(target, level, internalFormat, width, height, border, format, type, data);
 	}
+	
+	@Override
+	public void glDeleteBuffers(int n, int[] buffers, int offset) {
+		gl.glDeleteBuffers(n, buffers, offset);
+	}
+	
+	@Override
+	public int glGetError() {
+		return gl.glGetError();
+	}
+	
+	@Override
+	public void glTexImage2DMultisample(int target, int samples, int internalformat, int width, int height, boolean fixedSampleLocations) {
+		gl.glTexImage2DMultisample(
+			target, samples, internalformat,
+			width, height, fixedSampleLocations
+		);
+	}
 
+	@Override
+	public int glCheckFramebufferStatus(int target) {
+		return gl.glCheckFramebufferStatus(target);
+	}
+	
+	@Override
+	public void glBlitFramebuffer(int srcX, int srcY, int srcWidth, int srcHeight,
+			int dstX, int dstY, int dstWidth, int dstHeight, int flag,
+			int filter) {
+		gl.glBlitFramebuffer(
+			srcX, srcY, srcWidth, srcHeight, 
+			dstX, dstY, dstWidth, dstHeight, flag, filter
+		);
+	}
+	
+	@Override
+	public void glReadBuffer(int target) {
+		gl.glReadBuffer(target);
+	}
+	
 }

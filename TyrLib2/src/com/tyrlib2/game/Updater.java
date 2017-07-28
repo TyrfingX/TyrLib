@@ -15,6 +15,7 @@ public class Updater implements IFrameListener, Serializable {
 	private boolean pause;
 	private List<IUpdateable> queue;
 	private int countItems;
+	private float skipTime = 999;
 	
 	public Updater(List<IUpdateable> queue) {
 		this.queue = queue;
@@ -58,6 +59,10 @@ public class Updater implements IFrameListener, Serializable {
 		return false;
 	}
 	
+	public boolean hasItems() {
+		return !queue.isEmpty();
+	}
+	
 	public void pause()
 	{
 		pause = true;
@@ -93,9 +98,13 @@ public class Updater implements IFrameListener, Serializable {
 				removeItem(i);
 				--i;
 			} else {
-				item.onUpdate(time);
+				if (time < skipTime) item.onUpdate(time);
 			}
 		}
+	}
+	
+	public void setSkipTime(float skipTime) {
+		this.skipTime = skipTime;
 	}
 	
 	private void removeItem(int i) {

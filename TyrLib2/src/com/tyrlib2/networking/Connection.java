@@ -30,7 +30,7 @@ public class Connection extends Thread{
 	}
 	
 	public void send(Serializable s) {
-		if (connectionOpen) {
+		if (connectionOpen && out != null) {
 			try {
 				out.writeObject(s);
 			} catch (IOException e) {
@@ -81,8 +81,13 @@ public class Connection extends Thread{
 	public void close() {
 		connectionOpen = false;
 		try {
-			in.close();
-			out.close();
+			if (in != null) {
+				in.close();
+			}
+			
+			if (out != null) {
+				out.close();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

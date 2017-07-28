@@ -85,14 +85,20 @@ public class Animation implements IUpdateable {
 
 	@Override
 	public void onUpdate(float time) {
-		if (playing) {
+		if (playing && time < 0.5f) {
 			animTime += time;
 			
 			while(animTime > animationFrames.get(currentFrame+1).time) {
 				currentFrame++;
 				if (currentFrame == animationFrames.size() - 1) {
-					currentFrame = 0;
-					animTime -= duration;
+					if (loop) {
+						currentFrame = 0;
+						animTime -= duration;
+					} else {
+						animTime = duration;
+						playing = false;
+						return;
+					}
 				}
 			}
 			
@@ -105,7 +111,7 @@ public class Animation implements IUpdateable {
 				float timeDiff = animTime - frame.time;
 				float totalTimeDiff = nextFrame.time -  frame.time;
 				alpha = timeDiff / totalTimeDiff;
-			}
+			} 
 			
 			for (int i = 0; i < skeleton.bones.size(); ++i) {
 			
