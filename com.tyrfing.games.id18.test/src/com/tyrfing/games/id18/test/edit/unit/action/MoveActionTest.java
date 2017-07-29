@@ -21,6 +21,8 @@ import com.tyrfing.games.tyrlib3.math.Vector2I;
 public class MoveActionTest {
 
 	public static final Vector2I INITIAL_POS = new Vector2I(3, 4);
+	public static final Vector2I TARGET_POS_1 = new Vector2I(3, 5);
+	public static final int TARGET_POS_1_HEIGHT = 1;
 	public static final int INITIAL_MOVE = 10;
 	
 	private Unit unit;
@@ -28,6 +30,9 @@ public class MoveActionTest {
 	@Before
 	public void setup() {
 		Field field = new Field(new Vector2I(10,10));
+		
+		field.getTiles()[TARGET_POS_1.x][TARGET_POS_1.y].setHeight(TARGET_POS_1_HEIGHT);
+		
 		Battle battle = new Battle();
 		battle.setField(field);
 		unit = new Unit();
@@ -37,13 +42,13 @@ public class MoveActionTest {
 	
 	@Test
 	public void testExecute() {
-		final Vector2I TARGET_POS_1 = new Vector2I(3, 5);
+
 		MoveAction moveAction1 = new MoveAction(unit, TARGET_POS_1, true);
 		moveAction1.execute();
 		
 		assertEquals("Unit has moved to target position", TARGET_POS_1, unit.getFieldPosition());
 		assertEquals("Unit now faces in move direction", Vector2I.UNIT_Y, unit.getFieldOrientation());
-		assertEquals("Unit has lost a move point", INITIAL_MOVE - 1, unit.getStats().get(StatType.REMAINING_MOVE).intValue());
+		assertEquals("Unit has lost a move point", INITIAL_MOVE - TARGET_POS_1_HEIGHT - 1, unit.getStats().get(StatType.REMAINING_MOVE).intValue());
 		
 		final Vector2I TARGET_POS_2 = new Vector2I(4, 5);
 		MoveAction moveAction2 = new MoveAction(unit, TARGET_POS_2, false);
@@ -51,17 +56,15 @@ public class MoveActionTest {
 		
 		assertEquals("Unit has moved to target position", TARGET_POS_2, unit.getFieldPosition());
 		assertEquals("Unit now faces in move direction", Vector2I.UNIT_X, unit.getFieldOrientation());
-		assertEquals("Unit has not lost a move point", INITIAL_MOVE - 1, unit.getStats().get(StatType.REMAINING_MOVE).intValue());
+		assertEquals("Unit has not lost a move point", INITIAL_MOVE - TARGET_POS_1_HEIGHT - 1, unit.getStats().get(StatType.REMAINING_MOVE).intValue());
 	}
 	
 	@Test
 	public void testCanExecute() {
-		final Vector2I TARGET_POS_1 = new Vector2I(3, 5);
-		
 		MoveAction moveAction1 = new MoveAction(unit, TARGET_POS_1, true);
 		
 		assertTrue("Move action cann be executed", moveAction1.canExecute());
-		unit.getStats().put(StatType.REMAINING_MOVE, 0);
+		unit.getStats().put(StatType.REMAINING_MOVE, 1);
 		assertFalse("Move action cannot be executed", moveAction1.canExecute());
 		
 		final Vector2I TARGET_POS_2 = new Vector2I(20, 20);
@@ -71,7 +74,6 @@ public class MoveActionTest {
 	
 	@Test
 	public void testUndo() {
-		final Vector2I TARGET_POS_1 = new Vector2I(3, 5);
 		MoveAction moveAction1 = new MoveAction(unit, TARGET_POS_1, true);
 		moveAction1.execute();
 		
@@ -83,7 +85,7 @@ public class MoveActionTest {
 		
 		assertEquals("Second move action has been reverted", TARGET_POS_1, unit.getFieldPosition());
 		assertEquals("Second move action has been reverted", Vector2I.UNIT_Y, unit.getFieldOrientation());
-		assertEquals("Second move action has been reverted", INITIAL_MOVE - 1, unit.getStats().get(StatType.REMAINING_MOVE).intValue());
+		assertEquals("Second move action has been reverted", INITIAL_MOVE - TARGET_POS_1_HEIGHT - 1, unit.getStats().get(StatType.REMAINING_MOVE).intValue());
 		
 		moveAction1.undo();
 

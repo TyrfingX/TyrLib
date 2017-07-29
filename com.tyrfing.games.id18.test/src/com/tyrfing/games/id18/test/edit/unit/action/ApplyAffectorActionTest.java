@@ -144,13 +144,23 @@ public class ApplyAffectorActionTest {
 		Unit blockedUnit = new Unit();
 		blockedUnit.deploy(battle, BLOCKED_UNIT_POS, Vector2I.UNIT_X);
 		
-		ApplyAffectorAction applyAffectorBlockingUnit = new ApplyAffectorAction(caster, affector, BLOCKED_UNIT_POS, false);
-		assertTrue("Target is in line range, can execute", applyAffectorBlockingUnit.canExecute());
+		ApplyAffectorAction applyAffectorBlockedUnit = new ApplyAffectorAction(caster, affector, BLOCKED_UNIT_POS, false);
+		assertTrue("Target is in line range, can execute", applyAffectorBlockedUnit.canExecute());
 		
-		actionStack.execute(applyAffectorBlockingUnit);
+		actionStack.execute(applyAffectorBlockedUnit);
 		
 		assertTrue("First unit in line range received the modifier", receiver.getModifiers().contains(damage));
 		assertFalse("Blocked unit in line did not receive the modifier", blockedUnit.getModifiers().contains(damage));
+	
+		actionStack.undo();
+		
+		final Vector2I BLOCKING_TILE_POS = new Vector2I(4,5);
+		field.getTiles()[BLOCKING_TILE_POS.x][BLOCKING_TILE_POS.y].setHeight(1);
+		
+		ApplyAffectorAction applyAffectorBlockingTile = new ApplyAffectorAction(caster, affector, BLOCKED_UNIT_POS, false);
+		actionStack.execute(applyAffectorBlockingTile);
+		
+		assertFalse("First unit in line range did not receive the modifier", receiver.getModifiers().contains(damage));
 	}
 	
 	@Test

@@ -17,6 +17,7 @@ public class MoveAction extends AAction {
 	
 	private Vector2I previousPosition;
 	private Vector2I previousOrientation;
+	private int moveCost;
 	
 	private boolean reduceRemainingMove;
 	
@@ -34,28 +35,41 @@ public class MoveAction extends AAction {
 		Vector2I distanceVector = previousPosition.vectorTo(targetPosition);
 		Vector2I targetOrientation = distanceVector.mapToUnitAxis();
 		
-		unit.setFieldPosition(targetPosition);
-		unit.setFieldOrientation(targetOrientation);
-		
 		if (reduceRemainingMove) {
-			int newValue = unit.getStats().get(StatType.REMAINING_MOVE) - distanceVector.abs();
+			moveCost = getMoveCost(distanceVector);
+			int newValue = unit.getStats().get(StatType.REMAINING_MOVE) - moveCost;
 			unit.getStats().put(StatType.REMAINING_MOVE, newValue);
 		}
+		
+		unit.setFieldPosition(targetPosition);
+		unit.setFieldOrientation(targetOrientation);
+	}
+	
+	public int getMoveCost(Vector2I distanceVector) {
+		Field field = unit.getDeployedField();
+		Vector2I position = unit.getFieldPosition();
+		
+		int currentHeight = field.getTiles()[position.x][position.y].getHeight();
+		int targetHeight = field.getTiles()[targetPosition.x][targetPosition.y].getHeight();
+		int differenceHeight = Math.abs(targetHeight - currentHeight);
+		
+		return distanceVector.abs() * (differenceHeight + 1);
 	}
 	
 	@Override
 	public boolean canExecute() {
-		if (reduceRemainingMove) {
-			Vector2I distanceVector = unit.getFieldPosition().vectorTo(targetPosition);
-			if (unit.getStats().get(StatType.REMAINING_MOVE) < distanceVector.abs()) {
-				return false;
-			}
-		}
-		
 		Field field = unit.getDeployedField();
 		
 		if (!field.inBounds(targetPosition))  {
 			return false;
+		}
+		
+		if (reduceRemainingMove) {
+			Vector2I distanceVector = unit.getFieldPosition().vectorTo(targetPosition);
+			int moveCost = getMoveCost(distanceVector);
+			if (unit.getStats().get(StatType.REMAINING_MOVE) < moveCost) {
+				return false;
+			}
 		}
 		
 		if (field.getObjectAt(targetPosition) != null) {
@@ -71,8 +85,7 @@ public class MoveAction extends AAction {
 		unit.setFieldOrientation(previousOrientation);
 		
 		if (reduceRemainingMove) {
-			Vector2I distanceVector = previousPosition.vectorTo(targetPosition);
-			int newValue = unit.getStats().get(StatType.REMAINING_MOVE) + distanceVector.abs();
+			int newValue = unit.getStats().get(StatType.REMAINING_MOVE) + moveCost;
 			unit.getStats().put(StatType.REMAINING_MOVE, newValue);
 		}
 	}
