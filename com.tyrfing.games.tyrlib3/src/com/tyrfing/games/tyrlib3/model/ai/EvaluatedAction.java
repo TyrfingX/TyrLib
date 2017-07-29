@@ -1,4 +1,4 @@
-package com.tyrfing.games.id18.model.ai;
+package com.tyrfing.games.tyrlib3.model.ai;
 
 import com.tyrfing.games.tyrlib3.edit.action.IAction;
 

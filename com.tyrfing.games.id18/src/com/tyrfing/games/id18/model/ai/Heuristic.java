@@ -4,8 +4,9 @@ import com.tyrfing.games.id18.model.battle.Battle;
 import com.tyrfing.games.id18.model.unit.Faction;
 import com.tyrfing.games.id18.model.unit.StatType;
 import com.tyrfing.games.id18.model.unit.Unit;
+import com.tyrfing.games.tyrlib3.model.ai.IHeuristic;
 
-public class Heuristic {
+public class Heuristic implements IHeuristic {
 	
 	private Faction faction;
 	private Battle battle;
@@ -15,6 +16,7 @@ public class Heuristic {
 		this.battle = battle;
 	}
 	
+	@Override
 	public float getEvaluation(int depth) {
 		if (battle.areObjectivesAchieved(faction)) {
 			// This is a winning state, we should definitely take it,
