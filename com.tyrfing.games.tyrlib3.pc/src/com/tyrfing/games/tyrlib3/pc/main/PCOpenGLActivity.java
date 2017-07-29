@@ -8,11 +8,11 @@ import javax.swing.JFrame;
 
 import com.tyrfing.games.tyrlib3.main.Media;
 import com.tyrfing.games.tyrlib3.main.OpenGLActivity;
-import com.tyrfing.games.tyrlib3.math.Matrix;
-import com.tyrfing.games.tyrlib3.pc.config.Config;
-import com.tyrfing.games.tyrlib3.pc.graphics.renderer.ConsoleView;
-import com.tyrfing.games.tyrlib3.pc.math.PCMatrixImpl;
+import com.tyrfing.games.tyrlib3.model.math.Matrix;
+import com.tyrfing.games.tyrlib3.pc.main.config.Config;
+import com.tyrfing.games.tyrlib3.pc.model.math.PCMatrixImpl;
 import com.tyrfing.games.tyrlib3.pc.util.Logger;
+import com.tyrfing.games.tyrlib3.pc.view.graphics.renderer.ConsoleView;
 
 
 public abstract class PCOpenGLActivity implements OpenGLActivity {

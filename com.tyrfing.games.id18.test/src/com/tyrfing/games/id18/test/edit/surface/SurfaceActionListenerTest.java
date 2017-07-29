@@ -21,7 +21,7 @@ import com.tyrfing.games.id18.model.unit.Unit;
 import com.tyrfing.games.tyrlib3.edit.ActionStack;
 import com.tyrfing.games.tyrlib3.edit.action.CompoundAction;
 import com.tyrfing.games.tyrlib3.edit.action.IAction;
-import com.tyrfing.games.tyrlib3.math.Vector2I;
+import com.tyrfing.games.tyrlib3.model.math.Vector2I;
 
 public class SurfaceActionListenerTest {
 

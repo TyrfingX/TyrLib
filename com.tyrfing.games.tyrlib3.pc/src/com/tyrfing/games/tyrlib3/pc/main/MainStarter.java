@@ -75,7 +75,7 @@ public class MainStarter {
 					Attributes mainAttribs = manifest.getMainAttributes();
 					String mainClass = mainAttribs.getValue("Main-Class");
 					
-					if (mainClass != null && mainClass.equals("com.tyrfing.games.pc.main.MainStarter")){		
+					if (mainClass != null && mainClass.equals("com.tyrfing.games.tyrlib3.pc.main.MainStarter")){		
 						ManifestInfo result = new ManifestInfo();
 						
 						String rsrcCP = mainAttribs.getValue(target); 

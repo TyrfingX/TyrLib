@@ -11,7 +11,7 @@ import com.tyrfing.games.id18.edit.battle.action.DeployAction;
 import com.tyrfing.games.id18.model.battle.Battle;
 import com.tyrfing.games.id18.model.field.Field;
 import com.tyrfing.games.id18.model.unit.Unit;
-import com.tyrfing.games.tyrlib3.math.Vector2I;
+import com.tyrfing.games.tyrlib3.model.math.Vector2I;
 
 public class DeployActionTest {
 	

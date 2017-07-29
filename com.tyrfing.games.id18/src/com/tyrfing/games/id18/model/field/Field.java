@@ -3,7 +3,7 @@ package com.tyrfing.games.id18.model.field;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.tyrfing.games.tyrlib3.math.Vector2I;
+import com.tyrfing.games.tyrlib3.model.math.Vector2I;
 import com.tyrfing.games.tyrlib3.model.resource.ISaveable;
 
 public class Field implements ISaveable {

@@ -1,11 +1,12 @@
 package com.tyrfing.games.tyrlib3.util;
 
-import com.tyrfing.games.tyrlib3.game.IUpdateable;
-import com.tyrfing.games.tyrlib3.graphics.renderables.Text2;
-import com.tyrfing.games.tyrlib3.graphics.renderer.OpenGLRenderer;
-import com.tyrfing.games.tyrlib3.graphics.scene.SceneManager;
-import com.tyrfing.games.tyrlib3.graphics.scene.SceneNode;
-import com.tyrfing.games.tyrlib3.math.Vector3F;
+import com.tyrfing.games.tyrlib3.model.game.Color;
+import com.tyrfing.games.tyrlib3.model.game.IUpdateable;
+import com.tyrfing.games.tyrlib3.model.graphics.scene.SceneNode;
+import com.tyrfing.games.tyrlib3.model.math.Vector3F;
+import com.tyrfing.games.tyrlib3.view.graphics.SceneManager;
+import com.tyrfing.games.tyrlib3.view.graphics.renderables.Text2;
+import com.tyrfing.games.tyrlib3.view.graphics.renderer.OpenGLRenderer;
 
 public class TextureFailCounter implements IUpdateable {
 	

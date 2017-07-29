@@ -6,8 +6,8 @@ import com.tyrfing.games.id18.model.network.NetworkMessage;
 import com.tyrfing.games.id18.model.unit.Faction;
 import com.tyrfing.games.tyrlib3.edit.action.IAction;
 import com.tyrfing.games.tyrlib3.edit.action.IActionRequester;
-import com.tyrfing.games.tyrlib3.networking.Connection;
-import com.tyrfing.games.tyrlib3.networking.INetworkListener;
+import com.tyrfing.games.tyrlib3.model.networking.Connection;
+import com.tyrfing.games.tyrlib3.model.networking.INetworkListener;
 
 public class NetworkActionProvider extends AFactionActionProvider implements INetworkListener {
 

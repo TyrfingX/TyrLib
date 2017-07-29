@@ -4,22 +4,23 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.tyrfing.games.tyrlib3.bitmap.ICanvas;
-import com.tyrfing.games.tyrlib3.bitmap.IDrawableBitmap;
-import com.tyrfing.games.tyrlib3.bitmap.IPaint;
-import com.tyrfing.games.tyrlib3.bitmap.ITypeface;
-import com.tyrfing.games.tyrlib3.files.IBitmap;
-import com.tyrfing.games.tyrlib3.graphics.text.IGLText;
-import com.tyrfing.games.tyrlib3.math.Vector2F;
-import com.tyrfing.games.tyrlib3.sound.IMusic;
-import com.tyrfing.games.tyrlib3.sound.ISound;
-import com.tyrfing.games.tyrlib3.util.Options;
+import com.tyrfing.games.tyrlib3.model.files.IBitmap;
+import com.tyrfing.games.tyrlib3.model.math.Vector2F;
+import com.tyrfing.games.tyrlib3.model.sound.IMusic;
+import com.tyrfing.games.tyrlib3.model.sound.ISound;
+import com.tyrfing.games.tyrlib3.view.bitmap.ICanvas;
+import com.tyrfing.games.tyrlib3.view.bitmap.IDrawableBitmap;
+import com.tyrfing.games.tyrlib3.view.bitmap.IPaint;
+import com.tyrfing.games.tyrlib3.view.bitmap.ITypeface;
+import com.tyrfing.games.tyrlib3.view.graphics.text.IGLText;
 
 public abstract class Media {
 	public static Media CONTEXT;
 	
-	protected Options options = new Options();
+	protected Map<Integer, Object> options = new HashMap<Integer, Object>();
 	
 	public static final int PRECISION = 0;
 	public static final int DEPTH_TEXTURES_ENABLED = 1;
@@ -47,7 +48,7 @@ public abstract class Media {
 	public abstract ISound createSound(String source);
 	public abstract IMusic createMusic(String source);
 	
-	public Options getOptions() {
+	public Map<Integer, Object> getOptions() {
 		return options;
 	}
 }

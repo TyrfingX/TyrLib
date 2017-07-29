@@ -1,12 +1,12 @@
 package com.tyrfing.games.tyrlib3.main;
 
-import com.tyrfing.games.tyrlib3.graphics.renderer.AndroidOpenGLRenderer;
-import com.tyrfing.games.tyrlib3.graphics.scene.SceneManager;
-import com.tyrfing.games.tyrlib3.input.AndroidKeyboardEvent;
-import com.tyrfing.games.tyrlib3.input.AndroidMotionEvent;
-import com.tyrfing.games.tyrlib3.input.AndroidView;
-import com.tyrfing.games.tyrlib3.input.IKeyboardEvent;
-import com.tyrfing.games.tyrlib3.input.InputManager;
+import com.tyrfing.games.tyrlib3.edit.input.AndroidKeyboardEvent;
+import com.tyrfing.games.tyrlib3.edit.input.AndroidMotionEvent;
+import com.tyrfing.games.tyrlib3.edit.input.AndroidView;
+import com.tyrfing.games.tyrlib3.edit.input.IKeyboardEvent;
+import com.tyrfing.games.tyrlib3.edit.input.InputManager;
+import com.tyrfing.games.tyrlib3.view.graphics.SceneManager;
+import com.tyrfing.games.tyrlib3.view.graphics.renderer.AndroidOpenGLRenderer;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;

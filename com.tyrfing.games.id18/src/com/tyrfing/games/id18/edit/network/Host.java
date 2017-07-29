@@ -1,8 +1,8 @@
 package com.tyrfing.games.id18.edit.network;
 
-import com.tyrfing.games.tyrlib3.networking.Connection;
-import com.tyrfing.games.tyrlib3.networking.INetworkListener;
-import com.tyrfing.games.tyrlib3.networking.Network;
+import com.tyrfing.games.tyrlib3.model.networking.Connection;
+import com.tyrfing.games.tyrlib3.model.networking.INetworkListener;
+import com.tyrfing.games.tyrlib3.model.networking.Network;
 
 public class Host implements INetworkListener {
 	private Network network;

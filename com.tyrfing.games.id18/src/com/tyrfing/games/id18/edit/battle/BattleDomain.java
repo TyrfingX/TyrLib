@@ -14,9 +14,9 @@ import com.tyrfing.games.tyrlib3.edit.ActionStack;
 import com.tyrfing.games.tyrlib3.edit.Domain;
 import com.tyrfing.games.tyrlib3.edit.action.IAction;
 import com.tyrfing.games.tyrlib3.edit.action.IActionRequester;
-import com.tyrfing.games.tyrlib3.game.IUpdateable;
+import com.tyrfing.games.tyrlib3.model.game.IUpdateable;
+import com.tyrfing.games.tyrlib3.model.networking.Connection;
 import com.tyrfing.games.tyrlib3.model.resource.Resource;
-import com.tyrfing.games.tyrlib3.networking.Connection;
 
 public class BattleDomain extends Domain implements IUpdateable, IActionRequester {
 	private List<AFactionActionProvider> factionActionProviders;

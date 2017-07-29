@@ -10,27 +10,26 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.tyrfing.games.tyrlib3.bitmap.AndroidCanvas;
-import com.tyrfing.games.tyrlib3.bitmap.AndroidDrawableBitmap;
-import com.tyrfing.games.tyrlib3.bitmap.AndroidPaint;
-import com.tyrfing.games.tyrlib3.bitmap.AndroidTypeface;
-import com.tyrfing.games.tyrlib3.bitmap.ICanvas;
-import com.tyrfing.games.tyrlib3.bitmap.IDrawableBitmap;
-import com.tyrfing.games.tyrlib3.bitmap.IPaint;
-import com.tyrfing.games.tyrlib3.bitmap.ITypeface;
-import com.tyrfing.games.tyrlib3.files.AndroidBitmap;
-import com.tyrfing.games.tyrlib3.files.AndroidFileReader;
-import com.tyrfing.games.tyrlib3.files.IBitmap;
-import com.tyrfing.games.tyrlib3.graphics.compositors.Precision;
-import com.tyrfing.games.tyrlib3.graphics.renderer.TyrGL;
-import com.tyrfing.games.tyrlib3.graphics.text.GLText;
-import com.tyrfing.games.tyrlib3.graphics.text.IGLText;
-import com.tyrfing.games.tyrlib3.main.Media;
-import com.tyrfing.games.tyrlib3.math.Vector2F;
-import com.tyrfing.games.tyrlib3.sound.AndroidMusic;
-import com.tyrfing.games.tyrlib3.sound.AndroidSound;
-import com.tyrfing.games.tyrlib3.sound.IMusic;
-import com.tyrfing.games.tyrlib3.sound.ISound;
+import com.tyrfing.games.tyrlib3.model.files.AndroidBitmap;
+import com.tyrfing.games.tyrlib3.model.files.AndroidFileReader;
+import com.tyrfing.games.tyrlib3.model.files.IBitmap;
+import com.tyrfing.games.tyrlib3.model.math.Vector2F;
+import com.tyrfing.games.tyrlib3.model.sound.AndroidMusic;
+import com.tyrfing.games.tyrlib3.model.sound.AndroidSound;
+import com.tyrfing.games.tyrlib3.model.sound.IMusic;
+import com.tyrfing.games.tyrlib3.model.sound.ISound;
+import com.tyrfing.games.tyrlib3.view.bitmap.AndroidCanvas;
+import com.tyrfing.games.tyrlib3.view.bitmap.AndroidDrawableBitmap;
+import com.tyrfing.games.tyrlib3.view.bitmap.AndroidPaint;
+import com.tyrfing.games.tyrlib3.view.bitmap.AndroidTypeface;
+import com.tyrfing.games.tyrlib3.view.bitmap.ICanvas;
+import com.tyrfing.games.tyrlib3.view.bitmap.IDrawableBitmap;
+import com.tyrfing.games.tyrlib3.view.bitmap.IPaint;
+import com.tyrfing.games.tyrlib3.view.bitmap.ITypeface;
+import com.tyrfing.games.tyrlib3.view.graphics.TyrGL;
+import com.tyrfing.games.tyrlib3.view.graphics.compositors.Precision;
+import com.tyrfing.games.tyrlib3.view.graphics.text.GLText;
+import com.tyrfing.games.tyrlib3.view.graphics.text.IGLText;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
@@ -56,12 +55,12 @@ public class AndroidMedia extends Media {
 		listAssetFiles("sound");
 		listAssetFiles("music");
 		
-		options.setOption(Media.PRECISION, Precision.LOW);
+		options.put(Media.PRECISION, Precision.LOW);
 		
 		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-			options.setOption(Media.DEPTH_TEXTURES_ENABLED, true);
+			options.put(Media.DEPTH_TEXTURES_ENABLED, true);
 		} else {
-			options.setOption(Media.DEPTH_TEXTURES_ENABLED, false);
+			options.put(Media.DEPTH_TEXTURES_ENABLED, false);
 		}
 	}
 	

@@ -3,17 +3,32 @@ package com.tyrfing.games.tyrlib3.view.gui;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.tyrfing.games.tyrlib3.game.Updater;
-import com.tyrfing.games.tyrlib3.graphics.renderables.Rectangle2;
-import com.tyrfing.games.tyrlib3.graphics.renderer.OpenGLRenderer;
-import com.tyrfing.games.tyrlib3.graphics.renderer.Viewport;
-import com.tyrfing.games.tyrlib3.graphics.scene.SceneManager;
-import com.tyrfing.games.tyrlib3.graphics.scene.SceneNode;
-import com.tyrfing.games.tyrlib3.input.InputManager;
-import com.tyrfing.games.tyrlib3.math.Vector2F;
-import com.tyrfing.games.tyrlib3.math.Vector3F;
-import com.tyrfing.games.tyrlib3.util.Color;
-import com.tyrfing.games.tyrlib3.view.gui.WindowEvent.WindowEventType;
+import com.tyrfing.games.tyrlib3.edit.input.InputManager;
+import com.tyrfing.games.tyrlib3.model.game.Color;
+import com.tyrfing.games.tyrlib3.model.game.Updater;
+import com.tyrfing.games.tyrlib3.model.graphics.scene.SceneNode;
+import com.tyrfing.games.tyrlib3.model.math.Vector2F;
+import com.tyrfing.games.tyrlib3.model.math.Vector3F;
+import com.tyrfing.games.tyrlib3.view.graphics.SceneManager;
+import com.tyrfing.games.tyrlib3.view.graphics.Viewport;
+import com.tyrfing.games.tyrlib3.view.graphics.renderables.Rectangle2;
+import com.tyrfing.games.tyrlib3.view.graphics.renderer.OpenGLRenderer;
+import com.tyrfing.games.tyrlib3.view.gui.events.IEventListener;
+import com.tyrfing.games.tyrlib3.view.gui.events.WindowEvent;
+import com.tyrfing.games.tyrlib3.view.gui.events.WindowEvent.WindowEventType;
+import com.tyrfing.games.tyrlib3.view.gui.layout.Paint;
+import com.tyrfing.games.tyrlib3.view.gui.layout.ScaledVector2;
+import com.tyrfing.games.tyrlib3.view.gui.layout.Skin;
+import com.tyrfing.games.tyrlib3.view.gui.widgets.Button;
+import com.tyrfing.games.tyrlib3.view.gui.widgets.Frame;
+import com.tyrfing.games.tyrlib3.view.gui.widgets.ImageBox;
+import com.tyrfing.games.tyrlib3.view.gui.widgets.ItemList;
+import com.tyrfing.games.tyrlib3.view.gui.widgets.Label;
+import com.tyrfing.games.tyrlib3.view.gui.widgets.Overlay;
+import com.tyrfing.games.tyrlib3.view.gui.widgets.ParticleWindow;
+import com.tyrfing.games.tyrlib3.view.gui.widgets.ProgressBar;
+import com.tyrfing.games.tyrlib3.view.gui.widgets.Tooltip;
+import com.tyrfing.games.tyrlib3.view.gui.widgets.Window;
 
 /**
  * Manages the life times of windows
@@ -25,7 +40,7 @@ public class WindowManager {
 	private static WindowManager instance;
 	
 	private Map<String, Window> windows;
-	protected Updater updater;
+	private Updater updater;
 	private SceneNode rootNode;
 	private GUIRenderer renderer;
 	
@@ -40,12 +55,12 @@ public class WindowManager {
 
 		windows = new HashMap<String, Window>();
 		
-		updater = new Updater();
-		updater.setSkipTime(0.25f);
+		setUpdater(new Updater());
+		getUpdater().setSkipTime(0.25f);
 
 		if (SceneManager.getInstance().getRenderer() != null) {
 		
-			SceneManager.getInstance().addFrameListener(updater);
+			SceneManager.getInstance().addFrameListener(getUpdater());
 			rootNode = SceneManager.getInstance().getRootSceneNode().createChild(new Vector3F(0,SceneManager.getInstance().getViewport().getHeight(),0));
 			
 			renderer = new GUIRenderer();
@@ -111,10 +126,10 @@ public class WindowManager {
 			throw new RuntimeException("WindowManager::addWindow Error: Adding window with duplicate name.");
 		}
 		
-		rootNode.attachChild(window.node);
+		rootNode.attachChild(window.getNode());
 		renderer.addWindow(window);
 		windows.put(window.getName(), window);
-		updater.addItem(window);
+		getUpdater().addItem(window);
 		
 		notifyResort();
 	}
@@ -495,11 +510,11 @@ public class WindowManager {
 		return createProgressBar(name, pos, size.get(), maxProgress);
 	}
 	
-	protected void removeWindow(Window window) {
+	public void removeWindow(Window window) {
 		renderer.removeWindow(window);
 		windows.remove(window.getName());
-		window.node.detach();
-		updater.removeItem(window);
+		window.getNode().detach();
+		getUpdater().removeItem(window);
 		InputManager.getInstance().removeTouchListener(window);
 	}
 	
@@ -507,12 +522,20 @@ public class WindowManager {
 		return windows.get(name);
 	}
 	
-	protected SceneNode getRootNode() {
+	public SceneNode getRootNode() {
 		return rootNode;
 	}
 
-	protected void notifyResort() {
+	public void notifyResort() {
 		renderer.notifyResort();
+	}
+
+	public Updater getUpdater() {
+		return updater;
+	}
+
+	public void setUpdater(Updater updater) {
+		this.updater = updater;
 	}
 
 

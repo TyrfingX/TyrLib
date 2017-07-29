@@ -20,18 +20,18 @@ import com.jogamp.newt.event.awt.AWTMouseAdapter;
 import com.jogamp.newt.event.awt.AWTWindowAdapter;
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.util.FPSAnimator;
-import com.tyrfing.games.tyrlib3.graphics.scene.SceneManager;
-import com.tyrfing.games.tyrlib3.input.IKeyboardEvent;
-import com.tyrfing.games.tyrlib3.input.IMotionEvent;
-import com.tyrfing.games.tyrlib3.input.InputManager;
+import com.tyrfing.games.tyrlib3.edit.input.IKeyboardEvent;
+import com.tyrfing.games.tyrlib3.edit.input.IMotionEvent;
+import com.tyrfing.games.tyrlib3.edit.input.InputManager;
 import com.tyrfing.games.tyrlib3.main.OpenGLActivity;
-import com.tyrfing.games.tyrlib3.math.Vector2F;
-import com.tyrfing.games.tyrlib3.pc.config.Config;
-import com.tyrfing.games.tyrlib3.pc.config.Config.ScreenState;
-import com.tyrfing.games.tyrlib3.pc.graphics.renderer.PCOpenGLRenderer;
-import com.tyrfing.games.tyrlib3.pc.input.PCKeyboardEvent;
-import com.tyrfing.games.tyrlib3.pc.input.PCMotionEvent;
-import com.tyrfing.games.tyrlib3.pc.input.PCView;
+import com.tyrfing.games.tyrlib3.model.math.Vector2F;
+import com.tyrfing.games.tyrlib3.pc.edit.input.PCKeyboardEvent;
+import com.tyrfing.games.tyrlib3.pc.edit.input.PCMotionEvent;
+import com.tyrfing.games.tyrlib3.pc.edit.input.PCView;
+import com.tyrfing.games.tyrlib3.pc.main.config.Config;
+import com.tyrfing.games.tyrlib3.pc.main.config.Config.ScreenState;
+import com.tyrfing.games.tyrlib3.pc.view.graphics.renderer.PCOpenGLRenderer;
+import com.tyrfing.games.tyrlib3.view.graphics.SceneManager;
 
 
 public class PCOpenGLSurfaceView implements MouseListener, KeyListener, WindowListener {

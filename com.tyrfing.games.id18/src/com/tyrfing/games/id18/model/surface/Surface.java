@@ -7,7 +7,7 @@ import java.util.List;
 import com.tyrfing.games.id18.model.field.IFieldObject;
 import com.tyrfing.games.id18.model.tag.AModifier;
 import com.tyrfing.games.id18.model.tag.IModifiable;
-import com.tyrfing.games.tyrlib3.math.Vector2I;
+import com.tyrfing.games.tyrlib3.model.math.Vector2I;
 import com.tyrfing.games.tyrlib3.model.resource.ISaveable;
 
 public class Surface implements IFieldObject, IModifiable, ISaveable {

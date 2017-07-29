@@ -15,7 +15,7 @@ import com.tyrfing.games.id18.model.unit.Faction;
 import com.tyrfing.games.id18.model.unit.StatModifier;
 import com.tyrfing.games.id18.model.unit.StatType;
 import com.tyrfing.games.id18.model.unit.Unit;
-import com.tyrfing.games.tyrlib3.math.Vector2I;
+import com.tyrfing.games.tyrlib3.model.math.Vector2I;
 
 public class Simple2UnitBenchmark {
 	

@@ -10,7 +10,7 @@ import com.tyrfing.games.id18.model.unit.Affector;
 import com.tyrfing.games.id18.model.unit.StatType;
 import com.tyrfing.games.id18.model.unit.Unit;
 import com.tyrfing.games.tyrlib3.edit.action.CompoundAction;
-import com.tyrfing.games.tyrlib3.math.Vector2I;
+import com.tyrfing.games.tyrlib3.model.math.Vector2I;
 import com.tyrfing.games.tyrlib3.util.CollectionsHelper;
 
 public class ApplyAffectorAction extends CompoundAction {

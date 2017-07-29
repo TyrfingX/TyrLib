@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.tyrfing.games.tyrlib3.graphics.renderer.IRenderable;
-import com.tyrfing.games.tyrlib3.math.Rectangle;
-import com.tyrfing.games.tyrlib3.math.Vector2F;
+import com.tyrfing.games.tyrlib3.model.math.Rectangle;
+import com.tyrfing.games.tyrlib3.model.math.Vector2F;
 import com.tyrfing.games.tyrlib3.util.PriorityComparator;
+import com.tyrfing.games.tyrlib3.view.graphics.renderables.IRenderable;
+import com.tyrfing.games.tyrlib3.view.gui.widgets.Window;
 
 /**
  * This takes care of rendering the GUI

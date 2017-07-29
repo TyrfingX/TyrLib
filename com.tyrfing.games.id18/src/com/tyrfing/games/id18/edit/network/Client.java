@@ -6,9 +6,9 @@ import com.tyrfing.games.id18.model.battle.Battle;
 import com.tyrfing.games.id18.model.network.NetworkMessage;
 import com.tyrfing.games.tyrlib3.edit.action.IAction;
 import com.tyrfing.games.tyrlib3.edit.action.IActionRequester;
-import com.tyrfing.games.tyrlib3.networking.Connection;
-import com.tyrfing.games.tyrlib3.networking.INetworkListener;
-import com.tyrfing.games.tyrlib3.networking.Network;
+import com.tyrfing.games.tyrlib3.model.networking.Connection;
+import com.tyrfing.games.tyrlib3.model.networking.INetworkListener;
+import com.tyrfing.games.tyrlib3.model.networking.Network;
 
 public class Client implements INetworkListener, IActionRequester {
 

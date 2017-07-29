@@ -1,10 +1,10 @@
 package com.tyrfing.games.tyrlib3.main;
 
-import com.tyrfing.games.tyrlib3.graphics.renderer.GLES20Impl;
-import com.tyrfing.games.tyrlib3.graphics.renderer.TyrGL;
 import com.tyrfing.games.tyrlib3.main.OpenGLActivity;
-import com.tyrfing.games.tyrlib3.math.AndroidMatrixImpl;
-import com.tyrfing.games.tyrlib3.math.Matrix;
+import com.tyrfing.games.tyrlib3.model.math.AndroidMatrixImpl;
+import com.tyrfing.games.tyrlib3.model.math.Matrix;
+import com.tyrfing.games.tyrlib3.view.graphics.TyrGL;
+import com.tyrfing.games.tyrlib3.view.graphics.renderer.GLES20Impl;
 
 import android.app.Activity;
 import android.app.ActivityManager;

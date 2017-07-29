@@ -23,26 +23,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.tyrfing.games.tyrlib3.bitmap.ICanvas;
-import com.tyrfing.games.tyrlib3.bitmap.IDrawableBitmap;
-import com.tyrfing.games.tyrlib3.bitmap.IPaint;
-import com.tyrfing.games.tyrlib3.bitmap.ITypeface;
-import com.tyrfing.games.tyrlib3.files.IBitmap;
-import com.tyrfing.games.tyrlib3.graphics.compositors.Precision;
-import com.tyrfing.games.tyrlib3.graphics.text.GLText;
-import com.tyrfing.games.tyrlib3.graphics.text.IGLText;
-import com.tyrfing.games.tyrlib3.main.BackgroundWorker;
 import com.tyrfing.games.tyrlib3.main.Media;
-import com.tyrfing.games.tyrlib3.math.Vector2F;
-import com.tyrfing.games.tyrlib3.pc.bitmap.PCCanvas;
-import com.tyrfing.games.tyrlib3.pc.bitmap.PCDrawableBitmap;
-import com.tyrfing.games.tyrlib3.pc.bitmap.PCPaint;
-import com.tyrfing.games.tyrlib3.pc.bitmap.PCTypeface;
-import com.tyrfing.games.tyrlib3.pc.sound.PCMusic;
-import com.tyrfing.games.tyrlib3.pc.sound.PCSound;
-import com.tyrfing.games.tyrlib3.sound.IMusic;
-import com.tyrfing.games.tyrlib3.sound.ISound;
+import com.tyrfing.games.tyrlib3.model.files.IBitmap;
+import com.tyrfing.games.tyrlib3.model.math.Vector2F;
+import com.tyrfing.games.tyrlib3.model.sound.IMusic;
+import com.tyrfing.games.tyrlib3.model.sound.ISound;
+import com.tyrfing.games.tyrlib3.pc.model.sound.PCMusic;
+import com.tyrfing.games.tyrlib3.pc.model.sound.PCSound;
+import com.tyrfing.games.tyrlib3.pc.view.bitmap.PCCanvas;
+import com.tyrfing.games.tyrlib3.pc.view.bitmap.PCDrawableBitmap;
+import com.tyrfing.games.tyrlib3.pc.view.bitmap.PCPaint;
+import com.tyrfing.games.tyrlib3.pc.view.bitmap.PCTypeface;
 import com.tyrfing.games.tyrlib3.tinysound.TinySound;
+import com.tyrfing.games.tyrlib3.util.BackgroundWorker;
+import com.tyrfing.games.tyrlib3.view.bitmap.ICanvas;
+import com.tyrfing.games.tyrlib3.view.bitmap.IDrawableBitmap;
+import com.tyrfing.games.tyrlib3.view.bitmap.IPaint;
+import com.tyrfing.games.tyrlib3.view.bitmap.ITypeface;
+import com.tyrfing.games.tyrlib3.view.graphics.compositors.Precision;
+import com.tyrfing.games.tyrlib3.view.graphics.text.GLText;
+import com.tyrfing.games.tyrlib3.view.graphics.text.IGLText;
 
 
 public class PCMedia extends Media {
@@ -57,8 +57,8 @@ public class PCMedia extends Media {
 		
 		this.context = context;
 		
-		options.setOption(Media.PRECISION, Precision.HIGH);
-		options.setOption(Media.DEPTH_TEXTURES_ENABLED, true);
+		options.put(Media.PRECISION, Precision.HIGH);
+		options.put(Media.DEPTH_TEXTURES_ENABLED, true);
 		
 		BackgroundWorker.getInstance().execute(new Runnable() {
 			@Override

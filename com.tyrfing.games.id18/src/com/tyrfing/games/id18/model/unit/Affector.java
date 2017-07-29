@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.UUID;
 
 import com.tyrfing.games.id18.model.tag.AModifier;
-import com.tyrfing.games.tyrlib3.math.Vector2I;
 import com.tyrfing.games.tyrlib3.model.IUUID;
+import com.tyrfing.games.tyrlib3.model.math.Vector2I;
 import com.tyrfing.games.tyrlib3.model.resource.ISaveable;
 
 public class Affector implements ISaveable, IUUID {

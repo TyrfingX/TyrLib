@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Stack;
 
 import com.tyrfing.games.tyrlib3.edit.action.IAction;
-import com.tyrfing.games.tyrlib3.game.IUpdateable;
+import com.tyrfing.games.tyrlib3.model.game.IUpdateable;
 
 public class ActionStack implements IUpdateable {
 	private Stack<IAction> actions;
