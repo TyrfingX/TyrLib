@@ -8,6 +8,10 @@ import com.tyrfing.games.id18.model.unit.Unit;
 
 public class DestroyEnemyObjective implements IObjective {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2234911601266262155L;
 	private Faction faction;
 	private List<Faction> enemyFactions;
 	

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import com.tyrfing.games.id18.model.battle.Battle;
 import com.tyrfing.games.id18.model.field.Field;
@@ -12,9 +13,15 @@ import com.tyrfing.games.id18.model.tag.AModifier;
 import com.tyrfing.games.id18.model.tag.IModifiable;
 import com.tyrfing.games.id18.model.tag.Tag;
 import com.tyrfing.games.tyrlib3.math.Vector2I;
+import com.tyrfing.games.tyrlib3.model.IUUID;
+import com.tyrfing.games.tyrlib3.model.resource.ISaveable;
 
-public class Unit implements IFieldObject, IModifiable {
-
+public class Unit implements IFieldObject, IModifiable, ISaveable, IUUID {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6202604217909313414L;
 	private Vector2I fieldPosition;
 	private Vector2I fieldOrientation;
 	
@@ -24,6 +31,7 @@ public class Unit implements IFieldObject, IModifiable {
 	private List<AModifier> modifiers;
 	private Map<StatType, Integer> stats;
 	private List<Arte> artes;
+	private UUID uuid;
 	
 	public Unit() {
 		fieldPosition = new Vector2I();
@@ -31,10 +39,16 @@ public class Unit implements IFieldObject, IModifiable {
 		modifiers = new ArrayList<AModifier>();
 		stats = new HashMap<StatType, Integer>();
 		artes = new ArrayList<Arte>();
+		uuid = UUID.randomUUID();
 		
 		for (StatType statType : StatType.values()) {
 			stats.put(statType, 0);
 		}
+	}
+	
+	@Override
+	public UUID getUUID() {
+		return uuid;
 	}
 	
 	@Override
@@ -106,6 +120,16 @@ public class Unit implements IFieldObject, IModifiable {
 	
 	public List<Arte> getArtes() {
 		return artes;
+	}
+	
+	public IUUID getAffectorByUUID(UUID uuid) {
+		for (Arte arte : artes) {
+			if (arte.getUUID().equals(uuid)) {
+				return arte;
+			}
+		}
+		
+		return null;
 	}
 
 	public void startTurn() {

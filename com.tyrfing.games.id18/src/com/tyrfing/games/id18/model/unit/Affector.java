@@ -2,11 +2,19 @@ package com.tyrfing.games.id18.model.unit;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import com.tyrfing.games.id18.model.tag.AModifier;
 import com.tyrfing.games.tyrlib3.math.Vector2I;
+import com.tyrfing.games.tyrlib3.model.IUUID;
+import com.tyrfing.games.tyrlib3.model.resource.ISaveable;
 
-public class Affector {
+public class Affector implements ISaveable, IUUID {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2131258366359575132L;
+
 	private String name;
 	
 	private List<AModifier> effectModifiers;
@@ -20,8 +28,11 @@ public class Affector {
 	private boolean isMoveToTarget;
 	private boolean isLineRange;
 	
+	private UUID uuid;
+	
 	public Affector(String name) {
 		this.name = name;
+		this.uuid = UUID.randomUUID();
 		
 		effectModifiers = new ArrayList<AModifier>();
 		costModifiers = new ArrayList<AModifier>();
@@ -75,5 +86,10 @@ public class Affector {
 	
 	public void setLineRange(boolean isLineRange) {
 		this.isLineRange = isLineRange;
+	}
+
+	@Override
+	public UUID getUUID() {
+		return uuid;
 	}
 }

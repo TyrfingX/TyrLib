@@ -2,6 +2,7 @@ package com.tyrfing.games.id18.model.battle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import com.tyrfing.games.id18.model.field.Field;
 import com.tyrfing.games.id18.model.unit.Faction;
@@ -69,5 +70,15 @@ public class Battle implements ISaveable {
 		}
 		
 		return false;
+	}
+	
+	public Unit getUnitByUUID(UUID uuid) {
+		for (Unit unit : waitingUnits) {
+			if (unit.getUUID().equals(uuid)) {
+				return unit;
+			}
+		}
+		
+		return null;
 	}
 }

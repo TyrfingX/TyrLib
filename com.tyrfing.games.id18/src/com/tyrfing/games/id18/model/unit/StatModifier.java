@@ -5,6 +5,10 @@ import com.tyrfing.games.id18.model.tag.Tag;
 
 public class StatModifier extends AModifier {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1437664452449921354L;
 	public static final StatModifier OILED = new StatModifier("Oiled", StatType.SPEED, -50, false, Tag.OIL);
 	public static final StatModifier BURNING = new StatModifier("Burning", StatType.HP, -5, true, Tag.FIRE);
 	

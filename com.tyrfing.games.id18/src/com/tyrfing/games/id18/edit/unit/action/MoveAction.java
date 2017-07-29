@@ -11,11 +11,6 @@ import com.tyrfing.games.tyrlib3.math.Vector2I;
 
 public class MoveAction extends AAction {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -3267528377730452309L;
-
 	private Unit unit;
 	
 	private Vector2I targetPosition;
@@ -114,5 +109,9 @@ public class MoveAction extends AAction {
 	@Override
 	public String toString() {
 		return "MoveAction";
+	}
+	
+	public boolean isReduceRemainingMove() {
+		return reduceRemainingMove;
 	}
 }

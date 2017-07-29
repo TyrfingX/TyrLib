@@ -1,9 +1,12 @@
 package com.tyrfing.games.id18.edit.battle;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.tyrfing.games.id18.edit.faction.AFactionActionProvider;
+import com.tyrfing.games.id18.edit.network.ActionSerializer;
+import com.tyrfing.games.id18.edit.network.NetworkActionProvider;
 import com.tyrfing.games.id18.model.battle.Battle;
 import com.tyrfing.games.id18.model.unit.Faction;
 import com.tyrfing.games.id18.model.unit.Unit;
@@ -13,11 +16,13 @@ import com.tyrfing.games.tyrlib3.edit.action.IAction;
 import com.tyrfing.games.tyrlib3.edit.action.IActionRequester;
 import com.tyrfing.games.tyrlib3.game.IUpdateable;
 import com.tyrfing.games.tyrlib3.model.resource.Resource;
+import com.tyrfing.games.tyrlib3.networking.Connection;
 
 public class BattleDomain extends Domain implements IUpdateable, IActionRequester {
 	private List<AFactionActionProvider> factionActionProviders;
 	private boolean isFinished;
 	private boolean nextAction;
+	private ActionSerializer actionSerializer;
 	
 	public BattleDomain(Battle battle) {
 		ActionStack actionStack = BattleFactory.INSTANCE.createBattleActionStack(battle);
@@ -29,6 +34,7 @@ public class BattleDomain extends Domain implements IUpdateable, IActionRequeste
 		battleResource.getSaveables().add(battle);
 		getResources().add(battleResource);
 		
+		actionSerializer = new ActionSerializer(battle);
 		factionActionProviders = new ArrayList<AFactionActionProvider>();
 	}
 	
@@ -61,8 +67,27 @@ public class BattleDomain extends Domain implements IUpdateable, IActionRequeste
 	
 	@Override
 	public void onProvideRequest(IAction action) {
-		getActionStack().execute(action);
-		nextAction = true;
+		if (action.canExecute()) {
+			broadcastAction(action);
+			getActionStack().execute(action);
+			nextAction = true;
+		}
+	}
+	
+	private void broadcastAction(IAction action) {
+		Serializable serializable = actionSerializer.toNetworkMessage(action);
+		Faction currentFaction = getBattle().getCurrentUnit().getFaction();
+		for (AFactionActionProvider factionActionProvider : getFactionActionProviders()) {
+			if (factionActionProvider instanceof NetworkActionProvider) {
+				NetworkActionProvider networkActionProvider = (NetworkActionProvider) factionActionProvider;
+				if (!currentFaction.equals(factionActionProvider.getFaction())) {
+					Connection connection = networkActionProvider.getConnection();
+					if (connection.getNetwork().isHost()) {
+						connection.send(serializable);
+					}
+				}
+			}
+		}
 	}
 	
 	private void nextAction() {

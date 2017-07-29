@@ -5,11 +5,7 @@ import com.tyrfing.games.id18.model.unit.Unit;
 import com.tyrfing.games.tyrlib3.edit.action.AAction;
 
 public class DefeatUnitAction extends AAction {
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1124632027475460223L;
+
 	private Battle battle;
 	private Unit unit;
 	

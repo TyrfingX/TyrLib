@@ -7,10 +7,6 @@ import com.tyrfing.games.tyrlib3.edit.action.AAction;
 
 public class EndTurnAction extends AAction {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -5084060179508988054L;
 	private Battle battle;
 	private Unit currentUnit;
 	private int previousRemainingMovePoints;

@@ -23,9 +23,12 @@ public class AiFactory {
 		Battle battle = battleDomain.getBattle();
 		Heuristic heuristic = new Heuristic(battle, faction);
 		ActionStack battleActionStack = BattleFactory.INSTANCE.createBattleActionStack(battle);
+		
 		MiniMaxAlgorithm minMaxAlgorithm = new MiniMaxAlgorithm(battle, battleActionStack, heuristic, maxDepth);
+		
 		AiActionProvider ai = new AiActionProvider(minMaxAlgorithm);
 		battleDomain.getFactionActionProviders().add(ai);
+		
 		return ai;
 	}
 }

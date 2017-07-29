@@ -7,10 +7,6 @@ import com.tyrfing.games.tyrlib3.edit.IActionStackListener;
 
 public abstract class AAction implements IAction {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -3147654615110153188L;
 	private Set<IActionStackListener> blockingListeners;
 	
 	public AAction() {

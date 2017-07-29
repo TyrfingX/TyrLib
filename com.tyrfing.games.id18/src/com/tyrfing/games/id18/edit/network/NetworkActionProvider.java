@@ -1,6 +1,8 @@
 package com.tyrfing.games.id18.edit.network;
 
 import com.tyrfing.games.id18.edit.faction.AFactionActionProvider;
+import com.tyrfing.games.id18.model.network.NetworkActionMessage;
+import com.tyrfing.games.id18.model.network.NetworkMessage;
 import com.tyrfing.games.id18.model.unit.Faction;
 import com.tyrfing.games.tyrlib3.edit.action.IAction;
 import com.tyrfing.games.tyrlib3.edit.action.IActionRequester;
@@ -11,18 +13,24 @@ public class NetworkActionProvider extends AFactionActionProvider implements INe
 
 	private Connection connection;
 	private IActionRequester lastActionRequester;
+	private ActionSerializer actionSerializer;
 	
-	public NetworkActionProvider(Faction faction, Connection connection) {
+	public NetworkActionProvider(ActionSerializer actionSerializer, Faction faction, Connection connection) {
 		super(faction);
 		
 		this.connection = connection;
+		this.actionSerializer = actionSerializer;
 		connection.getNetwork().addListener(this);
 	}
 
+	public Connection getConnection() {
+		return connection;
+	}
+	
 	@Override
 	public void requestAction(IActionRequester actionRequester) {
 		this.lastActionRequester = actionRequester;
-		connection.send(NetworkMessage.REQUEST_ACTION);
+		connection.send(NetworkMessage.IConstantMessages.REQUEST_ACTION);
 	}
 
 	@Override
@@ -35,8 +43,9 @@ public class NetworkActionProvider extends AFactionActionProvider implements INe
 
 	@Override
 	public void onReceivedData(Connection c, Object o) {
-		if (o instanceof IAction) {
-			IAction action = (IAction) o;
+		if (o instanceof NetworkActionMessage) {
+			NetworkActionMessage actionMessage = (NetworkActionMessage) o;
+			IAction action = actionSerializer.toAction(actionMessage);
 			lastActionRequester.onProvideRequest(action);
 		}
 	}

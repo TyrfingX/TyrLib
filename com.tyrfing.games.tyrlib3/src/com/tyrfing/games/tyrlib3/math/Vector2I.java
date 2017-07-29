@@ -1,6 +1,12 @@
 package com.tyrfing.games.tyrlib3.math;
 
-public class Vector2I {
+import java.io.Serializable;
+
+public class Vector2I implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3849208536566898374L;
 	public static Vector2I UNIT_X = new Vector2I(1, 0);
 	public static Vector2I UNIT_Y = new Vector2I(0, 1);
 	public static Vector2I NEGATIVE_UNIT_X = new Vector2I(-1, 0);

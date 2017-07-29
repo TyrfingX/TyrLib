@@ -1,13 +1,16 @@
 package com.tyrfing.games.id18.test.edit.network;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
 
 import org.junit.Test;
 
+import com.tyrfing.games.id18.edit.battle.action.EndTurnAction;
+import com.tyrfing.games.id18.edit.network.ActionSerializer;
 import com.tyrfing.games.id18.edit.network.NetworkActionProvider;
+import com.tyrfing.games.id18.model.network.NetworkActionMessage;
 import com.tyrfing.games.id18.model.unit.Faction;
 import com.tyrfing.games.tyrlib3.edit.action.IAction;
 import com.tyrfing.games.tyrlib3.edit.action.IActionRequester;
@@ -17,13 +20,15 @@ import com.tyrfing.games.tyrlib3.networking.Network;
 
 public class NetworkActionProviderTest {
 
+	public static final int SLEEP_TIME = 500;
+
 	private class TestActionRequester implements IActionRequester {
 
-		protected TestAction requestedAction;
+		protected IAction requestedAction;
 		
 		@Override
 		public void onProvideRequest(IAction action) {
-			this.requestedAction = (TestAction) action;
+			this.requestedAction = action;
 		}
 	}
 	
@@ -31,19 +36,16 @@ public class NetworkActionProviderTest {
 	public void testRequestAction() throws UnknownHostException, IOException, InterruptedException {
 		
 		final int PORT = 666;
-		final int TEST_VALUE = 5;
 		
 		Faction faction = new Faction();
 		Network hostNetwork = new Network();
 		Network clientNetwork = new Network();
 		hostNetwork.host(PORT);
 		
-		TestAction testAction = new TestAction();
-		testAction.testInt = TEST_VALUE;
 		INetworkListener clientListener = new INetworkListener() {
 			@Override
 			public void onReceivedData(Connection c, Object o) {
-				c.send(testAction);
+				c.send(NetworkActionMessage.IConstantMessages.END_TURN_ACTION);
 			}
 			
 			@Override
@@ -58,17 +60,17 @@ public class NetworkActionProviderTest {
 		clientNetwork.addListener(clientListener);
 		clientNetwork.connectTo(hostNetwork.getServer().getServerName(), PORT);
 		
-		Thread.sleep(1000);
+		Thread.sleep(SLEEP_TIME);
 		
 		Connection connection = hostNetwork.getConnection(0);
 		
-		NetworkActionProvider networkActionProvider = new NetworkActionProvider(faction, connection);
+		NetworkActionProvider networkActionProvider = new NetworkActionProvider(new ActionSerializer(null), faction, connection);
 		TestActionRequester requester = new TestActionRequester();
 		networkActionProvider.requestAction(requester);
 		
-		Thread.sleep(1000);
+		Thread.sleep(SLEEP_TIME);
 		
-		assertEquals("Received requested action", TEST_VALUE, requester.requestedAction.testInt);
+		assertTrue("Received requested action", requester.requestedAction instanceof EndTurnAction);
 		
 		hostNetwork.close();
 		clientNetwork.close();

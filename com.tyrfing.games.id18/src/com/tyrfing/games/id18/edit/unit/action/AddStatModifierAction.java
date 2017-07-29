@@ -9,10 +9,6 @@ import com.tyrfing.games.tyrlib3.edit.action.AddAction;
 
 public class AddStatModifierAction extends AddAction<AModifier> {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -612873658770482821L;
 	private IModifiable modifiable;
 	private Integer oldValue;
 	

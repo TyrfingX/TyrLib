@@ -7,10 +7,6 @@ import com.tyrfing.games.tyrlib3.math.Vector2I;
 
 public class DeployAction extends AAction {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 8097285052192079377L;
 	private Battle battle;
 	private Unit unit;
 	private Vector2I position;

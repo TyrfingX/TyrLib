@@ -1,9 +1,14 @@
 package com.tyrfing.games.id18.model.unit;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Faction {
+public class Faction implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 770478376872198589L;
 	private int moral;
 	private List<Faction> superFactions;
 	

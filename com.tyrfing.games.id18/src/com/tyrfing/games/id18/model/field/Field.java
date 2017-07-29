@@ -4,8 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.tyrfing.games.tyrlib3.math.Vector2I;
+import com.tyrfing.games.tyrlib3.model.resource.ISaveable;
 
-public class Field {
+public class Field implements ISaveable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1235934507489391688L;
 	private Tile tiles[][];
 	private List<IFieldObject> objects;
 	private Vector2I size;
