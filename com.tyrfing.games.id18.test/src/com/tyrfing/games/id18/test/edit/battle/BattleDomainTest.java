@@ -19,7 +19,7 @@ import com.tyrfing.games.tyrlib3.math.Vector2I;
 
 public class BattleDomainTest {
 	
-	public static final int MAX_DEPTH = 6;
+	public static final int MAX_DEPTH = 4;
 	
 	@Test
 	public void testOnUpdate() {
