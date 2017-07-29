@@ -38,6 +38,8 @@ import com.tyrfing.games.tyrlib3.pc.bitmap.PCCanvas;
 import com.tyrfing.games.tyrlib3.pc.bitmap.PCDrawableBitmap;
 import com.tyrfing.games.tyrlib3.pc.bitmap.PCPaint;
 import com.tyrfing.games.tyrlib3.pc.bitmap.PCTypeface;
+import com.tyrfing.games.tyrlib3.pc.sound.PCMusic;
+import com.tyrfing.games.tyrlib3.pc.sound.PCSound;
 import com.tyrfing.games.tyrlib3.sound.IMusic;
 import com.tyrfing.games.tyrlib3.sound.ISound;
 import com.tyrfing.games.tyrlib3.tinysound.TinySound;

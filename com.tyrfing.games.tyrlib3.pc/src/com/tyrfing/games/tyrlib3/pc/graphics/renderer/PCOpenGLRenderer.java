@@ -1,4 +1,4 @@
-package com.tyrfing.games.tyrlib3.pc.main;
+package com.tyrfing.games.tyrlib3.pc.graphics.renderer;
 
 
 import javax.media.opengl.GL3;

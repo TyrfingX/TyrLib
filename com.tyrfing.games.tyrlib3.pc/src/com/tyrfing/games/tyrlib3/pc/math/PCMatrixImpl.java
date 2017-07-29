@@ -1,4 +1,4 @@
-package com.tyrfing.games.tyrlib3.pc.main;
+package com.tyrfing.games.tyrlib3.pc.math;
 import com.tyrfing.games.tyrlib3.math.IMatrixImpl;
 import com.tyrfing.games.tyrlib3.math.Quaternion;
 import com.tyrfing.games.tyrlib3.math.Vector3F;

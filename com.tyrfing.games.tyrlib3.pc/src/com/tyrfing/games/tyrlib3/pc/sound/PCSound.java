@@ -1,4 +1,4 @@
-package com.tyrfing.games.tyrlib3.pc.main;
+package com.tyrfing.games.tyrlib3.pc.sound;
 
 import com.tyrfing.games.tyrlib3.sound.ISound;
 import com.tyrfing.games.tyrlib3.sound.ISoundListener;

@@ -28,6 +28,7 @@ import com.tyrfing.games.tyrlib3.main.OpenGLActivity;
 import com.tyrfing.games.tyrlib3.math.Vector2F;
 import com.tyrfing.games.tyrlib3.pc.config.Config;
 import com.tyrfing.games.tyrlib3.pc.config.Config.ScreenState;
+import com.tyrfing.games.tyrlib3.pc.graphics.renderer.PCOpenGLRenderer;
 import com.tyrfing.games.tyrlib3.pc.input.PCKeyboardEvent;
 import com.tyrfing.games.tyrlib3.pc.input.PCMotionEvent;
 import com.tyrfing.games.tyrlib3.pc.input.PCView;

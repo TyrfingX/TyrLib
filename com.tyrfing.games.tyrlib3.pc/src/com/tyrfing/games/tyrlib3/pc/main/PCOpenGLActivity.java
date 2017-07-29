@@ -10,6 +10,9 @@ import com.tyrfing.games.tyrlib3.main.Media;
 import com.tyrfing.games.tyrlib3.main.OpenGLActivity;
 import com.tyrfing.games.tyrlib3.math.Matrix;
 import com.tyrfing.games.tyrlib3.pc.config.Config;
+import com.tyrfing.games.tyrlib3.pc.graphics.renderer.ConsoleView;
+import com.tyrfing.games.tyrlib3.pc.math.PCMatrixImpl;
+import com.tyrfing.games.tyrlib3.pc.util.Logger;
 
 
 public abstract class PCOpenGLActivity implements OpenGLActivity {

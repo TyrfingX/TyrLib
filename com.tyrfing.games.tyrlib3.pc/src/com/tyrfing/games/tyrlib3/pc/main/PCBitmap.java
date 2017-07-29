@@ -15,6 +15,7 @@ import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
 import com.tyrfing.games.tyrlib3.files.IBitmap;
 import com.tyrfing.games.tyrlib3.graphics.renderer.TyrGL;
+import com.tyrfing.games.tyrlib3.pc.graphics.renderer.PCGL3;
 
 
 public class PCBitmap implements IBitmap {

@@ -1,4 +1,4 @@
-package com.tyrfing.games.tyrlib3.pc.main;
+package com.tyrfing.games.tyrlib3.pc.util;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
