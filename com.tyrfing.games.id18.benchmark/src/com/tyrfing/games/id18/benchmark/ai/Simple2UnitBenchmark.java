@@ -63,7 +63,7 @@ public class Simple2UnitBenchmark {
 	}
 	
 	@Test
-	public void benchmarkDepth8() {
+	public void benchmarkDepth08() {
 		final int MAX_DEPTH = 8;
 		AiFactory aiFactory = new AiFactory(MAX_DEPTH);
 		AiActionProvider ai1 = aiFactory.createAi(battleDomain, factionAi1);
@@ -81,7 +81,7 @@ public class Simple2UnitBenchmark {
 	}
 	
 	@Test
-	public void benchmarkDepth9() {
+	public void benchmarkDepth09() {
 		final int MAX_DEPTH = 9;
 		AiFactory aiFactory = new AiFactory(MAX_DEPTH);
 		AiActionProvider ai1 = aiFactory.createAi(battleDomain, factionAi1);
@@ -94,6 +94,24 @@ public class Simple2UnitBenchmark {
 		}
 		
 		System.out.println("----------- Simmple 2 Unit Statistics Depth 9 ------------------");
+		System.out.println("Checked states Ai1: " + ai1.getMinMaxAlgorithm().getMinMaxStatistics().generatedStates);
+		System.out.println("Checked states Ai2: " + ai2.getMinMaxAlgorithm().getMinMaxStatistics().generatedStates);
+	}
+	
+	@Test
+	public void benchmarkDepth10() {
+		final int MAX_DEPTH = 10;
+		AiFactory aiFactory = new AiFactory(MAX_DEPTH);
+		AiActionProvider ai1 = aiFactory.createAi(battleDomain, factionAi1);
+		AiActionProvider ai2 = aiFactory.createAi(battleDomain, factionAi2);
+		
+		battleDomain.startBattle();
+		
+		while(!battleDomain.isFinished()) {
+			battleDomain.onUpdate(1);
+		}
+		
+		System.out.println("----------- Simmple 2 Unit Statistics Depth 10 ------------------");
 		System.out.println("Checked states Ai1: " + ai1.getMinMaxAlgorithm().getMinMaxStatistics().generatedStates);
 		System.out.println("Checked states Ai2: " + ai2.getMinMaxAlgorithm().getMinMaxStatistics().generatedStates);
 	}

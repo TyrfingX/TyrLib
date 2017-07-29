@@ -9,6 +9,6 @@ import com.tyrfing.games.id18.benchmark.ai.Simple2UnitBenchmark;
 @SuiteClasses({
 	Simple2UnitBenchmark.class
 })
-public class AllTests {
+public class AllBenchmarks {
 
 }

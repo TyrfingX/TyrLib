@@ -18,7 +18,7 @@ import com.tyrfing.games.tyrlib3.edit.ActionStack;
 import com.tyrfing.games.tyrlib3.edit.action.IAction;
 import com.tyrfing.games.tyrlib3.math.Vector2I;
 
-public class MinMaxAlgorithm {
+public class MiniMaxAlgorithm {
 	
 	private BattleDomain battleDomain;
 	private Battle battle;
@@ -33,7 +33,7 @@ public class MinMaxAlgorithm {
 	
 	private MinMaxStatistics minMaxStatistics;
 	
-	public MinMaxAlgorithm(BattleDomain battleDomain, Heuristic heuristic, int maxDepth) {
+	public MiniMaxAlgorithm(BattleDomain battleDomain, Heuristic heuristic, int maxDepth) {
 		this.battleDomain = battleDomain;
 		this.maxDepth = maxDepth;
 		
@@ -57,7 +57,7 @@ public class MinMaxAlgorithm {
 		EvaluatedAction bestAction = null;
 		
 		for (EvaluatedAction preEvaluatedAction : sortedActions) {
-			float evaluation = evaluateAction(preEvaluatedAction.getAction(), 1);
+			float evaluation = evaluateAction(preEvaluatedAction.getAction(), 1, Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY);
 			
 			if (bestAction == null || evaluation > bestAction.getEvaluation()) {
 				bestAction = new EvaluatedAction(preEvaluatedAction.getAction(), evaluation);
@@ -67,7 +67,7 @@ public class MinMaxAlgorithm {
 		return bestAction;
 	}
 	
-	private float evaluateAction(IAction action, int depth) {
+	private float evaluateAction(IAction action, int depth, float alpha, float beta) {
 		actionStack.execute(action);
 		
 		Unit unit = battle.getCurrentUnit();
@@ -89,25 +89,37 @@ public class MinMaxAlgorithm {
 		
 		List<EvaluatedAction> sortedActions = toSortedActions(actions, depth + 1);
 		
-		float bestEvaluation = Float.NEGATIVE_INFINITY;
+		boolean isMaxNode = faction.equals(this.faction);
+		float bestEvaluation = isMaxNode ? Float.NEGATIVE_INFINITY : Float.POSITIVE_INFINITY;
 		
 		for (EvaluatedAction preEvaluatedAction : sortedActions) {
 			minMaxStatistics.generatedStates++;
 			
-			float evaluation = evaluateAction(preEvaluatedAction.getAction(), depth + 1);
-			if (bestEvaluation == Float.NEGATIVE_INFINITY) {
-				bestEvaluation = evaluation;
+			float evaluation = evaluateAction(preEvaluatedAction.getAction(), depth + 1, alpha, beta);
+			
+			if (isMaxNode) {
+				bestEvaluation = Math.max(bestEvaluation, evaluation);
+				alpha = Math.max(alpha, bestEvaluation);
+				
+				if (checkAlphaBetaCutoff(alpha, beta)) {
+					break;
+				}
 			} else {
-				if (faction.equals(this.faction)) {
-					bestEvaluation = Math.max(bestEvaluation, evaluation);
-				} else {
-					bestEvaluation = Math.min(bestEvaluation, evaluation);
+				bestEvaluation = Math.min(bestEvaluation, evaluation);
+				beta = Math.min(bestEvaluation, beta);
+				
+				if (checkAlphaBetaCutoff(alpha, beta)) {
+					break;
 				}
 			}
 		}
 		
 		actionStack.undo();
 		return bestEvaluation;
+	}
+	
+	private boolean checkAlphaBetaCutoff(float alpha, float beta) {
+		return beta <= alpha;
 	}
 	
 	private List<IAction> generateActions(Unit unit) {

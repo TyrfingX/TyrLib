@@ -2,7 +2,7 @@ package com.tyrfing.games.id18.edit.ai;
 
 import com.tyrfing.games.id18.edit.battle.BattleDomain;
 import com.tyrfing.games.id18.model.ai.Heuristic;
-import com.tyrfing.games.id18.model.ai.MinMaxAlgorithm;
+import com.tyrfing.games.id18.model.ai.MiniMaxAlgorithm;
 import com.tyrfing.games.id18.model.unit.Faction;
 
 public class AiFactory {
@@ -18,7 +18,7 @@ public class AiFactory {
 	
 	public AiActionProvider createAi(BattleDomain battleDomain, Faction faction) {
 		Heuristic heuristic = new Heuristic(battleDomain.getBattle(), faction);
-		MinMaxAlgorithm minMaxAlgorithm = new MinMaxAlgorithm(battleDomain, heuristic, maxDepth);
+		MiniMaxAlgorithm minMaxAlgorithm = new MiniMaxAlgorithm(battleDomain, heuristic, maxDepth);
 		AiActionProvider ai = new AiActionProvider(minMaxAlgorithm);
 		battleDomain.getFactionActionProviders().add(ai);
 		return ai;
