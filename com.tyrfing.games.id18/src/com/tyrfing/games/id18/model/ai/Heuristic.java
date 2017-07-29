@@ -30,11 +30,11 @@ public class Heuristic implements IHeuristic {
 		float evaluation = 0;
 		float maxEvaluation = 0;
 		
-		List<Faction> allSuperFactions = faction.getAllSuperFactionsInclusive();
+		List<Faction> superFactions = faction.getSuperFactions();
 		for (Unit unit : battle.getWaitingUnits()) {
 			int hp = unit.getStats().get(StatType.HP);
-			List<Faction> allUnitSuperFactions = unit.getFaction().getAllSuperFactionsInclusive();
-			if (!Collections.disjoint(allSuperFactions, allUnitSuperFactions)) {
+			List<Faction> allUnitSuperFactions = unit.getFaction().getSuperFactions();
+			if (!Collections.disjoint(superFactions, allUnitSuperFactions)) {
 				evaluation += hp;
 			} 
 			maxEvaluation += hp;

@@ -5,11 +5,11 @@ import java.util.List;
 
 public class Faction {
 	private int moral;
-	private Faction superFaction;
-	private List<Faction> subFactions;
+	private List<Faction> superFactions;
 	
 	public Faction() {
-		subFactions = new ArrayList<Faction>();
+		superFactions = new ArrayList<Faction>();
+		superFactions.add(this);
 	}
 	
 	public int getMoral() {
@@ -20,25 +20,7 @@ public class Faction {
 		this.moral = moral;
 	}
 	
-	public Faction getSuperFaction() {
-		return superFaction;
-	}
-	public void setSuperFaction(Faction superFaction) {
-		this.superFaction = superFaction;
-		superFaction.getSubFactions().add(this);
-	}
-	
-	public List<Faction> getSubFactions() {
-		return subFactions;
-	}
-	
-	public List<Faction> getAllSuperFactionsInclusive() {
-		List<Faction> allSuperFactions = new ArrayList<Faction>();
-		Faction superFaction = this;
-		while (superFaction != null) {
-			allSuperFactions.add(superFaction);
-			superFaction = this.getSuperFaction();
-		}
-		return allSuperFactions;
+	public List<Faction> getSuperFactions() {
+		return superFactions;
 	}
 }
