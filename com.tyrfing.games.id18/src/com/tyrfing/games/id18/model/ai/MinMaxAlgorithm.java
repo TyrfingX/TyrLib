@@ -1,10 +1,11 @@
 package com.tyrfing.games.id18.model.ai;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import com.tyrfing.games.id18.edit.ai.EvaluatedAction;
 import com.tyrfing.games.id18.edit.battle.BattleDomain;
+import com.tyrfing.games.id18.edit.battle.BattleFactory;
 import com.tyrfing.games.id18.edit.battle.action.EndTurnAction;
 import com.tyrfing.games.id18.edit.unit.action.ApplyAffectorAction;
 import com.tyrfing.games.id18.edit.unit.action.MoveAction;
@@ -27,6 +28,9 @@ public class MinMaxAlgorithm {
 	
 	private Heuristic heuristic;
 	
+	private ActionStack battleActionStack;
+	private ActionStack actionStack;;
+	
 	public MinMaxAlgorithm(BattleDomain battleDomain, Heuristic heuristic, int maxDepth) {
 		this.battleDomain = battleDomain;
 		this.maxDepth = maxDepth;
@@ -36,26 +40,30 @@ public class MinMaxAlgorithm {
 		
 		this.heuristic = heuristic;
 		this.faction = heuristic.getFaction();
+		
+		actionStack = new ActionStack();
+		battleActionStack = BattleFactory.INSTANCE.createBattleActionStack(battle);
 	}
 	
-	public EvaluatedAction computeAction(int depth, ActionStack actionStack) {
+	public EvaluatedAction computeAction() {
 		Unit unit = battleDomain.getBattle().getCurrentUnit();
 		List<IAction> actions = generateActions(unit);
+		List<EvaluatedAction> sortedActions = toSortedActions(actions, 1);
 		
 		EvaluatedAction bestAction = null;
 		
-		for (IAction action : actions) {
-			float evaluation = evaluateAction(action, depth + 1, actionStack);
+		for (EvaluatedAction preEvaluatedAction : sortedActions) {
+			float evaluation = evaluateAction(preEvaluatedAction.getAction(), 1);
 			
 			if (bestAction == null || evaluation > bestAction.getEvaluation()) {
-				bestAction = new EvaluatedAction(action, evaluation);
+				bestAction = new EvaluatedAction(preEvaluatedAction.getAction(), evaluation);
 			}	
 		}
 		
 		return bestAction;
 	}
 	
-	private float evaluateAction(IAction action, int depth, ActionStack actionStack) {
+	private float evaluateAction(IAction action, int depth) {
 		actionStack.execute(action);
 		
 		Unit unit = battle.getCurrentUnit();
@@ -75,10 +83,12 @@ public class MinMaxAlgorithm {
 			return evaluation;
 		}
 		
+		List<EvaluatedAction> sortedActions = toSortedActions(actions, depth + 1);
+		
 		float bestEvaluation = Float.NEGATIVE_INFINITY;
 		
-		for (IAction nextAction : actions) {
-			float evaluation = evaluateAction(nextAction, depth + 1, actionStack);
+		for (EvaluatedAction preEvaluatedAction : sortedActions) {
+			float evaluation = evaluateAction(preEvaluatedAction.getAction(), depth + 1);
 			if (bestEvaluation == Float.NEGATIVE_INFINITY) {
 				bestEvaluation = evaluation;
 			} else {
@@ -123,6 +133,24 @@ public class MinMaxAlgorithm {
 		actions.add(endTurnAction);
 		
 		return actions;
+	}
+	
+	private List<EvaluatedAction> toSortedActions(List<IAction> actions, int depth) {
+		List<EvaluatedAction> evaluatedActions = new ArrayList<EvaluatedAction>();
+		
+		for (IAction action : actions) {
+			battleActionStack.execute(action);
+			
+			float evaluation = heuristic.getEvaluation(depth);
+			EvaluatedAction evaluatedAction = new EvaluatedAction(action, evaluation);
+			evaluatedActions.add(evaluatedAction);
+			
+			battleActionStack.undo();
+		}
+		
+		Collections.sort(evaluatedActions);
+		
+		return evaluatedActions;
 	}
 
 	public Heuristic getHeuristic() {

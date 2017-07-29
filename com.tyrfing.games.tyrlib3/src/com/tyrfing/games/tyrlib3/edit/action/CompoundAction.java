@@ -13,8 +13,8 @@ public class CompoundAction extends AAction {
 		actions = new ArrayList<IAction>();
 	}
 	
-	public void appendAction(IAction action) {
-		actions.add(action);
+	public List<IAction> getActions() {
+		return actions;
 	}
 
 	@Override

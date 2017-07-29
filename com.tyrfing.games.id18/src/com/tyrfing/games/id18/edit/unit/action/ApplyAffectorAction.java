@@ -31,13 +31,13 @@ public class ApplyAffectorAction extends CompoundAction {
 		
 		for (AModifier modifier : affector.getCostModifiers()) {
 			AddStatModifierAction receiveStatModifierAction = new AddStatModifierAction(unit, modifier);
-			appendAction(receiveStatModifierAction);
+			getActions().add(receiveStatModifierAction);
 		}
 		
 		if (affector.isMoveToTarget()) {
 			Vector2I posBeforeTarget = getPosBeforeTarget();
 			MoveAction moveAction = new MoveAction(unit, posBeforeTarget, false);
-			appendAction(moveAction);
+			getActions().add(moveAction);
 		}
 		
 		List<IFieldObject> receivers = getReceivers();
@@ -47,7 +47,7 @@ public class ApplyAffectorAction extends CompoundAction {
 				Unit receiverUnit = (Unit) receiver;
 				for (AModifier modifier : affector.getEffectModifiers()) {
 					AddStatModifierAction receiveStatModifierAction = new AddStatModifierAction(receiverUnit, modifier);
-					appendAction(receiveStatModifierAction);
+					getActions().add(receiveStatModifierAction);
 				}
 			}
 		}

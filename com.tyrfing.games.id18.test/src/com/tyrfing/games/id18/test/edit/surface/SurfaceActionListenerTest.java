@@ -59,7 +59,7 @@ public class SurfaceActionListenerTest {
 	public void testSurfaceTransformation() {
 		CompoundAction compoundAction = new CompoundAction();
 		IAction action = new AddStatModifierAction(surface, StatModifier.BURNING);
-		compoundAction.appendAction(action);	
+		compoundAction.getActions().add(action);	
 		
 		actionStack.execute(compoundAction);
 		

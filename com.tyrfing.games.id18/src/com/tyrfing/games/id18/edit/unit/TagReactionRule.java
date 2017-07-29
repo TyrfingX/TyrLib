@@ -35,13 +35,13 @@ public class TagReactionRule implements IModifierReactionRule {
 		for (AModifier removeModifier : modifiable.getModifiers()) {
 			if (!Collections.disjoint(tagReaction.getRemovedModifiersWithTag(), removeModifier.getTags())) {
 				RemoveStatModifierAction removeOiled = new RemoveStatModifierAction(modifiable, removeModifier);
-				compoundAction.appendAction(removeOiled);
+				compoundAction.getActions().add(removeOiled);
 			}
 		}
 		
 		for (AModifier addModifier : tagReaction.getAddedModifiers()) {
 			AddStatModifierAction receiveBurning = new AddStatModifierAction(modifiable, addModifier);
-			compoundAction.appendAction(receiveBurning);
+			compoundAction.getActions().add(receiveBurning);
 		}
 		return compoundAction;
 	}

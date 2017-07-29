@@ -88,7 +88,7 @@ public class MoveAction extends AAction {
 	public static CompoundAction createMovePathAction(Unit unit, List<Vector2I> path, boolean reduceRemainingMove) {
 		CompoundAction movePathAction = new CompoundAction();
 		for (Vector2I point : path) {
-			movePathAction.appendAction(new MoveAction(unit, point, reduceRemainingMove));
+			movePathAction.getActions().add(new MoveAction(unit, point, reduceRemainingMove));
 		}
 		return movePathAction;
 	}

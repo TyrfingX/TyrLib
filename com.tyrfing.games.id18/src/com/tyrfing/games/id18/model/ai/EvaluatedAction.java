@@ -1,8 +1,8 @@
-package com.tyrfing.games.id18.edit.ai;
+package com.tyrfing.games.id18.model.ai;
 
 import com.tyrfing.games.tyrlib3.edit.action.IAction;
 
-public class EvaluatedAction {
+public class EvaluatedAction implements Comparable<EvaluatedAction> {
 	private IAction action;
 	private float evaluation;
 	
@@ -25,5 +25,10 @@ public class EvaluatedAction {
 	
 	public void setEvaluation(float evaluation) {
 		this.evaluation = evaluation;
+	}
+
+	@Override
+	public int compareTo(EvaluatedAction other) {
+		return Float.compare(other.getEvaluation(), evaluation);
 	}
 }

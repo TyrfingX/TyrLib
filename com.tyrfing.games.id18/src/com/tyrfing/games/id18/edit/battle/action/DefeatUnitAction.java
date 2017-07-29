@@ -19,6 +19,7 @@ public class DefeatUnitAction extends AAction {
 	@Override
 	public void execute() {
 		previousQueuePosition = battle.getWaitingUnits().indexOf(unit);
+		
 		battle.getWaitingUnits().remove(unit);
 		battle.getField().getObjects().remove(unit);
 	}
