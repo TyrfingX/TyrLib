@@ -9,6 +9,7 @@ import com.tyrfing.games.id18.edit.battle.action.EndTurnAction;
 import com.tyrfing.games.id18.edit.faction.AFactionActionProvider;
 import com.tyrfing.games.id18.edit.unit.action.ApplyAffectorAction;
 import com.tyrfing.games.id18.edit.unit.action.MoveAction;
+import com.tyrfing.games.id18.model.ai.Heuristic;
 import com.tyrfing.games.id18.model.battle.Battle;
 import com.tyrfing.games.id18.model.field.Field;
 import com.tyrfing.games.id18.model.unit.Arte;
@@ -26,6 +27,8 @@ public class Ai extends AFactionActionProvider {
 	private Field field;
 	private int maxDepth;
 	
+	private Heuristic heuristic;
+	
 	public Ai(BattleDomain battleDomain, Faction faction, int maxDepth) {
 		super(faction);
 		this.battleDomain = battleDomain;
@@ -33,6 +36,8 @@ public class Ai extends AFactionActionProvider {
 		
 		this.battle = battleDomain.getBattle();
 		this.field = battle.getField();
+		
+		this.heuristic = new Heuristic(battle, faction);
 	}
 	
 	public void requestAction(IActionRequester actionRequester) {
@@ -67,7 +72,7 @@ public class Ai extends AFactionActionProvider {
 		Faction faction = unit.getFaction();
 		
 		if (depth == maxDepth || battle.areObjectivesAchieved(getFaction())) {
-			float evaluation = getEvaluation(depth);
+			float evaluation = heuristic.getEvaluation(depth);
 			actionStack.undo();
 			return evaluation;
 		}
@@ -75,7 +80,7 @@ public class Ai extends AFactionActionProvider {
 		List<IAction> actions = generateActions(unit);
 		
 		if (actions.size() == 0) {
-			float evaluation = getEvaluation(depth);
+			float evaluation = heuristic.getEvaluation(depth);
 			actionStack.undo();
 			return evaluation;
 		}
@@ -97,14 +102,6 @@ public class Ai extends AFactionActionProvider {
 		
 		actionStack.undo();
 		return bestEvaluation;
-	}
-	
-	private float getEvaluation(int depth) {
-		if (battle.areObjectivesAchieved(getFaction())) {
-			return 1.f / depth;
-		} 
-		
-		return 0;
 	}
 	
 	private List<IAction> generateActions(Unit unit) {
