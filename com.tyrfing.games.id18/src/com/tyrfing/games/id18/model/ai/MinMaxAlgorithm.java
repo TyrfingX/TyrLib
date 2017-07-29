@@ -1,15 +1,13 @@
-package com.tyrfing.games.id18.edit.ai;
+package com.tyrfing.games.id18.model.ai;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.tyrfing.games.id18.edit.ai.EvaluatedAction;
 import com.tyrfing.games.id18.edit.battle.BattleDomain;
-import com.tyrfing.games.id18.edit.battle.BattleFactory;
 import com.tyrfing.games.id18.edit.battle.action.EndTurnAction;
-import com.tyrfing.games.id18.edit.faction.AFactionActionProvider;
 import com.tyrfing.games.id18.edit.unit.action.ApplyAffectorAction;
 import com.tyrfing.games.id18.edit.unit.action.MoveAction;
-import com.tyrfing.games.id18.model.ai.Heuristic;
 import com.tyrfing.games.id18.model.battle.Battle;
 import com.tyrfing.games.id18.model.field.Field;
 import com.tyrfing.games.id18.model.unit.Arte;
@@ -17,38 +15,30 @@ import com.tyrfing.games.id18.model.unit.Faction;
 import com.tyrfing.games.id18.model.unit.Unit;
 import com.tyrfing.games.tyrlib3.edit.ActionStack;
 import com.tyrfing.games.tyrlib3.edit.action.IAction;
-import com.tyrfing.games.tyrlib3.edit.action.IActionRequester;
 import com.tyrfing.games.tyrlib3.math.Vector2I;
 
-public class Ai extends AFactionActionProvider {
+public class MinMaxAlgorithm {
 	
 	private BattleDomain battleDomain;
 	private Battle battle;
 	private Field field;
 	private int maxDepth;
+	private Faction faction;
 	
 	private Heuristic heuristic;
 	
-	public Ai(BattleDomain battleDomain, Faction faction, int maxDepth) {
-		super(faction);
+	public MinMaxAlgorithm(BattleDomain battleDomain, Heuristic heuristic, int maxDepth) {
 		this.battleDomain = battleDomain;
 		this.maxDepth = maxDepth;
 		
 		this.battle = battleDomain.getBattle();
 		this.field = battle.getField();
 		
-		this.heuristic = new Heuristic(battle, faction);
+		this.heuristic = heuristic;
+		this.faction = heuristic.getFaction();
 	}
 	
-	public void requestAction(IActionRequester actionRequester) {
-		ActionStack actionStack = BattleFactory.INSTANCE.createBattleActionStack(battle);
-		
-		int depth = 0;
-		EvaluatedAction action = computeAction(depth, actionStack);
-		actionRequester.onProvideRequest(action.getAction());
-	}
-	
-	private EvaluatedAction computeAction(int depth, ActionStack actionStack) {
+	public EvaluatedAction computeAction(int depth, ActionStack actionStack) {
 		Unit unit = battleDomain.getBattle().getCurrentUnit();
 		List<IAction> actions = generateActions(unit);
 		
@@ -71,7 +61,7 @@ public class Ai extends AFactionActionProvider {
 		Unit unit = battle.getCurrentUnit();
 		Faction faction = unit.getFaction();
 		
-		if (depth == maxDepth || battle.areObjectivesAchieved(getFaction())) {
+		if (depth == maxDepth || battle.areObjectivesAchieved(this.faction)) {
 			float evaluation = heuristic.getEvaluation(depth);
 			actionStack.undo();
 			return evaluation;
@@ -92,7 +82,7 @@ public class Ai extends AFactionActionProvider {
 			if (bestEvaluation == Float.NEGATIVE_INFINITY) {
 				bestEvaluation = evaluation;
 			} else {
-				if (faction.equals(getFaction())) {
+				if (faction.equals(this.faction)) {
 					bestEvaluation = Math.max(bestEvaluation, evaluation);
 				} else {
 					bestEvaluation = Math.min(bestEvaluation, evaluation);
@@ -134,7 +124,12 @@ public class Ai extends AFactionActionProvider {
 		
 		return actions;
 	}
-	
 
-	
+	public Heuristic getHeuristic() {
+		return heuristic;
+	}
+
+	public Battle getBattle() {
+		return battle;
+	}
 }

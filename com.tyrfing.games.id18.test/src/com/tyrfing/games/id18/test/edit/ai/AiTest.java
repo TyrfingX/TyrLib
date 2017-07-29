@@ -4,7 +4,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.tyrfing.games.id18.edit.ai.Ai;
+import com.tyrfing.games.id18.edit.ai.AiActionProvider;
+import com.tyrfing.games.id18.edit.ai.AiFactory;
 import com.tyrfing.games.id18.edit.battle.BattleDomain;
 import com.tyrfing.games.id18.edit.battle.BattleFactory;
 import com.tyrfing.games.id18.edit.battle.action.DeployAction;
@@ -61,8 +62,7 @@ public class AiTest {
 		DeployAction deployUnitEnemyAction = new DeployAction(battle, unitEnemy, INITIAL_POS_UNIT_ENEMY, Vector2I.UNIT_X);
 		actionStack.execute(deployUnitEnemyAction);
 		
-		final int MAX_DEPTH = 5;
-		Ai ai = new Ai(battleDomain, factionAi, MAX_DEPTH);
+		AiActionProvider ai = AiFactory.INSTANCE.createAi(battleDomain, factionAi);
 		
 		IActionRequester executer = new IActionRequester() {
 			@Override

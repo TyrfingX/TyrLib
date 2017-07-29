@@ -1,6 +1,8 @@
 package com.tyrfing.games.id18.edit.ai;
 
 import com.tyrfing.games.id18.edit.battle.BattleDomain;
+import com.tyrfing.games.id18.model.ai.Heuristic;
+import com.tyrfing.games.id18.model.ai.MinMaxAlgorithm;
 import com.tyrfing.games.id18.model.unit.Faction;
 
 public class AiFactory {
@@ -14,8 +16,10 @@ public class AiFactory {
 		this.maxDepth = maxDepth;
 	}
 	
-	public Ai createAi(BattleDomain battleDomain, Faction faction) {
-		Ai ai = new Ai(battleDomain, faction, maxDepth);
+	public AiActionProvider createAi(BattleDomain battleDomain, Faction faction) {
+		Heuristic heuristic = new Heuristic(battleDomain.getBattle(), faction);
+		MinMaxAlgorithm minMaxAlgorithm = new MinMaxAlgorithm(battleDomain, heuristic, maxDepth);
+		AiActionProvider ai = new AiActionProvider(minMaxAlgorithm);
 		battleDomain.getFactionActionProviders().add(ai);
 		return ai;
 	}
