@@ -50,6 +50,7 @@ public class Connection extends Thread{
 				out.flush();
 				in = new ObjectInputStream(inToOther);	
 			} catch (IOException e) {
+				connectionOpen = false;
 				e.printStackTrace();
 			}
 		}
@@ -87,6 +88,10 @@ public class Connection extends Thread{
 			
 			if (out != null) {
 				out.close();
+			}
+			
+			if (socket != null) {
+				socket.close();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

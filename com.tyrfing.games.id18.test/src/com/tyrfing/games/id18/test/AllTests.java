@@ -4,6 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.tyrfing.games.id18.edit.network.NetworkActionProvider;
 import com.tyrfing.games.id18.test.edit.ai.AiTest;
 import com.tyrfing.games.id18.test.edit.battle.BattleDomainTest;
 import com.tyrfing.games.id18.test.edit.battle.action.DefeatUnitActionTest;
@@ -26,7 +27,8 @@ import com.tyrfing.games.id18.test.edit.unit.action.RemoveStatModifierActionTest
 	EndTurnActionTest.class,
 	AiTest.class,
 	DefeatUnitActionTest.class,
-	BattleDomainTest.class
+	BattleDomainTest.class,
+	NetworkActionProvider.class
 })
 public class AllTests {
 

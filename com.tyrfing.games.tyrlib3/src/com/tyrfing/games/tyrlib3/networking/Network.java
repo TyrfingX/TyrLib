@@ -197,7 +197,8 @@ public class Network {
     	
     	if (this.isHost()) {
     		server.close();
-    	}
+    		server = null;
+    	} 
     }
     
     public Server getServer() {

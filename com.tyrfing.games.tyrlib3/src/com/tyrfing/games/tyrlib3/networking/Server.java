@@ -3,6 +3,7 @@ package com.tyrfing.games.tyrlib3.networking;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class Server extends Thread{
 	
@@ -47,10 +48,12 @@ public class Server extends Thread{
 	@Override
 	public void run() {
 		while(acceptConnections) {
-			 try {
+			try {
 				Socket socket = serverSocket.accept();
 				System.out.println("Succesfully accepted a connection: " + socket.getRemoteSocketAddress());
 				network.addConnection(socket);
+			} catch (SocketException e) {
+				// Socket got closed
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
