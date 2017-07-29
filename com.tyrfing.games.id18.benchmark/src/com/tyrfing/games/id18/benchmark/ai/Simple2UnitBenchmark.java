@@ -3,6 +3,7 @@ package com.tyrfing.games.id18.benchmark.ai;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.tyrfing.games.id18.edit.ai.AiActionProvider;
 import com.tyrfing.games.id18.edit.ai.AiFactory;
 import com.tyrfing.games.id18.edit.battle.BattleDomain;
 import com.tyrfing.games.id18.edit.battle.BattleFactory;
@@ -65,27 +66,35 @@ public class Simple2UnitBenchmark {
 	public void benchmarkDepth8() {
 		final int MAX_DEPTH = 8;
 		AiFactory aiFactory = new AiFactory(MAX_DEPTH);
-		aiFactory.createAi(battleDomain, factionAi1);
-		aiFactory.createAi(battleDomain, factionAi2);
+		AiActionProvider ai1 = aiFactory.createAi(battleDomain, factionAi1);
+		AiActionProvider ai2 = aiFactory.createAi(battleDomain, factionAi2);
 		
 		battleDomain.startBattle();
 		
 		while(!battleDomain.isFinished()) {
 			battleDomain.onUpdate(1);
 		}
+		
+		System.out.println("----------- Statistics ------------------");
+		System.out.println("Checked states Ai1: " + ai1.getMinMaxAlgorithm().getMinMaxStatistics().checkedStates);
+		System.out.println("Checked states Ai2: " + ai2.getMinMaxAlgorithm().getMinMaxStatistics().checkedStates);
 	}
 	
 	@Test
 	public void benchmarkDepth9() {
 		final int MAX_DEPTH = 9;
 		AiFactory aiFactory = new AiFactory(MAX_DEPTH);
-		aiFactory.createAi(battleDomain, factionAi1);
-		aiFactory.createAi(battleDomain, factionAi2);
+		AiActionProvider ai1 = aiFactory.createAi(battleDomain, factionAi1);
+		AiActionProvider ai2 = aiFactory.createAi(battleDomain, factionAi2);
 		
 		battleDomain.startBattle();
 		
 		while(!battleDomain.isFinished()) {
 			battleDomain.onUpdate(1);
 		}
+		
+		System.out.println("----------- Statistics ------------------");
+		System.out.println("Checked states Ai1: " + ai1.getMinMaxAlgorithm().getMinMaxStatistics().checkedStates);
+		System.out.println("Checked states Ai2: " + ai2.getMinMaxAlgorithm().getMinMaxStatistics().checkedStates);
 	}
 }

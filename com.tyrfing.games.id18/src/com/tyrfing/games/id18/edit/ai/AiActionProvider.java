@@ -19,4 +19,8 @@ public class AiActionProvider extends AFactionActionProvider {
 		EvaluatedAction action = minMaxAlgorithm.computeAction();
 		actionRequester.onProvideRequest(action.getAction());
 	}
+	
+	public MinMaxAlgorithm getMinMaxAlgorithm() {
+		return minMaxAlgorithm;
+	}
 }

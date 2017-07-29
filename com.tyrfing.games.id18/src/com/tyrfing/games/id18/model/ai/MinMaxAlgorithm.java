@@ -31,6 +31,8 @@ public class MinMaxAlgorithm {
 	private ActionStack battleActionStack;
 	private ActionStack actionStack;;
 	
+	private MinMaxStatistics minMaxStatistics;
+	
 	public MinMaxAlgorithm(BattleDomain battleDomain, Heuristic heuristic, int maxDepth) {
 		this.battleDomain = battleDomain;
 		this.maxDepth = maxDepth;
@@ -43,6 +45,8 @@ public class MinMaxAlgorithm {
 		
 		actionStack = new ActionStack();
 		battleActionStack = BattleFactory.INSTANCE.createBattleActionStack(battle);
+		
+		this.minMaxStatistics = new MinMaxStatistics();
 	}
 	
 	public EvaluatedAction computeAction() {
@@ -88,6 +92,8 @@ public class MinMaxAlgorithm {
 		float bestEvaluation = Float.NEGATIVE_INFINITY;
 		
 		for (EvaluatedAction preEvaluatedAction : sortedActions) {
+			minMaxStatistics.checkedStates++;
+			
 			float evaluation = evaluateAction(preEvaluatedAction.getAction(), depth + 1);
 			if (bestEvaluation == Float.NEGATIVE_INFINITY) {
 				bestEvaluation = evaluation;
@@ -159,5 +165,9 @@ public class MinMaxAlgorithm {
 
 	public Battle getBattle() {
 		return battle;
+	}
+	
+	public MinMaxStatistics getMinMaxStatistics() {
+		return minMaxStatistics;
 	}
 }
