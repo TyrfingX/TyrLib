@@ -92,7 +92,7 @@ public class MinMaxAlgorithm {
 		float bestEvaluation = Float.NEGATIVE_INFINITY;
 		
 		for (EvaluatedAction preEvaluatedAction : sortedActions) {
-			minMaxStatistics.checkedStates++;
+			minMaxStatistics.generatedStates++;
 			
 			float evaluation = evaluateAction(preEvaluatedAction.getAction(), depth + 1);
 			if (bestEvaluation == Float.NEGATIVE_INFINITY) {
@@ -145,6 +145,8 @@ public class MinMaxAlgorithm {
 		List<EvaluatedAction> evaluatedActions = new ArrayList<EvaluatedAction>();
 		
 		for (IAction action : actions) {
+			minMaxStatistics.generatedStates++;
+			
 			battleActionStack.execute(action);
 			
 			float evaluation = heuristic.getEvaluation(depth);

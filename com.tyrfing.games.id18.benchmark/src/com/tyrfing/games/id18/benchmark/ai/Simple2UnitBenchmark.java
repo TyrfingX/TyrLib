@@ -75,9 +75,9 @@ public class Simple2UnitBenchmark {
 			battleDomain.onUpdate(1);
 		}
 		
-		System.out.println("----------- Statistics ------------------");
-		System.out.println("Checked states Ai1: " + ai1.getMinMaxAlgorithm().getMinMaxStatistics().checkedStates);
-		System.out.println("Checked states Ai2: " + ai2.getMinMaxAlgorithm().getMinMaxStatistics().checkedStates);
+		System.out.println("----------- Simmple 2 Unit Statistics Depth 8 ------------------");
+		System.out.println("Checked states Ai1: " + ai1.getMinMaxAlgorithm().getMinMaxStatistics().generatedStates);
+		System.out.println("Checked states Ai2: " + ai2.getMinMaxAlgorithm().getMinMaxStatistics().generatedStates);
 	}
 	
 	@Test
@@ -93,8 +93,8 @@ public class Simple2UnitBenchmark {
 			battleDomain.onUpdate(1);
 		}
 		
-		System.out.println("----------- Statistics ------------------");
-		System.out.println("Checked states Ai1: " + ai1.getMinMaxAlgorithm().getMinMaxStatistics().checkedStates);
-		System.out.println("Checked states Ai2: " + ai2.getMinMaxAlgorithm().getMinMaxStatistics().checkedStates);
+		System.out.println("----------- Simmple 2 Unit Statistics Depth 9 ------------------");
+		System.out.println("Checked states Ai1: " + ai1.getMinMaxAlgorithm().getMinMaxStatistics().generatedStates);
+		System.out.println("Checked states Ai2: " + ai2.getMinMaxAlgorithm().getMinMaxStatistics().generatedStates);
 	}
 }
