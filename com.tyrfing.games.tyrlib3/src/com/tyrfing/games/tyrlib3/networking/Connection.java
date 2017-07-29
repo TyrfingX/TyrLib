@@ -106,4 +106,8 @@ public class Connection extends Thread{
 		return socket.getPort();
 	}
 	
+	public Network getNetwork() {
+		return network;
+	}
+	
 }

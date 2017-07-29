@@ -15,6 +15,10 @@ import com.tyrfing.games.tyrlib3.util.CollectionsHelper;
 
 public class ApplyAffectorAction extends CompoundAction {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6852874818985375057L;
 	private Unit unit;
 	private Affector affector;
 	private Vector2I target;

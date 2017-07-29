@@ -75,30 +75,35 @@ public class Network {
 		server = new Server(this, port);
 	}
 	
-	public void connectTo(String serverName, int port) throws UnknownHostException, IOException {
-		connectTo(serverName, port, DEFAULT_TIMEOUT);
+	public Connection connectTo(String serverName, int port) throws UnknownHostException, IOException {
+		return connectTo(serverName, port, DEFAULT_TIMEOUT);
 	}
 	
-	public void connectTo(String serverName, int port, int timeout) throws UnknownHostException, IOException {
+	public Connection connectTo(String serverName, int port, int timeout) throws UnknownHostException, IOException {
 		Socket client = new Socket();
 		client.connect(new InetSocketAddress(serverName, port), timeout);
 		if (log) {
 			System.out.println(Calendar.getInstance().getTime() + " Successfully connected to " + client.getRemoteSocketAddress());
 		}
-		addConnection(client);
+		return addConnection(client);
 	}
 	
-	public void addConnection(Socket socket) {
+	public Connection addConnection(Socket socket) {
 		Connection c = new Connection(socket, this);
 		addConnection(c);
 		for (int i = 0; i < listener.size(); ++i) {
 			listener.get(i).onNewConnection(c);
 		}
+		return c;
 	}
 	
 	public void addConnection(Connection c) {
 		connections.add(c);
 		c.start();
+	}
+	
+	public Connection getConnection(int index) {
+		return connections.get(index);
 	}
 	
 	public int getClientCount() {

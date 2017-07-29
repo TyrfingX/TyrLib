@@ -9,6 +9,10 @@ import com.tyrfing.games.tyrlib3.edit.action.RemoveAction;
 
 public class RemoveStatModifierAction extends RemoveAction<AModifier> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2548560382926619495L;
 	private IModifiable modifiable;
 	private int oldValue;
 	
