@@ -1,5 +1,8 @@
 package com.tyrfing.games.id18.model.ai;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.tyrfing.games.id18.model.battle.Battle;
 import com.tyrfing.games.id18.model.unit.Faction;
 import com.tyrfing.games.id18.model.unit.StatType;
@@ -27,9 +30,11 @@ public class Heuristic implements IHeuristic {
 		float evaluation = 0;
 		float maxEvaluation = 0;
 		
+		List<Faction> allSuperFactions = faction.getAllSuperFactionsInclusive();
 		for (Unit unit : battle.getWaitingUnits()) {
 			int hp = unit.getStats().get(StatType.HP);
-			if (unit.getFaction().equals(faction)) {
+			List<Faction> allUnitSuperFactions = unit.getFaction().getAllSuperFactionsInclusive();
+			if (!Collections.disjoint(allSuperFactions, allUnitSuperFactions)) {
 				evaluation += hp;
 			} 
 			maxEvaluation += hp;

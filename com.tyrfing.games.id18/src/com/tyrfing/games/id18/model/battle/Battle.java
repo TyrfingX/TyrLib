@@ -49,8 +49,9 @@ public class Battle implements ISaveable {
 	}
 	
 	public boolean areObjectivesAchieved(Faction faction) {
+		List<Faction> allSuperFactions = faction.getAllSuperFactionsInclusive();
 		for (IObjective objective : objectives) {
-			if (objective.getFaction().equals(faction)) {
+			if (allSuperFactions.contains(objective.getFaction())) {
 				if (objective.isAchieved(this)) {
 					return true;
 				}
