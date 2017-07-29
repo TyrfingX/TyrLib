@@ -14,9 +14,9 @@ import com.tyrfing.games.tyrlib3.graphics.renderer.Texture;
 import com.tyrfing.games.tyrlib3.graphics.renderer.TextureManager;
 import com.tyrfing.games.tyrlib3.graphics.renderer.TyrGL;
 import com.tyrfing.games.tyrlib3.graphics.scene.SceneNode;
-import com.tyrfing.games.tyrlib3.gui.Window;
 import com.tyrfing.games.tyrlib3.math.Matrix;
 import com.tyrfing.games.tyrlib3.math.Vector2F;
+import com.tyrfing.games.tyrlib3.view.gui.Window;
 
 public class RenderToTexture {
 	

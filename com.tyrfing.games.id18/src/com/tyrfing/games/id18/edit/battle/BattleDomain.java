@@ -12,7 +12,7 @@ import com.tyrfing.games.tyrlib3.edit.Domain;
 import com.tyrfing.games.tyrlib3.edit.action.IAction;
 import com.tyrfing.games.tyrlib3.edit.action.IActionRequester;
 import com.tyrfing.games.tyrlib3.game.IUpdateable;
-import com.tyrfing.games.tyrlib3.resource.Resource;
+import com.tyrfing.games.tyrlib3.model.resource.Resource;
 
 public class BattleDomain extends Domain implements IUpdateable, IActionRequester {
 	private List<AFactionActionProvider> factionActionProviders;

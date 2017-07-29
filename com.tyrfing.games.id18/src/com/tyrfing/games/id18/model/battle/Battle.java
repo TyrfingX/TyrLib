@@ -6,7 +6,7 @@ import java.util.List;
 import com.tyrfing.games.id18.model.field.Field;
 import com.tyrfing.games.id18.model.unit.Faction;
 import com.tyrfing.games.id18.model.unit.Unit;
-import com.tyrfing.games.tyrlib3.resource.ISaveable;
+import com.tyrfing.games.tyrlib3.model.resource.ISaveable;
 
 public class Battle implements ISaveable {
 	/**

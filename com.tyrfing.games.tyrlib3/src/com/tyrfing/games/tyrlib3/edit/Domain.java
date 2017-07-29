@@ -3,7 +3,7 @@ package com.tyrfing.games.tyrlib3.edit;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.tyrfing.games.tyrlib3.resource.Resource;
+import com.tyrfing.games.tyrlib3.model.resource.Resource;
 
 public class Domain {
 	private ActionStack actionStack;
