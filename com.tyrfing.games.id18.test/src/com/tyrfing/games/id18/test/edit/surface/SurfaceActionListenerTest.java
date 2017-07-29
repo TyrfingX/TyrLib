@@ -37,7 +37,7 @@ public class SurfaceActionListenerTest {
 	public void setup() {
 		Field field = new Field(new Vector2I(10, 10));
 		BattleDomain battleDomain = BattleFactory.INSTANCE.createBattleDomain(field);
-		surface = new Surface(field, new Vector2I(5, 5), StatModifier.OILED);
+		surface = new Surface(new Vector2I(5, 5), StatModifier.OILED);
 		field.getObjects().add(surface);
 		
 		actionStack = battleDomain.getActionStack();
