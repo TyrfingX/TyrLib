@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,12 +63,15 @@ public class PCMedia extends Media {
 			@Override
 			public void run() {
 				System.out.println("-----Index resources-----");
-				
-				URL url = getClass().getResource("/res");
-				File folder = new File(url.getPath());
-				
-				loadFolder(folder);
-				
+
+				try {
+					URL url = getURL("/res");
+					File folder = new File(url.getPath());
+					loadFolder(folder);
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				}
+
 				System.out.println("-----Finished indexing resources-----");
 			}
 		});
@@ -79,6 +83,11 @@ public class PCMedia extends Media {
 		
 		System.out.println("-----Finished initializing TinySound-----");
 			
+	}
+	
+	private URL getURL(String res) throws MalformedURLException {
+		String directory = "file:/" + System.getProperty("user.dir") + res;
+		return new URL(directory);
 	}
 	
 	private void loadFolder(File file) {
@@ -111,21 +120,21 @@ public class PCMedia extends Media {
 	@Override
 	public InputStream openAsset(String fileName) throws IOException {
 		String path = "/res/assets/"+ fileName;
-		URL url = getClass().getResource(path);
+		URL url = getURL(path);
 		return new FileInputStream(url.getPath());
 	}
 
 	@Override
 	public FileInputStream openFileInput(String fileName) throws IOException {
 		String path = "/res/"+ fileName + "." + resourceEndings.get(resourceIDs.get(fileName));
-		URL url = getClass().getResource(path);
+		URL url = getURL(path);
 		return new FileInputStream(url.getPath());
 	}
 
 	@Override
 	public InputStream openRawResource(int id) throws IOException {
 		String path = "/res/"+ resourceNames.get(id) +  (resourceEndings.get(id).equals("") ? "" : "." + resourceEndings.get(id));
-		URL url = getClass().getResource(path);
+		URL url = getURL(path);
 		return new FileInputStream(url.getPath());
 	}
 
@@ -145,8 +154,14 @@ public class PCMedia extends Media {
 	@Override
 	public IBitmap loadBitmap(int resID, boolean prescaling) {
 		String path = "/res/"+ resourceNames.get(resID) + "." + resourceEndings.get(resID);
-		URL url = getClass().getResource(path);
-		return new PCBitmap(url.getPath());
+		try {
+			URL url = getURL(path);
+			return new PCBitmap(url.getPath());
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 
 	@Override
@@ -156,13 +171,12 @@ public class PCMedia extends Media {
 
 	@Override
 	public ITypeface createFromAsset(String file) {
-		String path = "/res/assets/"+ file;
-		URL url = getClass().getResource(path);
-		
+
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		Font font;
 		try {
-			font = Font.createFont(Font.TRUETYPE_FONT, new File(url.getPath()));
+			String path = "/res/assets/"+ file;
+			URL url = getURL(path);
+			Font font = Font.createFont(Font.TRUETYPE_FONT, new File(url.getPath()));
 			ge.registerFont(font);
 			return new PCTypeface(font);
 		} catch (FontFormatException e) {
@@ -230,7 +244,7 @@ public class PCMedia extends Media {
 		try
 		{
 			
-		  URL url = getClass().getResource(target);
+		  URL url = getURL(target);
 		  String path = url.getPath() + "/" + fileName;
 		  
 		  fis = new FileInputStream( path );
@@ -268,8 +282,14 @@ public class PCMedia extends Media {
 	@Override
 	public IBitmap loadStaticBitmap(int resID, boolean prescaling) {
 		String path = "/res/"+ resourceNames.get(resID) + "." + resourceEndings.get(resID);
-		URL url = getClass().getResource(path);
-		return new PCBitmap(url.getPath(), true);
+		try {
+			URL url = getURL(path);
+			return new PCBitmap(url.getPath(), true);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	@Override
@@ -287,11 +307,16 @@ public class PCMedia extends Media {
 
 	@Override
 	public boolean fileExists(String target, String fileName) {
-		URL url = getClass().getResource(target);
-		if (url == null) return false;
-		String path = url.getPath() + "/" + fileName;
-		File f = new File(path);
-		return  f.exists() && !f.isDirectory();
+		try {
+			URL url = getURL(target);
+			if (url == null) return false;
+			String path = url.getPath() + "/" + fileName;
+			File f = new File(path);
+			return  f.exists() && !f.isDirectory();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package com.TyrLib2.PC.config;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
@@ -21,7 +22,8 @@ public class ConfigLoader {
 		
 		try {
 			URL url = getClass().getResource("/");
-	        InputStream raw = new FileInputStream(url.getPath() + "config.xml");
+			String path = url.getPath() + "config.xml";
+	        InputStream raw = new FileInputStream(path);
 			
 	        XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 	
