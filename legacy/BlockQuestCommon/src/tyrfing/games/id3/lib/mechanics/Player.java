@@ -21,7 +21,7 @@ public class Player {
 		stats.setStat("Atk", 3);
 		stats.setStat("Level", 1);
 		stats.setStat("NextExp", 10);
-		stats.setStat("ExpPerLvl", 4);
+		stats.setStat("ExpPerLvl", 5);
 		stats.setStat("Speed", 150);
 		stats.setStat("TICKS_PER_SECOND", 5);
 		stats.setStat("HpPotionEffect", Market.BASE_HP_POTION_EFFECT);

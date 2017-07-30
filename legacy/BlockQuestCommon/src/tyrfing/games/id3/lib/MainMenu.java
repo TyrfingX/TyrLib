@@ -19,10 +19,7 @@ public class MainMenu implements ClickListener, Observer {
 	private Button newCharacter;
 	private Button continueOld;
 	
-	private Button resume;
 	private State state;
-	
-	private String resumeData = null;
 	
 	
 	public MainMenu()
@@ -30,15 +27,6 @@ public class MainMenu implements ClickListener, Observer {
 		
 		newCharacter = MenuConfig.createMenuItem("newCharacter", MainGame.getString(R.string.newgame), 0, this);
 		continueOld = MenuConfig.createMenuItem("continue", BaseGame.getString(R.string.continueGame), 1, this);
-		
-		if (FileReader.fileExists(BaseGame.CONTEXT, MainLogic.RESUME_FILE))
-		{
-			resumeData = FileReader.readFile(MainGame.CONTEXT, MainLogic.RESUME_FILE);
-			if (resumeData.charAt(0) == MainLogic.RESUME_GAME)
-			{
-				resume = MenuConfig.createMenuItem("resume", MainGame.getString(R.string.resume), 3, this);
-			}
-		}
 		
 	}
 	
@@ -56,13 +44,6 @@ public class MainMenu implements ClickListener, Observer {
 		{
 			continueOld.disable();
 		}
-
-		if (resume != null)
-		{
-			resume.setVisible(true);
-			resume.moveTo(new Vector2(MenuConfig.LEFT, MenuConfig.TOP + MenuConfig.OFFSET * 3), MenuConfig.FADE_TIME);
-			resume.getMovementListener(0).setListening(false);
-		}
 	}
 	
 	@Override
@@ -71,7 +52,6 @@ public class MainMenu implements ClickListener, Observer {
 		{
 			if (!continueOld.isEnabled())
 			{
-				resumeData = null;
 				this.startGame(false);
 			}
 			else
@@ -83,7 +63,6 @@ public class MainMenu implements ClickListener, Observer {
 					public void onClick(Event event) {	
 						if (event.getParam("Result").equals("Yes"))
 						{
-							resumeData = null;
 							startGame(false);
 						}
 					}
@@ -92,11 +71,6 @@ public class MainMenu implements ClickListener, Observer {
 			}
 		}
 		else if (event.getEvoker() == continueOld)
-		{
-			resumeData = null;
-			this.startGame(true);
-		}
-		else if (event.getEvoker() == resume)
 		{
 			this.startGame(true);
 		}
@@ -117,47 +91,19 @@ public class MainMenu implements ClickListener, Observer {
 		newCharacter.getMovementListener(0).setListening(true);
 		continueOld.getMovementListener(0).setListening(true);
 		
-		if (resume != null)
-		{
-			resume.disable();
-			resume.moveTo(new Vector2(TargetMetrics.width, MenuConfig.TOP + MenuConfig.OFFSET*3), MenuConfig.FADE_TIME);
-			resume.getMovementListener(0).setListening(true);
-		}
-		
 		this.state = new State(continueOldSave);
-		
-		
-		
-	//	state.deepestLevel = 6;
-	//	state.character.setMoney(10000000);
 
 		
 		state.worldMap.addObserver(this);
 		
-		if (resumeData == null)
+		if (!state.tutorial.isItemDone("Intro"))
 		{
-			if (!state.tutorial.isItemDone("Intro"))
-			{
-				state.tutorial.addObserver(state);
-				state.tutorial.doIntro();
-			}
-			else
-			{
-				state.worldMap.show();
-			}
+			state.tutorial.addObserver(state);
+			state.tutorial.doIntro();
 		}
 		else
 		{
-			//User wants to resume his last game within the dungeon
-			Thread thread = new Thread() {
-				public void run()
-				{
-					state.createHeroPreview();
-					state.playerMoney.setVisible(true);
-					MainLogic.resume(resumeData, state);	
-				}
-			};
-			thread.run();
+			state.worldMap.show();
 		}
 	}
 

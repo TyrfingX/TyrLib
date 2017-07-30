@@ -9,7 +9,6 @@ import android.graphics.Color;
 import tyrfing.common.game.objects.Direction;
 import tyrfing.common.game.objects.GameObject;
 import tyrfing.common.game.objects.Movement;
-import tyrfing.common.math.Mirror2;
 import tyrfing.common.math.Rotator2;
 import tyrfing.common.math.Transformer;
 import tyrfing.common.math.Vector2;
@@ -276,24 +275,8 @@ public class RoomElement extends GameObject {
 			newRelPos = transformer.transformVector(relPos);
 			line.setTo(newRelPos);
 			
-			if (transformer instanceof Mirror2)
-			{
-				if (dir == Direction.LEFT || dir == Direction.RIGHT)
-				{
-					walls.put(dir.turnRight().turnRight(), line);
-				}
-				else
-				{
-					walls.put(dir, line);
-				}
-			}
-			else
-			{
-				walls.put(dir.turnRight(), line);
-			}
-			
-			
-			
+			walls.put(dir.turnRight(), line);
+
 		}
 		
 		Map<Direction, Door> tmpDoors = new HashMap<Direction, Door>();
@@ -306,21 +289,7 @@ public class RoomElement extends GameObject {
 			Door door = tmpDoors.get(dir);
 			if (door != null)
 			{
-				if (transformer instanceof Mirror2)
-				{
-					if (dir == Direction.LEFT || dir == Direction.RIGHT)
-					{
-						doors.put(dir.turnRight().turnRight(), door);
-					}
-					else
-					{
-						doors.put(dir, door);
-					}
-				}
-				else
-				{
-					doors.put(dir.turnRight(), door);
-				}
+				doors.put(dir.turnRight(), door);
 			}
 		}
 	}

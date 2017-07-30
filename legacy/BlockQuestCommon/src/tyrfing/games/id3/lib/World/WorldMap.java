@@ -69,6 +69,7 @@ public class WorldMap extends Observable implements ClickListener {
 	{
 		for (Location item : map.values())
 		{
+			item.getMapItem().disable();
 			item.getMapItem().fadeOut(0.5f);
 		}
 		
@@ -83,6 +84,7 @@ public class WorldMap extends Observable implements ClickListener {
 		
 		for (Location item : map.values())
 		{
+			item.getMapItem().enable();
 			item.getMapItem().blendIn(0.5f);
 		}		
 		

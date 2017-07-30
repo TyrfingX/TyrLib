@@ -25,34 +25,25 @@ import tyrfing.common.render.SceneManager;
 import tyrfing.common.render.TargetMetrics;
 import tyrfing.common.renderables.Image;
 import tyrfing.common.renderables.Rectangle;
-import tyrfing.common.renderables.Renderable;
 import tyrfing.common.renderables.Text;
 import tyrfing.common.struct.Node;
 import tyrfing.common.ui.ClickListener;
 import tyrfing.common.ui.Event;
 import tyrfing.common.ui.WindowManager;
 import tyrfing.common.ui.widgets.Button;
-import tyrfing.games.id3.lib.World.Dungeon;
 import tyrfing.games.id3.lib.mechanics.Floor;
 import tyrfing.games.id3.lib.mechanics.Player;
 import tyrfing.games.id3.lib.mechanics.State;
 import tyrfing.games.id3.lib.rooms.CheckBoard;
-import tyrfing.games.id3.lib.rooms.Door;
-import tyrfing.games.id3.lib.rooms.DoorType;
 import tyrfing.games.id3.lib.rooms.Room;
 import tyrfing.games.id3.lib.rooms.RoomElement;
 import tyrfing.games.id3.lib.rooms.RoomFactory;
 import tyrfing.games.id3.lib.rooms.RoomFactoryConfig;
-import tyrfing.games.id3.lib.rooms.RoomState;
 import tyrfing.games.id3.lib.rooms.Skript;
-import tyrfing.games.id3.lib.rooms.content.AttackUp;
-import tyrfing.games.id3.lib.rooms.content.Heal;
 import tyrfing.games.id3.lib.rooms.content.Hero;
 import tyrfing.games.id3.lib.rooms.content.Monster;
 import tyrfing.games.id3.lib.rooms.content.MonsterFactory;
 import tyrfing.games.id3.lib.rooms.content.MonsterType;
-import tyrfing.games.id3.lib.rooms.content.StairsDown;
-import tyrfing.games.id3.lib.rooms.content.StairsUp;
 
 public class MainLogic extends Observable implements IFrameListener, Observer, ClickListener {
 
@@ -129,27 +120,27 @@ public class MainLogic extends Observable implements IFrameListener, Observer, C
 		{
 			if (floor.getLevel() < 4)
 			{
-				Room.fallSpeed = 15;
+				Room.fallSpeed = 10;
 				Room.SPEED_UP = 29;			
 			}
 			else if (floor.getLevel() < 10)
 			{
-				Room.fallSpeed = 20;
+				Room.fallSpeed = 15;
 				Room.SPEED_UP = 22;			
 			}
 			else if (floor.getLevel() < 15)
 			{
-				Room.fallSpeed = 25;
+				Room.fallSpeed = 20;
 				Room.SPEED_UP = 18;
 			} 
 			else if (floor.getLevel() < 20)
 			{
-					Room.fallSpeed = 30;
+					Room.fallSpeed = 25;
 					Room.SPEED_UP = 14;
 			}
 			else if (floor.getLevel() < 30)
 			{
-					Room.fallSpeed = 35;
+					Room.fallSpeed = 30;
 					Room.SPEED_UP = 12;
 			}
 			else 
@@ -212,9 +203,9 @@ public class MainLogic extends Observable implements IFrameListener, Observer, C
 			config = settings.roomFactoryConfig;
 		}
 		
-		if (floor.getLevel() == 1) {
+		if (floor.getLevel() < 3) {
 			config.STAIRS_DOWN_MIN_ROOMS = config.STAIRS_DOWN_MIN_ROOMS/2;
-		} else if (floor.getLevel() == 2) {
+		} else if (floor.getLevel() < 5) {
 			config.STAIRS_DOWN_MIN_ROOMS = (3*config.STAIRS_DOWN_MIN_ROOMS)/4;
 		} else if (floor.getLevel() >= 25) {
 			config.STAIRS_DOWN_MIN_ROOMS += 5;
@@ -779,150 +770,6 @@ public class MainLogic extends Observable implements IFrameListener, Observer, C
 		
 		FileWriter.writeFile(BaseGame.CONTEXT, RESUME_FILE, res);
 		MainLogic.instance = null;
-	}
-	
-	public static void resume(String data, State state)
-	{
-		String[] tokens = data.split("\n");
-		Floor floor = new Floor(Integer.valueOf(tokens[1]));
-		state.currentFloor = floor;
-		
-		MainLogic mainLogic = new MainLogic(state, state.character, floor, null);
-		mainLogic.updater.pause();
-		
-		int money = Integer.valueOf(tokens[2]);
-		mainLogic.character.setMoney(money);
-		state.playerMoney.setCaption(state.character.getMoney()+"");
-		
-		int spawnedRooms = Integer.valueOf(tokens[3]);
-		mainLogic.preview.factory.setCountSpawnedRooms(spawnedRooms);
-		
-		int countRooms = Integer.valueOf(tokens[4]);
-		int row = 5;
-		for (int i = 0; i < countRooms; ++i)
-		{
-			float x = Float.valueOf(tokens[row++]);
-			float y = Float.valueOf(tokens[row++]);
-			Room room = new Room(mainLogic.topLeft.createChild(x,y), mainLogic.board);
-			int roomState = Integer.valueOf(tokens[row++]);
-			boolean cleared = Boolean.valueOf(tokens[row++]);
-			
-			int countElements = Integer.valueOf(tokens[row++]);
-			for (int j = 0; j < countElements; ++j)
-			{
-				float elementX = Float.valueOf(tokens[row++]);
-				float elementY = Float.valueOf(tokens[row++]);
-				RoomElement element = new RoomElement(	room.getNode().createChild(elementX, elementY), 
-														mainLogic.board.getTileSize());
-				room.addElement(element);
-			}
-			
-			room.finishConstruction();
-			
-			for (int j = 0; j < countElements; ++j)
-			{
-				RoomElement element = room.getRoomElement(j);
-				for (Direction direction : Direction.values())
-				{
-					if (Boolean.valueOf(tokens[row++])){
-						element.addDoor(new Door(direction, DoorType.RED));
-					}					
-				}
-			}
-			
-			
-			int countContent = Integer.valueOf(tokens[row++]);
-			for (int j = 0; j < countContent; ++j)
-			{
-				String type = tokens[row++];
-				int roomElementNr = Integer.valueOf(tokens[row++]);
-				RoomElement roomElement = room.getRoomElement(roomElementNr);
-				if (type.equals("heal"))
-				{
-					Heal heal = new Heal();
-					heal.assignRoom(roomElement);
-				} else if (type.equals("monster")) {
-					String monsterType = MonsterType.values()[Integer.valueOf(tokens[row++])].toString();
-					Monster monster = (Monster) FactoryManager.getFactory(monsterType).create();
-					monster.assignRoom(roomElement);
-					monster.createEntity(mainLogic.board.getTileSize());
-				} else if (type.equals("hero")) {
-					mainLogic.hero.spawn(roomElement);
-					int hp = Integer.valueOf(tokens[row++]);
-					int maxHp = Integer.valueOf(tokens[row++]);
-					int exp = Integer.valueOf(tokens[row++]);
-					int nextExp = Integer.valueOf(tokens[row++]);
-					int lvl = Integer.valueOf(tokens[row++]);
-					int potions = Integer.valueOf(tokens[row++]);
-					float buffed = Float.valueOf(tokens[row++]);
-					mainLogic.hero.getStats().setStat("Hp", hp);
-					mainLogic.hero.getStats().setStat("MaxHp", maxHp);
-					mainLogic.hero.getStats().setStat("Exp", exp);
-					mainLogic.hero.getStats().setStat("NextExp", nextExp);
-					mainLogic.hero.getStats().setStat("Level", lvl);
-					mainLogic.hero.getStats().setStat("HpPotions", potions);
-					if (buffed != 0) {
-						mainLogic.hero.buff(buffed);
-						state.atk.setCaption(mainLogic.hero.getStats().getStat("Atk")+"");
-						state.atk.setCaptionColor(Color.RED);
-					}
-					
-					state.hp.setCaption(mainLogic.hero.getStats().getStat("Hp") + "/" + mainLogic.hero.getStats().getStat("MaxHp"));
-					state.lvl.setCaption("Lvl. " + + mainLogic.hero.getStats().getStat("Level"));
-					state.exp.setCaption("Exp: " + mainLogic.hero.getStats().getStat("Exp") + "/" + mainLogic.hero.getStats().getStat("NextExp"));
-					
-					while (mainLogic.potions.size() > mainLogic.hero.getStats().getStat("HpPotions"))
-					{
-						Renderable potion = mainLogic.potions.pop();
-						SceneManager.RENDER_THREAD.removeRenderable(potion);
-					}
-				} else if (type.equals("stairsDown")) {
-					StairsDown stairs = new StairsDown();
-					stairs.assignRoom(roomElement);
-				}else if (type.equals("stairsUp")) {
-					StairsUp stairs = new StairsUp();
-					stairs.assignRoom(roomElement);
-				} else if (type.equals("attackUp")) {
-					AttackUp attackUp = new AttackUp();
-					attackUp.assignRoom(roomElement);
-				}
-			}
-			
-			room.setState(RoomState.values()[roomState]);
-			
-			
-			if (i < countRooms - 3)
-			{
-				mainLogic.updater.addItem(room);
-				room.makePartOfDungeon();
-				if (cleared) room.cleared();
-			}
-			else
-			{
-				if (i == countRooms - 3)
-				{
-					//Currently falling room
-					mainLogic.currentRoom = room;
-					room.addObserver(mainLogic);
-					mainLogic.updater.addItem(room);
-					InputManager.addTouchListener(room);
-					room.createFallPreview();
-				}
-				else
-				{
-					//preview rooms
-					mainLogic.preview.addRoom(room);
-				}
-			}
-		}
-		
-		
-		
-		
-		Dungeon dungeon = (Dungeon) state.worldMap.getLocation("Dungeon");
-		mainLogic.addObserver(dungeon);
-		SceneManager.RENDER_THREAD.addFrameListener(mainLogic);
-		mainLogic.updater.unPause();
 	}
 
 }

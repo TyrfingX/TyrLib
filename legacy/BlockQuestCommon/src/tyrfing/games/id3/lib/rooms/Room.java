@@ -16,7 +16,6 @@ import tyrfing.common.game.objects.Movement;
 import tyrfing.common.graph.Graph;
 import tyrfing.common.graph.Vertex;
 import tyrfing.common.input.TouchListener;
-import tyrfing.common.math.Mirror2;
 import tyrfing.common.math.Rotator2;
 import tyrfing.common.math.Transformer;
 import tyrfing.common.math.Vector2;
@@ -242,52 +241,76 @@ public class Room extends GameObject implements TouchListener {
 				board.setItem(boardPoint, null);
 			}
 		}
-		do
-		{
-			
-			Vector2 min = this.getMin();
-
+		
+		
+		for (int i = 0; i < 4; ++i) {
 			for (RoomElement element : roomElements)
 			{
 				element.transform(transformer);
 				Vertex<RoomElement> vertex = graph.getVertex(element);
-				Vector2 pos = new Vector2(vertex.getX(), vertex.getY()).sub(new Vector2(element.getWidth()/2, element.getHeight()/2));
+				Vector2 pos = new Vector2(vertex.getX(), vertex.getY());
 				pos = transformer.transformVector(pos);
-				vertex.setX(pos.x + element.getWidth() / 2);
-				vertex.setY(pos.y + element.getHeight() / 2);
+				vertex.setX(pos.x);
+				vertex.setY(pos.y);
 			}
 			
-			if (transformer instanceof Mirror2)
-			{
-				Vector2 min2 = this.getMin();
-				if (min2.x < min.x)
-				{
-					this.setPos(this.getPos().add(new Vector2(board.getTileSize(), 0)));
-					movement.clearPath();
-				} else if (min2.x > min.x)
-				{
-					this.setPos(this.getPos().sub(new Vector2(board.getTileSize(), 0)));
-					movement.clearPath();
-				}
+			if (!isInvalidRotation()) {
+				break;
 			}
-			else if (transformer instanceof Rotator2)
-			{
-				Vector2 min2 = this.getMin();
-				if (min2.x < min.x)
-				{
-					this.setPos(this.getPos().add(new Vector2(board.getTileSize(), 0)));
-					movement.clearPath();
-				} else if (min2.x > min.x)
-				{
-					this.setPos(this.getPos().sub(new Vector2(board.getTileSize(), 0)));
-					movement.clearPath();
-				}
-			}
-			
-		} while (checkLowCollision() || !board.itemsInBoard(roomElements));	
+		}
 		
 		
 		MainLogic.updateFallPreview();
+	}
+	
+	private boolean isInvalidRotation() {
+		if (checkLowCollision()) {
+			return true;
+		}
+		
+		for (RoomElement roomElement : roomElements) {
+			Vector2 point = roomElement.getCenter();
+			if (point.x < 0) return true;
+			if (point.y < 0) {
+				point.y = 0;
+			}
+			Coord2 boardCoord = board.getBoardCoord(point);
+			
+			if (boardCoord.x < 0 || boardCoord.y < 0) {	
+				return true;
+			}
+			
+			if (boardCoord.x >= board.getWidth() || boardCoord.y >= board.getHeight()) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	private boolean isInvalidPosition() {
+		if (checkCollision()) {
+			return true;
+		}
+		
+		for (RoomElement roomElement : roomElements) {
+			Vector2 point = roomElement.getCenter();
+			if (point.x < 0) return true;
+			if (point.y < 0) {
+				point.y = 0;
+			}
+			Coord2 boardCoord = board.getBoardCoord(point);
+			
+			if (boardCoord.x < 0 || boardCoord.y < 0) {	
+				return true;
+			}
+			
+			if (boardCoord.x >= board.getWidth() || boardCoord.y >= board.getHeight()) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	@Override
@@ -328,8 +351,6 @@ public class Room extends GameObject implements TouchListener {
 		
 		if (userMove != null && this.isFalling() && this.firstFall)
 		{
-			
-			
 			this.writeNullAtPos();
 			for (RoomElement element : roomElements)
 			{
@@ -354,7 +375,7 @@ public class Room extends GameObject implements TouchListener {
 			
 			node.setPos(newPos);
 			
-			if (board.itemsInBoard(roomElements) && !this.checkCollision())
+			if (!isInvalidPosition())
 			{
 				movement.clearPath();
 			}

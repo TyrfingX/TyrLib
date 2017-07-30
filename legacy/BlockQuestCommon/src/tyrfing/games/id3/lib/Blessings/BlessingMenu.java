@@ -71,9 +71,9 @@ public class BlessingMenu {
 		blessings.add(new Blessing(state, "Novice", "Your followers gain 16Hp.", 100, 100, "Hp", 16, 0, 5, new Vector2(MenuConfig.LEFT, MenuConfig.OFFSET + MenuConfig.TOP), new String[]{"Warrior", "Mage", "Thief"}));
 		
 		//T2
-		blessings.add(new Blessing(state, "Warrior", "Your followers gain 20Hp.", 300, 300, "Hp", 20, 0, 10, new Vector2(MenuConfig.LEFT, MenuConfig.OFFSET + MenuConfig.TOP), new String[]{"Knight"}));
-		blessings.add(new Blessing(state, "Thief", "Your followers gain 4 extra gold\nper cleared row.", 250, 250, "ExtraMoney", 4, 0, 10, new Vector2(MenuConfig.LEFT, MenuConfig.OFFSET*2 + MenuConfig.TOP), new String[]{"Assassin"}));
-		blessings.add(new Blessing(state, "Mage", "Your followers gain 1Atk.", 600, 600, "Atk", 1, 0, 10, new Vector2(MenuConfig.LEFT, MenuConfig.OFFSET*3 + MenuConfig.TOP), new String[]{"Arcmage"}));
+		blessings.add(new Blessing(state, "Warrior", "Your followers gain 20Hp.", 500, 500, "Hp", 20, 0, 10, new Vector2(MenuConfig.LEFT, MenuConfig.OFFSET + MenuConfig.TOP), new String[]{"Knight"}));
+		blessings.add(new Blessing(state, "Thief", "Your followers gain 4 extra gold\nper cleared row.", 300, 300, "ExtraMoney", 4, 0, 10, new Vector2(MenuConfig.LEFT, MenuConfig.OFFSET*2 + MenuConfig.TOP), new String[]{"Assassin"}));
+		blessings.add(new Blessing(state, "Mage", "Your followers gain 1Atk.", 800, 800, "Atk", 1, 0, 10, new Vector2(MenuConfig.LEFT, MenuConfig.OFFSET*3 + MenuConfig.TOP), new String[]{"Arcmage"}));
 		
 		//T3
 		blessings.add(new Blessing(state, "Knight", "Your followers gain 1Def.", 2000, 2000, "Def", 1, 0, 10, new Vector2(MenuConfig.LEFT, MenuConfig.OFFSET + MenuConfig.TOP), new String[]{"Paladin"}));
