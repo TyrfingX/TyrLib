@@ -9,7 +9,7 @@ import tyrfing.games.id3.lib.AppRater;
 
 public class BlockQuestActivity extends tyrfing.games.id3.lib.BlockQuestActivity {
 	private AdView adView;
-	private String MY_AD_UNIT_ID = "ca-app-pub-1009404857840985~2501326952";	 
+	private String MY_AD_UNIT_ID = "ca-app-pub-1009404857840985/3978060158";	 
 	public static AdView ADS;
 	
 	@Override
@@ -37,11 +37,10 @@ public class BlockQuestActivity extends tyrfing.games.id3.lib.BlockQuestActivity
 
 	    // Initiate a generic request to load it with an ad
 	    AdRequest adRequest = new AdRequest();
-	    
-	    
+	    adRequest.addTestDevice("761E61422E05577CD14CB753A058E8FF");
+
 	    adView.loadAd(adRequest);
 	    
-	    //ADS = adView;
 	    try
 	    {
 	    	game.go();
