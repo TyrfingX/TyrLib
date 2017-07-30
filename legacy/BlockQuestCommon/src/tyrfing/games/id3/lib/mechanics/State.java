@@ -14,7 +14,6 @@ import tyrfing.common.render.SceneManager;
 import tyrfing.common.render.TargetMetrics;
 import tyrfing.common.ui.WindowManager;
 import tyrfing.common.ui.widgets.Label;
-import tyrfing.games.id3.lib.BlockQuestActivity;
 import tyrfing.games.id3.lib.MainGame;
 import tyrfing.games.id3.lib.MenuConfig;
 import tyrfing.games.id3.lib.Blessings.BlessingMenu;
@@ -98,10 +97,6 @@ public class State implements Observer {
 			FileWriter.writeFile(MainGame.CONTEXT, "buildings.bs","");
 			FileWriter.writeFile(BaseGame.CONTEXT, "prayers.bs", "");
 			tutorial = new Tutorial();
-			
-			BlockQuestActivity.tracker.trackPageView("/Level1");
-			BlockQuestActivity.tracker.dispatch();
-
 
 		}
 

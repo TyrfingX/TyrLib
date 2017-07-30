@@ -1,8 +1,6 @@
 package tyrfing.games.id3.lib;
 
 
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
-
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,14 +12,8 @@ import tyrfing.games.id3.lib.rooms.DoorColor;
 public class BlockQuestActivity extends GameActivity {
 	protected MainGame game;
 	
-	public static GoogleAnalyticsTracker tracker;
-	
 	@Override
 	public void go() {
-		
-	    tracker = GoogleAnalyticsTracker.getInstance();
-	    tracker.startNewSession("UA-33816726-1", this);
-
 		
 		if (FileReader.fileExists(this, "Difficulty.bs"))
 	    {
@@ -51,7 +43,6 @@ public class BlockQuestActivity extends GameActivity {
 	
 	  @Override
 	  public void onDestroy() {
-	    tracker.stopSession();
 		game.kill();
 		super.onDestroy();
 		game = null;

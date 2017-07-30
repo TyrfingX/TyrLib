@@ -125,8 +125,6 @@ public class Dungeon extends Location implements Observer {
 		if (state.currentFloor.cleared() && state.currentFloor.getLevel() == state.deepestLevel)
 		{
 			state.deepestLevel++;
-			BlockQuestActivity.tracker.trackPageView("/Level" + state.deepestLevel);
-			BlockQuestActivity.tracker.dispatch();
 			startFloor.setCaption("Enter dungeon (Floor " + (state.deepestLevel-1) +  ")");
 			startDeepestFloor.setCaption("Enter dungeon (Floor " + state.deepestLevel +  ")");
 		}

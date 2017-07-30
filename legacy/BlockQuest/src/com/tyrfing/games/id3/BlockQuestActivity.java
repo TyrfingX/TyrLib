@@ -1,8 +1,8 @@
 package com.tyrfing.games.id3;
 
-import com.google.ads.AdRequest;
-import com.google.ads.AdSize;
-import com.google.ads.AdView;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 
 import android.widget.RelativeLayout;
 import tyrfing.games.id3.lib.AppRater;
@@ -25,21 +25,26 @@ public class BlockQuestActivity extends tyrfing.games.id3.lib.BlockQuestActivity
 	    adParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 	    gameViewParams.addRule(RelativeLayout.ABOVE);
 	    adParams.addRule(RelativeLayout.BELOW);
-	 
 	    
-	    // Create the adView
-	    adView = new AdView(this, AdSize.BANNER, MY_AD_UNIT_ID);
-	    // Add the adView to it
-	    outer.addView(game, gameViewParams);
-	    outer.addView(adView, adParams);
-	   
-	    setContentView(outer);
+        // Create a banner ad. The ad size and ad unit ID must be set before calling loadAd.
+	    adView = new AdView(this);
+	    adView.setAdSize(AdSize.SMART_BANNER);
+	    adView.setAdUnitId(MY_AD_UNIT_ID);
 
-	    // Initiate a generic request to load it with an ad
-	    AdRequest adRequest = new AdRequest();
-	    adRequest.addTestDevice("761E61422E05577CD14CB753A058E8FF");
+        // Create an ad request.
+        AdRequest.Builder adRequestBuilder = new AdRequest.Builder();
 
-	    adView.loadAd(adRequest);
+        // Optionally populate the ad request builder.
+        adRequestBuilder.addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
+
+        // Add the AdView to the view hierarchy.
+        outer.addView(game, gameViewParams);
+        outer.addView(adView, adParams);
+
+        setContentView(outer);
+        
+        // Start loading the ad.
+        adView.loadAd(adRequestBuilder.build());
 	    
 	    try
 	    {
@@ -63,5 +68,17 @@ public class BlockQuestActivity extends tyrfing.games.id3.lib.BlockQuestActivity
 			e.printStackTrace();
 		}
 	  }
+	  
+	  @Override
+	protected void onPause() {
+		adView.pause();
+		super.onPause();
+	}
+	  
+	  @Override
+	protected void onResume() {
+		adView.resume();
+		super.onResume();
+	}
 	  	  
 }

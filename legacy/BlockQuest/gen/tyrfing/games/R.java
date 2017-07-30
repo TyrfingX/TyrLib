@@ -12,15 +12,15 @@ public final class R {
 		public static final int button_click = 0x7f020003;
 		public static final int button_disabled = 0x7f020004;
 		public static final int button_normal = 0x7f020005;
-		public static final int icon = 0x7f020013;
+		public static final int icon = 0x7f020046;
 	}
 	public static final class layout {
 		public static final int main = 0x7f030000;
 	}
 	public static final class string {
-		public static final int app_name = 0x7f040001;
-		public static final int hello = 0x7f040000;
-		public static final int no = 0x7f040003;
-		public static final int yes = 0x7f040002;
+		public static final int app_name = 0x7f06002c;
+		public static final int hello = 0x7f06002b;
+		public static final int no = 0x7f06002e;
+		public static final int yes = 0x7f06002d;
 	}
 }
