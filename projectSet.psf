@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<psf version="2.0">
+<provider id="org.eclipse.egit.core.GitProvider">
+<project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,com.tyrfing.games.id18"/>
+<project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,com.tyrfing.games.id18.android"/>
+<project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,com.tyrfing.games.id18.benchmark"/>
+<project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,com.tyrfing.games.id18.pc"/>
+<project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,com.tyrfing.games.id18.test"/>
+<project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,com.tyrfing.games.tyrlib3"/>
+<project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,com.tyrfing.games.tyrlib3.android"/>
+<project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,com.tyrfing.games.tyrlib3.pc"/>
+<project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,com.tyrfing.games.tyrlib3.pc.test"/>
+<project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,com.tyrfing.games.tyrlib3.test"/>
+<project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,com.tyrfing.games.tyrlib3.tinysound"/>
+<project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,legacy/Empire"/>
+<project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,legacy/EmpireCrestGen"/>
+<project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,legacy/EmpireHelper"/>
+<project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,legacy/EmpireMapGen"/>
+<project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,legacy/EmpireMatchMaker"/>
+<project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,legacy/ParticleViewer"/>
+<project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,legacy/PCPortTest"/>
+<project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,legacy/simplevoronoi"/>
+<project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,legacy/TyrLib"/>
+<project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,legacy/TyrLib2"/>
+<project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,legacy/TyrLib2PC"/>
+</provider>
+</psf>
