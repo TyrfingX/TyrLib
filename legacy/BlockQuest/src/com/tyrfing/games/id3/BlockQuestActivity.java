@@ -34,9 +34,6 @@ public class BlockQuestActivity extends tyrfing.games.id3.lib.BlockQuestActivity
         // Create an ad request.
         AdRequest.Builder adRequestBuilder = new AdRequest.Builder();
 
-        // Optionally populate the ad request builder.
-        adRequestBuilder.addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
-
         // Add the AdView to the view hierarchy.
         outer.addView(game, gameViewParams);
         outer.addView(adView, adParams);
