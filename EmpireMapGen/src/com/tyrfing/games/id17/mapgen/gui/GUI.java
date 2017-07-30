@@ -28,15 +28,15 @@ public class GUI extends JFrame {
 
 	private Map map;
 	
-	//public static final int HOUSES = 144;
-	//public static final int WINDOW_SIZE = 300;
-	//public static final String MAP_NAME = "small";
-	//public static final int AREAS = 750;
+	public static final int HOUSES = 144;
+	public static final int WINDOW_SIZE = 300;
+	public static final String MAP_NAME = "small";
+	public static final int AREAS = 750;
 	
-	public static final int HOUSES = 400;
-	public static final int WINDOW_SIZE = 512;
-	public static final String MAP_NAME = "medium";
-	public static final int AREAS = 2500;
+	//public static final int HOUSES = 400;
+	//public static final int WINDOW_SIZE = 512;
+	//public static final String MAP_NAME = "medium";
+	//public static final int AREAS = 2500;
 	
 	//public static final int HOUSES = 900;
 	//public static final int WINDOW_SIZE = 800;

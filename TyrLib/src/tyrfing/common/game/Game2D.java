@@ -2,12 +2,11 @@ package tyrfing.common.game;
 
 import java.util.ArrayList;
 
-import tyrfing.common.render.RenderThread;
-import tyrfing.common.render.SceneManager;
 import android.content.Context;
-import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
+import tyrfing.common.render.RenderThread;
+import tyrfing.common.render.SceneManager;
 
 public abstract class Game2D extends BaseGame {
 	
