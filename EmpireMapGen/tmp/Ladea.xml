@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Barony name="Ladea" x="3" y="14" z="0" heightmap="ladea">
+    <Holding name="Poroff" type="Village" objectNo="0"></Holding>
+    <Holding name="Veilra" type="Village" objectNo="3"></Holding>
+    <Holding name="Naliue" type="Village" objectNo="4"></Holding>
+	<Levy>
+   	    <Regiment type="Swordmen" amount="100" maxAmount="100" position="0"></Regiment>
+   	    <Regiment type="Archers" amount="200" maxAmount="200" position="2"></Regiment>
+   	</Levy> 
+   	<Garrison>
+   	    <Regiment type="Walls" amount="1000" maxAmount="1000" position="0"></Regiment>
+   	    <Regiment type="Walls" amount="1000" maxAmount="1000" position="1"></Regiment>
+   	    <Regiment type="Guardians" amount="100" maxAmount="100" position="2"></Regiment>
+   	</Garrison>
+</Barony>

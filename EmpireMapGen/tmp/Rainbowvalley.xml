@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Barony name="Rainbowvalley" x="-14" y="11" z="0" heightmap="rainbowvalley">
+	<Holding name="Downpour" type="Village" objectNo="0"></Holding>
+	<Holding name="Farm" type="Farm" objectNo="2"></Holding>
+	<Levy>
+   	    <Regiment type="Guardians" amount="100" maxAmount="100" position="0"></Regiment>
+   	    <Regiment type="Guardians" amount="200" maxAmount="200" position="1"></Regiment>
+   	</Levy> 
+   	<Garrison>
+   	    <Regiment type="Walls" amount="1000" maxAmount="1000" position="0"></Regiment>
+   	    <Regiment type="Walls" amount="1000" maxAmount="1000" position="1"></Regiment>
+   	    <Regiment type="Guardians" amount="100" maxAmount="100" position="2"></Regiment>
+   	</Garrison>
+</Barony>

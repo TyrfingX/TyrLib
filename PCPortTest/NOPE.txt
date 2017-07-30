@@ -1,0 +1,2 @@
+- Kontroversengrund: Hoher Steuerunterschied (nope)
+- Implement per holding production quantity boni for a specific trade good (nope)

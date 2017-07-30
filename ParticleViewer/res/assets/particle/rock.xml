@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ParticleSystem maxParticles="20" screenSpace="True">
+    <Factories>
+    	<Factory name="rock" lifeTime="1.2" size="0.08">
+     		<Material r="1.0" g="1.0" b="0.0" a="0.0" texture="STONE"></Material>
+    	</Factory>
+    </Factories>
+    <Emitters>
+        <Emitter amount="1" interval="0.1" factory="z" max="20">
+            <Position x="0" y="0" z="0"></Position>
+			<RandomPosition x="0.1" y="0.01" z="0"></RandomPosition>
+			<RandomVelocity x="0.0" y="0.05" z="0"></RandomVelocity>
+			<Velocity x="0.01" y="-0.1" z="0"></Velocity>
+        </Emitter>
+    </Emitters>
+    <Affectors>
+        <Affector type="ColorChanger">
+            	<MaxLifeTime value="0.2" />
+		<ColorChange r="0.0" g="0.0" b="0.0" a="5.0" />
+        </Affector>
+        <Affector type="ColorChanger">
+            	<MinLifeTime value="1.0" />
+		<ColorChange r="0.0" g="0.0" b="0.0" a="-5.0" />
+        </Affector>
+	<Affector type="SizeChanger">
+		<MaxLifeTime value="1.0" />
+            	<SizeChange value="0.02" />
+        </Affector>
+	<Affector type="RotationChanger">
+        	<RotationChange value="300" />
+        </Affector>
+	<Affector type="ForceAffector">
+        	<HomogenField x="0" y="0.01" z="0" />
+        </Affector>
+    </Affectors>
+</ParticleSystem>

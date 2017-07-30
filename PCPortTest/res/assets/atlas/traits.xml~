@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Atlas texture="TRAITS" name="TRAITS">
+    <Region name="Lord" x="0" y="0" w="100" h="100" />
+    <Region name="Married" x="100" y="0" w="100" h="100" />
+    <Region name="Branch" x="200" y="0" w="100" h="100" />
+    <Region name="Warmongerer" x="300" y="0" w="100" h="100" />
+    <Region name="Honorable" x="400" y="0" w="100" h="100" />
+    <Region name="Intellectual" x="0" y="100" w="100" h="100" />
+    <Region name="Wealthy" x="100" y="100" w="100" h="100" />
+    <Region name="Builder" x="200" y="100" w="100" h="100" />
+    <Region name="Tyrant" x="100" y="100" w="100" h="100" />
+</Atlas>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Barony name="Kingsplea" x="-14" y="15" z="0" heightmap="kingsplea">
+	<Holding name="Crownsend" type="Village" objectNo="1"></Holding>
+	<Holding name="Windmill" type="Windmill" objectNo="4"></Holding>
+	<Levy>
+   	    <Regiment type="Guardians" amount="100" maxAmount="100" position="0"></Regiment>
+   	    <Regiment type="Archers" amount="200" maxAmount="100" position="1"></Regiment>
+   	</Levy> 
+   	<Garrison>
+   	    <Regiment type="Walls" amount="1000" maxAmount="1000" position="0"></Regiment>
+   	    <Regiment type="Walls" amount="1000" maxAmount="1000" position="1"></Regiment>
+   	    <Regiment type="Guardians" amount="100" maxAmount="100" position="2"></Regiment>
+   	</Garrison>
+</Barony>

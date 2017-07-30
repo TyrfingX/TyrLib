@@ -1,0 +1,78 @@
+precision mediump float;        // Set the default precision to medium. We don't need as high of a
+                                // precision in the fragment shader.
+
+                   
+uniform vec4 u_Ambient;			// Constant global ambient illumination
+uniform sampler2D u_Texture;    // The input texture.
+uniform sampler2D u_WinTexture;
+
+#if SHADOW 
+uniform sampler2D u_ShadowMap;
+#endif 
+
+#if BUMP 
+uniform sampler2D u_BumpMap;
+#endif 
+
+uniform vec3 u_LightPos;
+uniform vec3 u_CamPos;
+uniform float u_Winter;
+uniform float u_Owner;
+uniform float u_Time;
+ 
+varying vec2 v_Diffuse;        // Interpolated position
+varying vec2 v_TexCoordinate;   // Interpolated texture coordinate per fragment.
+
+#if SHADOW 
+varying vec4 v_ShadowCoord;
+#endif 
+ 
+// The entry point for our fragment shader.
+void main()
+{
+
+	vec2 offset = v_Diffuse*u_Time;
+
+#if BUMP 
+	vec2 bumCoord = v_TexCoordinate/2.0+offset;
+	vec3 bump = texture2D(u_BumpMap, bumCoord).rgb;
+	float bumpDiffuse = max(dot(bump,normalize(vec3(1.0,1.0,1.0))), 0.0);
+#endif 
+	// Multiply the color by the diffuse illumination level and texture value to get final output color.
+	
+#if SHADOW 
+	float depth = v_ShadowCoord.z - 0.005;
+	float visibility = 1.0;
+
+	if ( texture2D( u_ShadowMap, v_ShadowCoord.xy + vec2( -0.94201624, -0.39906216 )/6000.0 ).x  <  depth ){
+	visibility-=0.1;
+	}
+
+	if ( texture2D( u_ShadowMap, v_ShadowCoord.xy + vec2( 0.94558609, -0.76890725 )/6000.0 ).x  <  depth ){
+	visibility-=0.1;
+	}
+
+	if ( texture2D( u_ShadowMap, v_ShadowCoord.xy + vec2( -0.094184101, -0.92938870 )/6000.0 ).x  <  depth ){
+	visibility-=0.1;
+	}
+
+	if ( texture2D( u_ShadowMap, v_ShadowCoord.xy + vec2( 0.34495938, 0.29387760 )/6000.0 ).x  <  depth ){
+	visibility-=0.1;
+	}
+#endif 
+
+#if BUMP 
+ 	vec3 lightReflect = normalize(reflect(-u_LightPos, bump));
+	float specularFactor = pow(dot(normalize(-u_CamPos), lightReflect), 2.0)*(1.0-u_Winter);
+#endif 
+
+	vec4 color = 		(#if SHADOW visibility* #endif  #if BUMP bumpDiffuse* #endif 0.65+u_Ambient #if BUMP  +specularFactor #endif ) 
+			* 	mix(texture2D(u_Texture, v_TexCoordinate+offset), texture2D(u_WinTexture, v_TexCoordinate), u_Winter);
+	
+	color = vec4(color.rgb, mix(0.7,0.95,u_Winter));	
+	float greyscale = dot(color.rgb, vec3(0.3, 0.59, 0.11)); 
+	color.rgb = mix(vec3(greyscale,greyscale,greyscale), color.rgb, u_Owner); 
+	gl_FragColor = color;
+
+
+  }

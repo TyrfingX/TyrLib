@@ -1,0 +1,50 @@
+precision mediump float;        // Set the default precision to medium. We don't need as high of a
+                                // precision in the fragment shader.
+
+uniform vec4 u_Ambient;			// Constant global ambient illumination
+uniform sampler2D u_Texture;    // The input texture.
+uniform float u_Owner;
+uniform sampler2D u_ShadowMap;
+
+varying vec2 v_TexCoordinate;   // Interpolated texture coordinate per fragment.
+varying float v_Depth;
+ 
+varying vec4 v_ShadowCoord;
+
+// The entry point for our fragment shader.
+void main()
+{
+	// Multiply the color by the diffuse illumination level and texture value to get final output color.
+	vec4 texColor = texture2D(u_Texture, v_TexCoordinate);
+	
+	if (texColor.a <= 0.5) {
+		discard;
+	}
+
+	float depth = v_ShadowCoord.z- 0.005;
+	float visibility = 1.0;
+
+	if ( texture2D( u_ShadowMap, v_ShadowCoord.xy + vec2( -0.94201624, -0.39906216 )/6000.0 ).x  <  depth ){
+	visibility-=0.1;
+	}
+
+	if ( texture2D( u_ShadowMap, v_ShadowCoord.xy + vec2( 0.94558609, -0.76890725 )/6000.0 ).x  <  depth ){
+	visibility-=0.1;
+	}
+
+	if ( texture2D( u_ShadowMap, v_ShadowCoord.xy + vec2( -0.094184101, -0.92938870 )/6000.0 ).x  <  depth ){
+	visibility-=0.1;
+	}
+
+	if ( texture2D( u_ShadowMap, v_ShadowCoord.xy + vec2( 0.34495938, 0.29387760 )/6000.0 ).x  <  depth ){
+	visibility-=0.1;
+	}
+	texColor.rgb *= visibility;
+	texColor = mix(texColor, vec4(0.3, 0.4, 0.7, 0.5), u_Ambient.w/2.0);
+	
+	vec4 color = vec4(u_Ambient.xyz, 1.0) * texColor;
+	float greyscale = dot(color.rgb, vec3(0.3, 0.59, 0.11)); 
+	color.rgb = mix(vec3(greyscale,greyscale,greyscale), color.rgb, u_Owner);
+	color.rgb = mix(vec3(v_Depth/1.4,v_Depth/1.2,v_Depth), color.rgb, mix(1.0-v_Depth, u_Owner, u_Owner)); 
+	gl_FragColor = color;
+  }

@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Houses>
+    <House name="Connobar">
+		<Holding name="Cresthill/Cresthill"></Holding>
+		<Holding name="Cresthill/Pearlshaw"></Holding>
+		<House name="Goldhearth">
+			<Holding name="Cresthill/Mine"></Holding>
+		</House>
+	</House>
+	
+    <House name="Faylin">
+		<Holding name="Faycastle/Faycastle"></Holding>
+		<Holding name="Faycastle/Faywoods"></Holding>
+		<House name="Wyne">
+			<Holding name="Faycastle/Firebend"></Holding>
+			<Holding name="Faycastle/Turnstead"></Holding>
+		</House>
+	</House>
+    
+    <House name="Runnington">
+		<Holding name="Riverflow/Riverflow"></Holding>
+		<Holding name="Riverflow/Windmill"></Holding>
+		<Holding name="Riverflow/Yalen"></Holding>
+	</House>
+    
+    <House name="Sinval">
+		<Holding name="Willowplains/Willowplains"></Holding>
+		<Holding name="Willowplains/Northern Farm"></Holding>
+		<Holding name="Willowplains/Southern Farm"></Holding>
+		<House name="Aria">
+			<Holding name="Willowplains/Achor"></Holding>
+		</House>
+		<House name="Horatius">
+			<Holding name="Widelands/Widelands"></Holding>
+			<Holding name="Widelands/Ranch"></Holding>
+			<House name="Falconia">
+				<Holding name="Widelands/Scorn"></Holding>
+			</House>
+		</House>
+	</House>
+	
+    <House name="Tart">
+		<Holding name="Summerset/Summerset"></Holding>
+		<House name="Borz">
+			<Holding name="Summerset/Gelleth"></Holding>
+		</House>
+		<House name="Solray">
+			<Holding name="Summerset/Summertown"></Holding>
+			<Holding name="Summerset/Faywoods"></Holding>
+		</House>
+	</House>
+
+
+	<House name="Chester">
+		<Holding name="Woodsworth/Woodsworth"></Holding>
+		<Holding name="Woodsworth/Elderforest"></Holding>
+		<Holding name="Rainbowvalley/Rainbowvalley"></Holding>
+		<House name="Nightfall">
+			<Holding name="Rainbowvalley/Downpour"></Holding>
+			<Holding name="Rainbowvalley/Farm"></Holding>
+		</House>
+	</House>
+    
+	<House name="Kyzer">
+		<Holding name="Kingsplea/Kingsplea"></Holding>
+		<House name="Regulus">
+			<Holding name="Kingsplea/Crownsend"></Holding>
+			<Holding name="Kingsplea/Windmill"></Holding>
+		</House>
+	</House>
+	
+	<House name="Zera">
+		<Holding name="Krom/Krom"></Holding>
+		<Holding name="Krom/Windmill"></Holding>
+		<House name="Candelier">
+			<Holding name="Arclight/Arclight"></Holding>
+			<Holding name="Arclight/Farm"></Holding>
+		</House>
+		<House name="Sameria">
+			<Holding name="Krom/Pildrim"></Holding>
+		</House>
+		<House name="Thorius">
+			<Holding name="Highcastle/Highcastle"></Holding>
+			<Holding name="Highcastle/Mine"></Holding>
+		</House>
+	</House>
+	
+	<House name="Ullfting">
+		<Holding name="Evergreen/Evergreen"></Holding>
+		<House name="Corvus">
+			<Holding name="Evergreen/Bane"></Holding>
+			<Holding name="Evergreen/Pasture"></Holding>
+		</House>
+		<House name="Florence">
+			<Holding name="Evergreen/Forlain"></Holding>
+		</House>
+	</House>
+	
+	<House name="Helial">
+		<Holding name="Sunpalace/Sunpalace"></Holding>
+		<Holding name="Lorei/Lorei"></Holding>
+		<Holding name="Lorei/Alius"></Holding>
+		<House name="Savanne">
+			<Holding name="Peakwater/Peakwater"></Holding>
+			<Holding name="Peakwater/Lakeforest"></Holding>
+		</House>
+		<House name="Clover">
+			<Holding name="Sunpalace/Ray"></Holding>
+			<Holding name="Sunpalace/Horus"></Holding>
+		</House>
+		<House name="Vlad">
+			<Holding name="Lorei/Farm"></Holding>
+			<Holding name="Lorei/Ranch"></Holding>
+		</House>
+	</House>
+	
+	<House name="Distair">
+		<Holding name="Lodoss/Lodoss"></Holding>
+		<House name="Merdet">
+			<Holding name="Lodoss/Pasture"></Holding>
+		</House>
+	</House>
+
+	<House name="Serpent">
+		<Holding name="Serpia/Serpia"></Holding>
+		<Holding name="Serpia/Hebi"></Holding>
+		<House name="Oakshield">
+			<Holding name="Serpia/Snakewoods"></Holding>
+		</House>
+	</House>
+	
+	<House name="Airen">
+	    <Holding name="Ironcastle/Ironcastle"></Holding>
+	    <Holding name="Ironcastle/Mine"></Holding>
+	    <Holding name="Verimond/Verimond"></Holding>
+		<House name="Wave">
+			<Holding name="Ladea/Ladea"></Holding>
+			<House name="Insignia">
+			    <Holding name="Ladea/Naliue"></Holding>
+			    <Holding name="Ironcastle/Workstett"></Holding>
+			</House>
+			<House name="Pleumion">
+			    <Holding name="Ladea/Poroff"></Holding>
+			    <Holding name="Ladea/Veilra"></Holding>
+			</House>
+		</House>
+		<House name="Yams">
+		    <Holding name="Verimond/Pasture"></Holding>
+		</House>
+	</House>
+	
+	<House name="Steyn">
+	    <Holding name="Steyn/Steyn"></Holding>
+	    <Holding name="Steyn/Qwon"></Holding>
+		<House name="Trisia">
+		    <Holding name="Steyn/Quarry"></Holding>
+		</House>
+	</House>
+	
+	<House name="Venn">
+	    <Holding name="Stallion/Stallion"></Holding>
+	    <Holding name="Stallion/Renegade"></Holding>
+	    <Holding name="Stallion/Olaf"></Holding>
+	</House>
+
+	<House name="Flowers">
+	    <Holding name="Alfaz/Alfaz"></Holding>
+	    <Holding name="Alfaz/Pasture"></Holding>
+		<House name="Norn">
+		    <Holding name="Alfaz/Dimitri"></Holding>
+		    <Holding name="Alfaz/Farm"></Holding>
+		</House>
+	</House>
+
+	<House name="Lesarl">
+	    <Holding name="Lombard/Lombard"></Holding>
+	    <Holding name="Lombard/Jolion"></Holding>
+		<House name="Hazel">
+		    <Holding name="Grisia/Grisia"></Holding>
+		    <Holding name="Grisia/Forest"></Holding>
+		</House>
+	</House>
+	
+	<House name="Cherry">
+	    <Holding name="Pisc/Pisc"></Holding>
+	    <Holding name="Pisc/Forest"></Holding>
+		<House name="Kanton">
+		    <Holding name="Pisc/Virgil"></Holding>
+		</House>
+	</House>
+
+</Houses>

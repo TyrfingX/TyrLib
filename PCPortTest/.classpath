@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/TyrLib2"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Empire"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/TyrLib2PC"/>
+	<classpathentry kind="lib" path="kxml2-2.3.0.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

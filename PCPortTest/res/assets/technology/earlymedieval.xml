@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TechnologyTree name="Early Medieval" count="14">
+    <Technology name="Scroll" research="100" funds="100" x="0.04" y="0.13">
+        <ResearchEffects desc="Enables &lt;link=Library&gt;Libraries\l (&lt;link=Village&gt;Villages\l, &lt;link=Castle&gt;Castles\l)" count="2">
+            <Effect enableBuilding="Library" holdingType="Village"></Effect>
+            <Effect enableBuilding="Library" holdingType="Castle"></Effect>
+        </ResearchEffects>
+        <DiscoverEffects desc="+10% Research" count="1">
+            <Effect holdingStat="researchMult" value="0.1"></Effect>
+        </DiscoverEffects>
+    </Technology>
+    
+    <Technology name="Ironworking" research="100" funds="100" x="0.04" y="0.67">
+        <ResearchEffects desc="Enables &lt;link=Forge&gt;Forges\l, &lt;link=Toolmaker&gt;Toolmaker\l, &lt;link=Barracks&gt;Barracks\l, &lt;link=Butcher&gt;Butcher\l\n(&lt;link=Village&gt;Villages\l, &lt;link=Castle&gt;Castles\l)" count="7">
+            <Effect enableBuilding="Forge" holdingType="Village"></Effect>
+            <Effect enableBuilding="Forge" holdingType="Castle"></Effect>
+            <Effect enableBuilding="Butcher" holdingType="Village"></Effect>
+            <Effect enableBuilding="Butcher" holdingType="Castle"></Effect>
+            <Effect enableBuilding="Toolmaker" holdingType="Village"></Effect>
+            <Effect enableBuilding="Toolmaker" holdingType="Castle"></Effect>
+            <Effect enableBuilding="Barracks" holdingType="Castle"></Effect>
+        </ResearchEffects>
+        <DiscoverEffects desc="Forge in every compatible holding" count="2">
+            <Effect addBuilding="Forge" holdingType="Village"></Effect>
+            <Effect addBuilding="Forge" holdingType="Castle"></Effect>
+        </DiscoverEffects>
+    </Technology>
+    
+    <Technology name="Heavy Plough" research="100" funds="100" x="0.04" y="0.4">
+        <Requires count="1">
+            <RequiredTechnology id="1"></RequiredTechnology>
+        </Requires>
+        <ResearchEffects desc="+1 &lt;link=Grain&gt;Grain\l&lt;img GOODS Grain&gt; (&lt;link=Farm&gt;Farms\l)" count="1">
+            <Effect addProduction="Grain" holdingType="Farm"></Effect>
+        </ResearchEffects>
+        <DiscoverEffects desc="+1 Grain&lt;img GOODS Grain&gt; if &lt;link=Horse&gt;Horse\l&lt;img GOODS Horse&gt; accessible (Farms)" count="1">
+            <Effect addProduction="Grain" in="Horse" holdingType="Farm"></Effect>
+        </DiscoverEffects>
+    </Technology>
+    
+    <Technology name="Cavalry" research="200" funds="200" x="0.165" y="0.4">
+        <Requires count="1">
+            <RequiredTechnology id="2"></RequiredTechnology>
+        </Requires>
+        <ResearchEffects desc="Enables Unit &lt;link=Cavalry&gt;Cavalry\l and\n&lt;link=Stables&gt;Stables\l (&lt;link=Village&gt;Villages\l, &lt;link=Castle&gt;Castles\l)" count="3">
+            <Effect enableUnit="Cavalry"></Effect>
+            <Effect enableBuilding="Stables" holdingType="Village"></Effect>
+            <Effect enableBuilding="Stables" holdingType="Castle"></Effect>
+        </ResearchEffects>
+        <DiscoverEffects desc="+20% &lt;link=Attack (ATK)&gt;ATK\l (Cavalry)" count="1">
+            <Effect addUnitMult="Cavalry" value="0.2"></Effect>
+        </DiscoverEffects>
+    </Technology>
+    
+    <Technology name="Books" research="400" funds="400" x="0.29" y="0.13">
+        <Requires count="1">
+            <RequiredTechnology id="0"></RequiredTechnology>
+        </Requires>
+        <ResearchEffects desc="+50% Research Efficiency (&lt;link=Library&gt;Library\l)" count="1">
+            <Effect addBuildingMult="Library" stat="12" value="0.5"></Effect>
+        </ResearchEffects>
+        <DiscoverEffects desc="+100% Scholar Attractivity (Library)" count="1">
+            <Effect addBuildingMult="Library" stat="7" value="1"></Effect>
+        </DiscoverEffects>
+    </Technology>
+    
+    <Technology name="Grindstone" research="200" funds="200" x="0.165" y="0.67">
+        <Requires count="1">
+            <RequiredTechnology id="1"></RequiredTechnology>
+        </Requires>
+        <ResearchEffects desc="+40% &lt;link=Attack (ATK)&gt;ATK\l (&lt;link=Swordmen&gt;Swordmen\l, &lt;link=Axemen&gt;Axemen\l)" count="2">
+            <Effect addUnitMult="Swordmen" value="0.4"></Effect>
+            <Effect addUnitMult="Axemen" value="0.4"></Effect>
+        </ResearchEffects>
+        <DiscoverEffects desc="+100% Efficiency of &lt;link=Iron&gt;Iron\l&lt;img GOODS Iron&gt;" count="1">
+            <Effect addGoodMult="3" stat="0" value="1"></Effect>
+        </DiscoverEffects>
+    </Technology>
+    
+    <Technology name="Numerals" research="1600" funds="800" x="0.415" y="0.13">
+        <Requires count="1">
+            <RequiredTechnology id="4"></RequiredTechnology>
+        </Requires>
+        <ResearchEffects desc="+25% Income" count="1">
+            <Effect addHouseMult="10" value="0.25"></Effect>
+        </ResearchEffects>
+        <DiscoverEffects desc="-20% Army Maintanence" count="1">
+            <Effect addHouseMult="11" value="-0.2"></Effect>
+        </DiscoverEffects>
+    </Technology>
+    
+     <Technology name="Cartography" research="800" funds="400" x="0.29" y="0.4">
+        <Requires count="1">
+            <RequiredTechnology id="4"></RequiredTechnology>
+        </Requires>
+        <ResearchEffects desc="+50% Army Movement Speed" count="1">
+             <Effect addHouseMult="13" value="0.5"></Effect>
+        </ResearchEffects>
+        <DiscoverEffects desc="???" count="2">
+            <Effect addBuilding="Forge" holdingType="Village"></Effect>
+            <Effect addBuilding="Forge" holdingType="Castle"></Effect>
+        </DiscoverEffects>
+    </Technology>
+    
+     <Technology name="Wheelbarrow" research="400" funds="400" x="0.29" y="0.67">
+        <Requires count="1">
+            <RequiredTechnology id="5"></RequiredTechnology>
+        </Requires>
+        <ResearchEffects desc="+1 &lt;link=Iron&gt;Iron\l&lt;img GOODS Iron&gt; (&lt;link=Mine&gt;Mines\l) and\nenables &lt;link=Keep&gt;Keep\l (&lt;link=Castle&gt;Castles\l)" count="2">
+            <Effect addProduction="Iron" holdingType="Mine"></Effect>
+            <Effect enableBuilding="Keep" holdingType="Castle"></Effect>
+        </ResearchEffects>
+        <DiscoverEffects desc="+1 Iron&lt;img GOODS Iron&gt; if &lt;link=Horse&gt;Horse\l&lt;img GOODS Horse&gt; accessible (Mines)" count="1">
+            <Effect addProduction="Iron" in="Horse" holdingType="Mine"></Effect>
+        </DiscoverEffects>
+    </Technology>
+    
+     <Technology name="Currency" research="3200" funds="1600" x="0.54" y="0.13">
+        <Requires count="1">
+            <RequiredTechnology id="6"></RequiredTechnology>
+        </Requires>
+        <ResearchEffects desc="+50% Income (&lt;link=Market&gt;Market\l)" count="1">
+            <Effect addBuildingMult="Market" stat="8" value="0.5"></Effect>
+        </ResearchEffects>
+        <DiscoverEffects desc="+25% Trade Value (All Goods)" count="1">
+            <Effect addGoodMult="-1" stat="1" value="0.25"></Effect>
+        </DiscoverEffects>
+    </Technology>
+    
+     <Technology name="City Planning" research="1600" funds="800" x="0.415" y="0.4">
+        <Requires count="1">
+            <RequiredTechnology id="7"></RequiredTechnology>
+        </Requires>
+        <ResearchEffects desc="-20% Productivity Costs" count="1">
+             <Effect addHouseMult="12" value="-0.2"></Effect>
+        </ResearchEffects>
+        <DiscoverEffects desc="???" count="2">
+            <Effect addBuilding="Forge" holdingType="Village"></Effect>
+            <Effect addBuilding="Forge" holdingType="Castle"></Effect>
+        </DiscoverEffects>
+    </Technology>
+    
+     <Technology name="Granary" research="3200" funds="1600" x="0.54" y="0.4">
+        <Requires count="1">
+            <RequiredTechnology id="10"></RequiredTechnology>
+        </Requires>
+        <ResearchEffects desc="Enables &lt;link=Granary&gt;Granary\l (&lt;link=Castle&gt;Castles\l)" count="1">
+            <Effect enableBuilding="Granary" holdingType="Castle"></Effect>
+        </ResearchEffects>
+        <DiscoverEffects desc="+50% Supplies (Barony)" count="1">
+ 			<Effect addHouseMult="14" value="0.5"></Effect>
+        </DiscoverEffects>
+    </Technology>
+    
+     <Technology name="Platearmor" research="3200" funds="1600" x="0.54" y="0.67">
+        <Requires count="1">
+            <RequiredTechnology id="8"></RequiredTechnology>
+        </Requires>
+        <ResearchEffects desc="+60% &lt;link=Defense (DEF)&gt;DEF\l (&lt;link=Guardians&gt;Guardians\l, &lt;link=Pikemen&gt;Pikemen\l)" count="2">
+            <Effect addUnitMult="Guardians" value="0.6"></Effect>
+            <Effect addUnitMult="Pikemen" value="0.6"></Effect>
+        </ResearchEffects>
+        <DiscoverEffects desc="+100% Efficiency of &lt;link=Iron&gt;Iron\l&lt;img GOODS Iron&gt;" count="1">
+            <Effect addGoodMult="3" stat="0" value="1"></Effect>
+        </DiscoverEffects>
+    </Technology>
+    
+    <Technology name="Guilds" research="6400" funds="3200" x="0.665" y="0.13">
+        <Requires count="1">
+            <RequiredTechnology id="9"></RequiredTechnology>
+        </Requires>
+        <ResearchEffects desc="Enables &lt;link=Guild&gt;Guilds\l (&lt;link=Castle&gt;Castles\l)" count="1">
+            <Effect enableBuilding="Guild" holdingType="Castle"></Effect>
+        </ResearchEffects>
+        <DiscoverEffects desc="+100% Trade Value (All Goods)" count="1">
+            <Effect addGoodMult="-1" stat="1" value="1"></Effect>
+        </DiscoverEffects>
+    </Technology>
+</TechnologyTree>

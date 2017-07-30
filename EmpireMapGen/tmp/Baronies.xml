@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Baronies>
+    <Barony source="baronies/Widelands.xml"></Barony>
+    <Barony source="baronies/Faycastle.xml"></Barony>
+    <Barony source="baronies/Cresthill.xml"></Barony>
+    <Barony source="baronies/Riverflow.xml"></Barony>
+    <Barony source="baronies/Summerset.xml"></Barony>
+    <Barony source="baronies/Willowplains.xml"></Barony>
+    <Barony source="baronies/Woodsworth.xml"></Barony>
+    <Barony source="baronies/Rainbowvalley.xml"></Barony>
+    <Barony source="baronies/Kingsplea.xml"></Barony>
+    <Barony source="baronies/Arclight.xml"></Barony>
+    <Barony source="baronies/Evergreen.xml"></Barony>
+    <Barony source="baronies/Krom.xml"></Barony>
+    <Barony source="baronies/Peakwater.xml"></Barony>
+    <Barony source="baronies/Highcastle.xml"></Barony>
+    <Barony source="baronies/Lodoss.xml"></Barony>
+    <Barony source="baronies/Sunpalace.xml"></Barony>
+    <Barony source="baronies/Lorei.xml"></Barony>
+    <Barony source="baronies/Serpia.xml"></Barony>
+    <Barony source="baronies/Ladea.xml"></Barony>
+    <Barony source="baronies/Ironcastle.xml"></Barony>
+    <Barony source="baronies/Steyn.xml"></Barony>
+    <Barony source="baronies/Verimond.xml"></Barony>
+    <Barony source="baronies/Stallion.xml"></Barony>
+    <Barony source="baronies/Alfaz.xml"></Barony>
+    <Barony source="baronies/Lombard.xml"></Barony>
+    <Barony source="baronies/Grisia.xml"></Barony>
+    <Barony source="baronies/Pisc.xml"></Barony>
+</Baronies>

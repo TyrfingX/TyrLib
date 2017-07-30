@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ParticleSystem maxParticles="360">
+    <Factories>
+    	<Factory name="factory1" lifeTime="6" size="1.4">
+     		<Material r="1.0" g="0.7" b="0.5" a="0.5" texture="SMOKE"></Material>
+    	</Factory>
+    </Factories>
+    <Emitters>
+        <Emitter amount="2" interval="0.035" factory="factory1">
+            <Position x="0" y="0" z="-1.5"></Position>
+            <Velocity x="0" y="0" z="1"></Velocity>
+            <RandomVelocity x="0.5" y="0.5" z="2"></RandomVelocity>
+            <RandomPosition x="0.3" y="0.3" z="0"></RandomPosition>
+        </Emitter>
+    </Emitters>
+    <Affectors>
+        <Affector type="ColorChanger">
+            <MaxLifeTime value="3"></MaxLifeTime>
+            <MinLifeTime value="1"></MinLifeTime>
+            <ColorChange r="-0.18" g="-0.05" b="0.05" a="-0.1"></ColorChange>
+        </Affector>
+        <Affector type="ColorChanger">
+            <MinLifeTime value="2.5"></MinLifeTime>
+            <ColorChange r="-0.1" g="-0.1" b="-0.1" a="-0.1"></ColorChange>
+        </Affector>
+        <Affector type="ForceAffector">
+            <HomogenField x="0.3" y="0" z="-0.1"></HomogenField>
+        </Affector>
+        <Affector type="SizeChanger">
+            <SizeChange value="-0.12"></SizeChange>
+        </Affector>
+        <Affector type="RotationChanger">
+            <RotationChange value="50"></RotationChange>
+        </Affector>
+    </Affectors>
+</ParticleSystem>

@@ -1,0 +1,624 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Baronies>
+  <Barony color="-4315597" h="50" name="Lenen" w="56" x="145" y="75">
+    <Holding name="Lenen" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-4315597" h="41" name="Crowash" w="41" x="68" y="86">
+    <Holding name="Crowash" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-4315597" h="50" name="Siapisia" w="72" x="93" y="259">
+    <Holding name="Siapisia" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-4315597" h="37" name="Zanlionra" w="52" x="261" y="77">
+    <Holding name="Zanlionra" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-4315597" h="48" name="Siaarlom" w="57" x="33" y="227">
+    <Holding name="Siaarlom" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-4315597" h="51" name="Rarafay" w="59" x="120" y="143">
+    <Holding name="Rarafay" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-2068597" h="50" name="Rilong" w="49" x="70" y="103">
+    <Holding name="Rilong" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-4315597" h="55" name="Felzanever" w="51" x="242" y="182">
+    <Holding name="Felzanever" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-2068597" h="41" name="Crowray" w="60" x="155" y="110">
+    <Holding name="Crowray" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-2068597" h="50" name="Castletrivi" w="55" x="260" y="37">
+    <Holding name="Castletrivi" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-6003678" h="34" name="Arworth" w="55" x="297" y="56">
+    <Holding name="Arworth" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-4315597" h="55" name="Lenrockven" w="59" x="192" y="149">
+    <Holding name="Lenrockven" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-6003678" h="42" name="Eversorafay" w="43" x="120" y="115">
+    <Holding name="Eversorafay" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-4315597" h="47" name="Ark long" w="48" x="319" y="75">
+    <Holding name="Ark long" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-6003678" h="35" name="Ashar" w="45" x="101" y="77">
+    <Holding name="Ashar" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-1341135" h="21" name="Rilulen" w="21" x="279" y="63">
+    <Holding name="Rilulen" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-6003678" h="53" name="Landpilen" w="51" x="170" y="132">
+    <Holding name="Landpilen" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-4315597" h="46" name="Rasiadea" w="41" x="263" y="322">
+    <Holding name="Rasiadea" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-4315597" h="56" name="Plagridea" w="67" x="167" y="307">
+    <Holding name="Plagridea" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-2068597" h="42" name="Castlelu" w="51" x="143" y="241">
+    <Holding name="Castlelu" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-2068597" h="49" name="Evervi" w="82" x="77" y="185">
+    <Holding name="Evervi" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-2068597" h="46" name="Soraciland" w="41" x="289" y="89">
+    <Holding name="Soraciland" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-6003678" h="49" name="Lionra" w="58" x="307" y="119">
+    <Holding name="Lionra" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-2068597" h="47" name="Ark lionpla" w="49" x="194" y="192">
+    <Holding name="Ark lionpla" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-2068597" h="61" name="Vengri" w="54" x="213" y="285">
+    <Holding name="Vengri" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-2068597" h="47" name="Vila" w="59" x="264" y="166">
+    <Holding name="Vila" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-6003678" h="34" name="Rayark " w="48" x="254" y="298">
+    <Holding name="Rayark " ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-6003678" h="40" name="Castlefelark " w="40" x="196" y="83">
+    <Holding name="Castlefelark " ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-6003678" h="46" name="Plasia" w="42" x="86" y="216">
+    <Holding name="Plasia" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-2068597" h="49" name="Venpidea" w="48" x="65" y="248">
+    <Holding name="Venpidea" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-1341135" h="46" name="Siaark " w="41" x="91" y="117">
+    <Holding name="Siaark " ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-4315597" h="75" name="Rilionpi" w="53" x="166" y="196">
+    <Holding name="Rilionpi" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-4315597" h="51" name="Sialuzan" w="46" x="224" y="44">
+    <Holding name="Sialuzan" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-2068597" h="21" name="Ashashark " w="22" x="292" y="315">
+    <Holding name="Ashashark " ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-6003678" h="30" name="Enrisia" w="51" x="180" y="284">
+    <Holding name="Enrisia" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-6003678" h="37" name="Faysora" w="36" x="94" y="155">
+    <Holding name="Faysora" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-6003678" h="44" name="Riraysora" w="44" x="228" y="154">
+    <Holding name="Riraysora" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-4315597" h="56" name="Civen" w="51" x="308" y="169">
+    <Holding name="Civen" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-4315597" h="63" name="Raylom" w="46" x="54" y="136">
+    <Holding name="Raylom" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-4315597" h="34" name="Rocksia" w="54" x="258" y="141">
+    <Holding name="Rocksia" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-1341135" h="33" name="Loar" w="46" x="316" y="147">
+    <Holding name="Loar" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-1341135" h="25" name="Arenci" w="27" x="181" y="263">
+    <Holding name="Arenci" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-1341135" h="74" name="Pipisia" w="41" x="140" y="172">
+    <Holding name="Pipisia" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-4315597" h="26" name="Vipiar" w="30" x="299" y="35">
+    <Holding name="Vipiar" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-531861" h="32" name="Siafelworth" w="36" x="117" y="96">
+    <Holding name="Siafelworth" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-6003678" h="32" name="Pipi" w="36" x="60" y="188">
+    <Holding name="Pipi" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-6003678" h="41" name="Castlegrigri" w="30" x="285" y="200">
+    <Holding name="Castlegrigri" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-6003678" h="35" name="Fayralong" w="44" x="230" y="332">
+    <Holding name="Fayralong" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-2068597" h="39" name="Ark sora" w="43" x="326" y="37">
+    <Holding name="Ark sora" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-531861" h="19" name="Zangri" w="21" x="84" y="152">
+    <Holding name="Zangri" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-6003678" h="39" name="Everen" w="42" x="248" y="105">
+    <Holding name="Everen" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-6003678" h="19" name="Faylongrock" w="21" x="54" y="118">
+    <Holding name="Faylongrock" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-531861" h="26" name="Plalong" w="26" x="177" y="182">
+    <Holding name="Plalong" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-6003678" h="51" name="Cisora" w="50" x="210" y="211">
+    <Holding name="Cisora" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-2068597" h="33" name="Landplapla" w="23" x="241" y="123">
+    <Holding name="Landplapla" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-2068597" h="39" name="Plalionpla" w="54" x="208" y="77">
+    <Holding name="Plalionpla" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-4315597" h="26" name="Fayever" w="27" x="64" y="284">
+    <Holding name="Fayever" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-1341135" h="19" name="Raviri" w="20" x="114" y="178">
+    <Holding name="Raviri" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-4315597" h="21" name="Lionrockark " w="22" x="206" y="118">
+    <Holding name="Lionrockark " ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-1341135" h="16" name="Grilenland" w="17" x="231" y="197">
+    <Holding name="Grilenland" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-1341135" h="48" name="Castleen" w="30" x="48" y="186">
+    <Holding name="Castleen" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-1341135" h="17" name="Trizanpi" w="27" x="226" y="148">
+    <Holding name="Trizanpi" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-2068597" h="20" name="Longlionra" w="19" x="338" y="115">
+    <Holding name="Longlionra" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-2068597" h="25" name="Ardea" w="28" x="251" y="223">
+    <Holding name="Ardea" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-6003678" h="20" name="Envi" w="23" x="256" y="39">
+    <Holding name="Envi" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-1341135" h="15" name="Raraygri" w="19" x="306" y="80">
+    <Holding name="Raraygri" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-531861" h="24" name="Rizanar" w="26" x="126" y="242">
+    <Holding name="Rizanar" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-6003678" h="20" name="Laeverland" w="20" x="252" y="79">
+    <Holding name="Laeverland" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-1341135" h="32" name="Luci" w="40" x="186" y="62">
+    <Holding name="Luci" ojectNo="0" type="Castle"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Garrison>
+  </Barony>
+</Baronies>

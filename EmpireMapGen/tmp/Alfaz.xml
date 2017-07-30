@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Barony name="Alfaz" x="9" y="23" z="0" heightmap="alfaz">
+    <Holding name="Dimitri" type="Village" objectNo="0"></Holding>
+    <Holding name="Pasture" type="Pasture" objectNo="1"></Holding>
+    <Holding name="Farm" type="Farm" objectNo="4"></Holding>
+	<Levy>
+   	    <Regiment type="Guardians" amount="100" maxAmount="100" position="0"></Regiment>
+   	    <Regiment type="Axemen" amount="200" maxAmount="200" position="1"></Regiment>
+   	</Levy> 
+   	<Garrison>
+   	    <Regiment type="Walls" amount="1000" maxAmount="1000" position="0"></Regiment>
+   	    <Regiment type="Walls" amount="1000" maxAmount="1000" position="1"></Regiment>
+   	    <Regiment type="Guardians" amount="100" maxAmount="100" position="2"></Regiment>
+   	</Garrison>
+</Barony>

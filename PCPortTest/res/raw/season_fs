@@ -1,0 +1,127 @@
+precision mediump float;        // Set the default precision to medium. We don't need as high of a
+                                // precision in the fragment shader.
+
+#if GRASS 
+	uniform sampler2D u_FurTexture;
+	varying float v_FurInfo;
+	varying vec3 v_WorldPos;
+#endif 
+
+#if ORENNAYAR 
+	const float PI = 3.14159;
+	const float roughness = 1.0; 
+	uniform vec3 u_LightDir;
+	varying vec3 v_Normal;
+	varying vec3 v_EyeDir;
+#endif 
+
+#if BUMP 
+	uniform sampler2D u_BumpMap;
+#endif  
+                   
+uniform vec4 u_Ambient;		// Constant global ambient illumination
+uniform sampler2D u_Texture;    // The input texture.
+uniform sampler2D u_WinTexture;
+uniform sampler2D u_ShadowMap;
+uniform float u_Winter;
+uniform float u_Owner;
+uniform float u_Time;
+ 
+varying float v_Diffuse;        // Interpolated lighting strength
+varying vec2 v_TexCoordinate;   // Interpolated texture coordinate per fragment.
+
+#if SHADOW 
+varying vec4 v_ShadowCoord;
+#endif 
+
+varying float v_Depth;
+ 
+// The entry point for our fragment shader.
+void main()
+{
+
+	float diffuse = v_Diffuse;
+
+	// Multiply the color by the diffuse illumination level and texture value to get final output color.
+
+	float visibility = 1.0;
+
+#if SHADOW 
+	float depth = v_ShadowCoord.z - 0.005;
+
+	if ( texture2D( u_ShadowMap, v_ShadowCoord.xy + vec2( -0.94201624, -0.39906216 )/6000.0 ).x  <  depth ){
+		visibility-=0.1;
+	}
+
+	if ( texture2D( u_ShadowMap, v_ShadowCoord.xy + vec2( 0.94558609, -0.76890725 )/6000.0 ).x  <  depth ){
+		visibility-=0.1;
+	}
+
+	if ( texture2D( u_ShadowMap, v_ShadowCoord.xy + vec2( -0.094184101, -0.92938870 )/6000.0 ).x  <  depth ){
+		visibility-=0.1;
+	}
+
+	if ( texture2D( u_ShadowMap, v_ShadowCoord.xy + vec2( 0.34495938, 0.29387760 )/6000.0 ).x  <  depth ){
+		visibility-=0.1;
+	}
+#endif 
+
+
+#if BUMP 
+	vec2 bumCoord = v_TexCoordinate/2.0 + sin(40.0*u_Time + 100.0*v_ShadowCoord.xy)/40.0 + v_ShadowCoord.xy*10.0 ;
+	float bumpDiffuse = max(dot(texture2D(u_BumpMap, bumCoord).rgb,normalize(vec3(1.0,1.0,1.0))), 0.0);
+#endif 
+
+#if ORENNAYAR 
+	// interpolating normals will change the length of the normal, so renormalize the normal.
+	vec3 normal = normalize(v_Normal);
+	vec3 eyeDir = normalize(v_EyeDir);
+
+	// calculate intermediary values
+	float NdotL = dot(normal, u_LightDir);
+	float NdotV = dot(normal, eyeDir); 
+
+	float angleVN = acos(NdotV);
+	float angleLN = acos(NdotL);
+
+	float alpha = max(angleVN, angleLN);
+	float beta = min(angleVN, angleLN);
+	float gamma = dot(eyeDir - normal * dot(eyeDir, normal), u_LightDir - normal * dot(u_LightDir, normal));
+
+	float roughnessSquared = roughness * roughness;
+
+	// calculate A and B
+	float A = 1.0 - 0.5 * (roughnessSquared / (roughnessSquared + 0.57));
+
+	float B = 0.45 * (roughnessSquared / (roughnessSquared + 0.09));
+
+	float C = sin(alpha) * tan(beta);
+
+	// put it all together
+	float L1 = max(0.0, NdotL) * (A + B * max(0.0, gamma) * C);
+
+	// get the final color 
+	diffuse = diffuse * L1;
+#endif 
+
+	vec4 color = (visibility*diffuse #if BUMP *bumpDiffuse #endif +u_Ambient) * mix(texture2D(u_Texture, v_TexCoordinate), texture2D(u_WinTexture, v_TexCoordinate), u_Winter);
+	float greyscale = dot(color.rgb, vec3(0.3, 0.59, 0.11)); 
+	color.rgb = mix(vec3(greyscale,greyscale,greyscale), color.rgb, u_Owner);
+	color.rgb = mix(vec3(v_Depth/1.4,v_Depth/1.2,v_Depth), color.rgb, mix(1.0-v_Depth, u_Owner, u_Owner)); 
+
+#if GRASS 
+	float u_CurrentLayer = v_FurInfo;
+	vec4 furData = texture2D(u_FurTexture, v_WorldPos.xy/16.0 + u_CurrentLayer*0.01*sin(60.0*u_Time+v_WorldPos.x)+u_CurrentLayer*0.0025*sin(80.0*u_Time+v_WorldPos.y));
+	float shadow = mix(1.0,1.1,u_CurrentLayer);
+	color.g *= shadow;
+	if (u_CurrentLayer > furData.r) {
+		color.a = 0.0;
+	} else {
+		color.a = furData.a * mix(1.0, 0.2, (furData.r - u_CurrentLayer) / furData.r);
+	}
+#endif 
+
+	gl_FragColor = color;
+
+
+  }

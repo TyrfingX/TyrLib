@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Barony name="Riverflow" x="3" y="8" z="0" heightmap="riverflow">
+	<Holding name="Windmill" type="Windmill" objectNo="1"></Holding>
+	<Holding name="Yalen" type="Village" objectNo="2"></Holding>
+	<Levy>
+   	    <Regiment type="Axemen" amount="300" maxAmount="300" position="0"></Regiment>
+   	</Levy> 
+   	<Garrison>
+   	    <Regiment type="Walls" amount="1000" maxAmount="1000" position="0"></Regiment>
+   	    <Regiment type="Walls" amount="1000" maxAmount="1000" position="1"></Regiment>
+   	    <Regiment type="Guardians" amount="100" maxAmount="100" position="2"></Regiment>
+   	</Garrison>
+</Barony>

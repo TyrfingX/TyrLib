@@ -1,0 +1,76 @@
+precision mediump float;
+uniform sampler2D bgl_RenderedTexture;
+uniform sampler2D bgl_RandomTexture;
+
+const float total_strengthMin = 2.2;
+const float total_strengthMax = 5.0;
+const float base = 0.1;
+
+const float area = 0.00075;
+const float falloff = 0.00000001;
+
+const float radiusMin = 0.001;
+const float radiusMax = 0.008;
+
+const int samples = 8;
+
+const vec2 offset1 = vec2(0.0,0.1);
+const vec2 offset2 = vec2(0.1,0.0);
+
+const float near = 3.0;
+const float far = 1000.0;
+const float noise = 140.0;
+const vec2 projAB = vec2(2.0*far*near/(far - near), (far+near)/(far - near));
+
+vec3 sample_sphere[samples] = vec3[](
+      vec3( 0.5381, 0.1856,-0.4319), vec3( 0.1379, 0.2486, 0.4430),
+      vec3( 0.3371, 0.5679,-0.0057), vec3(-0.6999,-0.0451,-0.0019),
+      vec3( 0.0689,-0.1598,-0.8547), vec3( 0.0560, 0.0069,-0.1843),
+      vec3(-0.0146, 0.1402, 0.0762), vec3( 0.0100,-0.1924,-0.0344)
+);
+
+
+
+varying vec2 v_Position;
+
+float linearDepth(vec2 texcoords) {
+	return projAB.y / (texture2D(bgl_RenderedTexture, texcoords).r - projAB.x);
+}
+
+vec3 normal_from_depth(float depth, vec2 texcoords) {
+	float depth1 = linearDepth(texcoords + offset1);
+	float depth2 = linearDepth(texcoords + offset2);
+
+	vec3 p1 = vec3(offset1, depth1 - depth);
+	vec3 p2 = vec3(offset2, depth2 - depth);
+
+	vec3 normal1 = cross(p1, p2);
+	normal1.z = -normal1.z;
+
+	return normalize(normal1);
+}
+
+void main() {
+	vec3 random = normalize( texture2D(bgl_RandomTexture, v_Position*noise).rgb );
+	float nonLinDepth = texture2D(bgl_RenderedTexture, v_Position).r - 0.000000525;
+	float depth = projAB.y / (nonLinDepth - projAB.x);
+	vec3 position = vec3(v_Position, depth);
+	vec3 normal = normal_from_depth(depth, v_Position);
+
+	float radius_depth = mix(radiusMin, radiusMax, 1.0-nonLinDepth);
+	float strength = mix(total_strengthMin, total_strengthMax, 1.0-nonLinDepth);
+
+	float occlusion = 0.0;
+	for(int i=0; i < samples; i++) {
+		vec3 ray = radius_depth * reflect(sample_sphere[i], random);
+		vec3 hemi_ray = position + sign(dot(ray,normal)) * ray * nonLinDepth;
+		vec2 occ_tex = clamp(hemi_ray.xy,0.0,1.0);
+		float occ_depth = linearDepth(occ_tex);
+		float difference = (depth - occ_depth);
+		occlusion += step(falloff, difference) * (1.0-smoothstep(falloff, area, difference));
+	}
+	float ao = 1.0 - strength * occlusion * (1.0 / samples);
+	gl_FragColor.r = 1.0 - clamp(ao + base,0.0,1.0);
+}
+
+

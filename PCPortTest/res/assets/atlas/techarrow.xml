@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Atlas texture="TECHARROW" name="TECHARROW">
+	 <Region name="BLOCK" x="0" y="0" w="250" h="128" />
+	 <Region name="HEAD" x="256" y="0" w="256" h="128" />
+</Atlas>

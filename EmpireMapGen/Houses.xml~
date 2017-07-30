@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Houses>
+  <House name="Solray">
+    <Holding name="Lunae/Lunae"/>
+  </House>
+  <House name="Zera">
+    <Holding name="Rockluash/Rockluash"/>
+  </House>
+  <House name="Sinval">
+    <Holding name="Wodea/Wodea"/>
+    <Holding name="Worthenlong/Worthenlong"/>
+  </House>
+  <House name="Falconia">
+    <Holding name="Lionash/Lionash"/>
+    <Holding name="Longplalen/Longplalen"/>
+    <Holding name="Ralala/Ralala"/>
+    <Holding name="Landtripla/Landtripla"/>
+  </House>
+  <House name="Stardream">
+    <Holding name="Dealong/Dealong"/>
+    <Holding name="Lompa/Lompa"/>
+    <Holding name="Papla/Papla"/>
+  </House>
+  <House name="Clover">
+    <Holding name="Croash/Croash"/>
+    <Holding name="Kaicirock/Kaicirock"/>
+    <Holding name="Worthray/Worthray"/>
+  </House>
+  <House name="Vlad">
+    <Holding name="Ragrinae/Ragrinae"/>
+    <Holding name="Kaicirock/Kaicirock"/>
+  </House>
+  <House name="Trisia">
+    <Holding name="Rockzan/Rockzan"/>
+  </House>
+  <House name="Cherry">
+    <Holding name="Naelionlen/Naelionlen"/>
+  </House>
+  <House name="Thorius">
+    <Holding name="Rafelri/Rafelri"/>
+  </House>
+  <House name="Kanton">
+    <Holding name="Lomplaso/Lomplaso"/>
+    <Holding name="Triluvi/Triluvi"/>
+    <Holding name="Venfel/Venfel"/>
+    <Holding name="Rafelri/Rafelri"/>
+  </House>
+  <House name="Pleumion">
+    <Holding name="Rocklom/Rocklom"/>
+  </House>
+  <House name="Ludar">
+    <Holding name="Nulldea/Nulldea"/>
+    <Holding name="Planae/Planae"/>
+  </House>
+  <House name="Norn">
+    <Holding name="Fayland/Fayland"/>
+    <Holding name="Lionash/Lionash"/>
+  </House>
+  <House name="Helial">
+    <Holding name="Worthworthlong/Worthworthlong"/>
+  </House>
+  <House name="Crabling">
+    <Holding name="Felworthever/Felworthever"/>
+    <Holding name="Zanraykai/Zanraykai"/>
+  </House>
+  <House name="Sanctum">
+    <Holding name="Castlecastlesar/Castlecastlesar"/>
+    <Holding name="Croven/Croven"/>
+    <Holding name="Ralala/Ralala"/>
+  </House>
+  <House name="Eneas">
+    <Holding name="Worthfel/Worthfel"/>
+  </House>
+  <House name="Oakshield">
+    <Holding name="Soen/Soen"/>
+  </House>
+  <House name="Savanne">
+    <Holding name="Lionworth/Lionworth"/>
+    <Holding name="Lapla/Lapla"/>
+  </House>
+  <House name="Elen">
+    <Holding name="Venso/Venso"/>
+  </House>
+  <House name="Connobar">
+    <Holding name="Venlo/Venlo"/>
+    <Holding name="Soen/Soen"/>
+  </House>
+  <House name="Venn">
+    <Holding name="Naezan/Naezan"/>
+    <Holding name="Worthvenar/Worthvenar"/>
+  </House>
+  <House name="May">
+    <Holding name="Viplari/Viplari"/>
+  </House>
+  <House name="Yams">
+    <Holding name="Vilo/Vilo"/>
+  </House>
+  <House name="Nightfall">
+    <Holding name="Ritri/Ritri"/>
+  </House>
+  <House name="Regulus">
+    <Holding name="Worthplavi/Worthplavi"/>
+    <Holding name="Lunae/Lunae"/>
+  </House>
+  <House name="Konda">
+    <Holding name="Naegrici/Naegrici"/>
+  </House>
+  <House name="Insignia">
+    <Holding name="Rayever/Rayever"/>
+  </House>
+  <House name="Squak">
+    <Holding name="Plalo/Plalo"/>
+    <Holding name="Lomar/Lomar"/>
+  </House>
+  <House name="Fort">
+    <Holding name="Venlentri/Venlentri"/>
+  </House>
+  <House name="Ullfting">
+    <Holding name="Panae/Panae"/>
+    <Holding name="Grilandvi/Grilandvi"/>
+  </House>
+  <House name="Airen">
+    <Holding name="Venash/Venash"/>
+    <Holding name="Deatri/Deatri"/>
+  </House>
+  <House name="Tart">
+    <Holding name="Ashvenra/Ashvenra"/>
+    <Holding name="Planae/Planae"/>
+  </House>
+  <House name="Fangnir">
+    <Holding name="Naesoen/Naesoen"/>
+  </House>
+  <House name="Ilyas">
+    <Holding name="Zanlolom/Zanlolom"/>
+    <Holding name="Soluri/Soluri"/>
+    <Holding name="Socastle/Socastle"/>
+    <Holding name="Ashrockgri/Ashrockgri"/>
+  </House>
+  <House name="Rubin">
+    <Holding name="Lalom/Lalom"/>
+    <Holding name="Naezan/Naezan"/>
+    <Holding name="Worthvenar/Worthvenar"/>
+  </House>
+  <House name="Kyzer">
+    <Holding name="Ravi/Ravi"/>
+    <Holding name="Naeciri/Naeciri"/>
+    <Holding name="Luashlong/Luashlong"/>
+  </House>
+  <House name="Crownwell">
+    <Holding name="Vencro/Vencro"/>
+    <Holding name="Ralala/Ralala"/>
+    <Holding name="Croven/Croven"/>
+  </House>
+  <House name="Sameria">
+    <Holding name="Venworth/Venworth"/>
+  </House>
+  <House name="Chester">
+    <Holding name="Plalom/Plalom"/>
+    <Holding name="Venlo/Venlo"/>
+    <Holding name="Worthworthlong/Worthworthlong"/>
+  </House>
+  <House name="Sorakin">
+    <Holding name="Kaiso/Kaiso"/>
+  </House>
+  <House name="Mechaniza">
+    <Holding name="Lasolion/Lasolion"/>
+  </House>
+  <House name="Sylvania">
+    <Holding name="Deacastlesar/Deacastlesar"/>
+  </House>
+  <House name="Wave">
+    <Holding name="Siaso/Siaso"/>
+  </House>
+  <House name="Ichtes">
+    <Holding name="Rockdeapla/Rockdeapla"/>
+  </House>
+  <House name="Sindra">
+    <Holding name="Siaso/Siaso"/>
+  </House>
+  <House name="Steyn">
+    <Holding name="Rikai/Rikai"/>
+  </House>
+  <House name="Faylin">
+    <Holding name="Sosia/Sosia"/>
+  </House>
+  <House name="Wyne">
+    <Holding name="Sodeacro/Sodeacro"/>
+  </House>
+  <House name="Geralt">
+    <Holding name="Lomritri/Lomritri"/>
+  </House>
+  <House name="Erlang">
+    <Holding name="Castleashcro/Castleashcro"/>
+  </House>
+  <House name="Florence">
+    <Holding name="Lozan/Lozan"/>
+  </House>
+  <House name="Fortuna">
+    <Holding name="Sialomtri/Sialomtri"/>
+    <Holding name="Deatri/Deatri"/>
+    <Holding name="Lapla/Lapla"/>
+  </House>
+  <House name="Henselt">
+    <Holding name="Lovenkai/Lovenkai"/>
+  </House>
+  <House name="Merdet">
+    <Holding name="Luworthar/Luworthar"/>
+    <Holding name="Zanraykai/Zanraykai"/>
+  </House>
+  <House name="Serpent">
+    <Holding name="Arri/Arri"/>
+  </House>
+  <House name="Goldhearth">
+    <Holding name="Plaworthen/Plaworthen"/>
+    <Holding name="Fellion/Fellion"/>
+  </House>
+  <House name="Dominos">
+    <Holding name="Kailenlom/Kailenlom"/>
+    <Holding name="Worthray/Worthray"/>
+    <Holding name="Lapla/Lapla"/>
+  </House>
+  <House name="Oyvert">
+    <Holding name="Deari/Deari"/>
+  </House>
+  <House name="Aria">
+    <Holding name="Croriworth/Croriworth"/>
+  </House>
+  <House name="Wincest">
+    <Holding name="Paar/Paar"/>
+    <Holding name="Lomar/Lomar"/>
+    <Holding name="Dealong/Dealong"/>
+  </House>
+  <House name="Arkana"/>
+  <House name="Borz"/>
+  <House name="Quinn"/>
+  <House name="Kingstone"/>
+  <House name="Aurora"/>
+  <House name="Lesarl"/>
+  <House name="Snowborn"/>
+  <House name="Flowers,"/>
+  <House name="Distair"/>
+  <House name="Verz"/>
+  <House name="Hazel"/>
+  <House name="Assam"/>
+  <House name="Runnington"/>
+  <House name="Remiel"/>
+  <House name="Candelier"/>
+  <House name=""/>
+  <House name=""/>
+  <House name=""/>
+</Houses>

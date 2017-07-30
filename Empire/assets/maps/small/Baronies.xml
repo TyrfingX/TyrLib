@@ -1,0 +1,705 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Baronies>
+  <Barony color="-16777215" countSubHoldings="5" h="32" name="Luzanri" w="35" x="103" y="102">
+    <Holding name="Longra" objectNo="1" type="Ranch"/>
+    <Holding name="Pagri" objectNo="2" type="Pasture"/>
+    <Holding name="Everven" objectNo="3" type="Windmill"/>
+    <Holding name="Lonaelo" objectNo="4" type="Farm"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777214" countSubHoldings="5" h="41" name="Faylom" w="34" x="168" y="150">
+    <Holding name="Ark lu" objectNo="0" type="Village"/>
+    <Holding name="Everever" objectNo="1" type="Great Forest"/>
+    <Holding name="Engri" objectNo="2" type="Village"/>
+    <Holding name="Soray" objectNo="3" type="Great Forest"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777213" countSubHoldings="5" h="20" name="Ashsar" w="30" x="142" y="115">
+    <Holding name="Grinaesar" objectNo="0" type="Windmill"/>
+    <Holding name="Landven" objectNo="1" type="Village"/>
+    <Holding name="Luash" objectNo="2" type="Great Forest"/>
+    <Holding name="Longrapla" objectNo="3" type="Windmill"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777212" countSubHoldings="5" h="35" name="Castlepa" w="35" x="101" y="156">
+    <Holding name="Fayland" objectNo="0" type="Pasture"/>
+    <Holding name="Sialom" objectNo="1" type="Pasture"/>
+    <Holding name="Ralurock" objectNo="2" type="Farm"/>
+    <Holding name="Everlionar" objectNo="3" type="Farm"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777211" countSubHoldings="4" h="27" name="Deaworthsia" w="33" x="139" y="147">
+    <Holding name="Zanlongrock" objectNo="0" type="Windmill"/>
+    <Holding name="Lionashcastle" objectNo="1" type="Windmill"/>
+    <Holding name="Landlu" objectNo="3" type="Forest"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777210" countSubHoldings="5" h="42" name="Sarvila" w="36" x="14" y="153">
+    <Holding name="Liontri" objectNo="1" type="Great Forest"/>
+    <Holding name="Platrizan" objectNo="2" type="Farm"/>
+    <Holding name="Vengri" objectNo="3" type="Farm"/>
+    <Holding name="Worthluray" objectNo="4" type="Farm"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777209" countSubHoldings="3" h="36" name="Sarray" w="24" x="30" y="164">
+    <Holding name="Siarockra" objectNo="0" type="Farm"/>
+    <Holding name="Felen" objectNo="1" type="Farm"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777208" countSubHoldings="5" h="26" name="Everlara" w="30" x="130" y="135">
+    <Holding name="Trisiawo" objectNo="0" type="Farm"/>
+    <Holding name="Deadea" objectNo="1" type="Pasture"/>
+    <Holding name="Venever" objectNo="2" type="Quarry"/>
+    <Holding name="Deagri" objectNo="4" type="Pasture"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777207" countSubHoldings="4" h="35" name="Lopazan" w="35" x="128" y="158">
+    <Holding name="Zanlongash" objectNo="0" type="Farm"/>
+    <Holding name="Lucastlecastle" objectNo="1" type="Village"/>
+    <Holding name="Lalo" objectNo="2" type="Windmill"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777206" countSubHoldings="5" h="29" name="Longsianae" w="26" x="189" y="101">
+    <Holding name="Paartri" objectNo="0" type="Village"/>
+    <Holding name="Arlandso" objectNo="1" type="Great Forest"/>
+    <Holding name="Venfelra" objectNo="3" type="Windmill"/>
+    <Holding name="Enlionso" objectNo="4" type="Forest"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777205" countSubHoldings="4" h="46" name="Arnaelom" w="80" x="52" y="71">
+    <Holding name="Sarlongray" objectNo="0" type="Farm"/>
+    <Holding name="Longfel" objectNo="1" type="Farm"/>
+    <Holding name="Deakai" objectNo="3" type="Farm"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777204" countSubHoldings="3" h="25" name="Solom" w="25" x="113" y="121">
+    <Holding name="Zanever" objectNo="0" type="Pasture"/>
+    <Holding name="Kaisialo" objectNo="1" type="Pasture"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777203" countSubHoldings="3" h="20" name="Lomlu" w="23" x="131" y="121">
+    <Holding name="Deacro" objectNo="0" type="Pasture"/>
+    <Holding name="Visoen" objectNo="2" type="Pasture"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777202" countSubHoldings="5" h="22" name="Fayashlen" w="23" x="37" y="98">
+    <Holding name="Kaisokai" objectNo="0" type="Pasture"/>
+    <Holding name="Arland" objectNo="1" type="Farm"/>
+    <Holding name="Lionpla" objectNo="2" type="Farm"/>
+    <Holding name="Naeci" objectNo="3" type="Windmill"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777201" countSubHoldings="5" h="62" name="Naeso" w="43" x="195" y="121">
+    <Holding name="Rocksiawo" objectNo="1" type="Village"/>
+    <Holding name="Lavenvi" objectNo="2" type="Great Forest"/>
+    <Holding name="Grinae" objectNo="3" type="Village"/>
+    <Holding name="Lozanash" objectNo="4" type="Windmill"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777200" countSubHoldings="5" h="25" name="Sarlionlom" w="27" x="62" y="85">
+    <Holding name="Ark pari" objectNo="0" type="Farm"/>
+    <Holding name="Laash" objectNo="2" type="Farm"/>
+    <Holding name="Rocktri" objectNo="3" type="Village"/>
+    <Holding name="Palandlion" objectNo="4" type="Farm"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777199" countSubHoldings="4" h="28" name="Patriwo" w="21" x="45" y="126">
+    <Holding name="Faylu" objectNo="0" type="Village"/>
+    <Holding name="Feldeaso" objectNo="1" type="Great Forest"/>
+    <Holding name="Naevilong" objectNo="2" type="Farm"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777198" countSubHoldings="3" h="35" name="Cisiakai" w="25" x="123" y="90">
+    <Holding name="Everpladea" objectNo="0" type="Great Forest"/>
+    <Holding name="Venpla" objectNo="1" type="Great Forest"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777197" countSubHoldings="5" h="36" name="Lionlu" w="39" x="56" y="138">
+    <Holding name="Siaash" objectNo="0" type="Forest"/>
+    <Holding name="Vipala" objectNo="1" type="Great Forest"/>
+    <Holding name="Rocklenfay" objectNo="2" type="Farm"/>
+    <Holding name="Lomlo" objectNo="4" type="Farm"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777196" countSubHoldings="2" h="19" name="Triendea" w="14" x="82" y="84">
+    <Holding name="Arsopla" objectNo="1" type="Farm"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777195" countSubHoldings="3" h="23" name="Felkailong" w="31" x="44" y="106">
+    <Holding name="Naelori" objectNo="0" type="Farm"/>
+    <Holding name="Evercastle" objectNo="2" type="Village"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777194" countSubHoldings="5" h="29" name="Lionvi" w="37" x="164" y="115">
+    <Holding name="Crofellen" objectNo="0" type="Great Forest"/>
+    <Holding name="Crodeaever" objectNo="1" type="Village"/>
+    <Holding name="Plasarpla" objectNo="2" type="Forest"/>
+    <Holding name="Lionkai" objectNo="3" type="Great Forest"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777193" countSubHoldings="4" h="30" name="Faylandven" w="25" x="204" y="96">
+    <Holding name="Castlegrici" objectNo="0" type="Great Forest"/>
+    <Holding name="Trizanever" objectNo="1" type="Mine"/>
+    <Holding name="Croplala" objectNo="3" type="Windmill"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777192" countSubHoldings="5" h="75" name="Lomrockci" w="46" x="195" y="62">
+    <Holding name="Solong" objectNo="0" type="Farm"/>
+    <Holding name="Lenvenlu" objectNo="2" type="Great Forest"/>
+    <Holding name="Lulongtri" objectNo="3" type="Pasture"/>
+    <Holding name="Triever" objectNo="4" type="Farm"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777191" countSubHoldings="5" h="72" name="Kairapla" w="36" x="15" y="78">
+    <Holding name="Ravi" objectNo="1" type="Farm"/>
+    <Holding name="Rockray" objectNo="2" type="Farm"/>
+    <Holding name="Raysodea" objectNo="3" type="Pasture"/>
+    <Holding name="Vencro" objectNo="4" type="Village"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777190" countSubHoldings="5" h="23" name="Zaneverdea" w="32" x="26" y="137">
+    <Holding name="Cilandcastle" objectNo="1" type="Farm"/>
+    <Holding name="Lolu" objectNo="2" type="Farm"/>
+    <Holding name="Ark wo" objectNo="3" type="Farm"/>
+    <Holding name="Ark sia" objectNo="4" type="Great Forest"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777189" countSubHoldings="3" h="47" name="Sokaiever" w="23" x="40" y="149">
+    <Holding name="Rockgri" objectNo="0" type="Farm"/>
+    <Holding name="Lionlom" objectNo="1" type="Farm"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777188" countSubHoldings="3" h="37" name="Ark fayfay" w="24" x="20" y="127">
+    <Holding name="Raylion" objectNo="0" type="Village"/>
+    <Holding name="Griwo" objectNo="2" type="Great Forest"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777187" countSubHoldings="3" h="29" name="Trirapla" w="29" x="88" y="114">
+    <Holding name="Venci" objectNo="0" type="Ranch"/>
+    <Holding name="Kaipa" objectNo="1" type="Windmill"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777186" countSubHoldings="4" h="26" name="Lagri" w="31" x="178" y="131">
+    <Holding name="Dealenwo" objectNo="1" type="Mine"/>
+    <Holding name="Lionash" objectNo="2" type="Village"/>
+    <Holding name="Arrien" objectNo="3" type="Windmill"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777185" countSubHoldings="5" h="48" name="Tritricro" w="47" x="61" y="153">
+    <Holding name="Lukailion" objectNo="0" type="Ranch"/>
+    <Holding name="Naefay" objectNo="2" type="Windmill"/>
+    <Holding name="Longri" objectNo="3" type="Forest"/>
+    <Holding name="Enland" objectNo="4" type="Ranch"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777184" countSubHoldings="4" h="22" name="Felzan" w="21" x="21" y="111">
+    <Holding name="Sialionlu" objectNo="0" type="Mine"/>
+    <Holding name="Lenever" objectNo="2" type="Quarry"/>
+    <Holding name="Risiasar" objectNo="3" type="Forest"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777183" countSubHoldings="3" h="25" name="Fayever" w="31" x="172" y="97">
+    <Holding name="Enloven" objectNo="0" type="Village"/>
+    <Holding name="Castlerock" objectNo="1" type="Village"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777182" countSubHoldings="2" h="17" name="Faycastle" w="18" x="208" y="145">
+    <Holding name="Siaarci" objectNo="0" type="Great Forest"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777181" countSubHoldings="1" h="15" name="Zanashlo" w="14" x="213" y="88">
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777180" countSubHoldings="2" h="17" name="Lionrara" w="32" x="43" y="83">
+    <Holding name="Solongtri" objectNo="1" type="Forest"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777179" countSubHoldings="2" h="38" name="Naewopla" w="32" x="194" y="148">
+    <Holding name="Paar" objectNo="0" type="Great Forest"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777178" countSubHoldings="3" h="25" name="Rilurock" w="26" x="148" y="126">
+    <Holding name="Wotrien" objectNo="1" type="Great Forest"/>
+    <Holding name="Logrila" objectNo="2" type="Village"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777177" countSubHoldings="2" h="23" name="Sovenworth" w="23" x="80" y="133">
+    <Holding name="Crosocastle" objectNo="1" type="Ranch"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777176" countSubHoldings="2" h="32" name="Envilen" w="23" x="50" y="170">
+    <Holding name="Plaworth" objectNo="1" type="Great Forest"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777175" countSubHoldings="2" h="16" name="Castleworthsia" w="20" x="71" y="103">
+    <Holding name="Zanarpa" objectNo="1" type="Village"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777174" countSubHoldings="3" h="27" name="Loenlom" w="31" x="105" y="138">
+    <Holding name="Wocrolo" objectNo="1" type="Mine"/>
+    <Holding name="Lurock" objectNo="2" type="Mine"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777173" countSubHoldings="5" h="29" name="Rayeverfay" w="29" x="172" y="76">
+    <Holding name="Loso" objectNo="0" type="Great Forest"/>
+    <Holding name="Longcro" objectNo="1" type="Ranch"/>
+    <Holding name="Naera" objectNo="3" type="Great Forest"/>
+    <Holding name="Laeverkai" objectNo="4" type="Farm"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777172" countSubHoldings="2" h="25" name="Fello" w="15" x="84" y="98">
+    <Holding name="Rasiazan" objectNo="1" type="Great Forest"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777171" countSubHoldings="1" h="25" name="Deari" w="20" x="156" y="160">
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777170" countSubHoldings="1" h="11" name="Lomnae" w="12" x="115" y="174">
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777169" countSubHoldings="2" h="17" name="Worthlen" w="19" x="48" y="92">
+    <Holding name="Ark dea" objectNo="0" type="Farm"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777168" countSubHoldings="2" h="26" name="Lomla" w="24" x="161" y="138">
+    <Holding name="Paashra" objectNo="1" type="Great Forest"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777167" countSubHoldings="2" h="16" name="Losar" w="16" x="35" y="124">
+    <Holding name="Siari" objectNo="0" type="Forest"/>
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777166" countSubHoldings="1" h="15" name="Laar" w="15" x="36" y="112">
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777165" countSubHoldings="1" h="26" name="Longdea" w="18" x="96" y="146">
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777164" countSubHoldings="1" h="13" name="Deafaylom" w="13" x="59" y="101">
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777163" countSubHoldings="1" h="14" name="Rocksiavi" w="15" x="97" y="135">
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777162" countSubHoldings="1" h="23" name="Plawo" w="16" x="184" y="163">
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777161" countSubHoldings="1" h="23" name="Pacastlekai" w="44" x="167" y="62">
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777160" countSubHoldings="1" h="15" name="Grienray" w="14" x="219" y="116">
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777159" countSubHoldings="1" h="13" name="Sarralong" w="12" x="166" y="114">
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+  <Barony color="-16777158" countSubHoldings="1" h="14" name="Raylawo" w="15" x="195" y="90">
+    <Levy>
+      <Regiment amount="100" maxAmount="100" position="0" type="Guardians"/>
+    </Levy>
+    <Garrison>
+      <Regiment amount="100" maxAmount="100" position="2" type="Guardians"/>
+      <Regiment amount="1000" maxAmount="1000" position="0" type="Walls"/>
+      <Regiment amount="1000" maxAmount="1000" position="1" type="Walls"/>
+    </Garrison>
+  </Barony>
+</Baronies>

@@ -1,0 +1,15 @@
+precision mediump float;
+
+uniform mat4 u_MVPMatrix;
+uniform mat4 u_M;
+attribute vec4 a_Position;
+
+varying float depth;
+ 
+void main()
+{	
+	float distance = (u_M * a_Position).z;
+ 	depth = exp(-distance*0.07)*0.95+0.1;
+	
+	gl_Position = u_MVPMatrix * a_Position;
+}

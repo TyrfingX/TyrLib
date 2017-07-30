@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Houses>
+  <House name="Rebels"/>
+  <House name="Floking">
+    <Holding name="Rilurock/Rilurock"/>
+    <House name="Lannight">
+      <Holding name="Rilurock/Logrila"/>
+    </House>
+    <House name="Linzer">
+      <Holding name="Rilurock/Wotrien"/>
+    </House>
+  </House>
+  <House name="Nisterdream">
+    <Holding name="Arnaelom/Arnaelom"/>
+    <House name="Satho"/>
+    <House name="Goldai"/>
+    <House name="Shieldkin"/>
+    <House name="Starcrown">
+      <Holding name="Arnaelom/Sarlongray"/>
+    </House>
+    <House name="Eliercon">
+      <Holding name="Arnaelom/Longfel"/>
+      <Holding name="Arnaelom/Deakai"/>
+    </House>
+  </House>
+  <House name="Saconia">
+    <Holding name="Everlara/Everlara"/>
+    <Holding name="Everlara/Trisiawo"/>
+    <Holding name="Everlara/Deadea"/>
+    <Holding name="Everlara/Deagri"/>
+    <Holding name="Everlara/Venever"/>
+  </House>
+  <House name="Trisa">
+    <Holding name="Fello/Fello"/>
+    <Holding name="Fello/Rasiazan"/>
+    <House name="Siagold"/>
+  </House>
+  <House name="Lanrence">
+    <Holding name="Plawo/Plawo"/>
+  </House>
+  <House name="Fallrius">
+    <Holding name="Zanashlo/Zanashlo"/>
+  </House>
+  <House name="Renzer">
+    <Holding name="Fayever/Fayever"/>
+    <Holding name="Fayever/Castlerock"/>
+    <House name="Goldcrown">
+      <Holding name="Fayever/Enloven"/>
+    </House>
+    <House name="Rencrown"/>
+  </House>
+  <House name="Nircon">
+    <Holding name="Faylom/Faylom"/>
+    <House name="Nightelier">
+      <Holding name="Faylom/Everever"/>
+      <Holding name="Faylom/Soray"/>
+      <Holding name="Faylom/Engri"/>
+      <Holding name="Faylom/Ark lu"/>
+    </House>
+  </House>
+  <House name="Elierstone">
+    <Holding name="Longsianae/Longsianae"/>
+    <Holding name="Longsianae/Venfelra"/>
+    <House name="Riusstar">
+      <Holding name="Longsianae/Arlandso"/>
+      <Holding name="Longsianae/Paartri"/>
+      <Holding name="Longsianae/Enlionso"/>
+    </House>
+  </House>
+  <House name="Linflo">
+    <Holding name="Rocksiavi/Rocksiavi"/>
+  </House>
+  <House name="Starstar">
+    <Holding name="Felkailong/Felkailong"/>
+    <Holding name="Felkailong/Naelori"/>
+    <Holding name="Felkailong/Evercastle"/>
+  </House>
+  <House name="Sanight">
+    <Holding name="Patriwo/Patriwo"/>
+    <House name="Draselt">
+      <Holding name="Patriwo/Feldeaso"/>
+    </House>
+    <House name="Dreamsa">
+      <Holding name="Patriwo/Naevilong"/>
+      <Holding name="Patriwo/Faylu"/>
+    </House>
+  </House>
+  <House name="Siafang">
+    <Holding name="Pacastlekai/Pacastlekai"/>
+  </House>
+  <House name="Soradream">
+    <Holding name="Raylawo/Raylawo"/>
+  </House>
+  <House name="Seltflo">
+    <Holding name="Trirapla/Trirapla"/>
+    <House name="Elierlan">
+      <Holding name="Trirapla/Venci"/>
+    </House>
+    <House name="Dreamfang">
+      <Holding name="Trirapla/Kaipa"/>
+    </House>
+  </House>
+  <House name="Tatho">
+    <Holding name="Sovenworth/Sovenworth"/>
+    <House name="Rosewell">
+      <Holding name="Sovenworth/Crosocastle"/>
+    </House>
+  </House>
+  <House name="Linsin">
+    <Holding name="Cisiakai/Cisiakai"/>
+    <Holding name="Luzanri/Luzanri"/>
+    <Holding name="Luzanri/Lonaelo"/>
+    <Holding name="Cisiakai/Venpla"/>
+    <House name="Crownsora">
+      <Holding name="Luzanri/Pagri"/>
+      <Holding name="Luzanri/Everven"/>
+      <Holding name="Luzanri/Longra"/>
+      <Holding name="Cisiakai/Everpladea"/>
+    </House>
+  </House>
+  <House name="Zerlin">
+    <Holding name="Worthlen/Worthlen"/>
+    <Holding name="Worthlen/Ark dea"/>
+    <House name="Linsora"/>
+  </House>
+  <House name="Starselt">
+    <Holding name="Castlepa/Castlepa"/>
+    <Holding name="Castlepa/Everlionar"/>
+    <Holding name="Castlepa/Fayland"/>
+    <House name="Nightlan">
+      <Holding name="Castlepa/Sialom"/>
+    </House>
+    <House name="Auromeria"/>
+    <House name="Flofay">
+      <Holding name="Castlepa/Ralurock"/>
+    </House>
+  </House>
+  <House name="Gardencon">
+    <Holding name="Ashsar/Ashsar"/>
+    <Holding name="Ashsar/Luash"/>
+    <Holding name="Ashsar/Landven"/>
+    <Holding name="Ashsar/Grinaesar"/>
+    <Holding name="Ashsar/Longrapla"/>
+    <House name="Aistar"/>
+  </House>
+  <House name="Starta">
+    <Holding name="Zaneverdea/Zaneverdea"/>
+    <Holding name="Zaneverdea/Ark wo"/>
+    <House name="Tafal">
+      <Holding name="Zaneverdea/Ark sia"/>
+    </House>
+    <House name="Bornsol">
+      <Holding name="Zaneverdea/Cilandcastle"/>
+    </House>
+    <House name="Gardenfay">
+      <Holding name="Zaneverdea/Lolu"/>
+    </House>
+  </House>
+  <House name="Oaktho">
+    <Holding name="Felzan/Felzan"/>
+    <Holding name="Felzan/Sialionlu"/>
+    <House name="Meriaeas"/>
+    <House name="Dreamlan">
+      <Holding name="Felzan/Risiasar"/>
+      <Holding name="Felzan/Lenever"/>
+    </House>
+  </House>
+  <House name="Sasnow">
+    <Holding name="Triendea/Triendea"/>
+    <Holding name="Triendea/Arsopla"/>
+  </House>
+  <House name="Falcrown">
+    <Holding name="Lomlu/Lomlu"/>
+    <House name="Goldfay"/>
+    <House name="Coniastone">
+      <Holding name="Lomlu/Visoen"/>
+      <Holding name="Lomlu/Deacro"/>
+    </House>
+    <House name="Conrius"/>
+    <House name="Dralan"/>
+  </House>
+  <House name="Triflo">
+    <Holding name="Faycastle/Faycastle"/>
+    <Holding name="Faycastle/Siaarci"/>
+  </House>
+  <House name="Falllan">
+    <Holding name="Lionrara/Lionrara"/>
+    <Holding name="Lionrara/Solongtri"/>
+  </House>
+  <House name="Soleas">
+    <Holding name="Sokaiever/Sokaiever"/>
+    <Holding name="Sokaiever/Lionlom"/>
+    <House name="Soraeas">
+      <Holding name="Sokaiever/Rockgri"/>
+    </House>
+  </House>
+  <House name="Conialan">
+    <Holding name="Solom/Solom"/>
+    <Holding name="Solom/Kaisialo"/>
+    <Holding name="Solom/Zanever"/>
+  </House>
+  <House name="Henai">
+    <Holding name="Fayashlen/Fayashlen"/>
+    <Holding name="Fayashlen/Arland"/>
+    <Holding name="Fayashlen/Kaisokai"/>
+    <House name="Rencefay">
+      <Holding name="Fayashlen/Lionpla"/>
+      <Holding name="Fayashlen/Naeci"/>
+    </House>
+    <House name="Nirborn"/>
+  </House>
+  <House name="Linstar">
+    <Holding name="Losar/Losar"/>
+    <Holding name="Losar/Siari"/>
+    <House name="Fallsol"/>
+  </House>
+  <House name="Floborn">
+    <Holding name="Grienray/Grienray"/>
+  </House>
+  <House name="Elierdra">
+    <Holding name="Lomla/Lomla"/>
+    <Holding name="Lomla/Paashra"/>
+    <House name="Fayrius"/>
+  </House>
+  <House name="Siaborn">
+    <Holding name="Faylandven/Faylandven"/>
+    <Holding name="Faylandven/Croplala"/>
+    <Holding name="Faylandven/Trizanever"/>
+    <House name="Aurostar"/>
+    <House name="Gardenkin">
+      <Holding name="Faylandven/Castlegrici"/>
+    </House>
+  </House>
+  <House name="Saoak">
+    <Holding name="Envilen/Envilen"/>
+    <Holding name="Envilen/Plaworth"/>
+    <House name="Tasa"/>
+    <House name="Linauro"/>
+  </House>
+  <House name="Linshield">
+    <Holding name="Sarralong/Sarralong"/>
+  </House>
+  <House name="Dreamnister">
+    <Holding name="Lomrockci/Lomrockci"/>
+    <House name="Bornai"/>
+    <House name="Coniacon">
+      <Holding name="Lomrockci/Triever"/>
+      <Holding name="Lomrockci/Lulongtri"/>
+    </House>
+    <House name="Dreamnir">
+      <Holding name="Lomrockci/Solong"/>
+      <Holding name="Lomrockci/Lenvenlu"/>
+    </House>
+  </House>
+  <House name="Kingfay">
+    <Holding name="Naeso/Naeso"/>
+    <Holding name="Naeso/Lavenvi"/>
+    <Holding name="Naeso/Grinae"/>
+    <House name="Starmeria">
+      <Holding name="Naeso/Rocksiawo"/>
+      <Holding name="Naeso/Lozanash"/>
+    </House>
+  </House>
+  <House name="Welltri">
+    <Holding name="Ark fayfay/Ark fayfay"/>
+    <Holding name="Ark fayfay/Griwo"/>
+    <House name="Elierzer">
+      <Holding name="Ark fayfay/Raylion"/>
+    </House>
+  </House>
+  <House name="Tricon">
+    <Holding name="Sarvila/Sarvila"/>
+    <Holding name="Sarvila/Liontri"/>
+    <Holding name="Sarvila/Platrizan"/>
+    <House name="Siadream"/>
+    <House name="Linfal">
+      <Holding name="Sarvila/Vengri"/>
+    </House>
+    <House name="Dranir">
+      <Holding name="Sarvila/Worthluray"/>
+    </House>
+  </House>
+  <House name="Falfall">
+    <Holding name="Lomnae/Lomnae"/>
+  </House>
+  <House name="Siasia">
+    <Holding name="Lionvi/Lionvi"/>
+    <Holding name="Lionvi/Plasarpla"/>
+    <House name="Renstar">
+      <Holding name="Lionvi/Lionkai"/>
+      <Holding name="Lionvi/Crofellen"/>
+      <Holding name="Lionvi/Crodeaever"/>
+    </House>
+  </House>
+  <House name="Nirtho">
+    <Holding name="Castleworthsia/Castleworthsia"/>
+    <Holding name="Castleworthsia/Zanarpa"/>
+  </House>
+  <House name="Coniarius">
+    <Holding name="Naewopla/Naewopla"/>
+    <Holding name="Naewopla/Paar"/>
+  </House>
+  <House name="Roseai">
+    <Holding name="Deaworthsia/Deaworthsia"/>
+    <Holding name="Deaworthsia/Landlu"/>
+    <Holding name="Deaworthsia/Lionashcastle"/>
+    <Holding name="Deaworthsia/Zanlongrock"/>
+  </House>
+  <House name="Oakwell">
+    <Holding name="Longdea/Longdea"/>
+  </House>
+  <House name="Startri">
+    <Holding name="Kairapla/Kairapla"/>
+    <Holding name="Kairapla/Ravi"/>
+    <Holding name="Kairapla/Rockray"/>
+    <Holding name="Kairapla/Raysodea"/>
+    <House name="Easnight"/>
+    <House name="Fallelier">
+      <Holding name="Kairapla/Vencro"/>
+    </House>
+  </House>
+  <House name="Linsia">
+    <Holding name="Laar/Laar"/>
+  </House>
+  <House name="Kinborn">
+    <Holding name="Lopazan/Lopazan"/>
+    <Holding name="Lopazan/Lalo"/>
+    <House name="Nirauro"/>
+    <House name="Oakren"/>
+    <House name="Sinnir">
+      <Holding name="Lopazan/Lucastlecastle"/>
+    </House>
+    <House name="Soldra"/>
+    <House name="Sinsin">
+      <Holding name="Lopazan/Zanlongash"/>
+    </House>
+  </House>
+  <House name="Oakai">
+    <Holding name="Deafaylom/Deafaylom"/>
+  </House>
+  <House name="Fallflo">
+    <Holding name="Lagri/Lagri"/>
+    <Holding name="Lagri/Lionash"/>
+    <House name="Nightnister"/>
+    <House name="Oakdream">
+      <Holding name="Lagri/Arrien"/>
+    </House>
+    <House name="Easfay">
+      <Holding name="Lagri/Dealenwo"/>
+    </House>
+  </House>
+  <House name="Rentho">
+    <Holding name="Loenlom/Loenlom"/>
+    <Holding name="Loenlom/Wocrolo"/>
+    <Holding name="Loenlom/Lurock"/>
+  </House>
+  <House name="Draray">
+    <Holding name="Lionlu/Lionlu"/>
+    <Holding name="Lionlu/Vipala"/>
+    <Holding name="Lionlu/Siaash"/>
+    <House name="Nirnister">
+      <Holding name="Lionlu/Lomlo"/>
+      <Holding name="Lionlu/Rocklenfay"/>
+    </House>
+    <House name="Coniaborn"/>
+    <House name="Lingold">
+      <Holding name="Tritricro/Tritricro"/>
+      <Holding name="Tritricro/Enland"/>
+      <Holding name="Tritricro/Lukailion"/>
+      <House name="Concon">
+        <Holding name="Tritricro/Naefay"/>
+      </House>
+      <House name="Crowngarden">
+        <Holding name="Tritricro/Longri"/>
+      </House>
+    </House>
+  </House>
+  <House name="Hengold">
+    <Holding name="Deari/Deari"/>
+  </House>
+  <House name="Bornky">
+    <Holding name="Sarlionlom/Sarlionlom"/>
+    <Holding name="Sarlionlom/Laash"/>
+    <House name="Wellelier">
+      <Holding name="Sarlionlom/Rocktri"/>
+    </House>
+    <House name="Sinlan">
+      <Holding name="Sarlionlom/Palandlion"/>
+      <Holding name="Sarlionlom/Ark pari"/>
+    </House>
+  </House>
+  <House name="Rencezer">
+    <Holding name="Sarray/Sarray"/>
+    <Holding name="Sarray/Siarockra"/>
+    <Holding name="Sarray/Felen"/>
+    <House name="Fangsia"/>
+    <House name="Trifal"/>
+  </House>
+  <House name="Kinmeria">
+    <Holding name="Rayeverfay/Rayeverfay"/>
+    <Holding name="Rayeverfay/Loso"/>
+    <House name="Sacon"/>
+    <House name="Lanselt"/>
+    <House name="Raynister">
+      <Holding name="Rayeverfay/Laeverkai"/>
+      <Holding name="Rayeverfay/Naera"/>
+    </House>
+    <House name="Nisterrius">
+      <Holding name="Rayeverfay/Longcro"/>
+    </House>
+  </House>
+</Houses>

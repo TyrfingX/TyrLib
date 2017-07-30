@@ -1,0 +1,36 @@
+precision mediump float;        // Set the default precision to medium. We don't need as high of a
+                                // precision in the fragment shader.
+
+uniform vec3 u_LightPos;  
+uniform vec3 u_CamPos;
+uniform vec4 u_Ambient;		// Constant global ambient illumination
+uniform sampler2D u_Texture;    // The input texture.
+uniform sampler2D u_BumpMap;
+uniform sampler2D u_FogMap;
+uniform vec2 u_Size;
+uniform float u_Time;
+ 
+varying vec2 v_TexCoordinate;   // Interpolated texture coordinate per fragment.
+varying vec2 v_Pos; 
+
+// The entry point for our fragment shader.
+void main()
+{
+	
+	vec2 offset = vec2(sin(0.4*u_Time + sin(v_Pos.x)), -cos(0.4*u_Time + sin(v_Pos.y)));
+	vec2 offset2 = vec2(-cos(0.1*u_Time + sin(v_Pos.x)), -sin(0.1*u_Time + sin(v_Pos.y)));
+
+	vec2 bumCoord = v_TexCoordinate/2.0 + offset;
+	vec3 bump = texture2D(u_BumpMap, bumCoord).rgb;
+	float bumpDiffuse = max(dot(bump,normalize(vec3(1.0,1.0,1.0))), 0.0);
+
+ 	vec3 lightReflect = normalize(reflect(-u_LightPos, bump));
+	float specularFactor = pow(dot(normalize(-u_CamPos), lightReflect), 2.0);
+
+	float fog = texture2D(u_FogMap, v_TexCoordinate*u_Size).r;
+
+	vec4 color = (1.2*bumpDiffuse+ u_Ambient+specularFactor) * vec4(texture2D(u_Texture, v_TexCoordinate+offset2).rgb, 0.4*fog);
+	gl_FragColor = color;
+
+
+  }

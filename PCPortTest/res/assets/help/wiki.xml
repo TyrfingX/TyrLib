@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wiki>
+	<Entry header="Back Row" content="Made up by up to two &lt;link=Regiment&gt;regiments\l.\nOnly ranged units and cavalry can\nattack from here."/>
+	<Entry header="Front Row" content="Made up by up to two &lt;link=Regiment&gt;regiments\l.\nCan perform melee attacks."/>
+	<Entry header="Regiment" content="Part of an army. Health is\ndetermined by the number of troops.\nCan be placed at the\n&lt;link=Front Row&gt;front row\l or &lt;link=Back Row&gt;back row\l."/>
+	<Entry header="Attack (ATK)" content="Determines damage dealt by a &lt;link=Regiment&gt;regiment\l\nwhen attacking. "/>
+	<Entry header="Defense (DEF)" content="Reduces received damage of a\n&lt;link=Regiment&gt;regiment\l under attack."/ >
+	<Entry header="Counter (DEF)" content="Determines counter-attack damage\ndealt by a &lt;link=Regiment&gt;regiment\l upon\nbeing attacked." />
+	<Entry header="Moral" content="Army Moral determines the will of\nan army to fight for you.\n\n- Forced retreat upon reaching 0 moral\n- Power can drop by up to 50% (0 Moral)\n- Recovers naturally over time and by &lt;link=Pillage&gt;pillaging\l."/>
+	<Entry header="Pillage" content="Kill a majority of the local population and\nseize gold from them and the holding owner.\nAlso aborts any current building project.\n\nPillageable targets:\n- Owned or Vassal Non-Castle Holdings\n- Enemy Non-Castle Holdings and enemy occupied Castles"/>
+	<Entry header="Honor" content="Diplomatic currency. Negative honor reduces recovery\nof &lt;link=Moral&gt;army moral\l and increases Tyranny &lt;link=Reputation&gt;Reputation\l.\n\nHigh honor increases Honorable reputation." />
+
+	<Entry header="Trader" content="Class of citizens producing the\nmost tax income. Prefer holdings\nwith low tax rates, many &lt;link=Market&gt;markets\l and\na high output of trade goods."/ >
+	<Entry header="Scholar" content="Class of citizents necessary for Research.\nPrefer holdings with low tax rates and\nmany &lt;link=Library&gt;libraries\l." />
+	<Entry header="Peasant" content="Low class of citizens. Highly inclined to\njoin the army if need be." />
+	<Entry header="Workers" content="Working class of citenzs required for\nconstruction. Prefers holdings with\nmany &lt;link=Forge&gt;forges\l and trade goods increasing\nproductivity." />
+	<Entry header="Education" content="Each point in education converts within 1 Season\n1 &lt;link=Peasant&gt;Peasant\l to either a \n&lt;link=Workers&gt;Worker\l, &lt;link=Trader&gt;Trader\l or &lt;link=Scholar&gt;Scholar\l." />
+
+	<Entry header="Village" content="Holding with a high potential\nfor economic growth.\n\n&lt;link=CycleVillage&gt;Cycle through your Villages\l" />
+	<Entry header="Castle" content="Military Holding necessary to wield armies.\nHas a Levy and a Garrison.\nNecessary for many diplomatic actions.\n\n&lt;link=CycleCastle&gt;Cycle through your Castles\l" />
+	<Entry header="Windmill" content="Economical Holding that can produce &lt;link=Flour&gt;Flour\l&lt;img GOODS Flour&gt;.\n\n&lt;link=CycleWindmill&gt;Cycle through your Windmills\l" />
+	<Entry header="Farm" content="Economical Holding that can &lt;link&gt;Grain\l.\n\n&lt;link=CycleFarm&gt;Cycle through your Farms\l" />
+	<Entry header="Mine" content="Economical Holding producing &lt;link=Iron&gt;Iron\l&lt;img GOODS Iron&gt;"/ >
+	<Entry header="Quarry" content="Economical Holding producing &lt;link=Stone&gt;Stone\l&lt;img GOODS Stone&gt;"/ >
+
+	<Entry header="Grain" content="Important food source produced by\n&lt;link=Farm&gt;Farms\l and is only available\noutside of the Winter Season.\n\nCan be further processed to &lt;link=Flour&gt;Flour\l&lt;img GOODS Flour&gt;." />
+	<Entry header="Flour" content="Food source created by processing\n&lt;link=Grain&gt;Grain&lt;img GOODS Grain&gt;\l in a &lt;link=Windmill&gt;Windmill\l.\nCan be further processed to &lt;link=Bread&gt;Bread\l&lt;img GOODS Bread&gt;" />
+	<Entry header="Bread" content="High quality food source created\nby processing &lt;link=Flour&gt;Flour&lt;img GOODS Flour&gt;\l in a &lt;link=Bakers&gt;Bakers Guild\l." />
+	<Entry header="Iron" content="Military resource strengthening unit &lt;link=Defense (DEF)&gt;DEF\l.\nProducible in &lt;link=Mine&gt;Mines\l.\nCan be further processed to &lt;link=Weaponry&gt;Weaponry\l&lt;img GOODS Weaponry&gt;\nin a &lt;link=Smiths&gt;Smith Guild\l." />	
+	<Entry header="Weaponry" content="Powerful Military resource strengthening\nunit &lt;link=Defense (DEF)&gt;DEF\l and &lt;link=Attack (ATK)&gt;ATK\l. Producible\nby processing &lt;link=Iron&gt;Iron\l&lt;img GOODS Iron&gt; in a &lt;link=Smiths&gt;Smith Guild\l."/ >
+	<Entry header="Horse" content="Valueable resource greatly boosting &lt;link=Cavalry&gt;Cavalry\l." />
+	<Entry header="Stone" content="Useful production resource.\nProducible in &lt;link=Quarry&gt;Quarries\l." />
+
+	<Entry header="Great Building" content="Unique building unlocked by constructing at\nleast 10 buildings of the base type.\nRequires technology &lt;link=Architecture&gt;Architecture\l.\n\n+100 &lt;link=House Score&gt;House Score\l while controlling a Great Building\n+50 &lt;link=Honor&gt;Honor\l upon completion\n+0.2 Score Multiplier upon completion" />
+
+	<Entry header="Score" content="Required to achieve victory. There are different\ntypes of scores:\n\n- &lt;link=Military Score&gt;Military Score\l\n- &lt;link=Economic Score&gt;Economic Score\l\n- &lt;link=House Score&gt;House Score\l\n- &lt;link=Exploration Score&gt;Exploration Score\l" />	
+	<Entry header="Military Score" content="One of the &lt;link=Score&gt;Score\l types.\n\nIncreased by:\n- Amount of troops" />	
+	<Entry header="Economic Score" content="One of the &lt;link=Score&gt;Score\l types.\n\nIncreased by:\n- Income" />	
+	<Entry header="House Score" content="One of the &lt;link=Score&gt;Score\l types.\n\nIncreased by:\n- Discovering Technologies\n- &lt;link=Honor&gt;Honor\l\n- Constructing &lt;link=Great Building&gt;Great Buildings\l" />	
+	<Entry header="Exploration Score" content="One of the &lt;link=Score&gt;Score\l types.\n\nIncreased by:\n- Exploring Baronies" />	
+</Wiki>

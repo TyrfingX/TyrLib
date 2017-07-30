@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Barony name="Arclight" x="11" y="-6" z="0" heightmap="arclight">
+	<Holding name="Farm" type="Farm" objectNo="0"></Holding>
+	<Levy>
+   	    <Regiment type="Guardians" amount="300" maxAmount="300" position="0"></Regiment>
+   	</Levy> 
+   	<Garrison>
+   	    <Regiment type="Walls" amount="1000" maxAmount="1000" position="0"></Regiment>
+   	    <Regiment type="Walls" amount="1000" maxAmount="1000" position="1"></Regiment>
+   	    <Regiment type="Guardians" amount="100" maxAmount="100" position="2"></Regiment>
+   	</Garrison>
+</Barony>

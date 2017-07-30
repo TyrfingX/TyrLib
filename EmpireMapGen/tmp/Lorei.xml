@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Barony name="Lorei" x="27" y="8" z="0" heightmap="lorei">
+	<Holding name="Farm" type="Farm" objectNo="1"></Holding>
+	<Holding name="Ranch" type="Ranch" objectNo="2"></Holding>
+	<Holding name="Alius" type="Village" objectNo="3"></Holding>
+	<Levy>
+   	    <Regiment type="Guardians" amount="100" maxAmount="100" position="0"></Regiment>
+   	    <Regiment type="Guardians" amount="100" maxAmount="100" position="1"></Regiment>
+   	    <Regiment type="Archers" amount="100" maxAmount="100" position="2"></Regiment>
+   	</Levy> 
+   	<Garrison>
+   	    <Regiment type="Walls" amount="1000" maxAmount="1000" position="0"></Regiment>
+   	    <Regiment type="Walls" amount="1000" maxAmount="1000" position="1"></Regiment>
+   	    <Regiment type="Guardians" amount="100" maxAmount="100" position="2"></Regiment>
+   	</Garrison>
+</Barony>

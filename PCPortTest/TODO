@@ -1,0 +1,89 @@
+- Diplomatieaktion: Warnen
+- Diplomatieaktion: Request Construction
+- Updateanzeige Diplomatie/Tech/Laws
+- Alle Vasallen einladen button bei Intrigue	
+- Fix leaks for nodes
+- Multiplayer refactoring
+- Balance trading pricess
+- Bugfixing von Online playing
+	* Holding Tooltips in regards to surrounding holdings not correct (relevant for supply computations)	
+	* Bug: Weird negative numbers 
+		- Negative estimated travel time (11.2, 15.3)
+	* Bug: Army in invisible barony (13.2)
+	* Bug: Army movement doesnt match server (15.2)
+	* Bug: Unable to declare war despite being able to (15.2)
+	* Bug: 	Crush update disabled text trade agreement, no diplomat statmod (13.2, done, 27.2)
+		No marriage statmod (16.2, 15.3)
+	* Bug: Not-existing project marked as finished (17.2, 15.3)
+	* Bug: Relation values do not add up (15.3)
+- Speichern/Laden wieder zum funktionieren bringen
+- Terraingenerator: Biom Wüste
+- AI: Anzeige Zustimmung zu Aktion und Gründe
+- AI: Kann "Beschützen" benutzen 
+- Wiki: Laws
+- AI: Einheitentausch
+- Bug: Scroll Menu korrigieren
+- Selektion von Gebäuden/Einheiten im Strategieview korrigieren
+- Mehr Links/Icons in Mails
+- Add Architecture Technology (Unlock Great Buildings)
+- Bug: Invisible Arrow Path while being in an explored barony (13.2)
+- National Laws
+- Bug: Battle GUI having weird issues (15.2)
+- AI: Not enforcing demands despite having won
+- Bug: Suddenly thrown out of war? (23.2)
+- Bug: War GUI showing switched stats (23.2)
+- Bug: "We have been defeated..." Message when ally defeats enemy (23.2)
+- Bug: Incorrect info about tyrant reputation (23.2)
+- Levy should be able to go to blocked but unexplored holding, upon arrival he is set to his original position and the unexplored barony should still be revealed
+- Bug: No message upon enemy admitting defeat (15.3)
+- Apply researched tech modifiers to newly acquired holdings
+- Animate Outline material
+
+/** Economy **/
+- List unit maintenences in armyGUI
+
+/** Marauding **/
+- Have marauder army unraised if source holding is conquered
+- Have marauder army unraised if target has no more baronies;
+
+
+/** RELATIONS **/
+- Rivale
+	* Target of "Rivalize" diplomatic option
+- Enemy
+	* Be in war
+- Trader
+	* Have Trade Agreement
+- Military Partner
+	* Have Defensive Pact
+- Hegemon
+	* Have most influence on somebody & more than a threshold
+- Subordinate
+	* Somebody has more influence on you than threshold
+	* Intermediate state to becoming somebodies vassal
+- Vassal
+	* Be a branch family of another House
+- Overlord
+	* Be independent
+
+/** DIPLOMATIC OPTIONS **/
+- Economy
+	* Send Gift
+	* Request Loan
+	* Trade Agreement
+- Dynasty
+	* Marriage
+	* Vassalize
+- Relations
+	* Send Diplomat
+	* Declare War
+	* Rivalize
+		- Must be roughly equal realm size
+		- Decreases relation
+		- +25% Plot Speed against this house
+		- No diplomatic cooporation possible
+		- +10 Super Power rep upon defeating rival in war, +10 Super Power rep from declaring war
+		- 2xWar Score in battle
+- Military
+	* Defensive Pact
+	* Protectoriat

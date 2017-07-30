@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Atlas texture="TECH" name="TECH">
+    <Region name="Scroll" x="0" y="0" w="100" h="100" />
+    <Region name="Ironworking" x="100" y="0" w="100" h="100" />
+    <Region name="Heavy Plough" x="200" y="0" w="100" h="100" />
+    <Region name="Cavalry" x="300" y="0" w="100" h="100" />
+    <Region name="Books" x="400" y="0" w="100" h="100" />
+    <Region name="Grindstone" x="500" y="0" w="100" h="100" />
+    <Region name="Numerals" x="600" y="0" w="100" h="100" />
+    <Region name="Cartography" x="700" y="0" w="100" h="100" />
+    <Region name="Wheelbarrow" x="800" y="0" w="100" h="100" />
+    <Region name="Currency" x="900" y="0" w="100" h="100" />
+    <Region name="City Planning" x="0" y="100" w="100" h="100" />
+    <Region name="Granary" x="100" y="100" w="100" h="100" />
+    <Region name="Platearmor" x="200" y="100" w="100" h="100" />
+    <Region name="Guilds" x="300" y="100" w="100" h="100" />
+</Atlas>

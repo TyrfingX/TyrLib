@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Barony name="Faycastle" x="0" y="-1" z="0" heightmap="faycastle">
+   	<Holding name="Faywoods" type="Forest" objectNo="0"></Holding>
+   	<Holding name="Firebend" type="Village" objectNo="2"></Holding>
+   	<Holding name="Turnstead" type="Village" objectNo="4"></Holding>
+	<Levy>
+   	    <Regiment type="Guardians" amount="200" maxAmount="200" position="1"></Regiment>
+   	    <Regiment type="Pikemen" amount="100" maxAmount="100" position="3"></Regiment>
+   	</Levy> 
+   	<Garrison>
+   	    <Regiment type="Walls" amount="1000" maxAmount="1000" position="0"></Regiment>
+   	    <Regiment type="Walls" amount="1000" maxAmount="1000" position="1"></Regiment>
+   	    <Regiment type="Guardians" amount="100" maxAmount="100" position="2"></Regiment>
+   	</Garrison>
+</Barony>

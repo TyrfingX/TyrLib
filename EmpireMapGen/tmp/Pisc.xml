@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Barony name="Pisc" x="25" y="22" z="0" heightmap="pisc">
+    <Holding name="Forest" type="Great Forest" objectNo="0"></Holding>
+    <Holding name="Virgil" type="Village" objectNo="6"></Holding>
+	<Levy>
+   	    <Regiment type="Pikemen" amount="300" maxAmount="300" position="0"></Regiment>
+   	</Levy> 
+   	<Garrison>
+   	    <Regiment type="Walls" amount="1000" maxAmount="1000" position="0"></Regiment>
+   	    <Regiment type="Walls" amount="1000" maxAmount="1000" position="1"></Regiment>
+   	    <Regiment type="Guardians" amount="100" maxAmount="100" position="2"></Regiment>
+   	</Garrison>
+</Barony>

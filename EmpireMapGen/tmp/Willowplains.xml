@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Barony name="Willowplains" x="-6" y="3" z="0" heightmap="willowplains">
+	<Holding name="Achor" type="Village" objectNo="2"></Holding>
+	<Holding name="Northern Farm" type="Farm" objectNo="0"></Holding>
+	<Holding name="Southern Farm" type="Farm" objectNo="3"></Holding>
+	<Levy>
+   	    <Regiment type="Guardians" amount="100" maxAmount="100" position="1"></Regiment>
+   	    <Regiment type="Swordmen" amount="200" maxAmount="200" position="0"></Regiment>
+   	</Levy> 
+   	<Garrison>
+   	    <Regiment type="Walls" amount="1000" maxAmount="1000" position="0"></Regiment>
+   	    <Regiment type="Walls" amount="1000" maxAmount="1000" position="1"></Regiment>
+   	    <Regiment type="Guardians" amount="100" maxAmount="100" position="2"></Regiment>
+   	</Garrison>
+</Barony>

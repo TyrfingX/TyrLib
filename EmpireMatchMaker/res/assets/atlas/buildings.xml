@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Atlas texture="BUILDINGS" name="BUILDINGS">
+    <Region name="Market" x="0" y="0" w="50" h="50" />
+    <Region name="Forge" x="50" y="0" w="50" h="50" />
+    <Region name="Library" x="100" y="0" w="50" h="50" />
+    <Region name="Granary" x="150" y="0" w="50" h="50" />
+    <Region name="Guild" x="200" y="0" w="50" h="50" />
+</Atlas>

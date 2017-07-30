@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Barony name="Lodoss" x="12" y="9" z="0" heightmap="lodoss">
+    <Holding name="Pasture" type="Pasture" objectNo="0"></Holding>
+	<Levy>
+   	    <Regiment type="Cavalry" amount="100" maxAmount="100" position="2"></Regiment>
+   	    <Regiment type="Pikemen" amount="200" maxAmount="200" position="0"></Regiment>
+   	</Levy> 
+   	<Garrison>
+   	    <Regiment type="Walls" amount="1000" maxAmount="1000" position="0"></Regiment>
+   	    <Regiment type="Walls" amount="1000" maxAmount="1000" position="1"></Regiment>
+   	    <Regiment type="Guardians" amount="100" maxAmount="100" position="2"></Regiment>
+   	</Garrison>
+</Barony>

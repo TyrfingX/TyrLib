@@ -1,0 +1,10 @@
+precision mediump float;
+
+uniform sampler2D bgl_RenderedTexture;
+
+varying vec2 v_Position;
+
+void main(void)
+{
+    gl_FragColor = texture2D( bgl_RenderedTexture, v_Position)*10.0;
+}

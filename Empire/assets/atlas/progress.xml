@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Atlas texture="PROGRESS" name="PROGRESS">
+	 <Region name="ORANGE" x="0" y="0" w="50" h="20" />
+	 <Region name="BROWN" x="50" y="0" w="50" h="20" />
+</Atlas>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+" codebase="http://81.169.162.243" href="web.jnlp">
+    <information>
+        <title>SwordScroll</title>
+        <vendor>Tyrfing</vendor>
+        <offline-allowed/>
+		<desktop/>
+    </information>
+    <offline-allowed/>
+    <resources>
+        <!-- Application Resources -->
+        <j2se version="1.7+" href="http://java.sun.com/products/autodl/j2se"/>
+        <jar href="files/SwordScroll.jar" main="true" />
+    </resources>
+    <security>
+    	<all-permissions/>
+    </security>
+    <application-desc
+         name="Sword & Scroll"
+     </application-desc>
+     <update check="background"/>
+</jnlp>        
+

@@ -1,0 +1,13 @@
+precision mediump float;
+
+uniform sampler2D bgl_RenderedTexture;
+uniform sampler2D bgl_SSAOTexture;
+
+uniform vec3 u_Ambient;
+
+varying vec2 v_Position;
+
+void main(void)
+{
+    gl_FragColor = vec4( vec3(texture2D( bgl_SSAOTexture, v_Position).r),0.0) ;
+}

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ParticleSystem maxParticles="50">
+    <Factories>
+    	<Factory name="factory1" lifeTime="1.5" size="0.95">
+     		<Material r="1.0" g="1.0" b="1.0" a="0.3" texture="BRIGHT_SMOKE"></Material>
+    	</Factory>
+    </Factories>
+    <Emitters>
+        <Emitter amount="1" interval="0.05" factory="factory1">
+            <Position x="-0.1" y="1.1" z="-1.75"></Position>
+            <Velocity x="0" y="0" z="1.5"></Velocity>
+            <RandomPosition x="1.3" y="0" z="0.0"></RandomPosition>
+        </Emitter>
+    </Emitters>
+    <Affectors>
+        <Affector type="ColorChanger">
+            <ColorChange r="-0.1" g="-0.1" b="-0.1" a="-0.15"></ColorChange>
+        </Affector>
+        <Affector type="ForceAffector">
+            <HomogenField x="0" y="0" z="-1.5"></HomogenField>
+        </Affector>
+        <Affector type="SizeChanger">
+            <SizeChange value="-0.3"></SizeChange>
+        </Affector>
+        <Affector type="RotationChanger">
+            <RotationChange value="120"></RotationChange>
+        </Affector>
+    </Affectors>
+</ParticleSystem>

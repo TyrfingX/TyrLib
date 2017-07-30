@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Barony name="Lombard" x="17" y="20" z="0" heightmap="lombard">
+    <Holding name="Jolion" type="Village" objectNo="2"></Holding>
+	<Levy>
+   	    <Regiment type="Swordmen" amount="300" maxAmount="100" position="0"></Regiment>
+   	</Levy> 
+   	<Garrison>
+   	    <Regiment type="Walls" amount="1000" maxAmount="1000" position="0"></Regiment>
+   	    <Regiment type="Walls" amount="1000" maxAmount="1000" position="1"></Regiment>
+   	    <Regiment type="Guardians" amount="100" maxAmount="100" position="2"></Regiment>
+   	</Garrison>
+</Barony>

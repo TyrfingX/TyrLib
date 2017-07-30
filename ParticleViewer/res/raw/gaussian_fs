@@ -1,0 +1,25 @@
+precision mediump float;
+
+uniform sampler2D bgl_RenderedTexture;
+
+varying vec2 v_Position;
+
+#if X 
+uniform vec2 offset = vec2(0.0, 1.3846153846 )/1535.0;
+#endif 
+
+#if Y 
+uniform vec2 offset = vec2(1.3846153846, 0.0)/835.0;
+#endif 
+
+uniform float weight[2] = float[]( 0.2270270270, 0.3162162162 );
+
+void main(void)
+{
+    vec4 color = texture2D( bgl_RenderedTexture, v_Position );
+    gl_FragColor = color * weight[0];
+    gl_FragColor +=
+    	texture2D( bgl_RenderedTexture, v_Position+offset ) * weight[1];
+    gl_FragColor +=
+    	texture2D( bgl_RenderedTexture, v_Position-offset ) * weight[1];
+}

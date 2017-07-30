@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Barony name="Highcastle" x="17" y="3" z="0" heightmap="highcastle">
+    <Holding name="Mine" type="Mine" objectNo="0"></Holding>
+	<Levy>
+   	    <Regiment type="Swordmen" amount="300" maxAmount="300" position="0"></Regiment>
+   	</Levy> 
+   	<Garrison>
+   	    <Regiment type="Walls" amount="1000" maxAmount="1000" position="0"></Regiment>
+   	    <Regiment type="Walls" amount="1000" maxAmount="1000" position="1"></Regiment>
+   	    <Regiment type="Guardians" amount="100" maxAmount="100" position="2"></Regiment>
+   	</Garrison>
+</Barony>

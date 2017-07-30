@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="release" name="Create Runnable Jar for Project PCPortTest">
+
+	<property name="aliasName" value="Tyrfing"/>
+	<property name="password" value="jdlkmew234asd!"/>
+	<property name="keystoreFileName" location="keystore.ks"/>
+	<property name="firstNameSurName" value="Sascha Müller"/>
+	<property name="validity" value="10000"/>
+	<property name="dest" value="/media/sascha/Windows8_OS/Programmieren/SwordScroll"/>
+    
+	<macrodef name="copyGLLib">
+		<attribute name="target"/>
+		<attribute name="dest"/>
+		<sequential>
+		    <copy file="/media/sascha/Windows8_OS\Users\Media\Downloads\jogamp-all-platforms\jogamp-all-platforms\jar\gluegen-rt-natives-@{target}.jar" todir="${dest}/lib"/>
+            <copy file="/media/sascha/Windows8_OS\Users\Media\Downloads\jogamp-all-platforms\jogamp-all-platforms\jar\jogl-all-natives-@{target}.jar" todir="${dest}/lib"/>
+		</sequential>
+	</macrodef>
+	
+    <macrodef name="build">
+        <attribute name="targetWin32"/>
+        <attribute name="targetWin64"/>
+        <attribute name="targetLin32"/>
+        <attribute name="targetLin64"/>
+        <attribute name="targetOSX"/>
+	    <sequential>
+	        <jar destfile="${dest}/SwordScroll.jar" duplicate="preserve">
+	            <manifest>
+	                <attribute name="Main-Class" value="com.tyrfing.games.pc.main.MainStarter"/>
+	                <attribute name="Class-Path" value="./"/>
+	                <attribute name="Class-PathWin32" value="SwordScroll.jar lib/trove-3.0.3.jar lib/kxml2-2.3.0.jar lib/jogl-all.jar lib/gluegen-rt.jar lib/gluegen-rt-natives-@{targetWin32}.jar lib/jogl-all-natives-@{targetWin32}.jar"/>
+	                <attribute name="Class-PathWin64" value="SwordScroll.jar lib/trove-3.0.3.jar lib/kxml2-2.3.0.jar lib/jogl-all.jar lib/gluegen-rt.jar lib/gluegen-rt-natives-@{targetWin64}.jar lib/jogl-all-natives-@{targetWin64}.jar"/>
+	        		<attribute name="Class-PathLin32" value="SwordScroll.jar lib/trove-3.0.3.jar lib/kxml2-2.3.0.jar lib/jogl-all.jar lib/gluegen-rt.jar lib/gluegen-rt-natives-@{targetLin32}.jar lib/jogl-all-natives-@{targetLin32}.jar"/>
+	                <attribute name="Class-PathLin64" value="SwordScroll.jar lib/trove-3.0.3.jar lib/kxml2-2.3.0.jar lib/jogl-all.jar lib/gluegen-rt.jar lib/gluegen-rt-natives-@{targetLin64}.jar lib/jogl-all-natives-@{targetLin64}.jar"/>
+	                <attribute name="Class-PathOSX"   value="SwordScroll.jar lib/trove-3.0.3.jar lib/kxml2-2.3.0.jar lib/jogl-all.jar lib/gluegen-rt.jar lib/gluegen-rt-natives-@{targetOSX}.jar lib/jogl-all-natives-@{targetOSX}.jar"/>
+	        	
+	        	    <attribute name="Permissions" value="all-permissions"/>
+			      	<!-- Who is building this jar? -->
+			      	<attribute name="Built-By" value="${aliasName}"/>
+			      	<!-- Information about the program itself -->
+			      	<attribute name="Implementation-Vendor" value="${aliasName}"/>
+			      	<attribute name="Implementation-Title" value="SwordScroll"/>
+	        	</manifest>
+	            <fileset dir="bin">
+	                <exclude name="res/" />
+	            </fileset>
+	            <fileset dir="/media/sascha/Windows8_OS/Programmieren/git/TyrLib/TyrLib2/bin/classes"/>
+	            <fileset dir="/media/sascha/Windows8_OS/Programmieren/git/TyrLib/TyrLib2 Demo/bin/classes"/>
+	            <fileset dir="/media/sascha/Windows8_OS/Programmieren/workspace/Empire/bin/classes"/>
+	            <fileset dir="/media/sascha/Windows8_OS/Programmieren/git/TyrLib/TyrLib2PC/bin"/>
+	        </jar>
+	        <copy todir="${dest}/res">
+				<fileset dir="res"/>
+			</copy>
+			<delete dir="${dest}/lib"/>
+			<mkdir dir="${dest}/lib"/>
+			
+			<copy file="/media/sascha/Windows8_OS\Programmieren\git\TyrLib\TyrLib2PC\lib\gluegen-rt.jar" todir="${dest}/lib"/>
+            <copy file="/media/sascha/Windows8_OS\Programmieren\git\TyrLib\TyrLib2PC\lib\jogl-all.jar" todir="${dest}/lib"/>
+            <copy file="/media/sascha/Windows8_OS\Users\Media\Documents\Austausch\PCPortTest\kxml2-2.3.0.jar" todir="${dest}/lib"/>
+            <copy file="/media/sascha/Windows8_OS\Programmieren\git\TyrLib\TyrLib2\libs\trove-3.0.3.jar" todir="${dest}/lib"/>
+			
+			<copyGLLib dest="${dest}" target="@{targetWin32}"/>
+			<copyGLLib dest="${dest}" target="@{targetWin64}"/>
+			<copyGLLib dest="${dest}" target="@{targetLin32}"/>
+			<copyGLLib dest="${dest}" target="@{targetLin64}"/>
+			<copyGLLib dest="${dest}" target="@{targetOSX}"/>
+			
+			<signjar jar="/media/sascha/Windows8_OS/Programmieren/SwordScroll/SwordScroll.jar" alias="Tyrfing" storepass="jdlkmew234asd!" keystore="${keystoreFileName}"/>
+			<zip destfile="/media/sascha/Windows8_OS/Programmieren/SwordScroll.zip">
+				<zipfileset dir="/media/sascha/Windows8_OS/Programmieren/SwordScroll"/>
+			</zip>
+			<scp file="/media/sascha/Windows8_OS/Programmieren/SwordScroll.zip" todir="root:BKJpS778@81.169.162.243:/var/www/" /> 
+			<!-- <scp todir="root:BKJpS778@81.169.162.243:/var/www/">
+	   			<fileset dir="/media/sascha/Windows8_OS/Programmieren/SwordScroll"/>
+	  		</scp> -->
+	    </sequential>
+	</macrodef>
+    
+    <target name="release">
+		<delete file="${keystoreFileName}" failonerror="false" />
+		<genkey alias="${aliasName}" storepass="${password}" keystore="${keystoreFileName}" validity="${validity}">
+		   <dname>
+		   	<param name="CN" value="${firstNameSurName}"/>
+		   	<param name="OU" value="${firstNameSurName}"/>
+		   </dname>
+		</genkey>
+		
+		<!-- <scp file="web.jnlp" todir="root:BKJpS778@81.169.162.243:/var/www/" />  -->
+        
+        <delete dir="${dest}"/>
+        <mkdir dir="${dest}"/>
+        
+        <build 	targetWin64="windows-amd64" targetWin32="windows-i586" 
+        	 	targetLin64="linux-amd64" targetLin32="linux-i586"
+        		targetOSX="macosx-universal"/>
+    	
+  		
+		<scp file="/media/sascha/Windows8_OS/Programmieren/qrcode.png" todir="root:BKJpS778@81.169.162.243:/var/www/" /> 
+  		
+		
+		 <sequential>
+	        <jar destfile="${dest}/SwordScrollMatchMaker.jar" duplicate="preserve">
+	            <manifest>
+	                <attribute name="Main-Class" value="com.tyrfing.games.id17.matchmaker.Main"/>
+	                <attribute name="Class-Path" value="./ SwordScroll.jar"/>
+	        	    <attribute name="Permissions" value="all-permissions"/>
+			      	<attribute name="Built-By" value="${aliasName}"/>
+			      	<attribute name="Implementation-Vendor" value="${aliasName}"/>
+			      	<attribute name="Implementation-Title" value="SwordScrollMatchMaker"/>
+	        	</manifest>
+	            <fileset dir="/home/sascha/workspace/EmpireMatchMaker/bin"/>
+	            <fileset dir="/media/sascha/Windows8_OS/Programmieren/git/TyrLib/TyrLib2/bin/classes"/>
+	            <fileset dir="/media/sascha/Windows8_OS/Programmieren/git/TyrLib/TyrLib2PC/bin"/>
+	        </jar>
+			<signjar jar="/media/sascha/Windows8_OS/Programmieren/SwordScroll/SwordScrollMatchMaker.jar" alias="Tyrfing" storepass="jdlkmew234asd!" keystore="${keystoreFileName}"/>
+	    </sequential>
+	    
+		<scp todir="root:BKJpS778@81.169.162.243:/root/SwordScroll">
+   			<fileset dir="/media/sascha/Windows8_OS/Programmieren/SwordScroll"/>
+  		</scp>
+		
+	</target>
+</project>

@@ -1,0 +1,11 @@
+precision mediump float;        // Set the default precision to medium. We don't need as high of a
+                                // precision in the fragment shader.
+
+uniform vec4 u_Color;
+ 
+// The entry point for our fragment shader.
+void main()
+{
+	// Multiply the color by the diffuse illumination level and texture value to get final output color.
+	gl_FragColor = u_Color;
+}

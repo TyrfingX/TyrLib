@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Atlas texture="UNIT_ICONS" name="UNIT_ICONS">
+    <Region name="Swordmen" x="0" y="0" w="50" h="50" />
+    <Region name="Empty" x="50" y="0" w="50" h="50" />
+    <Region name="HEALTH_BRUSH_1" x="0" y="50" w="50" h="50" />
+    <Region name="HEALTH_BRUSH_2" x="50" y="50" w="50" h="50" />
+    <Region name="HEALTH_BRUSH_3" x="100" y="50" w="50" h="50" />
+    <Region name="HEALTH_BRUSH_4" x="150" y="50" w="50" h="50" />
+    <Region name="HEALTH_BRUSH_5" x="200" y="50" w="50" h="50" />
+    <Region name="Guardians" x="100" y="0" w="50" h="50" />
+    <Region name="Archers" x="150" y="0" w="50" h="50" />
+    <Region name="Pikemen" x="200" y="0" w="50" h="50" />
+    <Region name="ATTACKER_BRUSH" x="0" y="100" w="50" h="50" />
+    <Region name="DEFENDER_BRUSH" x="50" y="100" w="50" h="50" />
+    <Region name="Axemen" x="100" y="100" w="50" h="50" />
+    <Region name="Cavalry" x="150" y="100" w="50" h="50" />
+    <Region name="Walls" x="200" y="100" w="50" h="50" />
+</Atlas>

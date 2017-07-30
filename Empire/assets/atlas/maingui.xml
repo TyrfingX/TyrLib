@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Atlas texture="MAIN_GUI" name="MAIN_GUI">
+    <Region name="SMALL_CIRCLE_BORDER" x="0" y="0" w="49" h="49" />
+	<Region name="SMALL_CIRCLE_BORDER_ACTIVE" x="48" y="0" w="49" h="49" />
+	<Region name="SMALL_CIRCLE_BORDER_DISABLED" x="96" y="0" w="49" h="49" />
+    <Region name="PEBBLE_BRUSH" x="102" y="1" w="89" h="89" />
+    <Region name="SMALL_CIRCLE_PEBBLE" x="194" y="0" w="100" h="100" />
+    <Region name="WOOD_BRUSH" x="320" y="20" w="40" h="40" />
+    <Region name="SMALL_CIRCLE_WOOD" x="398" y="1" w="99" h="100" />
+    <Region name="SMALL_CIRCLE_WOOD_ACTIVE" x="0" y="445" w="100" h="100" />
+    <Region name="DIPLO_ICON" x="501" y="2" w="59" h="52" />
+	<Region name="TECH_ICON" x="1" y="545" w="97" h="97" />
+	<Region name="TECH_ICON_BIG" x="8" y="557" w="76" h="76	" />
+    <Region name="ARMY_ICON" x="564" y="0" w="59" h="59" />
+    <Region name="INTRIGUE_ICON" x="878" y="0" w="65" h="65" />
+	<Region name="INTRIGUE_ICON_BIG" x="887" y="8" w="48" h="48" />
+    <Region name="BIG_CIRCLE_BORDER" x="4" y="111" w="198" h="196" />
+    <Region name="BIG_CIRCLE_BORDER" x="4" y="111" w="198" h="196" />
+    <Region name="SMALL_RECT_BORDER" x="7" y="318" w="291" h="57" />
+    <Region name="BIG_RECT_BORDER" x="100" y="444" w="200" h="153" />
+    <Region name="SMALL_RECT_WOOD" x="7" y="384" w="291" h="57" />
+    <Region name="PLAY" x="308" y="320" w="29" h="35" />
+    <Region name="PAUSE" x="365" y="313" w="30" h="47" />
+    <Region name="PLAY_SPEED" x="102" y="612" w="41" h="15" />
+	<Region name="PLAY_SPEED_ACTIVE" x="102" y="628" w="41" h="15" />
+    <Region name="PLAY_ACTIVE" x="308" y="368" w="29" h="35" />
+    <Region name="PAUSE_ACTIVE" x="365" y="369" w="30" h="47" />
+    <Region name="GOLD_ICON" x="0" y="74" w="36" h="36" />
+    <Region name="HONOR_ICON" x="54" y="50" w="34" h="34" />
+    <Region name="MALE_ICON" x="1" y="51" w="20" h="20" />
+    <Region name="FEMALE_ICON" x="22" y="50" w="22" h="22" />
+    
+    <Region name="BIG_RECT_BOTTOM" x="684" y="353" w="287" h="30" />
+    <Region name="BIG_RECT_TOP" x="684" y="117" w="287" h="30" />
+    <Region name="BIG_RECT_LEFT" x="654" y="147" w="30" h="206" />
+    <Region name="BIG_RECT_RIGHT" x="971" y="147" w="30" h="206" />
+    <Region name="BIG_RECT_BOTTOM_LEFT" x="654" y="353" w="30" h="30" />
+    <Region name="BIG_RECT_TOP_RIGHT" x="971" y="117" w="30" h="30" />
+    <Region name="BIG_RECT_BOTTOM_RIGHT" x="971" y="353" w="30" h="30" />
+    <Region name="BIG_RECT_TOP_LEFT" x="654" y="117" w="30" h="30" />
+    
+    <Region name="SMALL_RECT_BOTTOM" x="14" y="369" w="278" h="7" />
+    <Region name="SMALL_RECT_TOP" x="14" y="317" w="278" h="7" />
+    <Region name="SMALL_RECT_LEFT" x="7" y="324" w="7" h="45" />
+    <Region name="SMALL_RECT_RIGHT" x="291" y="325" w="7" h="45" />
+    <Region name="SMALL_RECT_BOTTOM_LEFT" x="7" y="370" w="6" h="5" />
+    <Region name="SMALL_RECT_TOP_RIGHT" x="291" y="317" w="7" h="7" />
+    <Region name="SMALL_RECT_BOTTOM_RIGHT" x="291" y="369" w="7" h="6" />
+    <Region name="SMALL_RECT_TOP_LEFT" x="7" y="317" w="6" h="7" />
+    
+    <Region name="BLACK_BRUSH" x="705" y="166" w="99" h="100" />
+    <Region name="CANCEL" x="811" y="166" w="50" h="50" />
+    <Region name="MINIMIZE" x="811" y="220" w="50" h="50" />
+    <Region name="BACK" x="445" y="483" w="50" h="50" />
+    <Region name="SMALL_CIRCLE_WOOD_DISABLED" x="771" y="0" w="100" h="100" />
+    <Region name="BUILD_ICON" x="892" y="272" w="80" h="80" />
+<Region name="PILLAGE_ICON" x="505" y="56" w="46" h="46" />
+ <Region name="BUILD_ICON_BIG" x="900" y="276" w="65" h="65" />
+    <Region name="REGIMENT_ICON" x="807" y="272" w="80" h="80" />
+    <Region name="RAISE_ARMY_ICON" x="868" y="158" w="80" h="80" />
+    <Region name="GARRISON_ICON" x="705" y="271" w="80" h="80" />
+    
+    <Region name="PAPER" x="415" y="320" w="200" h="150" />
+	<Region name="PAPER2" x="625" y="386" w="400" h="100" />
+	<Region name="PAPER2_ACTIVE" x="625" y="485" w="400" h="100" />
+    <Region name="PAPER2_DISABLED" x="625" y="587" w="400" h="100" />
+	
+    <Region name="ARMY_MOVE_ICON" x="965" y="54" w="60" h="60" />
+    
+    <Region name="INFO_ICON" x="301" y="417" w="56" h="58" />
+    <Region name="NO_INFO_ICON" x="348" y="416" w="60" h="60" />
+    
+    <Region name="PROGRESS_BAR_BG" x="320" y="483" w="94" h="7" />
+    
+    <Region name="VASSAL_LAWS" x="335" y="513" w="57" h="86" />
+</Atlas>

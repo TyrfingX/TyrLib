@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ParticleSystem maxParticles="100" screenSpace="True">
+    <Factories>
+    	<Factory name="fire" lifeTime="1" size="0.01">
+     		<Material r="1.0" g="1.0" b="0.0" a="0.8" texture="SMOKE"></Material>
+    	</Factory>
+    </Factories>
+    <Emitters>
+        <Emitter amount="5" interval="0.01" factory="z" max="100">
+            <Position x="0" y="0" z="0"></Position>
+			<RandomPosition x="0.02" y="0.02" z="0"></RandomPosition>
+			<RandomVelocity x="0.2" y="0.0" z="0"></RandomVelocity>
+			<Velocity x="0.0" y="0.1" z="0"></Velocity>
+        </Emitter>
+    </Emitters>
+    <Affectors>
+        <Affector type="SizeChanger">
+            <MaxLifeTime value="0.5" />
+			<SizeChange value="0.08"></SizeChange>
+        </Affector>
+	    <Affector type="SizeChanger">
+		    <MinLifeTime value="0.5" />
+            <SizeChange value="-0.08"></SizeChange>
+        </Affector>
+        <Affector type="ColorChanger">´
+            <ColorChange r="-0.5" g="-0.1" b="0.1" a="-0.5"></ColorChange>
+        </Affector>
+    </Affectors>
+</ParticleSystem>

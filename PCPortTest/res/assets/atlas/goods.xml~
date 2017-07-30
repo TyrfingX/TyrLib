@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Atlas texture="GOODS" name="GOODS">
+    <Region name="Wood" x="0" y="0" w="100" h="100" />
+    <Region name="Grain" x="100" y="0" w="100" h="100" />
+    <Region name="Flour" x="200" y="0" w="100" h="100" />
+    <Region name="Out" x="302" y="0" w="96" h="100" />
+    <Region name="In" x="402" y="0" w="96" h="100" />
+    <Region name="Iron" x="0" y="100" w="100" h="100" />
+    <Region name="Horse" x="100" y="100" w="100" h="100" />
+    <Region name="Meat" x="200" y="100" w="100" h="100" />
+	<Region name="Bread" x="300" y="100" w="100" h="100" />
+	<Region name="Weaponry" x="400" y="100" w="100" h="100" />
+	<Region name="Weaponry" x="0" y="200" w="100" h="100" />
+</Atlas>
