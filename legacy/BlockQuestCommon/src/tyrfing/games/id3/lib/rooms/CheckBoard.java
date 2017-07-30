@@ -19,7 +19,7 @@ import tyrfing.games.id3.lib.rooms.content.Hero;
 
 public class CheckBoard {
 	
-	public static int BASE_MONEY_PER_ROW = 15;
+	public static int BASE_MONEY_PER_ROW = 10;
 	private Board board;
 	
 	public CheckBoard(Board board)
@@ -49,7 +49,7 @@ public class CheckBoard {
 			
 			res++;
 			
-			int addedMoney  = CheckBoard.BASE_MONEY_PER_ROW + ((int)(2*extra*CheckBoard.BASE_MONEY_PER_ROW/(float)board.getWidth()));
+			int addedMoney  = res * CheckBoard.BASE_MONEY_PER_ROW + ((int)(2*extra*CheckBoard.BASE_MONEY_PER_ROW/(float)board.getWidth()));
 			state.character.setMoney(state.character.getMoney() + addedMoney);
 			
 			RoomElement center = (RoomElement) board.getItem((int)(board.getWidth()/2), y);

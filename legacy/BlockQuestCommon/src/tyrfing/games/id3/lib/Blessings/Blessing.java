@@ -102,13 +102,13 @@ public class Blessing {
 		blessing.setVisible(false);
 		
 		//Show Upgrades
-		upgradeLabel = WindowManager.createLabel(blessing.getName() + "/label", 20, 5, 20, 20, upgrades+"/"+maxUpgrades, Color.TRANSPARENT);
+		upgradeLabel = WindowManager.createLabel(blessing.getName() + "/label", 30, 20, 20, 20, upgrades+"/"+maxUpgrades, Color.TRANSPARENT);
 		blessing.addChild(upgradeLabel);
 		
 		//Show Money costs
-		ImageBox costWindow = WindowManager.createImageBox(blessing.getName() + "/MoneyCost", blessing.getWidth()*0.65f, 10, 20, 20, Ressources.getScaledBitmap("money", new Vector2(20,20)));
+		ImageBox costWindow = WindowManager.createImageBox(blessing.getName() + "/MoneyCost", blessing.getWidth()*0.7f, 20, 20, 20, Ressources.getScaledBitmap("money", new Vector2(20,20)));
 		blessing.addChild(costWindow);
-		costWindow.addChild(WindowManager.createLabel(costWindow.getName() + "/label", 20, 5, 20, 20, moneyCost() +"", Color.TRANSPARENT));
+		costWindow.addChild(WindowManager.createLabel(costWindow.getName() + "/label", 30, 5, 20, 20, moneyCost() +"", Color.TRANSPARENT));
 		blessing.addClickListener(new ClickListener(){
 			public void onClick(Event event) {
 				onClickButton();

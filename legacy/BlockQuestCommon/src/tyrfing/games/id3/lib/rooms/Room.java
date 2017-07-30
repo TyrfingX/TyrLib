@@ -15,7 +15,6 @@ import tyrfing.common.game.objects.GameObject;
 import tyrfing.common.game.objects.Movement;
 import tyrfing.common.graph.Graph;
 import tyrfing.common.graph.Vertex;
-import tyrfing.common.input.InputManager;
 import tyrfing.common.input.TouchListener;
 import tyrfing.common.math.Mirror2;
 import tyrfing.common.math.Rotator2;
@@ -64,7 +63,6 @@ public class Room extends GameObject implements TouchListener {
 	private Text debugVisitCounter;
 	
 	private Integer lowestCoord;
-	public boolean mirror = false;
 	
 	private Node previewNode;
 	private List<Rectangle> previewElements;
@@ -233,12 +231,6 @@ public class Room extends GameObject implements TouchListener {
 		this.transform(Rotator2.Rotator90);
 	}
 	
-	public void mirror()
-	{
-		mirror = false;
-		this.transform(Mirror2.MirrorY);
-	}
-	
 	public void transform(Transformer transformer)
 	{
 		this.writeNullAtPos();
@@ -297,32 +289,10 @@ public class Room extends GameObject implements TouchListener {
 		
 		MainLogic.updateFallPreview();
 	}
-
-	
-	public void checkMirror(float time)
-	{
-		if (firstFall && mirror && this.isFalling())
-		{
-			if (InputManager.isUserTouching())
-			{
-				if (touchTime >= 0)
-				{
-					touchTime += time;
-					if (touchTime >= TIME_MIRROR)
-					{
-						this.mirror();
-						touchTime = -1;
-					}
-				}
-				
-			}
-		}	
-	}
 	
 	@Override
 	public void onUpdate(float time) {
 		
-		this.checkMirror(time);
 		visits.onUpdate(time);
 
 		debugVisitCounter.setText(visits.getVisits()+"");
@@ -353,7 +323,6 @@ public class Room extends GameObject implements TouchListener {
 
 		
 		if (rotate && this.isFalling() && this.firstFall) this.rotate();
-		if (mirror && this.isFalling() && this.firstFall && !InputManager.isUserTouching()) this.mirror();
 		
 		float timeTmp = time;
 		
@@ -779,12 +748,9 @@ public class Room extends GameObject implements TouchListener {
 	@Override
 	public boolean onTouchDown(Vector2 point) {
 		
-		boolean isPointInRoom = this.testPointInRoom(point);
-		
 		if (point.y < node.getParent().getAbsolutePos().y || point.y > node.getParent().getAbsolutePos().y + board.getHeight() * board.getTileSize())
 		{
 			movement.setSpeed(fallSpeed * SPEED_UP);
-			isPointInRoom = false;
 		}
 		
 		if (touchTime < TIME_MIRROR && touchTime >= 0)
@@ -802,15 +768,6 @@ public class Room extends GameObject implements TouchListener {
 				}
 			}
 			MainLogic.updateFallPreview();
-		}
-		
-		if (!isPointInRoom)
-		{
-			mirror = false;
-		}
-		else
-		{
-			mirror = true;
 		}
 		
 		touchTime = 0;
@@ -843,7 +800,6 @@ public class Room extends GameObject implements TouchListener {
 		
 		
 		movement.setSpeed(fallSpeed);
-		mirror = false;
 		moved = false;
 		return false;
 	}

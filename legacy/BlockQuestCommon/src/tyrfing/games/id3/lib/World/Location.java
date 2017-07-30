@@ -52,9 +52,8 @@ public abstract class Location implements ClickListener, BackListener {
 		
 	}
 	
-	public void setVisible(boolean visible)
-	{
-		mapItem.setVisible(visible);
+	public Button getMapItem() {
+		return mapItem;
 	}
 	
 	public abstract boolean onPressBack();

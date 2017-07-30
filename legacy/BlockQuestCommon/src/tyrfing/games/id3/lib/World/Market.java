@@ -30,13 +30,13 @@ public class Market extends Building{
 	public static final int EXTRA_MONEY_ROW = 5;
 	public static final int EXTRA_MONEY_DUNGEON = 100;
 	
-	public static final int BASE_POTION_COST = 300;
-	public static final int INC_POTION_COST = 100;
+	public static final int BASE_POTION_COST = 500;
+	public static final int INC_POTION_COST = 250;
 	public static final int MAX_POTIONS = 3;
 	
-	public static final int BASE_IMPROVE_COST = 300;
-	public static final int INC_IMPROVE_COST = 400;
-	public static final int INC_IMPROVE_VALUE = 50;
+	public static final int BASE_IMPROVE_COST = 1000;
+	public static final int INC_IMPROVE_COST = 1000;
+	public static final int INC_IMPROVE_VALUE = 250;
 	
 	private Button stockPotion;
 	private Button improvePotion;

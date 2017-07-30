@@ -37,10 +37,18 @@ public class RoomFactoryConfig {
 		
 		shapes = new ArrayList<RoomShape>();
 		
-		//L-Shape
+		//L-Shape 1
 		RoomShape shape = new RoomShape();
 		shape.addElement(new Coord2(1,0));
 		shape.addElement(new Coord2(-1,1));
+		shape.addElement(new Coord2(0,1));
+		shape.addElement(new Coord2(1,1));
+		shapes.add(shape);
+		
+		//L-Shape 2
+		shape = new RoomShape();
+		shape.addElement(new Coord2(1,0));
+		shape.addElement(new Coord2(1,-1));
 		shape.addElement(new Coord2(0,1));
 		shape.addElement(new Coord2(1,1));
 		shapes.add(shape);
@@ -52,12 +60,20 @@ public class RoomFactoryConfig {
 		shape.addElement(new Coord2(1,0));
 		shapes.add(shape);
 
-		//Z-Shape
+		//Z-Shape1
 		shape = new RoomShape();
 		shape.addElement(new Coord2(-1,0));
 		shape.addElement(new Coord2(0,0));
 		shape.addElement(new Coord2(0,1));
 		shape.addElement(new Coord2(1,1));
+		shapes.add(shape);
+		
+		//Z-Shape2
+		shape = new RoomShape();
+		shape.addElement(new Coord2(1,0));
+		shape.addElement(new Coord2(0,0));
+		shape.addElement(new Coord2(0,1));
+		shape.addElement(new Coord2(-1,1));
 		shapes.add(shape);
 
 		//Bigger room

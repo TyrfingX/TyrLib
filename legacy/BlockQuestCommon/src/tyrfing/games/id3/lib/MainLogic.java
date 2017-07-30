@@ -202,13 +202,6 @@ public class MainLogic extends Observable implements IFrameListener, Observer, C
 			FactoryManager.registerFactory(MonsterType.DEMON.toString(), new MonsterFactory(floor.getLevel(), MonsterType.DEMON, updater, powerUp));
 		}
 		
-		/*
-		if (floor.getLevel() > 17)
-		{
-			FactoryManager.registerFactory(MonsterType.WISP.toString(), new MonsterFactory(floor.getLevel(), MonsterType.WISP, updater, powerUp));
-		}
-		*/
-		
 		if (settings == null)
 		{
 			config = new RoomFactoryConfig();
@@ -219,49 +212,42 @@ public class MainLogic extends Observable implements IFrameListener, Observer, C
 			config = settings.roomFactoryConfig;
 		}
 		
-		
-		if (floor.getLevel() > 1)
-		{
-			config.allowAttackUp = true;
-			if (floor.getLevel() > 2)
-			{
-				config.allowRedRooms = true;
-			}
-			else
-			{
-				config.STAIRS_DOWN_MIN_ROOMS = (3*config.STAIRS_DOWN_MIN_ROOMS)/4;
-			}
-		}
-		else
-		{
+		if (floor.getLevel() == 1) {
 			config.STAIRS_DOWN_MIN_ROOMS = config.STAIRS_DOWN_MIN_ROOMS/2;
-		}
-		
-		if (floor.getLevel() >= 25)
-		{
+		} else if (floor.getLevel() == 2) {
+			config.STAIRS_DOWN_MIN_ROOMS = (3*config.STAIRS_DOWN_MIN_ROOMS)/4;
+		} else if (floor.getLevel() >= 25) {
 			config.STAIRS_DOWN_MIN_ROOMS += 5;
 		}
 		
-
-		
-		if (floor.getLevel() > 6)
+		if (floor.getLevel() >= 3)
 		{
-			config.allowVioletRooms = true;
+			config.allowAttackUp = true;
 		}
 		
 		if (floor.getLevel() >= 5)
 		{
+			config.allowRedRooms = true;
+		}
+		
+		if (floor.getLevel() >= 10)
+		{
 			config.allowBlueRooms = true;
 		}
 		
-		if (floor.getLevel() >= 22)
+		if (floor.getLevel() >= 15)
 		{
-			config.allowGreenDoors = true;
+			config.allowVioletRooms = true;
 		}
 		
-		if (floor.getLevel() >= 18)
+		if (floor.getLevel() >= 30)
 		{
 			config.allowCursedRooms = true;
+		}
+		
+		if (floor.getLevel() >= 50)
+		{
+			config.allowGreenDoors = true;
 		}
 		
 		this.preview = new Preview(new Node(PADDING_X*tileSize,PADDING_Y*tileSize/3), new RoomFactory(board, topLeft, tileSize, config), 2);
@@ -439,7 +425,7 @@ public class MainLogic extends Observable implements IFrameListener, Observer, C
 		{	
 			if (!state.tutorial.isItemDone("Gameplay1"))
 			{
-				final String message = "Welcome to the first floor!\n\nConstruct the dungeon as good as possible\nfor your adventurer by placing\nthe falling blocks accordingly.\n\nRotate: Tap short.\nMirror: Tap long.";
+				final String message = "Welcome to the first floor!\n\nConstruct the dungeon as good as possible\nfor your adventurer by placing\nthe falling blocks accordingly.\n\nRotate: Tap.";
 				state.tutorial.createInfo(message, "Gameplay1");
 				state.tutorial.doItem("Gameplay1");
 			}
@@ -460,26 +446,24 @@ public class MainLogic extends Observable implements IFrameListener, Observer, C
 				}
 				else if (WindowManager.getWindow("Level2") == null)
 				{
-					
-					if (state.deepestLevel >= 3 && !state.tutorial.isItemDone("Level2"))
+					if (config.allowRedRooms && !state.tutorial.isItemDone("Level2"))
 					{
 						final String message = "Red rooms:\n\nBeware the red rooms!\nAll enemies within and adjacent to them\nwill receive a significant power-up!"; 
 						state.tutorial.createInfo(message, "Level2");
-						state.tutorial.doItem("Level2");		
-
-					} else if (state.deepestLevel >= 5 && !state.tutorial.isItemDone("BlueRooms")) {
+						state.tutorial.doItem("Level2");	
+					} else if (config.allowBlueRooms && !state.tutorial.isItemDone("BlueRooms")) {
 							final String message = "Blue rooms:\n\nBlue rooms increase the \nreceived loot from a row.\n\nBeware: Blue rooms will be colored red\nshould they neighbour a\nred room."; 
 							state.tutorial.createInfo(message, "BlueRoom");
 							state.tutorial.doItem("BlueRooms");								
 					} else if (WindowManager.getWindow("BlueRoom") == null) {
-						if (state.deepestLevel >= 7 && !state.tutorial.isItemDone("VioletRoom"))
+						if (config.allowVioletRooms && !state.tutorial.isItemDone("VioletRoom"))
 						{
 							final String message = "Violet rooms:\n\nBeware the violet rooms!\nAll enemies within will receive\na significant power-up!\nAlso, neighbouring rooms will be\ncolored red!"; 
 							state.tutorial.createInfo(message, "VioletRoom");
 							state.tutorial.doItem("VioletRoom");								
 						}
 						else if (WindowManager.getWindow("VioletRoom") == null) {
-							if (state.deepestLevel >= 18 && !state.tutorial.isItemDone("CursedRoom"))
+							if (config.allowCursedRooms && !state.tutorial.isItemDone("CursedRoom"))
 							{
 								final String message = "Cursed rooms:\n\nBeware the cursed rooms!\nThey cannot rooms be cleared, unless\ntheir color is changed to break\nthe curse.\n"; 
 								state.tutorial.createInfo(message, "CursedRoom");

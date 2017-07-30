@@ -36,7 +36,7 @@ public class UndeadBoss extends BossSkript{
 		DEAD
 	}
 	
-	public static final int LEVEL = 20;
+	public static final int LEVEL = 40;
 	
 	private static final int DROP_AMOUNT = 6;
 	private static final int PHASE_SHIFT_IDLE_DROP = 6;

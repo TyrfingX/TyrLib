@@ -23,15 +23,15 @@ public class Smith extends Building {
 	private Label weaponCosts;
 	private Label armorCosts;
 	
-	private static final int WEAPON_BASE_COST = 750;
-	private static final int WEAPON_INC_COST = 750;
-	private static final int ARMOR_BASE_COST = 1000;
-	private static final int ARMOR_INC_COST = 1500;
+	private static final int WEAPON_BASE_COST = 1000;
+	private static final int WEAPON_INC_COST = 1000;
+	private static final int ARMOR_BASE_COST = 2000;
+	private static final int ARMOR_INC_COST = 2000;
 	
 	private Stats data;
 	
 	public Smith(State state, boolean built) {
-		super(state, "Smithery", 1, built, 700);
+		super(state, "Smithery", 1, built, 500);
 		
 		data = state.character.getStats();
 		upgradeWeapons = WindowManager.createButton("Smith/upgradeWeapons", TargetMetrics.width, MenuConfig.TOP + MenuConfig.OFFSET, MenuConfig.WIDTH, MenuConfig.HEIGHT, "(Enlighten) Sharpen swords");

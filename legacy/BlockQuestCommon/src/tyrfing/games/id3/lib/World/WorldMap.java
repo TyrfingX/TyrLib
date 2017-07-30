@@ -69,7 +69,7 @@ public class WorldMap extends Observable implements ClickListener {
 	{
 		for (Location item : map.values())
 		{
-			item.setVisible(false);
+			item.getMapItem().fadeOut(0.5f);
 		}
 		
 		header.fadeOut(0.5f);	
@@ -83,7 +83,7 @@ public class WorldMap extends Observable implements ClickListener {
 		
 		for (Location item : map.values())
 		{
-			item.setVisible(true);
+			item.getMapItem().blendIn(0.5f);
 		}		
 		
 		header.blendIn(0.5f);
@@ -95,56 +95,52 @@ public class WorldMap extends Observable implements ClickListener {
 			state.tutorial.doItem("Welcome");
 		}
 		
-		
-		if (state.deepestLevel > 4 && !state.tutorial.isItemDone("Smith"))
-		{
+		if (state.deepestLevel >= 7 && !state.tutorial.isItemDone("Market")) {
 			City city = (City) map.get("WorldMap/" + MainGame.getString(R.string.city));	
 			city.addBuilding(new Smith(state, false));
 			state.tutorial.createInfo("Your advances within the dungeon have\nlet the trade within the city flourish,\nattracting skilled craftsman.\n\nA \"Smithery\" can now be built.");
 			state.tutorial.doItem("Smith");
 			state.save();
-		} else if (state.deepestLevel > 4 && !state.tutorial.isItemDone("Vision")) {
+		} else if (state.deepestLevel >= 7 && !state.tutorial.isItemDone("Vision")) {
 			state.tutorial.createInfo("You feel your follower's trust for you\ndeepening...\n\nYou can now perform the \"Ritual of Vision\".");
 			state.tutorial.doItem("Vision");
 			RitualFactory ritualFactory = new RitualFactory();
 			state.addRitual(ritualFactory.create(RitualType.RITUAL_OF_VISION));
 			state.save(); 
-		} else if (state.deepestLevel > 6 && !state.tutorial.isItemDone("Market")) {
+		} else if (state.deepestLevel >= 12 && !state.tutorial.isItemDone("Smith")) {
 			City city = (City) map.get("WorldMap/" + MainGame.getString(R.string.city));	
 			city.addBuilding(new Market(state, false));
 			state.tutorial.createInfo("The sold loot brought in by the\n adventurers sparks the interest of the\noutside world.\n\nA \"Market\" can now be built.");
 			state.tutorial.doItem("Market");
 			state.save();
-		} else if (state.deepestLevel > 7 && !state.tutorial.isItemDone("Prayer") && state.hasPower("Blessings")) {
+		} else if (state.deepestLevel >= 35 && !state.tutorial.isItemDone("Prayer") && state.hasPower("Blessings")) {
 			state.tutorial.createInfo("You feel your follower's trust for you\ndeepening...\n\nYou can now perform the \"Ritual of Prayer\".");
 			state.tutorial.doItem("Prayer");
 			RitualFactory ritualFactory = new RitualFactory();
 			state.addRitual(ritualFactory.create(RitualType.RITUAL_OF_PRAYER));
 			state.save(); 
-		} else if (state.deepestLevel > 10 && !state.tutorial.isItemDone("Enlighten") && state.tutorial.isItemDone("VisionPower")) {
+		} else if (state.deepestLevel >= 17 && !state.tutorial.isItemDone("Enlighten") && state.tutorial.isItemDone("VisionPower")) {
 			state.tutorial.createInfo("You feel your follower's trust for you\ndeepening...\n\nYou can now perform the\n\"Ritual of Enlightenment\".");
 			state.tutorial.doItem("Enlighten");
 			RitualFactory ritualFactory = new RitualFactory();
 			state.addRitual(ritualFactory.create(RitualType.RITUAL_OF_ENLIGHTENMENT));
 			state.save();	
-		} else if (state.deepestLevel > 12 && !state.tutorial.isItemDone("TradeRoute1") && ((City) map.get("WorldMap/" + MainGame.getString(R.string.city))).isBuilt("Market")) {
+		} else if (state.deepestLevel >= 21 && !state.tutorial.isItemDone("TradeRoute1") && ((City) map.get("WorldMap/" + MainGame.getString(R.string.city))).isBuilt("Market")) {
 			state.tutorial.createInfo("The growth of the city's market\nhas attracted nearby merchants..\n\n\nA trade route has been established.\n\n+100 Gold per cleared floor");
 			state.character.getStats().setStat("ExtraMoneyFloor", state.character.getStats().getStat("ExtraMoneyFloor") + 100);
 			state.tutorial.doItem("TradeRoute1");
 			state.save();
-		} else if (state.deepestLevel > 16 && !state.tutorial.isItemDone("Alchemy") && ((City) map.get("WorldMap/" + MainGame.getString(R.string.city))).isBuilt("Market")) {
+		} else if (state.deepestLevel >= 27 && !state.tutorial.isItemDone("Alchemy") && ((City) map.get("WorldMap/" + MainGame.getString(R.string.city))).isBuilt("Market")) {
 			state.tutorial.createInfo("You feel your follower's trust for you\ndeepening...\n\nYou can now perform the\n\"Ritual of Alchemy\".");
 			state.tutorial.doItem("Alchemy");
 			RitualFactory ritualFactory = new RitualFactory();
 			state.addRitual(ritualFactory.create(RitualType.RITUAL_OF_ALCHEMY));
 			state.save();	
-		} else if (state.deepestLevel > 20 && !state.tutorial.isItemDone("PowerUp1")) {
+		} else if (state.deepestLevel >= 41 && !state.tutorial.isItemDone("PowerUp1")) {
 			state.tutorial.createInfo("From the depths of the dungeon you\nfeel can something...\nA presence, ever so slighty.\nIt reminds you of something...\n\nMonsters in the dungeon have\nbecome stronger!");
 			state.tutorial.doItem("PowerUp1");
 			state.save();
 		}
-		
-		
 		
 		if (state.hasPower("Prayer") && Math.random() <= 0.5f)
 		{

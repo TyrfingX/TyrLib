@@ -21,7 +21,7 @@ public class OrcBoss extends BossSkript{
 		DEAD
 	}
 	
-	public static final int LEVEL = 10;
+	public static final int LEVEL = 20;
 	private static final int EXTRA_MONEY = 4000;
 	private static final int PHASE_SHIFT_IDLE_SPAMM = 10;
 	private static final int PHASE_SHIFT_SPAMM_SPEEDUP = 25;

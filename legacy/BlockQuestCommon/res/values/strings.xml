@@ -20,7 +20,7 @@
 	<string name="colors">Colors</string>
     
     <string name="intro1">You try to remember. Since when did you exist?</string>
-    <string name="intro2">... ... ...</string>
+    <string name="intro2">&#8230; &#8230; &#8230;</string>
     <string name="intro3">What are you? Human? No. The word sounds wrong.</string>
     <string name="intro4">You try to remember. Why are you here?\n</string>
     <string name="intro5">Dreams. Wishes.</string>
@@ -31,26 +31,16 @@
     <string name="intro10">Prayers finally heard, hope given form.</string>
     <string name="intro11">A miracle.</string>
     <string name="intro12">You finally remember the word for your kind of\nexistence.</string>
-    <string name="intro13">... ... ...</string>
+    <string name="intro13">&#8230; &#8230; &#8230;</string>
     <string name="intro14">God.</string>
     
     <string name="city">City</string>
-    <string name="poor_1">You observe the old city residing within your domain.\nThe wooden buildings are run-down and damaged,\nmost repairs only done in a sloppy manner.\nClearly, this place is ridden by poverty...</string>
-	<string name="poor_2">Observing the old city residing within your domain,\nyou see a variety of figures working diligently,\nreparing the buildings and trading away.\nHowever, marks of poverty still rule the city...</string>
-	<string name="medium_1">As your gaze wanders through the old city,\nyou see people praising their wares on the marketplace,\nyoung folk are building an imitation of your shrine\nand people are rushing in and out of the city...</string>
-	<string name="nothingToDo">You can feel that your power is still too weak,\nyour existence too insignificant to interfere with the city.\nMaybe you should come back at a later time...</string>
+    <string name="poor_1">You observe the old city residing within your domain.\nThe wooden buildings are run-down and damaged,\nmost repairs only done in a sloppy manner.\nClearly, this place is ridden by poverty&#8230;</string>
+	<string name="poor_2">Observing the old city residing within your domain,\nyou see a variety of figures working diligently,\nreparing the buildings and trading away.\nHowever, marks of poverty still rule the city&#8230;</string>
+	<string name="medium_1">As your gaze wanders through the old city,\nyou see people praising their wares on the marketplace,\nyoung folk are building an imitation of your shrine\nand people are rushing in and out of the city&#8230;</string>
+	<string name="nothingToDo">You can feel that your power is still too weak,\nyour existence too insignificant to interfere with the city.\nMaybe you should come back at a later time&#8230;</string>
 	
     
-    
-    
     <string name="shrine">Shrine</string>
-    
-    
-    
-    
-    
-    
-    
-    
     <string name="dungeon">Dungeon</string>
 </resources>
