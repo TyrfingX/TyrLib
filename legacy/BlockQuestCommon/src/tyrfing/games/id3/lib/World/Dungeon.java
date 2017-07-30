@@ -9,7 +9,6 @@ import tyrfing.common.render.SceneManager;
 import tyrfing.common.render.TargetMetrics;
 import tyrfing.common.ui.Event;
 import tyrfing.common.ui.widgets.Button;
-import tyrfing.games.id3.lib.BlockQuestActivity;
 import tyrfing.games.id3.lib.MainGame;
 import tyrfing.games.id3.lib.MainLogic;
 import tyrfing.games.id3.lib.MenuConfig;

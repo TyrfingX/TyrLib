@@ -36,7 +36,7 @@ public class BlockQuestActivity extends tyrfing.games.id3.lib.BlockQuestActivity
 
         // Add the AdView to the view hierarchy.
         outer.addView(game, gameViewParams);
-        outer.addView(adView, adParams);
+        //outer.addView(adView, adParams);
 
         setContentView(outer);
         

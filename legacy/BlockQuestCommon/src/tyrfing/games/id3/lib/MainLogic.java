@@ -331,6 +331,7 @@ public class MainLogic extends Observable implements IFrameListener, Observer, C
 		{
 			checkBoard.checkDoors();
 			int clearedRows = 0;
+			int iterations = 0;
 			do {
 				clearedRows = checkBoard.clearRows(hero, state);
 				if (clearedRows != 0)
@@ -342,7 +343,9 @@ public class MainLogic extends Observable implements IFrameListener, Observer, C
 						skripts.get(i).onClearRow();
 					}
 				}
-			} while(clearedRows != 0);
+				
+				iterations++;
+			} while(clearedRows != 0 && iterations < Room.MAX_ITERATIONS);
 			
 			if (boardChanged)
 			{

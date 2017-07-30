@@ -138,9 +138,10 @@ public class RoomFactory {
 		int monsters = 0;
 		float extraMonsterFactor = 1;
 		if (room.getState() == RoomState.CURSED) extraMonsterFactor = 2;
-		while (Math.random() <= config.PROB_PER_TILE * room.getCountElements() * extraMonsterFactor && monsters < MAX_MONSTER)
+		int iterations = 0;
+		while (Math.random() <= config.PROB_PER_TILE * room.getCountElements() * extraMonsterFactor && monsters < MAX_MONSTER && iterations < Room.MAX_ITERATIONS)
 		{
-			
+			iterations++;
 			IFactory factory;
 			
 			if (room.getState() != RoomState.CURSED)

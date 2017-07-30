@@ -25,8 +25,8 @@ public class Smith extends Building {
 	
 	private static final int WEAPON_BASE_COST = 1000;
 	private static final int WEAPON_INC_COST = 1000;
-	private static final int ARMOR_BASE_COST = 2000;
-	private static final int ARMOR_INC_COST = 2000;
+	private static final int ARMOR_BASE_COST = 1500;
+	private static final int ARMOR_INC_COST = 1500;
 	
 	private Stats data;
 	

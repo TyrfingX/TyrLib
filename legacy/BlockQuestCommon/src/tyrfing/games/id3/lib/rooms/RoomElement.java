@@ -296,7 +296,8 @@ public class RoomElement extends GameObject {
 	
 	@Override
 	public void onUpdate(float time) {
-		while (time > 0)
+		int iterations = 0;
+		while (time > 0 && iterations < Room.MAX_ITERATIONS)
 		{
 			if (!movement.isFinished())
 			{
@@ -307,6 +308,8 @@ public class RoomElement extends GameObject {
 			{
 				time = 0;
 			}
+			
+			iterations++;
 		}
 	}
 

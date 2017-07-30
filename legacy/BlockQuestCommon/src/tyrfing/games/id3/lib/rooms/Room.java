@@ -2,7 +2,9 @@ package tyrfing.games.id3.lib.rooms;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
 import android.graphics.Color;
@@ -71,6 +73,8 @@ public class Room extends GameObject implements TouchListener {
 	private boolean moved;
 	
 	private Direction userMove = null;
+	
+	public static final int MAX_ITERATIONS = 10000;
 	
 	public Room(Node node, Board board)
 	{
@@ -387,10 +391,9 @@ public class Room extends GameObject implements TouchListener {
 			userMove = null;
 		}
 		
-		while(time > 0)
-		{
-			if (movement.isFinished())
-			{
+		int iterations = 0;
+		while(time > 0 && iterations < MAX_ITERATIONS) {
+			if (movement.isFinished()) {
 				
 				if (!checkNextCollision())
 				{
@@ -403,21 +406,18 @@ public class Room extends GameObject implements TouchListener {
 						this.land();
 						
 					}
-					
 					time = 0;
-					
 				}
-			}
-			else
-			{
+			} else {
 				lastTranslation = this.getAbsolutePos();
 				movement.onUpdate(time);
 				time = movement.getRemainingTime();
 				lastTranslation = lastTranslation.vectorTo(this.getAbsolutePos());
 				this.setChanged();
 				this.notifyObservers();
-			
 			}
+			
+			iterations++;
 		}
 		
 		if (!this.isFalling())
@@ -1072,12 +1072,16 @@ public class Room extends GameObject implements TouchListener {
 		moveGraph.distancesTo(currentVertex);
 		Vertex<RoomElement> targetVertex = moveGraph.getVertex(target);
 		List<Vector2> path = new ArrayList<Vector2>();
+		
+		Set<Vertex<RoomElement>> vertices = new HashSet<Vertex<RoomElement>>();
+		
 		if (targetVertex != null)
 		{
-			while (targetVertex.getParent() != null)
+			while (targetVertex.getParent() != null && !vertices.contains(targetVertex.getParent()))
 			{
 				RoomElement element = targetVertex.getContent();
 				path.add(0, element.getAbsolutePos());
+				vertices.add(targetVertex);
 				targetVertex = targetVertex.getParent();
 			}
 		}
@@ -1156,22 +1160,29 @@ public class Room extends GameObject implements TouchListener {
 	
 	public RoomElement getRandomFreeRoomElement()
 	{
-		if (this.content.size() == roomElements.size()) return null;
-		nextElement: while (true)
+		if (this.content.size() == roomElements.size()) {
+			return null;
+		}
+		
+		int iterations = 0;
+		nextElement: while (iterations < MAX_ITERATIONS)
 		{
+			iterations++;
+			
 			RoomElement element = this.getRandomRoomElement();
 			for (GameObject object : content)
 			{
 				if (object instanceof StaticContent)
 				{
 					StaticContent staticContent = (StaticContent) object;
+					iterations++;
 					if (staticContent.getRoomElement() == element) continue nextElement;
 				}
 			}
 			
 			return element;
-			
 		}
+		return null;
 	}
 	
 	public void destroy()
@@ -1248,7 +1259,8 @@ public class Room extends GameObject implements TouchListener {
 			previewElements.add(rect);
 		}
 		
-		falling: while(true)
+		int iterations = 0;
+		falling: while(iterations < MAX_ITERATIONS)
 		{
 			for (Vector2 center : centers)
 			{
@@ -1264,10 +1276,10 @@ public class Room extends GameObject implements TouchListener {
 			{
 				center.y += board.getTileSize();
 			}
+			
+			iterations++;
 		
 		}
-		
-		
 	}
 	
 }

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <psf version="2.0">
 <provider id="org.eclipse.egit.core.GitProvider">
+<project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,legacy/BlockQuest"/>
+<project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,legacy/BlockQuestCommon"/>
 <project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,com.tyrfing.games.id18"/>
 <project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,com.tyrfing.games.id18.android"/>
 <project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,com.tyrfing.games.id18.benchmark"/>
@@ -17,6 +19,7 @@
 <project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,legacy/EmpireHelper"/>
 <project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,legacy/EmpireMapGen"/>
 <project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,legacy/EmpireMatchMaker"/>
+<project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,legacy/google-play-services_lib"/>
 <project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,legacy/ParticleViewer"/>
 <project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,legacy/PCPortTest"/>
 <project reference="1.0,ssh://git@github.com/TyrfingX/TyrLib,master,legacy/simplevoronoi"/>
