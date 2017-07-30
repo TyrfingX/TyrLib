@@ -8,11 +8,11 @@ import tyrfing.games.id3.lib.MainGame;
 import tyrfing.games.id3.lib.World.Market;
 import tyrfing.games.id3.lib.rooms.content.Hero;
 
-public class Character {
+public class Player {
 	private int money;
 	private Stats stats;
 	
-	public Character()
+	public Player()
 	{
 		money = 0;
 		stats = new Stats();
@@ -27,7 +27,7 @@ public class Character {
 		stats.setStat("HpPotionEffect", Market.BASE_HP_POTION_EFFECT);
 	}
 	
-	public Character(String data)
+	public Player(String data)
 	{
 		
 		/***

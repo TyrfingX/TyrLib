@@ -20,6 +20,8 @@ public class PowerFactory {
 		case PRAYER:
 			power = new PrayerPower();
 			break;
+		default:
+			break;
 		}
 		
 		return power;

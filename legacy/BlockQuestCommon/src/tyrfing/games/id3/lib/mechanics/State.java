@@ -1,13 +1,10 @@
 package tyrfing.games.id3.lib.mechanics;
 
-import java.util.ArrayList;	
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
-
 import tyrfing.common.files.FileReader;
 import tyrfing.common.files.FileWriter;
 import tyrfing.common.game.BaseGame;
@@ -32,7 +29,7 @@ import tyrfing.games.id3.lib.prayers.PrayerPower;
 
 
 public class State implements Observer {
-	public Character character;
+	public Player character;
 	public int deepestLevel;
 	public Floor currentFloor;
 	public WorldMap worldMap;
@@ -62,7 +59,7 @@ public class State implements Observer {
 			
 			newGame = false;
 			
-			character = new Character("character.bs");
+			character = new Player("character.bs");
 			deepestLevel = Integer.parseInt(FileReader.readFile(MainGame.CONTEXT, "floors.bs"));
 			String[] strPowers = FileReader.readFile(MainGame.CONTEXT, "powers.bs").split(";");
 			
@@ -73,10 +70,6 @@ public class State implements Observer {
 					if (!this.hasPower(strPower))
 					{
 						addPower(powerFactory.create(PowerType.valueOf(strPower)));
-						if (strPower.equals("PRAYER"))
-						{
-							PrayerPower power = (PrayerPower)this.getPower("Prayer");
-						}
 					}
 				}
 			}
@@ -97,7 +90,7 @@ public class State implements Observer {
 		{	
 			
 			newGame = true;
-			character = new Character();
+			character = new Player();
 			deepestLevel = 1;
 			addPower(powerFactory.create(PowerType.RITUALS));
 			addRitual(ritualFactory.create(RitualType.RITUAL_OF_BLESSINGS));

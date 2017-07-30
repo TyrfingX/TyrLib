@@ -6,7 +6,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import android.graphics.Color;
-import android.os.Debug;
 import tyrfing.common.game.objects.Direction;
 import tyrfing.common.game.objects.GameObject;
 import tyrfing.common.game.objects.Movement;

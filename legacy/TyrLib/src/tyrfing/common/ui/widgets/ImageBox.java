@@ -1,7 +1,6 @@
 package tyrfing.common.ui.widgets;
 
 import android.graphics.Bitmap;
-import tyrfing.common.input.InputManager;
 import tyrfing.common.render.SceneManager;
 import tyrfing.common.renderables.Image;
 import tyrfing.common.ui.Window;

@@ -4,8 +4,6 @@ import java.util.Vector;
 
 import tyrfing.common.math.Vector2;
 
-import android.util.FloatMath;
-
 public class Vertex<V extends Object> implements Comparable<Vertex<V>> {
 	
 	private float x,y;
@@ -109,7 +107,7 @@ public class Vertex<V extends Object> implements Comparable<Vertex<V>> {
 	
 	public float distanceTo(Vertex<V> node)
 	{
-		return FloatMath.sqrt(	  (this.x - node.getX()) * (this.x - node.getX()) 
+		return (float) Math.sqrt((this.x - node.getX()) * (this.x - node.getX()) 
 								+ (this.y - node.getY()) * (this.y - node.getY()));
 	}
 

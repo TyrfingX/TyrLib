@@ -1,8 +1,6 @@
 package tyrfing.games.id3.lib.Rituals;
 
 
-import tyrfing.games.id3.lib.GodPowers.PowerFactory;
-import tyrfing.games.id3.lib.GodPowers.PowerType;
 import tyrfing.games.id3.lib.mechanics.State;
 
 public class RitualOfVision implements Ritual {

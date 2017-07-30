@@ -19,7 +19,8 @@ public class BlockQuestActivity extends tyrfing.games.id3.lib.BlockQuestActivity
 	    RelativeLayout outer = new RelativeLayout(this);
 	    RelativeLayout.LayoutParams adParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
 	            RelativeLayout.LayoutParams.WRAP_CONTENT);
-	    RelativeLayout.LayoutParams gameViewParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, 
+	    @SuppressWarnings("deprecation")
+		RelativeLayout.LayoutParams gameViewParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, 
 	            RelativeLayout.LayoutParams.WRAP_CONTENT); 
 	    adParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 	    gameViewParams.addRule(RelativeLayout.ABOVE);

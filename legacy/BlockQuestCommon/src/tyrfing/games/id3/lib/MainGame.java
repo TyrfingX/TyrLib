@@ -56,29 +56,10 @@ public class MainGame extends Game2D {
 		mainMenu.display();
 		
 		FactoryManager.init();
-		
-		//SceneManager.RENDER_THREAD.addFrameListener(new FPSCounter(new Node(30,30)));				
-
-
 	}
 	
 	public void kill()
 	{
 		
-		try {
-			//MainLogic.save();
-		} catch (Exception e) {
-			
-		}
-		/*
-		 WindowManager.destroyAllWindows();
-		 
-		if (SceneManager.RENDER_THREAD != null)
-		{
-			SceneManager.RENDER_THREAD.clear();
-		}
-		Ressources.free();
-		*/
 	}
-
 }

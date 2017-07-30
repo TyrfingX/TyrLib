@@ -9,13 +9,10 @@ import android.view.MenuItem;
 import tyrfing.common.files.FileReader;
 import tyrfing.common.files.FileWriter;
 import tyrfing.common.game.GameActivity;
-import tyrfing.common.sound.SoundManager;
 import tyrfing.games.id3.lib.rooms.DoorColor;
 
 public class BlockQuestActivity extends GameActivity {
 	protected MainGame game;
-	
-	private Menu menu;
 	
 	public static GoogleAnalyticsTracker tracker;
 	
@@ -58,8 +55,6 @@ public class BlockQuestActivity extends GameActivity {
 		game.kill();
 		super.onDestroy();
 		game = null;
-		
-		SoundManager.getInstance().getCurrentlyPlaying().stop();
 	  }
 	  
 	  @Override
@@ -121,7 +116,6 @@ public class BlockQuestActivity extends GameActivity {
     		  item.setChecked(true);
 	      }
 		  
-		  this.menu = menu;
 	      return true;
 	  }
 

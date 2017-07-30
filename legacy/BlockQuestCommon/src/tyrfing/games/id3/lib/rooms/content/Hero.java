@@ -35,7 +35,6 @@ public class Hero extends GameObject {
 	private Room currentRoom;
 	private Room lastRoom;
 	private Room targetRoom;
-	private RoomElement lastElement;
 	
 	private Stats stats;
 	private Level level;
@@ -49,7 +48,6 @@ public class Hero extends GameObject {
 	
 	private boolean clearedARoom = false;
 	private Monster killedAMob = null;
-	private boolean usedHealCrytsal = false;
 	
 	private Fight fight;
 	private Monster currentEnemy;

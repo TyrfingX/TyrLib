@@ -17,8 +17,6 @@ import tyrfing.common.game.objects.Direction;
 import tyrfing.common.game.objects.GameObject;
 import tyrfing.common.game.objects.Updater;
 import tyrfing.common.input.InputManager;
-import tyrfing.common.math.Mirror2;
-import tyrfing.common.math.Rotator2;
 import tyrfing.common.math.Vector2;
 import tyrfing.common.render.Animation;
 import tyrfing.common.render.IFrameListener;
@@ -29,17 +27,14 @@ import tyrfing.common.renderables.Image;
 import tyrfing.common.renderables.Rectangle;
 import tyrfing.common.renderables.Renderable;
 import tyrfing.common.renderables.Text;
-import tyrfing.common.sound.SoundManager;
 import tyrfing.common.struct.Node;
 import tyrfing.common.ui.ClickListener;
 import tyrfing.common.ui.Event;
 import tyrfing.common.ui.WindowManager;
 import tyrfing.common.ui.widgets.Button;
-import tyrfing.common.ui.widgets.ImageBox;
 import tyrfing.games.id3.lib.World.Dungeon;
-import tyrfing.games.id3.lib.World.Market;
-import tyrfing.games.id3.lib.mechanics.Character;
 import tyrfing.games.id3.lib.mechanics.Floor;
+import tyrfing.games.id3.lib.mechanics.Player;
 import tyrfing.games.id3.lib.mechanics.State;
 import tyrfing.games.id3.lib.rooms.CheckBoard;
 import tyrfing.games.id3.lib.rooms.Door;
@@ -90,7 +85,7 @@ public class MainLogic extends Observable implements IFrameListener, Observer, C
 	
 	private Preview preview;
 	
-	private Character character;
+	private Player character;
 	
 	private CheckBoard checkBoard;
 	
@@ -123,7 +118,7 @@ public class MainLogic extends Observable implements IFrameListener, Observer, C
 	
 	private RoomFactoryConfig config;
 	
-	public MainLogic(State state, Character character, Floor floor, Settings settings) 
+	public MainLogic(State state, Player character, Floor floor, Settings settings) 
 	{
 		
 		this.character = character;
@@ -678,8 +673,6 @@ public class MainLogic extends Observable implements IFrameListener, Observer, C
 			endingMessage.setSize(35);
 			endingMessage.fadeOut(new Vector2(-50, 0), 10);
 			endingMessage.setPriority(10000);		
-			
-			SoundManager.getInstance().getSoundtrack("WORLD").play();
 		}
 	}
 	

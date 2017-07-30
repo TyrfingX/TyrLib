@@ -30,6 +30,7 @@ public class Ressources {
 		res.put(name, bitmap); 			
 	}
 
+	@SuppressWarnings("deprecation")
 	public static void loadRes(String name, int drawable, Vector2 size)
 	{
 		

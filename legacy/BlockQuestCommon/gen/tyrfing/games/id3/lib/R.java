@@ -55,65 +55,60 @@ public final class R {
         public static int undeadboss=0x7f020029;
     }
     public static final class id {
-        public static int blue=0x7f070006;
-        public static int difficulty=0x7f070000;
-        public static int doorcolor=0x7f070004;
-        public static int easy=0x7f070001;
-        public static int hard=0x7f070003;
-        public static int medium=0x7f070002;
-        public static int red=0x7f070005;
-        public static int yellow=0x7f070007;
+        public static int blue=0x7f060006;
+        public static int difficulty=0x7f060000;
+        public static int doorcolor=0x7f060004;
+        public static int easy=0x7f060001;
+        public static int hard=0x7f060003;
+        public static int medium=0x7f060002;
+        public static int red=0x7f060005;
+        public static int yellow=0x7f060007;
     }
     public static final class layout {
         public static int main=0x7f030000;
     }
     public static final class menu {
-        public static int settings=0x7f060000;
-    }
-    public static final class raw {
-        public static int orcboss=0x7f040000;
-        public static int undeadboss=0x7f040001;
-        public static int world=0x7f040002;
+        public static int settings=0x7f050000;
     }
     public static final class string {
-        public static int app_name=0x7f050001;
-        public static int back=0x7f050008;
-        public static int blue=0x7f05000f;
-        public static int city=0x7f050020;
-        public static int colors=0x7f050011;
-        public static int continueGame=0x7f050006;
-        public static int difficulty=0x7f050009;
-        public static int doorcolor=0x7f05000d;
-        public static int dungeon=0x7f050026;
-        public static int easy=0x7f05000a;
-        public static int hard=0x7f05000c;
-        public static int hello=0x7f050000;
-        public static int intro1=0x7f050012;
-        public static int intro10=0x7f05001b;
-        public static int intro11=0x7f05001c;
-        public static int intro12=0x7f05001d;
-        public static int intro13=0x7f05001e;
-        public static int intro14=0x7f05001f;
-        public static int intro2=0x7f050013;
-        public static int intro3=0x7f050014;
-        public static int intro4=0x7f050015;
-        public static int intro5=0x7f050016;
-        public static int intro6=0x7f050017;
-        public static int intro7=0x7f050018;
-        public static int intro8=0x7f050019;
-        public static int intro9=0x7f05001a;
-        public static int medium=0x7f05000b;
-        public static int medium_1=0x7f050023;
-        public static int newGameConfirm=0x7f050005;
-        public static int newgame=0x7f050004;
-        public static int no=0x7f050003;
-        public static int nothingToDo=0x7f050024;
-        public static int poor_1=0x7f050021;
-        public static int poor_2=0x7f050022;
-        public static int red=0x7f05000e;
-        public static int resume=0x7f050007;
-        public static int shrine=0x7f050025;
-        public static int yellow=0x7f050010;
-        public static int yes=0x7f050002;
+        public static int app_name=0x7f040001;
+        public static int back=0x7f040008;
+        public static int blue=0x7f04000f;
+        public static int city=0x7f040020;
+        public static int colors=0x7f040011;
+        public static int continueGame=0x7f040006;
+        public static int difficulty=0x7f040009;
+        public static int doorcolor=0x7f04000d;
+        public static int dungeon=0x7f040026;
+        public static int easy=0x7f04000a;
+        public static int hard=0x7f04000c;
+        public static int hello=0x7f040000;
+        public static int intro1=0x7f040012;
+        public static int intro10=0x7f04001b;
+        public static int intro11=0x7f04001c;
+        public static int intro12=0x7f04001d;
+        public static int intro13=0x7f04001e;
+        public static int intro14=0x7f04001f;
+        public static int intro2=0x7f040013;
+        public static int intro3=0x7f040014;
+        public static int intro4=0x7f040015;
+        public static int intro5=0x7f040016;
+        public static int intro6=0x7f040017;
+        public static int intro7=0x7f040018;
+        public static int intro8=0x7f040019;
+        public static int intro9=0x7f04001a;
+        public static int medium=0x7f04000b;
+        public static int medium_1=0x7f040023;
+        public static int newGameConfirm=0x7f040005;
+        public static int newgame=0x7f040004;
+        public static int no=0x7f040003;
+        public static int nothingToDo=0x7f040024;
+        public static int poor_1=0x7f040021;
+        public static int poor_2=0x7f040022;
+        public static int red=0x7f04000e;
+        public static int resume=0x7f040007;
+        public static int shrine=0x7f040025;
+        public static int yellow=0x7f040010;
+        public static int yes=0x7f040002;
     }
 }

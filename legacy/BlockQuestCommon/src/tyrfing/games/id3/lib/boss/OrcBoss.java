@@ -3,7 +3,6 @@ package tyrfing.games.id3.lib.boss;
 import tyrfing.common.factory.FactoryManager;
 import tyrfing.common.math.Vector2;
 import tyrfing.common.render.Ressources;
-import tyrfing.common.sound.SoundManager;
 import tyrfing.games.id3.lib.MainLogic;
 import tyrfing.games.id3.lib.R;
 import tyrfing.games.id3.lib.rooms.Room;
@@ -49,8 +48,6 @@ public class OrcBoss extends BossSkript{
 		mainLogic.EXTRA = EXTRA_MONEY;
 		
 		Ressources.loadRes("OrcBoss", R.drawable.orcboss, new Vector2(mainLogic.getBoard().getTileSize(), mainLogic.getBoard().getTileSize()));
-	
-		SoundManager.getInstance().createSoundtrack(R.raw.orcboss, "ORCBOSS").play();
 	}
 			
 

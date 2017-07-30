@@ -7,8 +7,6 @@ import tyrfing.common.files.FileReader;
 import tyrfing.common.game.BaseGame;
 import tyrfing.common.math.Vector2;
 import tyrfing.common.render.TargetMetrics;
-import tyrfing.common.sound.SoundManager;
-import tyrfing.common.sound.Soundtrack;
 import tyrfing.common.ui.ClickListener;
 import tyrfing.common.ui.Event;
 import tyrfing.common.ui.Window;
@@ -28,9 +26,7 @@ public class MainMenu implements ClickListener, Observer {
 	
 	
 	public MainMenu()
-	{		
-		
-		SoundManager.getInstance().createSoundtrack(R.raw.world, "WORLD");
+	{
 		
 		newCharacter = MenuConfig.createMenuItem("newCharacter", MainGame.getString(R.string.newgame), 0, this);
 		continueOld = MenuConfig.createMenuItem("continue", BaseGame.getString(R.string.continueGame), 1, this);
@@ -109,9 +105,6 @@ public class MainMenu implements ClickListener, Observer {
 	
 	private void startGame(boolean continueOldSave)
 	{
-		
-		Soundtrack track = SoundManager.getInstance().getSoundtrack("WORLD");
-		track.play();
 		
 		newCharacter.disable();
 		continueOld.disable();

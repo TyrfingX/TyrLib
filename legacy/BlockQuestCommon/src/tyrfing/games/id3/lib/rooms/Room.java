@@ -7,7 +7,6 @@ import java.util.Vector;
 
 import android.graphics.Color;
 import android.graphics.Paint.Style;
-
 import tyrfing.common.debug.RenderGraph;
 import tyrfing.common.game.objects.Algorithm;
 import tyrfing.common.game.objects.Board;
@@ -22,9 +21,7 @@ import tyrfing.common.math.Mirror2;
 import tyrfing.common.math.Rotator2;
 import tyrfing.common.math.Transformer;
 import tyrfing.common.math.Vector2;
-import tyrfing.common.render.Ressources;
 import tyrfing.common.render.SceneManager;
-import tyrfing.common.renderables.Image;
 import tyrfing.common.renderables.Rectangle;
 import tyrfing.common.renderables.Text;
 import tyrfing.common.struct.Coord2;
@@ -73,8 +70,6 @@ public class Room extends GameObject implements TouchListener {
 	private List<Rectangle> previewElements;
 	
 	public boolean rotate = false;
-	
-	private boolean onTouchInRoom;
 	
 	private boolean moved;
 	
@@ -786,8 +781,6 @@ public class Room extends GameObject implements TouchListener {
 		
 		boolean isPointInRoom = this.testPointInRoom(point);
 		
-		onTouchInRoom = isPointInRoom;
-		
 		if (point.y < node.getParent().getAbsolutePos().y || point.y > node.getParent().getAbsolutePos().y + board.getHeight() * board.getTileSize())
 		{
 			movement.setSpeed(fallSpeed * SPEED_UP);
@@ -873,8 +866,8 @@ public class Room extends GameObject implements TouchListener {
 	{
 		
 		boolean userRotates = checkRotate(point);
-		float max = Algorithm.getMax((Collection)roomElements).x;
-		float min = Algorithm.getMin((Collection)roomElements).x;
+		float max = Algorithm.getMax((Collection<RoomElement>)roomElements).x;
+		float min = Algorithm.getMin((Collection<RoomElement>)roomElements).x;
 		
 		boolean outsideRoom;
 		
@@ -928,8 +921,8 @@ public class Room extends GameObject implements TouchListener {
 	
 	public boolean testPointInRoom(Vector2 point)
 	{
-		float max = Algorithm.getMax((Collection)roomElements).x;
-		float min = Algorithm.getMin((Collection)roomElements).x;
+		float max = Algorithm.getMax((Collection<RoomElement>)roomElements).x;
+		float min = Algorithm.getMin((Collection<RoomElement>)roomElements).x;
 		
 		if (max - min < board.getTileSize() * 2)
 		{

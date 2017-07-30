@@ -9,7 +9,6 @@ import tyrfing.common.math.Vector2;
 import tyrfing.common.render.Animation;
 import tyrfing.common.render.Ressources;
 import tyrfing.common.render.SceneManager;
-import tyrfing.common.sound.SoundManager;
 import tyrfing.common.struct.Coord2;
 import tyrfing.common.struct.Node;
 import tyrfing.games.id3.lib.MainLogic;
@@ -81,8 +80,6 @@ public class UndeadBoss extends BossSkript{
 		dropRoomShape.addElement(new Coord2(0,0));
 		
 		Ressources.loadRes("UndeadBoss", R.drawable.undeadboss, new Vector2(mainLogic.getBoard().getTileSize(), mainLogic.getBoard().getTileSize()));
-	
-		SoundManager.getInstance().createSoundtrack(R.raw.undeadboss, "UNDEADBOSS").play();
 	}
 	
 	@Override
