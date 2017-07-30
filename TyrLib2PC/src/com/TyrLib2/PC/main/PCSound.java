@@ -1,9 +1,8 @@
 package com.TyrLib2.PC.main;
 
-import kuusisto.tinysound.Sound;
-import kuusisto.tinysound.internal.SoundListener;
-import kuusisto.tinysound.internal.SoundReference;
-
+import com.tyrfing.games.tyrlib3.tinysound.Sound;
+import com.tyrfing.games.tyrlib3.tinysound.internal.SoundListener;
+import com.tyrfing.games.tyrlib3.tinysound.internal.SoundReference;
 import com.tyrlib2.sound.ISound;
 import com.tyrlib2.sound.ISoundListener;
 

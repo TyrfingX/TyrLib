@@ -4,10 +4,10 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/TyrLib2"/>
 	<classpathentry kind="lib" path="lib/kxml2-2.3.0.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/TinySound"/>
 	<classpathentry kind="lib" path="lib/gluegen-rt.jar"/>
 	<classpathentry kind="lib" path="lib/jogl-all.jar"/>
 	<classpathentry kind="lib" path="lib/gluegen-rt-natives-linux-amd64.jar"/>
 	<classpathentry kind="lib" path="lib/jogl-all-natives-linux-amd64.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.tyrfing.games.tyrlib3.tinysound"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

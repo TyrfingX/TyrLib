@@ -23,12 +23,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import kuusisto.tinysound.TinySound;
-
 import com.TyrLib2.PC.bitmap.PCCanvas;
 import com.TyrLib2.PC.bitmap.PCDrawableBitmap;
 import com.TyrLib2.PC.bitmap.PCPaint;
 import com.TyrLib2.PC.bitmap.PCTypeface;
+import com.tyrfing.games.tyrlib3.tinysound.TinySound;
 import com.tyrlib2.bitmap.ICanvas;
 import com.tyrlib2.bitmap.IDrawableBitmap;
 import com.tyrlib2.bitmap.IPaint;

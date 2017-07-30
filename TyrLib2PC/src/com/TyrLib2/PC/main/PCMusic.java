@@ -1,7 +1,6 @@
 package com.TyrLib2.PC.main;
 
-import kuusisto.tinysound.Music;
-
+import com.tyrfing.games.tyrlib3.tinysound.Music;
 import com.tyrlib2.sound.IMusic;
 
 public class PCMusic implements IMusic {
