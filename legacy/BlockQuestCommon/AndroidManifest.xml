@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="tyrfingx.games.BlockQuest.lib"
+    package="tyrfing.games.id3.lib"
     android:versionCode="1"
     android:versionName="1.0">
 
