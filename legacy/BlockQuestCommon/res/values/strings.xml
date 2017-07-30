@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, BlockQuestActivity!</string>
+    <string name="app_name">Block Quest</string>
+    <string name="newgame">New Game</string>
+    <string name="newGameConfirm">Starting a new game will overwrite\nyour current save.\n\nAre you certain to proceed?</string>
+    <string name="continueGame">Continue</string>
+    <string name="resume">Resume in Dungeon</string>
+    <string name="back">Back</string>
+
+    <string name="difficulty">Difficulty</string>    
+    <string name="easy">Easy</string>
+    <string name="medium">Medium</string>
+    <string name="hard">Hard</string>
+    
+    <string name="doorcolor">Door color</string>
+    <string name="red">Red</string>
+	<string name="blue">Blue</string>
+    <string name="yellow">Yellow</string>
+	<string name="colors">Colors</string>
+    
+    <string name="intro1">You try to remember. Since when did you exist?</string>
+    <string name="intro2">... ... ...</string>
+    <string name="intro3">What are you? Human? No. The word sounds wrong.</string>
+    <string name="intro4">You try to remember. Why are you here?\n</string>
+    <string name="intro5">Dreams. Wishes.</string>
+    <string name="intro6">Close.</string>
+    <string name="intro7">You remember the pleads,\nthe yearning which has called you into life....</string>
+    <string name="intro8">\'Called\' into life? Yes, yes, of course.</string>
+    <string name="intro9">You remember. You were wished into existence.</string>
+    <string name="intro10">Prayers finally heard, hope given form.</string>
+    <string name="intro11">A miracle.</string>
+    <string name="intro12">You finally remember the word for your kind of\nexistence.</string>
+    <string name="intro13">... ... ...</string>
+    <string name="intro14">God.</string>
+    
+    <string name="city">City</string>
+    <string name="poor_1">You observe the old city residing within your domain.\nThe wooden buildings are run-down and damaged,\nmost repairs only done in a sloppy manner.\nClearly, this place is ridden by poverty...</string>
+	<string name="poor_2">Observing the old city residing within your domain,\nyou see a variety of figures working diligently,\nreparing the buildings and trading away.\nHowever, marks of poverty still rule the city...</string>
+	<string name="medium_1">As your gaze wanders through the old city,\nyou see people praising their wares on the marketplace,\nyoung folk are building an imitation of your shrine\nand people are rushing in and out of the city...</string>
+	<string name="nothingToDo">You can feel that your power is still too weak,\nyour existence too insignificant to interfere with the city.\nMaybe you should come back at a later time...</string>
+	
+    
+    
+    
+    <string name="shrine">Shrine</string>
+    
+    
+    
+    
+    
+    
+    
+    
+    <string name="dungeon">Dungeon</string>
+</resources>

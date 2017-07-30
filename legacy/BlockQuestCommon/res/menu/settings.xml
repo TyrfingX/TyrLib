@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/difficulty"
+          android:title="@string/difficulty">
+ 		<!-- "file" submenu -->
+        <menu>
+            
+            
+            
+            <group android:id="@id/difficulty" android:checkableBehavior="single"><item android:id="@+id/easy" android:title="@string/easy" /><item android:id="@+id/medium" android:title="@string/medium" /><item android:id="@+id/hard" android:title="@string/hard" /></group>
+        </menu>
+     </item>
+    <item android:id="@+id/doorcolor" android:title="@string/doorcolor">
+        <menu>
+            
+            
+    
+            <group android:id="@id/doorcolor" android:checkableBehavior="single"><item android:id="@+id/red" android:title="@string/red" /><item android:id="@+id/blue" android:title="@string/blue" /><item android:id="@+id/yellow" android:title="@string/yellow" /></group>
+        </menu>
+    </item>
+</menu>
