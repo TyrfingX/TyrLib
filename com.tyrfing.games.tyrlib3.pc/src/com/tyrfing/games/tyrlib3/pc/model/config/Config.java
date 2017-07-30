@@ -1,4 +1,4 @@
-package com.tyrfing.games.tyrlib3.pc.main.config;
+package com.tyrfing.games.tyrlib3.pc.model.config;
 
 import com.tyrfing.games.tyrlib3.model.math.Vector2F;
 

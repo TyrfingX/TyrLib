@@ -1,6 +1,6 @@
 package com.tyrfing.games.tyrlib3.view.graphics.compositors;
 
-import com.tyrfing.games.tyrlib3.main.Media;
+import com.tyrfing.games.tyrlib3.Media;
 import com.tyrfing.games.tyrlib3.view.graphics.Program;
 import com.tyrfing.games.tyrlib3.view.graphics.ProgramManager;
 import com.tyrfing.games.tyrlib3.view.graphics.SceneManager;

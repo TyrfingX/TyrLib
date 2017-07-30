@@ -3,7 +3,7 @@ package com.tyrfing.games.tyrlib3.model.sound;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.tyrfing.games.tyrlib3.main.Media;
+import com.tyrfing.games.tyrlib3.Media;
 import com.tyrfing.games.tyrlib3.util.BackgroundWorker;
 
 

@@ -1,4 +1,4 @@
-package com.tyrfing.games.tyrlib3.main;
+package com.tyrfing.games.tyrlib3;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.tyrfing.games.tyrlib3.Media;
 import com.tyrfing.games.tyrlib3.model.files.AndroidBitmap;
 import com.tyrfing.games.tyrlib3.model.files.AndroidFileReader;
 import com.tyrfing.games.tyrlib3.model.files.IBitmap;

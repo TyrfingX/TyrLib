@@ -3,7 +3,7 @@ package com.tyrfing.games.tyrlib3.pc.view.bitmap;
 import java.awt.image.BufferedImage;
 
 import com.tyrfing.games.tyrlib3.model.files.IBitmap;
-import com.tyrfing.games.tyrlib3.pc.main.PCBitmap;
+import com.tyrfing.games.tyrlib3.pc.model.files.PCBitmap;
 import com.tyrfing.games.tyrlib3.view.bitmap.IDrawableBitmap;
 
 public class PCDrawableBitmap implements IDrawableBitmap {

@@ -3,7 +3,7 @@ package com.tyrfing.games.tyrlib3.model.resource;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.tyrfing.games.tyrlib3.main.Media;
+import com.tyrfing.games.tyrlib3.Media;
 
 public class Resource implements ISaveable {
 	/**

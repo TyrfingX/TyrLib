@@ -1,4 +1,4 @@
-package com.tyrfing.games.tyrlib3.main;
+package com.tyrfing.games.tyrlib3;
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLDisplay;

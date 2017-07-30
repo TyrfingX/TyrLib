@@ -3,8 +3,8 @@ package com.tyrfing.games.tyrlib3.view.graphics.renderer;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import com.tyrfing.games.tyrlib3.main.OpenGLActivity;
-import com.tyrfing.games.tyrlib3.main.OpenGLSurfaceView;
+import com.tyrfing.games.tyrlib3.OpenGLActivity;
+import com.tyrfing.games.tyrlib3.OpenGLSurfaceView;
 import com.tyrfing.games.tyrlib3.view.graphics.renderer.OpenGLRenderer;
 
 import android.opengl.GLSurfaceView;

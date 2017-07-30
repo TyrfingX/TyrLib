@@ -1,6 +1,6 @@
 package com.tyrfing.games.tyrlib3.util;
 
-import com.tyrfing.games.tyrlib3.main.AndroidOpenGLActivity;
+import com.tyrfing.games.tyrlib3.AndroidOpenGLActivity;
 import com.tyrfing.games.tyrlib3.view.graphics.SceneManager;
 
 import android.app.AlertDialog;

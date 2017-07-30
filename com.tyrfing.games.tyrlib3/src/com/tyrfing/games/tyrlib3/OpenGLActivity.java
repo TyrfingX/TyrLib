@@ -1,4 +1,4 @@
-package com.tyrfing.games.tyrlib3.main;
+package com.tyrfing.games.tyrlib3;
 
 public interface OpenGLActivity {
     /**

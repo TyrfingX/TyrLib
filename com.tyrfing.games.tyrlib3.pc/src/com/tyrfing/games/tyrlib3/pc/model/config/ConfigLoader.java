@@ -1,4 +1,4 @@
-package com.tyrfing.games.tyrlib3.pc.main.config;
+package com.tyrfing.games.tyrlib3.pc.model.config;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -8,7 +8,8 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import com.tyrfing.games.tyrlib3.model.math.Vector2F;
-import com.tyrfing.games.tyrlib3.pc.main.config.Config.ScreenState;
+import com.tyrfing.games.tyrlib3.pc.model.config.Config.ScreenState;
+import com.tyrfing.games.tyrlib3.pc.view.config.ConfigGUI;
 
 public class ConfigLoader {
 	

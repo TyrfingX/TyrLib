@@ -1,6 +1,6 @@
-package com.tyrfing.games.tyrlib3.main;
+package com.tyrfing.games.tyrlib3;
 
-import com.tyrfing.games.tyrlib3.main.OpenGLActivity;
+import com.tyrfing.games.tyrlib3.OpenGLActivity;
 import com.tyrfing.games.tyrlib3.model.math.AndroidMatrixImpl;
 import com.tyrfing.games.tyrlib3.model.math.Matrix;
 import com.tyrfing.games.tyrlib3.view.graphics.TyrGL;

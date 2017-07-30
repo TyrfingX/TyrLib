@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 
-import com.tyrfing.games.tyrlib3.main.Media;
+import com.tyrfing.games.tyrlib3.Media;
 import com.tyrfing.games.tyrlib3.model.graphics.scene.BoundedSceneObject;
 import com.tyrfing.games.tyrlib3.model.graphics.scene.Octree;
 import com.tyrfing.games.tyrlib3.model.graphics.scene.SceneNode;

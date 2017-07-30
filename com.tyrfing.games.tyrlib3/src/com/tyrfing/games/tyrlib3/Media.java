@@ -1,4 +1,4 @@
-package com.tyrfing.games.tyrlib3.main;
+package com.tyrfing.games.tyrlib3;
 
 import java.io.FileInputStream;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package com.tyrfing.games.tyrlib3.pc.main;
+package com.tyrfing.games.tyrlib3.pc.model.files;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;

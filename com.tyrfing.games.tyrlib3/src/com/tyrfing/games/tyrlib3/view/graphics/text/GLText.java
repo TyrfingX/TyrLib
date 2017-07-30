@@ -9,7 +9,7 @@
 
 package com.tyrfing.games.tyrlib3.view.graphics.text;
 
-import com.tyrfing.games.tyrlib3.main.Media;
+import com.tyrfing.games.tyrlib3.Media;
 import com.tyrfing.games.tyrlib3.model.math.Matrix;
 import com.tyrfing.games.tyrlib3.model.math.Vector2F;
 import com.tyrfing.games.tyrlib3.view.bitmap.ICanvas;

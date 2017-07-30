@@ -1,4 +1,4 @@
-package com.tyrfing.games.tyrlib3.main;
+package com.tyrfing.games.tyrlib3;
 
 import com.tyrfing.games.tyrlib3.edit.input.AndroidKeyboardEvent;
 import com.tyrfing.games.tyrlib3.edit.input.AndroidMotionEvent;

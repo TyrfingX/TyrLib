@@ -1,6 +1,6 @@
 package com.tyrfing.games.tyrlib3.view.graphics.renderables;
 
-import com.tyrfing.games.tyrlib3.main.Media;
+import com.tyrfing.games.tyrlib3.Media;
 import com.tyrfing.games.tyrlib3.model.graphics.VertexLayout;
 import com.tyrfing.games.tyrlib3.model.graphics.scene.SceneNode;
 import com.tyrfing.games.tyrlib3.model.graphics.scene.SceneObject;

@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.tyrfing.games.tyrlib3.main.Media;
+import com.tyrfing.games.tyrlib3.Media;
 import com.tyrfing.games.tyrlib3.model.game.Color;
 import com.tyrfing.games.tyrlib3.model.graphics.VertexLayout;
 import com.tyrfing.games.tyrlib3.model.graphics.scene.BoundedSceneObject;

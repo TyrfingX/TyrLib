@@ -1,4 +1,4 @@
-package com.tyrfing.games.tyrlib3.pc.main;
+package com.tyrfing.games.tyrlib3.pc;
 
 import java.net.URL;
 
@@ -6,10 +6,10 @@ import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLProfile;
 import javax.swing.JFrame;
 
-import com.tyrfing.games.tyrlib3.main.Media;
-import com.tyrfing.games.tyrlib3.main.OpenGLActivity;
+import com.tyrfing.games.tyrlib3.Media;
+import com.tyrfing.games.tyrlib3.OpenGLActivity;
 import com.tyrfing.games.tyrlib3.model.math.Matrix;
-import com.tyrfing.games.tyrlib3.pc.main.config.Config;
+import com.tyrfing.games.tyrlib3.pc.model.config.Config;
 import com.tyrfing.games.tyrlib3.pc.model.math.PCMatrixImpl;
 import com.tyrfing.games.tyrlib3.pc.util.Logger;
 import com.tyrfing.games.tyrlib3.pc.view.graphics.renderer.ConsoleView;

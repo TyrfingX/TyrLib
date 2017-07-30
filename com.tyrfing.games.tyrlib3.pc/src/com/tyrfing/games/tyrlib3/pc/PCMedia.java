@@ -1,4 +1,4 @@
-package com.tyrfing.games.tyrlib3.pc.main;
+package com.tyrfing.games.tyrlib3.pc;
 
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -23,11 +23,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.tyrfing.games.tyrlib3.main.Media;
+import com.tyrfing.games.tyrlib3.Media;
 import com.tyrfing.games.tyrlib3.model.files.IBitmap;
 import com.tyrfing.games.tyrlib3.model.math.Vector2F;
 import com.tyrfing.games.tyrlib3.model.sound.IMusic;
 import com.tyrfing.games.tyrlib3.model.sound.ISound;
+import com.tyrfing.games.tyrlib3.pc.model.files.PCBitmap;
 import com.tyrfing.games.tyrlib3.pc.model.sound.PCMusic;
 import com.tyrfing.games.tyrlib3.pc.model.sound.PCSound;
 import com.tyrfing.games.tyrlib3.pc.view.bitmap.PCCanvas;

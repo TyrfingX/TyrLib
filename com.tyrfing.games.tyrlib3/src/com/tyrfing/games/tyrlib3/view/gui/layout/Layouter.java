@@ -1,6 +1,6 @@
 package com.tyrfing.games.tyrlib3.view.gui.layout;
 
-import com.tyrfing.games.tyrlib3.main.Media;
+import com.tyrfing.games.tyrlib3.Media;
 import com.tyrfing.games.tyrlib3.model.math.Vector2F;
 
 public class Layouter {

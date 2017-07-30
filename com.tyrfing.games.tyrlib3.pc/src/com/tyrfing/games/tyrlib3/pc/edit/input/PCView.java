@@ -1,7 +1,7 @@
 package com.tyrfing.games.tyrlib3.pc.edit.input;
 
 import com.tyrfing.games.tyrlib3.edit.input.IView;
-import com.tyrfing.games.tyrlib3.pc.main.PCOpenGLSurfaceView;
+import com.tyrfing.games.tyrlib3.pc.PCOpenGLSurfaceView;
 
 public class PCView implements IView {
 	

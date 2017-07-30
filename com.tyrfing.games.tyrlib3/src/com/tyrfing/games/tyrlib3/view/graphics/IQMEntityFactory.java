@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.tyrfing.games.tyrlib3.main.Media;
+import com.tyrfing.games.tyrlib3.Media;
 import com.tyrfing.games.tyrlib3.model.graphics.VertexLayout;
 import com.tyrfing.games.tyrlib3.model.graphics.animation.AnimationFrame;
 import com.tyrfing.games.tyrlib3.model.graphics.animation.Bone;

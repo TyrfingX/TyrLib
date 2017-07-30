@@ -1,4 +1,4 @@
-package com.tyrfing.games.tyrlib3.pc.main.config;
+package com.tyrfing.games.tyrlib3.pc.view.config;
 
 import java.awt.BorderLayout;
 import java.awt.Button;
@@ -20,7 +20,9 @@ import java.io.PrintStream;
 import java.net.URL;
 
 import com.tyrfing.games.tyrlib3.model.math.Vector2F;
-import com.tyrfing.games.tyrlib3.pc.main.config.Config.ScreenState;
+import com.tyrfing.games.tyrlib3.pc.model.config.Config;
+import com.tyrfing.games.tyrlib3.pc.model.config.OnStartGame;
+import com.tyrfing.games.tyrlib3.pc.model.config.Config.ScreenState;
 
 public class ConfigGUI extends Frame {
 

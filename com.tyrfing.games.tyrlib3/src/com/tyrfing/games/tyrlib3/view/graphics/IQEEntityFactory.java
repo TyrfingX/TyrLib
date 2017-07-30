@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import com.tyrfing.games.tyrlib3.main.Media;
+import com.tyrfing.games.tyrlib3.Media;
 import com.tyrfing.games.tyrlib3.model.graphics.animation.AnimationFrame;
 import com.tyrfing.games.tyrlib3.model.graphics.animation.Bone;
 import com.tyrfing.games.tyrlib3.model.math.Quaternion;

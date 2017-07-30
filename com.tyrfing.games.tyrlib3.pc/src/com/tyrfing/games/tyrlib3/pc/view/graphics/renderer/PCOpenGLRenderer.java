@@ -5,7 +5,7 @@ import javax.media.opengl.GL3;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 
-import com.tyrfing.games.tyrlib3.main.OpenGLActivity;
+import com.tyrfing.games.tyrlib3.OpenGLActivity;
 import com.tyrfing.games.tyrlib3.view.graphics.TyrGL;
 import com.tyrfing.games.tyrlib3.view.graphics.renderer.OpenGLRenderer;
 

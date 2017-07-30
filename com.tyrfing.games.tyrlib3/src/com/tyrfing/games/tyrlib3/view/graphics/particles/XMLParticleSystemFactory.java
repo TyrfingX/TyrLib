@@ -9,7 +9,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import com.tyrfing.games.tyrlib3.main.Media;
+import com.tyrfing.games.tyrlib3.Media;
 import com.tyrfing.games.tyrlib3.model.game.Color;
 import com.tyrfing.games.tyrlib3.model.graphics.particles.Affector;
 import com.tyrfing.games.tyrlib3.model.graphics.particles.BasicParticleFactory;
