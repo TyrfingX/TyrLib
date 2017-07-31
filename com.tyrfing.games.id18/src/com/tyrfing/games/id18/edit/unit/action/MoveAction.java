@@ -49,8 +49,8 @@ public class MoveAction extends AAction {
 		Field field = unit.getDeployedField();
 		Vector2I position = unit.getFieldPosition();
 		
-		int currentHeight = field.getTiles()[position.x][position.y].getHeight();
-		int targetHeight = field.getTiles()[targetPosition.x][targetPosition.y].getHeight();
+		int currentHeight = field.getTileGrid().getItem(position).getHeight();
+		int targetHeight = field.getTileGrid().getItem(targetPosition).getHeight();
 		int differenceHeight = Math.abs(targetHeight - currentHeight);
 		
 		return distanceVector.abs() * (differenceHeight + 1);
@@ -60,7 +60,7 @@ public class MoveAction extends AAction {
 	public boolean canExecute() {
 		Field field = unit.getDeployedField();
 		
-		if (!field.inBounds(targetPosition))  {
+		if (!field.getTileGrid().inBounds(targetPosition))  {
 			return false;
 		}
 		

@@ -1,10 +1,10 @@
 package com.tyrfing.games.tyrlib3.model.graphics.particles;
 
-import com.tyrfing.games.tyrlib3.model.data.FloatArray;
 import com.tyrfing.games.tyrlib3.model.game.Color;
 import com.tyrfing.games.tyrlib3.model.game.IUpdateable;
 import com.tyrfing.games.tyrlib3.model.math.Quaternion;
 import com.tyrfing.games.tyrlib3.model.math.Vector3F;
+import com.tyrfing.games.tyrlib3.model.struct.FloatArray;
 import com.tyrfing.games.tyrlib3.view.graphics.Camera;
 import com.tyrfing.games.tyrlib3.view.graphics.SceneManager;
 import com.tyrfing.games.tyrlib3.view.graphics.materials.ParticleMaterial;

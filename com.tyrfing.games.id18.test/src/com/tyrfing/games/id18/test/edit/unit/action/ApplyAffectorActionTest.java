@@ -155,7 +155,7 @@ public class ApplyAffectorActionTest {
 		actionStack.undo();
 		
 		final Vector2I BLOCKING_TILE_POS = new Vector2I(4,5);
-		field.getTiles()[BLOCKING_TILE_POS.x][BLOCKING_TILE_POS.y].setHeight(1);
+		field.getTileGrid().getItem(BLOCKING_TILE_POS).setHeight(1);
 		
 		ApplyAffectorAction applyAffectorBlockingTile = new ApplyAffectorAction(caster, affector, BLOCKED_UNIT_POS, false);
 		actionStack.execute(applyAffectorBlockingTile);

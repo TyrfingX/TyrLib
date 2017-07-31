@@ -7,9 +7,9 @@ import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.tyrfing.games.tyrlib3.model.data.FloatArray;
 import com.tyrfing.games.tyrlib3.model.graphics.particles.AParticleSystem;
 import com.tyrfing.games.tyrlib3.model.graphics.particles.Particle;
+import com.tyrfing.games.tyrlib3.model.struct.FloatArray;
 import com.tyrfing.games.tyrlib3.view.graphics.materials.ParticleMaterial;
 import com.tyrfing.games.tyrlib3.view.graphics.renderables.IRenderable;
 import com.tyrfing.games.tyrlib3.view.graphics.renderer.OpenGLRenderer;

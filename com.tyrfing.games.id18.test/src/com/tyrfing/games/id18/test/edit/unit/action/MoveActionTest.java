@@ -31,7 +31,7 @@ public class MoveActionTest {
 	public void setup() {
 		Field field = new Field(new Vector2I(10,10));
 		
-		field.getTiles()[TARGET_POS_1.x][TARGET_POS_1.y].setHeight(TARGET_POS_1_HEIGHT);
+		field.getTileGrid().getItem(TARGET_POS_1).setHeight(TARGET_POS_1_HEIGHT);
 		
 		Battle battle = new Battle();
 		battle.setField(field);

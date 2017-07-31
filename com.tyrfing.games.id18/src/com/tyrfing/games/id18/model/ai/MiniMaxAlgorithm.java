@@ -35,8 +35,8 @@ public class MiniMaxAlgorithm extends AMiniMaxAlgorithm {
 		List<IAction> actions = new ArrayList<IAction>();
 		
 		for (Arte arte : unit.getArtes()) {
-			for (int x = 0;  x < field.getSize().x; ++x) {
-				for (int y = 0;  y < field.getSize().y; ++y) {
+			for (int x = 0;  x < field.getTileGrid().getWidth(); ++x) {
+				for (int y = 0;  y < field.getTileGrid().getHeight(); ++y) {
 					Vector2I target = new Vector2I(x, y);
 					ApplyAffectorAction affectorAction = new ApplyAffectorAction(unit, arte, target, true);
 					

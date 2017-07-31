@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import com.tyrfing.games.tyrlib3.model.data.FloatArray;
 import com.tyrfing.games.tyrlib3.model.game.Color;
 import com.tyrfing.games.tyrlib3.model.graphics.particles.Affector;
 import com.tyrfing.games.tyrlib3.model.graphics.particles.Emitter;
@@ -14,6 +13,7 @@ import com.tyrfing.games.tyrlib3.model.graphics.particles.Particle;
 import com.tyrfing.games.tyrlib3.model.graphics.scene.SceneNode;
 import com.tyrfing.games.tyrlib3.model.math.AABB;
 import com.tyrfing.games.tyrlib3.model.math.Matrix;
+import com.tyrfing.games.tyrlib3.model.struct.FloatArray;
 import com.tyrfing.games.tyrlib3.view.graphics.SceneManager;
 import com.tyrfing.games.tyrlib3.view.graphics.TyrGL;
 import com.tyrfing.games.tyrlib3.view.graphics.materials.ParticleMaterial;

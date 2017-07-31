@@ -5,35 +5,29 @@ import java.util.List;
 
 import com.tyrfing.games.tyrlib3.model.math.Vector2I;
 import com.tyrfing.games.tyrlib3.model.resource.ISaveable;
+import com.tyrfing.games.tyrlib3.model.struct.Grid;
 
 public class Field implements ISaveable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1235934507489391688L;
-	private Tile tiles[][];
+	private Grid<Tile> tileGrid;
 	private List<IFieldObject> objects;
-	private Vector2I size;
 	
 	public Field(Vector2I size) {
-		this.size = size;
-		tiles = new Tile[size.x][size.y];
+		tileGrid = new Grid<Tile>(size);
 		objects = new ArrayList<IFieldObject>();
 		
 		for (int x = 0; x < size.x; ++x) {
 			for (int y = 0; y < size.y; ++y) {
-				Tile tile = new Tile();
-				tiles[x][y] = tile;
+				tileGrid.setItem(x, y, new Tile());
 			}
 		}
 	}
 	
-	public Vector2I getSize() {
-		return size;
-	}
-	
-	public Tile[][] getTiles() {
-		return tiles;
+	public Grid<Tile> getTileGrid() {
+		return tileGrid;
 	}
 	
 	public List<IFieldObject> getObjects() {
@@ -53,14 +47,14 @@ public class Field implements ISaveable {
 	public IFieldObject getFirstObjectInLine(Vector2I position, Vector2I direction) {
 		IFieldObject foundReceiver = null;
 		
-		int startHeight = tiles[position.x][position.y].getHeight();
+		int startHeight = tileGrid.getItem(position).getHeight();
 		
 		while (foundReceiver == null) {
-			if (!inBounds(position)) {
+			if (!tileGrid.inBounds(position)) {
 				break;
 			}
 			
-			int currentHeight = tiles[position.x][position.y].getHeight();
+			int currentHeight = tileGrid.getItem(position).getHeight();
 			
 			if (startHeight != currentHeight) {
 				break;
@@ -76,9 +70,4 @@ public class Field implements ISaveable {
 		
 		return foundReceiver;
 	}
-
-	public boolean inBounds(Vector2I position) {
-		return position.x >= 0 && position.y >= 0 && position.x < size.x && position.y < size.y;
-	}
-	
 }

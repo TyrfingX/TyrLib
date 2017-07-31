@@ -1,4 +1,4 @@
-package com.tyrfing.games.tyrlib3.model.data;
+package com.tyrfing.games.tyrlib3.model.struct;
 
 public class FloatArray {
 	public float[] buffer;

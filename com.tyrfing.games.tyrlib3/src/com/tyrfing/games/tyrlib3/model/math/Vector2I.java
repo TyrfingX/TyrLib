@@ -25,13 +25,11 @@ public class Vector2I implements Serializable {
 		this.y = y;
 	}
 	
-	public Vector2I vectorTo(Vector2I other)
-	{
+	public Vector2I vectorTo(Vector2I other) {
 		return new Vector2I(other.x - this.x, other.y - this.y);
 	}
 	
-	public Vector2I add(Vector2I other)
-	{
+	public Vector2I add(Vector2I other) {
 		return new Vector2I(other.x + this.x, other.y + this.y);
 	}
 	
@@ -41,6 +39,10 @@ public class Vector2I implements Serializable {
 	
 	public int abs() {
 		return Math.abs(x) + Math.abs(y);
+	}
+	
+	public float dot(Vector2F other) {
+		return other.x * this.x + other.y * this.y;
 	}
 	
 	public int normalize() {
