@@ -3,9 +3,9 @@ package com.tyrfing.games.tyrlib3.view.gui;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.tyrfing.games.tyrlib3.edit.game.Updater;
 import com.tyrfing.games.tyrlib3.edit.input.InputManager;
 import com.tyrfing.games.tyrlib3.model.game.Color;
-import com.tyrfing.games.tyrlib3.model.game.Updater;
 import com.tyrfing.games.tyrlib3.model.graphics.scene.SceneNode;
 import com.tyrfing.games.tyrlib3.model.math.Vector2F;
 import com.tyrfing.games.tyrlib3.model.math.Vector3F;

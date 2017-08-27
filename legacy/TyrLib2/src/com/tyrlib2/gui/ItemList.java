@@ -43,8 +43,6 @@ public class ItemList extends Window implements IScrollListener {
 	
 	private Vector2 lastPoint;
 	
-	private int middle;
-	
 	private boolean offseted;
 	
 	private float height;
@@ -150,7 +148,6 @@ public class ItemList extends Window implements IScrollListener {
 		itemSize = orientation == Orientation.Vertical ? itemListEntry.getSize().y : itemListEntry.getSize().x;
 		itemListEntries.add(position, itemListEntry);
 		displaySize = Math.min(itemListEntries.size(), displayItems);
-		middle = displaySize / 2;
 		addChild(itemListEntry);
 		Vector2 pos = orientation == Orientation.Vertical ? 
 					new Vector2(0, (padding + itemSize) * (itemListEntries.size()-1))

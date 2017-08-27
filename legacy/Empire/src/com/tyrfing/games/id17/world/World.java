@@ -88,16 +88,6 @@ public class World implements IUpdateable, Serializable, INetworkListener {
 		}
 	}
 	
-	private class GoldRanker implements Comparator<House> {
-
-		@Override
-		public int compare(House lhs, House rhs) {
-			if ((short)lhs.gold.value  < (short)rhs.gold.value) return 1;
-			if ((short)lhs.gold.value  > (short)rhs.gold.value) return -1;
-			return 0;
-		}
-	}
-	
 	public static final float START_TIME = 310000;
 	public static final float SECONDS_PER_DAY = 1.5f;
 	public static final int DAYS_PER_SEASON = 120;
@@ -964,7 +954,8 @@ public class World implements IUpdateable, Serializable, INetworkListener {
     	stream.writeBoolean(detailsVisible);
     }
 
-    private void readObject(java.io.ObjectInputStream stream) throws IOException, ClassNotFoundException {
+    @SuppressWarnings("unchecked")
+	private void readObject(java.io.ObjectInputStream stream) throws IOException, ClassNotFoundException {
     	World.singleton_world = this;
     	worldTime = stream.readFloat();
     	mapFile = (MapFile) stream.readObject();

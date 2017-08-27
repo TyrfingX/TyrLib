@@ -50,7 +50,7 @@ public class HoldingState extends NetworkMessage {
 				if (b.getType() == Building.TYPE.Guild) {
 					Guild g = (Guild) b;
 					guildType = (byte) g.type.ordinal();
-					if (g.getType().equals(Guild.TYPE.Merchants)) {
+					if (g.getGuildType().equals(Guild.TYPE.Merchants)) {
 						guildTarget = (short) g.target.getIndex();
 					}
 				} 

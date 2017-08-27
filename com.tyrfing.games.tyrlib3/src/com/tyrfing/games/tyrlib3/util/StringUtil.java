@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StringUtil {
+	
+	public static final String GREEN = "<#aaffaa>";
+	public static final String RED = "<#ffaaaa>";
+	public static final String CODE_END = "\\#";
+	
 	public static String[] splitSpaces(String line) {
 		if (line == null) 
 			return null;
@@ -24,29 +29,9 @@ public class StringUtil {
 	
 	public static String getFlaggedText(String text, boolean flag) {
 		if (flag) {
-			return "<#aaffaa>" + text + "\\#";
+			return GREEN + text + CODE_END;
 		} else {
-			return "<#ffaaaa>" + text + "\\#";
-		}
-	}
-	
-	public static String getFlaggedText(String text, int val1, int val2) {
-		if (val1 > val2) {
-			return "<#aaffaa>" + text + "\\#";
-		} else if (val1 < val2){
-			return "<#ffaaaa>" + text + "\\#";
-		} else {
-			return text;
-		}
-	}
-	
-	public static String getFlaggedText(String text, float val1, float val2) {
-		if (val1 > val2) {
-			return "<#aaffaa>" + text + "\\#";
-		} else if (val1 < val2){
-			return "<#ffaaaa>" + text + "\\#";
-		} else {
-			return text;
+			return RED + text + CODE_END;
 		}
 	}
 }

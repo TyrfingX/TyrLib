@@ -24,11 +24,8 @@ import com.tyrlib2.math.Vector3;
 
 public class Terrain extends Renderable {
 
-	private Vector2 size;
 	private Vector2 step;
 	private int width;
-	private int height;
-	private float maxHeight;
 	
 	public Terrain() {
 		
@@ -87,10 +84,7 @@ public class Terrain extends Renderable {
 		// First we get the heightmap texture
 		Texture texture = TextureManager.getInstance().getTexture(textureName);
 		
-		Terrain terrain = new Terrain();
-		terrain.size = size;
-		terrain.maxHeight = maxHeight;
-		
+		Terrain terrain = new Terrain();		
 		short width = (short) texture.getSize().x;
 		short height = (short) texture.getSize().y;
 		
@@ -99,7 +93,6 @@ public class Terrain extends Renderable {
 		
 		terrain.step = new Vector2(stepX, stepY);
 		terrain.width = width;
-		terrain.height = height;
 		
 		ByteBuffer pixelBuffer = ByteBuffer.allocate(4*width*height);
 		pixelBuffer.position(0);
@@ -209,8 +202,6 @@ public class Terrain extends Renderable {
 		Texture texture = TextureManager.getInstance().getTexture(textureName);
 		
 		Terrain terrain = new Terrain();
-		terrain.size = size;
-		terrain.maxHeight = maxHeight;
 		
 		short width = (short) texture.getSize().x;
 		short height = (short) texture.getSize().y;
@@ -220,7 +211,6 @@ public class Terrain extends Renderable {
 		
 		terrain.step = new Vector2(stepX, stepY);
 		terrain.width = width;
-		terrain.height = height;
 		
 		ByteBuffer pixelBuffer = ByteBuffer.allocate(4*width*height);
 		pixelBuffer.position(0);

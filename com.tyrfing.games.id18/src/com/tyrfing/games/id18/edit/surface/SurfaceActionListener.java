@@ -7,7 +7,7 @@ import com.tyrfing.games.id18.edit.unit.action.MoveAction;
 import com.tyrfing.games.id18.model.field.Field;
 import com.tyrfing.games.id18.model.field.IFieldObject;
 import com.tyrfing.games.id18.model.surface.Surface;
-import com.tyrfing.games.id18.model.tag.AModifier;
+import com.tyrfing.games.id18.model.unit.StatModifier;
 import com.tyrfing.games.id18.model.unit.Unit;
 import com.tyrfing.games.tyrlib3.edit.ACompoundedActionListener;
 import com.tyrfing.games.tyrlib3.edit.action.CompoundAction;
@@ -44,8 +44,8 @@ public class SurfaceActionListener extends ACompoundedActionListener {
 	
 	private IAction createOnContactReaction(Surface surface, Unit unit) {
 		CompoundAction compoundAction = new CompoundAction();
-		List<AModifier> modifiers = surface.getModifiers();
-		for (AModifier modifier : modifiers) {
+		List<StatModifier> modifiers = surface.getModifiers();
+		for (StatModifier modifier : modifiers) {
 			AddStatModifierAction modifierAction = new AddStatModifierAction(unit, modifier);
 			compoundAction.appendCurrentlyExecutingAction(modifierAction);
 		}

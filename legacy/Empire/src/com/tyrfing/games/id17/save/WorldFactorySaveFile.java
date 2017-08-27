@@ -30,7 +30,7 @@ public class WorldFactorySaveFile extends WorldFactoryFromFile {
 		
 		init();
 		
-		World world = World.loadFrom("save");
+		World world = World.loadFrom(saveName);
 		
 		EmpireFrameListener.MAIN_FRAME.loadWorld(world.getMapFile().mapName);
 		

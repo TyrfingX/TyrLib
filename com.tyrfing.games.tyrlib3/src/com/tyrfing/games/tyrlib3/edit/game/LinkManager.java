@@ -1,9 +1,11 @@
-package com.tyrfing.games.tyrlib3.model.game;
+package com.tyrfing.games.tyrlib3.edit.game;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.tyrfing.games.tyrlib3.model.game.ILink;
 
 
 public class LinkManager {

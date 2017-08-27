@@ -18,8 +18,6 @@ import com.tyrlib2.gui.Window;
 import com.tyrlib2.math.Matrix;
 import com.tyrlib2.math.Vector2;
 
-import android.opengl.GLES20;
-
 public class RenderToTexture {
 	
 	public final int width, height;

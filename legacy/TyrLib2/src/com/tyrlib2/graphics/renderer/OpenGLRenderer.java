@@ -52,9 +52,6 @@ public abstract class OpenGLRenderer extends GameLoop {
 	
 	private Program shadowProgram;
 	private Program shadowProgramAnim;
-	
-	private int shadowMVPHandle;
-	private int shadowMVPHandleAnim;
 
 	private int shadowDistanceIndex;
 	private int[] depthTextures;
@@ -158,10 +155,8 @@ public abstract class OpenGLRenderer extends GameLoop {
 			
 			
 			shadowProgram = ProgramManager.getInstance().getProgram("SHADOW_DEPTH");
-			shadowMVPHandle = TyrGL.glGetUniformLocation(shadowProgram.handle, "u_SMVP");
 			
 			shadowProgramAnim = ProgramManager.getInstance().getProgram("SHADOW_DEPTH_ANIM");
-			shadowMVPHandleAnim = TyrGL.glGetUniformLocation(shadowProgram.handle, "u_SMVP");
 		}
 		
 	}

@@ -6,12 +6,8 @@ import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.opengl.GLES20;
-
 import com.tyrlib2.graphics.renderer.TyrGL;
 import com.tyrlib2.graphics.scene.SceneManager;
-import com.tyrlib2.main.Media;
-import com.tyrlib2.util.Options;
 
 public class Compositor {
 	

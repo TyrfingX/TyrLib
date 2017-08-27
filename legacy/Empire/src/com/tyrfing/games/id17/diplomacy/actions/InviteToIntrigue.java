@@ -5,7 +5,6 @@ import com.tyrfing.games.id17.gui.mails.DiploYesNoMail;
 import com.tyrfing.games.id17.gui.mails.HeaderedMail;
 import com.tyrfing.games.id17.gui.mails.Mail;
 import com.tyrfing.games.id17.houses.House;
-import com.tyrfing.games.id17.world.World;
 
 public class InviteToIntrigue extends DiploAction {
 

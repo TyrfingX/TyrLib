@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.tyrfing.games.id18.model.tag.AModifier;
 import com.tyrfing.games.tyrlib3.model.IUUID;
 import com.tyrfing.games.tyrlib3.model.math.Vector2I;
 import com.tyrfing.games.tyrlib3.model.resource.ISaveable;
@@ -17,8 +16,8 @@ public class Affector implements ISaveable, IUUID {
 
 	private String name;
 	
-	private List<AModifier> effectModifiers;
-	private List<AModifier> costModifiers;
+	private List<StatModifier> effectModifiers;
+	private List<StatModifier> costModifiers;
 	
 	private int maxRange;
 	private int minRange;
@@ -34,8 +33,8 @@ public class Affector implements ISaveable, IUUID {
 		this.name = name;
 		this.uuid = UUID.randomUUID();
 		
-		effectModifiers = new ArrayList<AModifier>();
-		costModifiers = new ArrayList<AModifier>();
+		effectModifiers = new ArrayList<StatModifier>();
+		costModifiers = new ArrayList<StatModifier>();
 		aoe = new ArrayList<Vector2I>();
 		aoe.add(new Vector2I());
 	}
@@ -44,11 +43,11 @@ public class Affector implements ISaveable, IUUID {
 		return name;
 	}
 	
-	public List<AModifier> getEffectModifiers() {
+	public List<StatModifier> getEffectModifiers() {
 		return effectModifiers;
 	}
 	
-	public List<AModifier> getCostModifiers() {
+	public List<StatModifier> getCostModifiers() {
 		return costModifiers;
 	}
 	

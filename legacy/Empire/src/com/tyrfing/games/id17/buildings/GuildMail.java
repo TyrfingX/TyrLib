@@ -66,11 +66,9 @@ public class GuildMail extends HeaderedMail {
 			 this.titleLabelLeft.setText("Export goods to:");
 			 
 			 List<Holding> holdings = h.getOwner().getHoldings();
-			 final HeaderedMail mail = this;
 			 
 			 for (int i = 0; i < holdings.size(); ++i) {
 				 if (holdings.get(i) instanceof Barony && holdings.get(i) != h) {
-					 final Holding holding = holdings.get(i);
 					 HoldingEntry entry = new HoldingEntry(holdings.get(i), this) {
 							@Override
 							protected void onClick() {

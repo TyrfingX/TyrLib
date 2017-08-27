@@ -64,8 +64,6 @@ public class DefaultMaterial3 extends LightedMaterial {
 	private boolean transparent;
 	
 	private static boolean wasAnimated = false;
-	
-	private int blendMode = TyrGL.GL_ONE_MINUS_SRC_ALPHA;
 
 	private int modelMatrixHandle;
 	
@@ -272,7 +270,7 @@ public class DefaultMaterial3 extends LightedMaterial {
 	}
 	
 	public void setBlendMode(int mode) {
-		this.blendMode = mode;
+		//this.blendMode = mode;
 	}
 	
 //	private void passModelViewMatrix(float[] modelMatrix) {

@@ -3,7 +3,6 @@ package com.tyrlib2.gui;
 import com.tyrlib2.graphics.renderables.Rectangle2;
 import com.tyrlib2.gui.WindowEvent.WindowEventType;
 import com.tyrlib2.math.Vector2;
-import com.tyrlib2.sound.ISound;
 import com.tyrlib2.util.Color;
 
 public class RectItemListEntry extends ItemListEntry {
@@ -31,7 +30,6 @@ public class RectItemListEntry extends ItemListEntry {
 	
 	protected Window main;
 	protected boolean selected;
-	private ISound onEnterSound;
 	
 	private Paint paint;
 	private Color highlighted;

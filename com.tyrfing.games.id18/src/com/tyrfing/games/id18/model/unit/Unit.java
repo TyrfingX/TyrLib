@@ -9,14 +9,15 @@ import java.util.UUID;
 import com.tyrfing.games.id18.model.battle.Battle;
 import com.tyrfing.games.id18.model.field.Field;
 import com.tyrfing.games.id18.model.field.IFieldObject;
-import com.tyrfing.games.id18.model.tag.AModifier;
-import com.tyrfing.games.id18.model.tag.IModifiable;
 import com.tyrfing.games.id18.model.tag.Tag;
 import com.tyrfing.games.tyrlib3.model.IUUID;
+import com.tyrfing.games.tyrlib3.model.game.stats.IModifiable;
+import com.tyrfing.games.tyrlib3.model.game.stats.IStatHolder;
+import com.tyrfing.games.tyrlib3.model.game.stats.Stat;
 import com.tyrfing.games.tyrlib3.model.math.Vector2I;
 import com.tyrfing.games.tyrlib3.model.resource.ISaveable;
 
-public class Unit implements IFieldObject, IModifiable, ISaveable, IUUID {
+public class Unit implements IFieldObject, IStatHolder<Integer>, IModifiable<StatModifier>, ISaveable, IUUID {
 	
 	/**
 	 * 
@@ -28,16 +29,16 @@ public class Unit implements IFieldObject, IModifiable, ISaveable, IUUID {
 	private Field deployedField;
 	private Faction faction;
 	
-	private List<AModifier> modifiers;
-	private Map<StatType, Integer> stats;
+	private List<StatModifier> modifiers;
+	private Map<Stat, Integer> stats;
 	private List<Arte> artes;
 	private UUID uuid;
 	
 	public Unit() {
 		fieldPosition = new Vector2I();
 		fieldOrientation = new Vector2I();
-		modifiers = new ArrayList<AModifier>();
-		stats = new HashMap<StatType, Integer>();
+		modifiers = new ArrayList<StatModifier>();
+		stats = new HashMap<Stat, Integer>();
 		artes = new ArrayList<Arte>();
 		uuid = UUID.randomUUID();
 		
@@ -100,12 +101,12 @@ public class Unit implements IFieldObject, IModifiable, ISaveable, IUUID {
 	}
 	
 	@Override
-	public List<AModifier> getModifiers() {
+	public List<StatModifier> getModifiers() {
 		return modifiers;
 	}
 	
 	public boolean hasTag(Tag tag) {
-		for (AModifier modifier : modifiers) {
+		for (StatModifier modifier : modifiers) {
 			if (modifier.getTags().contains(tag)) {
 				return true;
 			}
@@ -114,7 +115,8 @@ public class Unit implements IFieldObject, IModifiable, ISaveable, IUUID {
 		return false;
 	}
 	
-	public Map<StatType, Integer> getStats() {
+	@Override
+	public Map<Stat, Integer> getStats() {
 		return stats;
 	}
 	

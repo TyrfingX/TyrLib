@@ -22,10 +22,8 @@ import com.tyrlib2.graphics.renderer.Mesh;
 import com.tyrlib2.graphics.renderer.Renderable;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.math.AABB;
-import com.tyrlib2.math.Ray;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.util.Direction4;
-import com.tyrlib2.util.Raycast;
 
 
 public class WorldMap implements Serializable {

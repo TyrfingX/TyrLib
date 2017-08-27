@@ -22,6 +22,7 @@ import com.tyrlib2.main.Media;
 import com.tyrlib2.math.Quaternion;
 import com.tyrlib2.math.Vector3;
 
+@SuppressWarnings("unused")
 public class IQMEntityFactory implements IEntityFactory {
 	
 	private static final int HEADER_TXT_SIZE = 16;
@@ -34,7 +35,7 @@ public class IQMEntityFactory implements IEntityFactory {
 	
 	private class Header {
 	    int version;
-	    int fileSize;
+		int fileSize;
 	    int flags;
 	    int num_text, ofs_text;
 	    int num_meshes, ofs_meshes;
@@ -122,7 +123,7 @@ public class IQMEntityFactory implements IEntityFactory {
 	}
 	
 	private class PoseData {
-	    int parent;
+		int parent;
 	    int channelmask; // mask of which 10 channels are present for this joint pose
 	    float[] channeloffset = new float[10];
 	    float[] channelscale = new float[10]; 

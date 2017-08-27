@@ -1,7 +1,11 @@
 package com.tyrfing.games.id18.model.unit;
 
-import com.tyrfing.games.id18.model.tag.AModifier;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import com.tyrfing.games.id18.model.tag.Tag;
+import com.tyrfing.games.tyrlib3.model.game.stats.AModifier;
 
 public class StatModifier extends AModifier {
 
@@ -23,19 +27,14 @@ public class StatModifier extends AModifier {
 	private StatType stat;
 	private int value;
 	boolean isAbsolute;
+	private List<Tag> tags;
 	
-	public StatModifier(String name, StatType stat, int value, boolean isAbsolute) {
+	public StatModifier(String name, StatType stat, int value, boolean isAbsolute, Tag... tags) {
 		super(name);
 		this.stat = stat;
 		this.value = value;
 		this.isAbsolute = isAbsolute;
-	}
-	
-	public StatModifier(String name, StatType stat, int value, boolean isAbsolute, Tag... tags) {
-		super(name, tags);
-		this.stat = stat;
-		this.value = value;
-		this.isAbsolute = isAbsolute;
+		this.tags = new ArrayList<Tag>(Arrays.asList(tags));
 	}
 	
 	public StatType getStat() {
@@ -48,6 +47,10 @@ public class StatModifier extends AModifier {
 	
 	public boolean isAbsolute() {
 		return isAbsolute;
+	}
+	
+	public List<Tag> getTags() {
+		return tags;
 	}
 	
 	@Override

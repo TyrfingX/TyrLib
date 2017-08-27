@@ -99,6 +99,10 @@ public class MainGUI {
 		dateGUI = new DateGUI();
 	}
 	
+	public DateGUI getDateGUI() {
+		return dateGUI;
+	}
+	
 	public void display() {
 		houseGUI.show();
 	}

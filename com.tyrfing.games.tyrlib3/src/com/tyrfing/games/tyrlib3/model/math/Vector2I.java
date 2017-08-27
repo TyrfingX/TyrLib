@@ -2,6 +2,8 @@ package com.tyrfing.games.tyrlib3.model.math;
 
 import java.io.Serializable;
 
+import com.tyrfing.games.tyrlib3.model.game.Direction4;
+
 public class Vector2I implements Serializable {
 	/**
 	 * 
@@ -74,6 +76,21 @@ public class Vector2I implements Serializable {
 				return NEGATIVE_UNIT_Y;
 			}
 		}
+	}
+	
+	public static Vector2I fromDirection4(Direction4 direction) {
+		switch (direction) {
+		case TOP:
+			return UNIT_Y;
+		case BOTTOM:
+			return NEGATIVE_UNIT_Y;
+		case LEFT:
+			return NEGATIVE_UNIT_X;
+		case RIGHT:
+			return UNIT_X;
+		}
+		
+		return ZERO;
 	}
 	
 	@Override

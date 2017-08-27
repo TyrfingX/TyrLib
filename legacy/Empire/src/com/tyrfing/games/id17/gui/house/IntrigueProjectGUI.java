@@ -1,8 +1,5 @@
 package com.tyrfing.games.id17.gui.house;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.tyrfing.games.id17.Util;
 import com.tyrfing.games.id17.diplomacy.Diplomacy;
 import com.tyrfing.games.id17.diplomacy.actions.DiploAction;
@@ -57,7 +54,6 @@ public class IntrigueProjectGUI extends MenuPoint implements IUpdateable {
 	private Label progressText;
 	private Label remainingDaysText;
 	private Label increaseText;
-	private List<ImageBox> supporters = new ArrayList<ImageBox>();
 	
 	private PaperButton invite;
 	private ImageBox inviteTarget;

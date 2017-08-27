@@ -12,7 +12,6 @@ import com.tyrlib2.graphics.renderer.Viewport;
 import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.graphics.text.Font;
 import com.tyrlib2.gui.WindowEvent.WindowEventType;
-import com.tyrlib2.input.IMotionEvent;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.util.Color;

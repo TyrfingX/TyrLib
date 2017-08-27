@@ -24,7 +24,6 @@ import com.tyrfing.games.id17.startmenu.Menu;
 import com.tyrfing.games.id17.world.World;
 import com.tyrlib2.game.Updater;
 import com.tyrlib2.graphics.compositors.BloomComposit;
-import com.tyrlib2.graphics.compositors.DeferredLighting;
 import com.tyrlib2.graphics.compositors.DoFComposit;
 import com.tyrlib2.graphics.compositors.Precision;
 import com.tyrlib2.graphics.compositors.SSAOComposit;
@@ -197,7 +196,6 @@ public class EmpireFrameListener implements IFrameListener, INetworkListener {
 		Vector2 screenSize = Media.CONTEXT.getScreenSize();
 		float xScale = scaleWeight * NATIVE_SIZE.x / screenSize.x + 1-scaleWeight;
 		float yScale = scaleWeight * NATIVE_SIZE.y / screenSize.y + 1-scaleWeight;
-		float fontScale = (scaleWeight/2) * screenSize.x / NATIVE_SIZE.x + 1-scaleWeight + (scaleWeight/2) * NATIVE_SIZE.y/screenSize.y;
 		
 		float scaleWeight2 = 0.5f;
 		float xScale2 = scaleWeight2 * NATIVE_SIZE.x / screenSize.x + 1-scaleWeight2;
@@ -205,7 +203,6 @@ public class EmpireFrameListener implements IFrameListener, INetworkListener {
 		
 		float scaleWeight3 = 0.4f;
 		float xScale3 = scaleWeight3 * NATIVE_SIZE.x / screenSize.x + 1-scaleWeight3;
-		float yScale3 = scaleWeight3 * NATIVE_SIZE.y / screenSize.y + 1-scaleWeight3;	
 		
 		float scaleWeight4 = 1.2f;
 		float xScale4 = scaleWeight4 * NATIVE_SIZE.x / screenSize.x + 1-scaleWeight4;
@@ -289,8 +286,8 @@ public class EmpireFrameListener implements IFrameListener, INetworkListener {
 			float[] distances = { 300, 1000, 2000 };
 			SceneManager.getInstance().getRenderer().setShadowsEnabled(true, SceneManager.getInstance().getLight(0), textureSizes, distances);
 		} else {
-			int[] textureSizes = { 512, 256, 128 };
-			float[] distances = { 300, 1000, 2000 };
+			//int[] textureSizes = { 512, 256, 128 };
+			//float[] distances = { 300, 1000, 2000 };
 			//SceneManager.getInstance().getRenderer().setShadowsEnabled(true, SceneManager.getInstance().getLight(0), textureSizes, distances);
 		}
 		

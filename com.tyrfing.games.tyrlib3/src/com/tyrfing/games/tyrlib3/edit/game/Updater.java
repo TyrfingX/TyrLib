@@ -1,9 +1,10 @@
-package com.tyrfing.games.tyrlib3.model.game;
+package com.tyrfing.games.tyrlib3.edit.game;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.tyrfing.games.tyrlib3.model.game.IUpdateable;
 import com.tyrfing.games.tyrlib3.view.graphics.IFrameListener;
 
 public class Updater implements IFrameListener, Serializable {

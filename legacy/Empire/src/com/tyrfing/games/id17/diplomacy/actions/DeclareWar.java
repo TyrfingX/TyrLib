@@ -120,7 +120,7 @@ public class DeclareWar extends DiploAction {
 		
 		sender.changeHonor(honorChange);
 		
-		War war = new War(sender, receiver, goal, justification);
+		new War(sender, receiver, goal, justification);
 	}
 	
 	public static void declareWar(House sender, House receiver, WarGoal goal, WarJustification justification) {

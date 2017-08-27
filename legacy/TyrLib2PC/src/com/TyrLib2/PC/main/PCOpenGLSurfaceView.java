@@ -18,7 +18,6 @@ import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.KeyListener;
 import com.jogamp.newt.event.MouseEvent;
 import com.jogamp.newt.event.MouseListener;
-import com.jogamp.newt.event.WindowEvent;
 import com.jogamp.newt.event.WindowListener;
 import com.jogamp.newt.event.WindowUpdateEvent;
 import com.jogamp.newt.event.awt.AWTKeyAdapter;
@@ -40,11 +39,9 @@ public class PCOpenGLSurfaceView implements MouseListener, KeyListener, WindowLi
 	
 	public static PCView view;
 	private PCOpenGLRenderer renderer;
-	private GLCapabilities caps;
 	private GLWindow window;
 	private JFrame frame;
 	private GLCanvas canvas;
-	private Config config;
 	
 	private boolean useNEWT;
 	private boolean useFullscreen;
@@ -67,8 +64,6 @@ public class PCOpenGLSurfaceView implements MouseListener, KeyListener, WindowLi
         InputManager.VK_RIGHT = KeyEvent.VK_RIGHT;
         InputManager.VK_LEFT = KeyEvent.VK_LEFT;
         InputManager.VK_ONE = KeyEvent.VK_1;
-        
-        this.config = config;
         
         useFullscreen = config == null || config.screenState == ScreenState.FULLSCREEN;
         old.setVisible(false);
@@ -139,13 +134,14 @@ public class PCOpenGLSurfaceView implements MouseListener, KeyListener, WindowLi
             new AWTWindowAdapter(this).addTo(canvas);
             
             frame.addWindowListener(new WindowAdapter() {
-                public void windowClosing( WindowEvent windowevent ) {
+            	@Override
+            	public void windowClosing(java.awt.event.WindowEvent arg0) {
                 	if (!destroyed) {
                 		destroyed = true;
                 		frame.dispose();
                     	System.exit( 0 );
                 	}
-                }
+            	}
             });
 
         }

@@ -1,9 +1,5 @@
 package com.tyrfing.games.id17.holdings;
 
-import gnu.trove.map.TObjectFloatMap;
-import gnu.trove.map.hash.TIntFloatHashMap;
-import gnu.trove.map.hash.TObjectFloatHashMap;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -47,6 +43,10 @@ import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.math.Vector3;
 import com.tyrlib2.util.Color;
+
+import gnu.trove.map.TObjectFloatMap;
+import gnu.trove.map.hash.TIntFloatHashMap;
+import gnu.trove.map.hash.TObjectFloatHashMap;
 
 public class Holding implements IUpdateable, Serializable {
 	
@@ -418,7 +418,7 @@ public class Holding implements IUpdateable, Serializable {
 			int dstHolding = toHolding.getHoldingID();
 			
 			if (!SceneManager.getInstance().getRenderer().isInServerMode()) {
-				Traveller traveller = new Traveller(srcHolding, dstHolding);
+				new Traveller(srcHolding, dstHolding);
 			}  else {
 				EmpireFrameListener.MAIN_FRAME.getNetwork().broadcast(new TravellerMessage(srcHolding, dstHolding));
 			}
@@ -583,7 +583,7 @@ public class Holding implements IUpdateable, Serializable {
 		Entity e = holdingData.worldEntity;
 		Mesh m = e.getSubEntity(0).getMesh();
 	
-		if (!HUD_OFFSET.containsValue(m)) {
+		if (!HUD_OFFSET.containsKey(m)) {
 			Vector3 offset = e.getBoundingBox().max.sub(e.getBoundingBox().min);
 			offset.z *= 1.2f;
 			offset.x *= 0.55f;
@@ -985,6 +985,7 @@ public class Holding implements IUpdateable, Serializable {
 		stream.writeObject(demandMap);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void readInternalsFromStream(ObjectInputStream stream) throws OptionalDataException, ClassNotFoundException, IOException {
 		passedTime = stream.readFloat();
 		incomeTime = stream.readFloat();

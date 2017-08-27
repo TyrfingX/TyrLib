@@ -433,14 +433,6 @@ public class OctreeNode extends BoundedSceneObject {
 		}
 	}
 	
-	private void queryChildren(ISceneQuery query) {
-		if (children != null) {
-			for (int i = 0; i < CHILDREN_PER_NODE; ++i) {
-				children[i].query(query);
-			}
-		}
-	}
-	
 	public OctreeNode getParentOctree() {
 		return parentOctree;
 	}

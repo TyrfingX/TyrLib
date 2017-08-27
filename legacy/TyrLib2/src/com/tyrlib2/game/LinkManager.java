@@ -20,7 +20,7 @@ public class LinkManager {
 	
 	public void registerLink(ILink link, String event) {
 		List<ILink> listeners = null;
-		if (!linkMap.containsValue(event)) {
+		if (!linkMap.containsKey(event)) {
 			listeners = new ArrayList<ILink>();
 			linkMap.put(event, listeners);
 		} else {
@@ -30,7 +30,7 @@ public class LinkManager {
 	}
 	
 	public void removeLink(ILink link, String event) {
-		if (linkMap.containsValue(event)) {
+		if (linkMap.containsKey(event)) {
 			List<ILink>listeners = new ArrayList<ILink>();
 			listeners.remove(link);
 		} 

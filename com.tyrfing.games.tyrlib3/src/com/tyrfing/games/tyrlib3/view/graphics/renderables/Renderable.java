@@ -167,7 +167,6 @@ public class Renderable extends BoundedRenderable {
 	 * Render this object
 	 */
 	public void render(float[] vpMatrix) {
-		TyrGL.glGetError();
 		
 		if (parent != null && modelMatrix != null && material.isVisible()) {
 	        

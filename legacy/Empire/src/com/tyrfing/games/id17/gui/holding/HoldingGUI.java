@@ -631,7 +631,7 @@ public class HoldingGUI extends TabGUI<Holding> implements IMoveListener, ITouch
 			
 			Texture texture = TextureManager.getInstance().getTexture("PIE_CHART");
 			if (texture != null) {
-				TextureManager.getInstance().destroyTexture(texture);
+				TextureManager.getInstance().destroyTexture("PIE_CHART");
 			}
 			
 			texture = chart.build("PIE_CHART");

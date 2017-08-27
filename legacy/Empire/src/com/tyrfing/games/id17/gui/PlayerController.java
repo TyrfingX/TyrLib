@@ -9,7 +9,6 @@ import com.tyrfing.games.id17.holdings.Barony;
 import com.tyrfing.games.id17.holdings.Holding;
 import com.tyrfing.games.id17.houses.House;
 import com.tyrfing.games.id17.houses.HouseController;
-import com.tyrfing.games.id17.war.War;
 import com.tyrfing.games.id17.world.SeasonMaterial;
 import com.tyrfing.games.id17.world.World;
 import com.tyrlib2.gui.ImageBox;

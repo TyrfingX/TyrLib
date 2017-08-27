@@ -43,7 +43,7 @@ public class MainStarter {
 		
 		ClassLoader jceClassLoader = new URLClassLoader(rsrcUrls, null);
 		Thread.currentThread().setContextClassLoader(jceClassLoader);
-		Class c = Class.forName(className, true, jceClassLoader);
+		Class<?> c = Class.forName(className, true, jceClassLoader);
 		Method main = c.getMethod(MAIN_METHOD_NAME, new Class[]{args.getClass()}); 
 		main.invoke((Object)null, new Object[]{args});
 	}
@@ -64,7 +64,7 @@ public class MainStarter {
 			System.out.println("Your OS is not support!!");
 		}
 		
-		Enumeration resEnum;
+		Enumeration<?> resEnum;
 		resEnum = Thread.currentThread().getContextClassLoader().getResources(JarFile.MANIFEST_NAME); 
 		while (resEnum.hasMoreElements()) {
 			try {
@@ -106,7 +106,7 @@ public class MainStarter {
 			}
 			firstPos = lastPos+1; 
 		}
-		return (String[]) result.toArray(new String[result.size()]);
+		return result.toArray(new String[result.size()]);
 	}
 	
 }

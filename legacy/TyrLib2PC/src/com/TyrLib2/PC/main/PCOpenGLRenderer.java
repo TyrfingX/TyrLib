@@ -49,7 +49,6 @@ public class PCOpenGLRenderer extends OpenGLRenderer implements GLEventListener 
 	@Override
 	public void display(GLAutoDrawable drawable) {
 		
-		GL3 gl = drawable.getGL().getGL3();
 		/*
 		gl.glBindFramebuffer( GL3.GL_FRAMEBUFFER, fbo[0] );
 		gl.glFramebufferRenderbuffer(GL3.GL_FRAMEBUFFER, GL3.GL_COLOR_ATTACHMENT0, GL3.GL_RENDERBUFFER, rbo[0]);

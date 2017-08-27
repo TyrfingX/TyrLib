@@ -28,7 +28,6 @@ public class UpgradeRegimentProject implements IProject {
 	private float progress;
 	private float prod;
 	private Regiment regiment;
-	private float cost;
 	private Army army;
 	
 	private float progressLast;
@@ -42,7 +41,6 @@ public class UpgradeRegimentProject implements IProject {
 		this.prod = prod;
 		this.regiment = regiment;
 		this.army = army;
-		this.cost = cost;
 		
 		army.getOwner().changeGold((int) -cost);
 		

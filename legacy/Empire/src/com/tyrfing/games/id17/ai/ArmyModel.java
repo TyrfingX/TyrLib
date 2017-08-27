@@ -227,7 +227,7 @@ public class ArmyModel implements Serializable {
 			}
 		}
 		
-		relevantBaronies.remove(holding.getIndex());
+		relevantBaronies.remove(holding);
 	}
 	
 	public void destroy() {

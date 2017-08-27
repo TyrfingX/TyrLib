@@ -3,8 +3,8 @@ package com.tyrfing.games.tyrlib3.view.gui.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.tyrfing.games.tyrlib3.edit.game.LinkManager;
 import com.tyrfing.games.tyrlib3.model.game.Color;
-import com.tyrfing.games.tyrlib3.model.game.LinkManager;
 import com.tyrfing.games.tyrlib3.model.math.Vector2F;
 import com.tyrfing.games.tyrlib3.model.math.Vector3F;
 import com.tyrfing.games.tyrlib3.view.graphics.SceneManager;

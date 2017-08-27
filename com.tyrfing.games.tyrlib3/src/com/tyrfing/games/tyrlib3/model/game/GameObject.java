@@ -1,25 +1,25 @@
 package com.tyrfing.games.tyrlib3.model.game;
 
-import com.tyrfing.games.tyrlib3.model.graphics.scene.BoundedSceneObject;
+import java.util.UUID;
+
+import com.tyrfing.games.tyrlib3.model.IUUID;
 import com.tyrfing.games.tyrlib3.model.resource.ISaveable;
 
-public abstract class GameObject extends BoundedSceneObject implements IUpdateable, ISaveable {
+public abstract class GameObject implements IUUID, ISaveable {
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 5360261207692144426L;
 
+	private UUID uuid;
+	
 	public GameObject() {
-		
+		uuid = UUID.randomUUID();
 	}
 	
 	@Override
-	public void onUpdate(float time) {
-	}
-	
-	@Override
-	public boolean isFinished() {
-		return false;
+	public UUID getUUID() {
+		return uuid;
 	}
 }

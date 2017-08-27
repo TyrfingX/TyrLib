@@ -12,7 +12,6 @@ import com.tyrfing.games.id17.intrigue.Intrigue;
 import com.tyrfing.games.id17.intrigue.IntrigueProject;
 import com.tyrfing.games.id17.intrigue.actions.IntrigueAction;
 import com.tyrfing.games.id17.world.World;
-import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.networking.Connection;
 
 public class NetworkAction extends NetworkMessage {

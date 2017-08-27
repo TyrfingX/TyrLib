@@ -2,7 +2,6 @@ package com.tyrfing.games.id17.gui.holding;
 
 import com.tyrfing.games.id17.gui.MenuPoint;
 import com.tyrfing.games.id17.holdings.Holding;
-import com.tyrlib2.gui.ImageBox;
 import com.tyrlib2.gui.Label;
 import com.tyrlib2.gui.ScaledVector2;
 import com.tyrlib2.gui.Window;
@@ -27,10 +26,6 @@ public class OverviewGUI extends MenuPoint {
 	public static final ScaledVector2 SUPPLIES_LABEL_POS = new ScaledVector2(0.03f,  INCOME_LABEL_POS.y + INFO_PADDING_Y * 4, 2);
 	
 	public static final float FADE_TIME = 0.5f;
-
-	private Holding displayed;
-	private Window parent;
-	private ImageBox chartImage;
 	
 //	private Label popBreakdown;
 	
@@ -42,7 +37,6 @@ public class OverviewGUI extends MenuPoint {
 	private Label suppliesLabel;
 	
 	public OverviewGUI(Window parent) {
-		this.parent = parent;
 		WindowManager.getInstance().createImageBox("HOLDING/INFO", HOLDING_INFO_POS, "MAIN_GUI", "PAPER", HOLDING_INFO_SIZE);
 		mainElements.add(WindowManager.getInstance().getWindow("HOLDING/INFO"));
 		parent.addChild(mainElements.get(0));
@@ -93,8 +87,6 @@ public class OverviewGUI extends MenuPoint {
 	}
 	
 	public void show(Holding holding) {
-		displayed = holding;
-		
 		update();
 			
 //		String breakdown = 	"Scholars:    <#3090d0>" + scholars + 

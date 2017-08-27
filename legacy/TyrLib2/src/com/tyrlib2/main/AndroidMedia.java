@@ -10,19 +10,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import android.content.Context;
-import android.content.res.AssetFileDescriptor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Typeface;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.media.SoundPool;
-import android.opengl.GLES20;
-import android.view.Display;
-import android.view.WindowManager;
-
 import com.tyrlib2.bitmap.AndroidCanvas;
 import com.tyrlib2.bitmap.AndroidDrawableBitmap;
 import com.tyrlib2.bitmap.AndroidPaint;
@@ -43,6 +30,20 @@ import com.tyrlib2.sound.AndroidMusic;
 import com.tyrlib2.sound.AndroidSound;
 import com.tyrlib2.sound.IMusic;
 import com.tyrlib2.sound.ISound;
+
+import android.content.Context;
+import android.content.res.AssetFileDescriptor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Point;
+import android.graphics.Typeface;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
+import android.opengl.GLES20;
+import android.view.Display;
+import android.view.WindowManager;
 
 public class AndroidMedia extends Media {
 	
@@ -158,7 +159,9 @@ public class AndroidMedia extends Media {
 	@Override
 	public Vector2 getScreenSize() {
 		Display d = context.getWindowManager().getDefaultDisplay();
-		return new Vector2(d.getWidth(), d.getHeight());
+		Point point = new Point();
+		d.getSize(point);
+		return new Vector2(point.x, point.y);
 	}
 
 	@Override

@@ -1,8 +1,5 @@
 package com.tyrfing.games.id17.startmenu;
 
-import java.io.IOException;
-import java.net.UnknownHostException;
-
 import com.tyrfing.games.id17.EmpireFrameListener;
 import com.tyrlib2.graphics.renderables.FormattedText2.ALIGNMENT;
 import com.tyrlib2.graphics.scene.SceneManager;
@@ -24,7 +21,6 @@ import com.tyrlib2.main.Media;
 import com.tyrlib2.math.Vector2;
 import com.tyrlib2.networking.Connection;
 import com.tyrlib2.networking.INetworkListener;
-import com.tyrlib2.networking.Network;
 import com.tyrlib2.util.Color;
 
 public class MatchMakerUI implements INetworkListener  {

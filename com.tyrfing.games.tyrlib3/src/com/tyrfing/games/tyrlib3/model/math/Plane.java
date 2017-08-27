@@ -33,6 +33,4 @@ public class Plane {
 		this.y = point.y;
 		this.z = point.z;
 	}
-	
-	
 }

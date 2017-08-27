@@ -5,7 +5,6 @@ import com.tyrlib2.graphics.lighting.Light;
 import com.tyrlib2.graphics.materials.DefaultMaterial3;
 import com.tyrlib2.graphics.renderer.Camera;
 import com.tyrlib2.graphics.renderer.Mesh;
-import com.tyrlib2.graphics.renderer.Program;
 import com.tyrlib2.graphics.renderer.ProgramManager;
 import com.tyrlib2.graphics.renderer.Texture;
 import com.tyrlib2.graphics.renderer.TextureManager;
@@ -14,10 +13,6 @@ import com.tyrlib2.graphics.scene.SceneManager;
 import com.tyrlib2.util.Color;
 
 public class OceanMaterial extends DefaultMaterial3 implements IUpdateable {
-	
-	private int modelMatrixHandle;
-	
-	private static final float[] mvpMatrix = new float[16];
 	
 	private int waveTimeHandle;
 	private float waveTime;

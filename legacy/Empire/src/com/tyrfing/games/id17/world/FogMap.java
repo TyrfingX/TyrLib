@@ -88,7 +88,7 @@ public class FogMap {
 	public void updateFogTexture() {
 		Texture t = TextureManager.getInstance().getTexture(textureName);
 		if (t != null) {
-			TextureManager.getInstance().destroyTexture(t);
+			TextureManager.getInstance().destroyTexture(textureName);
 			build();
 		}
 	}

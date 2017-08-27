@@ -37,7 +37,6 @@ public abstract class Mail extends Window {
 	
 	protected Frame frame;
 	private ImageBox cancel;
-	private ImageBox minimize;
 	
 	private MailboxGUI gui;
 	private String identity;

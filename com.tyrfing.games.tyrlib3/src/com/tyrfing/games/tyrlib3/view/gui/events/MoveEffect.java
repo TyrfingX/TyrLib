@@ -4,7 +4,7 @@ import com.tyrfing.games.tyrlib3.model.math.Vector2F;
 import com.tyrfing.games.tyrlib3.view.gui.events.WindowEvent.WindowEventType;
 import com.tyrfing.games.tyrlib3.view.gui.widgets.Window;
 
-public class UIEffect {
+public class MoveEffect {
 	private static class MoveFinished implements IEventListener {
 		
 		private float bounceTime;

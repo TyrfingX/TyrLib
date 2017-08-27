@@ -8,7 +8,6 @@ import com.tyrlib2.gui.Label;
 import com.tyrlib2.gui.ScaledVector2;
 import com.tyrlib2.gui.WindowManager;
 import com.tyrlib2.input.InputManager;
-import com.tyrlib2.math.Vector2;
 import com.tyrlib2.util.Color;
 
 public class GiftMail extends HeaderedMail {

@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.tyrfing.games.id18.model.unit.StatModifier;
+import com.tyrfing.games.tyrlib3.model.game.stats.IModifiable;
 
 public class TagReaction {
 	private List<Tag> reactingTags;
@@ -30,7 +31,7 @@ public class TagReaction {
 		return addedModifiers;
 	}
 	
-	public boolean isApplicable(IModifiable modifiable, AModifier modifier) {
+	public boolean isApplicable(IModifiable<StatModifier> modifiable, StatModifier modifier) {
 		if (Collections.disjoint(getReactingTags(), modifier.getTags())) {
 			return false;
 		}

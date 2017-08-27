@@ -5,8 +5,8 @@ import java.util.List;
 
 import com.tyrfing.games.id18.model.field.Field;
 import com.tyrfing.games.id18.model.field.IFieldObject;
-import com.tyrfing.games.id18.model.tag.AModifier;
 import com.tyrfing.games.id18.model.unit.Affector;
+import com.tyrfing.games.id18.model.unit.StatModifier;
 import com.tyrfing.games.id18.model.unit.StatType;
 import com.tyrfing.games.id18.model.unit.Unit;
 import com.tyrfing.games.tyrlib3.edit.action.CompoundAction;
@@ -29,7 +29,7 @@ public class ApplyAffectorAction extends CompoundAction {
 		
 		field = unit.getDeployedField();
 		
-		for (AModifier modifier : affector.getCostModifiers()) {
+		for (StatModifier modifier : affector.getCostModifiers()) {
 			AddStatModifierAction receiveStatModifierAction = new AddStatModifierAction(unit, modifier);
 			getActions().add(receiveStatModifierAction);
 		}
@@ -45,7 +45,7 @@ public class ApplyAffectorAction extends CompoundAction {
 		for (IFieldObject receiver : receivers) {
 			if (receiver instanceof Unit) {
 				Unit receiverUnit = (Unit) receiver;
-				for (AModifier modifier : affector.getEffectModifiers()) {
+				for (StatModifier modifier : affector.getEffectModifiers()) {
 					AddStatModifierAction receiveStatModifierAction = new AddStatModifierAction(receiverUnit, modifier);
 					getActions().add(receiveStatModifierAction);
 				}

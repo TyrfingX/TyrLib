@@ -1,8 +1,5 @@
 package com.tyrfing.games.id17.holdings;
 
-import com.tyrfing.games.id17.trade.Wood;
-
-
 public class Village extends Holding {
 	
 	/**

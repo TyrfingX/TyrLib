@@ -1857,7 +1857,8 @@ public class House implements IUpdateable, Serializable {
     	stream.writeObject(visibleHouses);
     }
 
-    private void readObject(java.io.ObjectInputStream stream) throws IOException, ClassNotFoundException {
+    @SuppressWarnings("unchecked")
+	private void readObject(java.io.ObjectInputStream stream) throws IOException, ClassNotFoundException {
     	
     	gold = (Valuef) stream.readObject();
     	honor = stream.readFloat();

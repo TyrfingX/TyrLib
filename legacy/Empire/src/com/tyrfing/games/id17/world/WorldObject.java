@@ -3,13 +3,10 @@ package com.tyrfing.games.id17.world;
 import com.tyrlib2.graphics.renderables.Entity;
 import com.tyrlib2.graphics.scene.BoundedSceneObject;
 import com.tyrlib2.math.AABB;
-import com.tyrlib2.math.Vector3;
 
 public class WorldObject extends BoundedSceneObject {
 
 	private Entity entity;
-	private static final AABB boundingBox = new AABB(new Vector3(0,0,0), new Vector3(0,0,0));
-	private static final Vector3 extentsVector = new Vector3(0,0,0);
 	
 	public WorldObject(Entity entity) {
 		this.entity = entity;

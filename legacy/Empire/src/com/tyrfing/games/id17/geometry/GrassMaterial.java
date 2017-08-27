@@ -28,10 +28,8 @@ public class GrassMaterial extends Material implements IUpdateable {
 	/** Texture information of this object **/
 	private int textureUniformHandle;
 	private int textureCoordinateHandle;
-	private int timeHandle;
 	private int ambientHandle;
 	private int windDirHandle;
-	private int winterHandle;
 	private int ownerHandle;
 	private String textureName;
 	private Texture texture;

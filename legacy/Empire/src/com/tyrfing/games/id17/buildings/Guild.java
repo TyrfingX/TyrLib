@@ -68,6 +68,10 @@ public class Guild extends Building {
 		h.getOwner().changeGold(-Building.getPrice(Building.TYPE.Guild, h));
 	}
 	
+	public Guild.TYPE getGuildType() {
+		return type;
+	}
+	
 	@Override
 	public void createBuildMail(Holding h) {
 		HeaderedMail m = new GuildMail(this, h);

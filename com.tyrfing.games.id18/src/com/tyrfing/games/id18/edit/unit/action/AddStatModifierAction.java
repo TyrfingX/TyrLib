@@ -1,18 +1,17 @@
 package com.tyrfing.games.id18.edit.unit.action;
 
-import com.tyrfing.games.id18.model.tag.AModifier;
-import com.tyrfing.games.id18.model.tag.IModifiable;
 import com.tyrfing.games.id18.model.unit.StatModifier;
 import com.tyrfing.games.id18.model.unit.StatType;
 import com.tyrfing.games.id18.model.unit.Unit;
 import com.tyrfing.games.tyrlib3.edit.action.AddAction;
+import com.tyrfing.games.tyrlib3.model.game.stats.IModifiable;
 
-public class AddStatModifierAction extends AddAction<AModifier> {
+public class AddStatModifierAction extends AddAction<StatModifier> {
 
-	private IModifiable modifiable;
+	private IModifiable<StatModifier> modifiable;
 	private Integer oldValue;
 	
-	public AddStatModifierAction(IModifiable modifiable, AModifier modifier) {
+	public AddStatModifierAction(IModifiable<StatModifier> modifiable, StatModifier modifier) {
 		super(modifiable.getModifiers(), modifier);
 		this.modifiable = modifiable;
 	}
@@ -52,7 +51,7 @@ public class AddStatModifierAction extends AddAction<AModifier> {
 		super.undo();
 	}
 	
-	public IModifiable getModifiable() {
+	public IModifiable<StatModifier> getModifiable() {
 		return modifiable;
 	}
 	

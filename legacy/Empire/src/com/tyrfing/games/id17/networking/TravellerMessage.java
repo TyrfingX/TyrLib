@@ -21,7 +21,7 @@ public class TravellerMessage extends NetworkMessage {
 	
 	@Override
 	public void process(Connection c) {
-		Traveller traveller = new Traveller(srcHolding, dstHolding);
+		new Traveller(srcHolding, dstHolding);
 	}
 	
 }

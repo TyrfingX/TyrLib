@@ -44,8 +44,6 @@ public class ProductionGUI extends MenuPoint {
 	public static final ScaledVector2 SUPPLY_BASE_POS = new ScaledVector2(PROD_LABEL_POS.x, PROD_LABEL_POS.y + 0.05f, 2);
 	public static final ScaledVector2 SUPPLY_SIZE		= new ScaledVector2(TabGUI.SIGIL_HOLDER_SIZE.x * 0.5f, TabGUI.SIGIL_HOLDER_SIZE.y * 0.5f, 2);
 	
-	private Window parent;
-	
 	protected Holding displayed;
 	private List<Window> producedGoods = new ArrayList<Window>();
 	
@@ -55,8 +53,6 @@ public class ProductionGUI extends MenuPoint {
 	private ItemList buildList;
 	
 	public ProductionGUI(Window parent) {
-		this.parent = parent;
-		
 		String name = parent.getName();
 		
 		prodBG = WindowManager.getInstance().createImageBox(name + "/PROD_BG", PROD_POS, "MAIN_GUI", "PAPER", PROD_SIZE);

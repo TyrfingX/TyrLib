@@ -1,6 +1,5 @@
 package com.TyrLib2.PC.config;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;

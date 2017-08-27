@@ -3,7 +3,6 @@ package com.tyrfing.games.id17.diplomacy.actions;
 import com.tyrfing.games.id17.Util;
 import com.tyrfing.games.id17.diplomacy.Message;
 import com.tyrfing.games.id17.gui.mails.DiploYesNoMail;
-import com.tyrfing.games.id17.gui.mails.HeaderedMail;
 import com.tyrfing.games.id17.gui.mails.Mail;
 import com.tyrfing.games.id17.houses.House;
 import com.tyrfing.games.id17.world.World;

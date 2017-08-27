@@ -5,12 +5,11 @@ import java.util.List;
 
 import com.tyrfing.games.id18.edit.unit.action.AddStatModifierAction;
 import com.tyrfing.games.id18.edit.unit.action.RemoveStatModifierAction;
-import com.tyrfing.games.id18.model.tag.AModifier;
-import com.tyrfing.games.id18.model.tag.IModifiable;
 import com.tyrfing.games.id18.model.tag.TagReaction;
 import com.tyrfing.games.id18.model.unit.StatModifier;
 import com.tyrfing.games.tyrlib3.edit.action.CompoundAction;
 import com.tyrfing.games.tyrlib3.edit.action.IAction;
+import com.tyrfing.games.tyrlib3.model.game.stats.IModifiable;
 
 public class TagReactionRule implements IModifierReactionRule {
 	
@@ -21,7 +20,7 @@ public class TagReactionRule implements IModifierReactionRule {
 	}
 	
 	@Override
-	public void checkAndAppendActions(CompoundAction compoundAction, IModifiable modifiable, StatModifier modifier) {
+	public void checkAndAppendActions(CompoundAction compoundAction, IModifiable<StatModifier> modifiable, StatModifier modifier) {
 		for (TagReaction tagReaction : tagReactions) {
 			if (tagReaction.isApplicable(modifiable, modifier)) {
 				IAction reactionAction = createReactionAction(modifiable, tagReaction);
@@ -30,16 +29,16 @@ public class TagReactionRule implements IModifierReactionRule {
 		}
 	}
 	
-	private IAction createReactionAction(IModifiable modifiable, TagReaction tagReaction) {
+	private IAction createReactionAction(IModifiable<StatModifier> modifiable, TagReaction tagReaction) {
 		CompoundAction compoundAction = new CompoundAction();
-		for (AModifier removeModifier : modifiable.getModifiers()) {
+		for (StatModifier removeModifier : modifiable.getModifiers()) {
 			if (!Collections.disjoint(tagReaction.getRemovedModifiersWithTag(), removeModifier.getTags())) {
 				RemoveStatModifierAction removeOiled = new RemoveStatModifierAction(modifiable, removeModifier);
 				compoundAction.getActions().add(removeOiled);
 			}
 		}
 		
-		for (AModifier addModifier : tagReaction.getAddedModifiers()) {
+		for (StatModifier addModifier : tagReaction.getAddedModifiers()) {
 			AddStatModifierAction receiveBurning = new AddStatModifierAction(modifiable, addModifier);
 			compoundAction.getActions().add(receiveBurning);
 		}

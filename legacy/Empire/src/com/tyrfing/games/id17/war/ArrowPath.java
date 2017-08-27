@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.tyrfing.games.id17.holdings.Holding;
 import com.tyrlib2.graphics.materials.DefaultMaterial3;
-import com.tyrlib2.graphics.materials.LightedMaterial;
 import com.tyrlib2.graphics.renderables.Entity;
 import com.tyrlib2.graphics.renderer.OpenGLRenderer;
 import com.tyrlib2.graphics.renderer.TyrGL;

@@ -29,8 +29,6 @@ public abstract class DefaultItemListEntry extends ItemListEntry {
 	private boolean enabled;
 	protected boolean activated;
 	
-	private String disabledText;
-	
 	public DefaultItemListEntry(String name, Vector2 size, String disabledText, BG_TYPE type) {
 		super(name, size);
 		

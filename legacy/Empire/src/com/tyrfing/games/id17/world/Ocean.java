@@ -12,7 +12,6 @@ import com.tyrlib2.util.Color;
 public class Ocean implements IRenderable, IUpdateable {
 
 	private Box box;
-	private Box ground;
 	private int insertionID;
 	private float passedTime;
 	private SceneNode node;

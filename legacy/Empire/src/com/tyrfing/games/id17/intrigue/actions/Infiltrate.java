@@ -5,17 +5,14 @@ import java.util.List;
 import com.tyrfing.games.id17.Util;
 import com.tyrfing.games.id17.gui.PaperButton;
 import com.tyrfing.games.id17.gui.mails.HeaderedMail;
-import com.tyrfing.games.id17.gui.mails.JustificationEntry;
 import com.tyrfing.games.id17.gui.mails.Mail;
 import com.tyrfing.games.id17.gui.mails.YesNoMail;
 import com.tyrfing.games.id17.houses.House;
 import com.tyrfing.games.id17.world.World;
 import com.tyrlib2.gui.IEventListener;
 import com.tyrlib2.gui.ScaledVector2;
-import com.tyrlib2.gui.Window;
 import com.tyrlib2.gui.WindowEvent;
 import com.tyrlib2.gui.WindowEvent.WindowEventType;
-import com.tyrlib2.gui.WindowManager;
 
 public class Infiltrate extends IntrigueAction {
 

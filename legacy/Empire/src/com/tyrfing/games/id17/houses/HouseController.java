@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.tyrfing.games.id17.ChatListener;
-import com.tyrfing.games.id17.EmpireFrameListener;
 import com.tyrfing.games.id17.diplomacy.Message;
 import com.tyrfing.games.id17.holdings.Holding;
 import com.tyrfing.games.id17.war.War;

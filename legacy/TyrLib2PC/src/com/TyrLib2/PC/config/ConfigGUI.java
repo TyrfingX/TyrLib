@@ -15,7 +15,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.net.URL;
@@ -81,7 +80,7 @@ public class ConfigGUI extends Frame {
         
         group.setSelectedCheckbox(chkOther);
         config.screenState = ScreenState.WINDOWED;
-        chkFull.disable();
+        chkFull.setEnabled(false);
         
         Panel p = new Panel();
         p.setLayout(new BorderLayout());
